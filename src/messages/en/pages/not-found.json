@@ -1,0 +1,7 @@
+{
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page may have moved or the address may be incomplete.",
+    "action": "Return home"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "onboarding": {
+    "step": "الخطوة {current} من 4",
+    "noFiles": "لم يتم اختيار مستندات بعد.",
+    "selectCategory": "اختر الفئة",
+    "selectSubcategory": "اختر الفئة الفرعية",
+    "viewFull": "عرض بالحجم الكامل",
+    "preview": "معاينة الملف",
+    "previewLoading": "جارٍ تحميل المعاينة الآمنة...",
+    "openNewTab": "فتح العرض الكامل",
+    "closePreview": "إغلاق المعاينة",
+    "errors": {
+      "uploadFailed": "فشل التحميل. يرجى المحاولة مرة أخرى.",
+      "previewFailed": "تعذر تحميل المعاينة الآمنة. يرجى المحاولة مرة أخرى."
+    }
+  }
+}

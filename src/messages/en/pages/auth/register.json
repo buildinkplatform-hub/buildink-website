@@ -1,0 +1,29 @@
+{
+  "auth": {
+    "name": "Full name",
+    "hasAccount": "Already have an account?",
+    "registerTitle": "Create your Buildink account",
+    "registerBody": "Create the account first. You will choose and build your marketplace profile next.",
+    "terms": "I accept the Terms of Service.",
+    "privacy": "I have read and accept the Privacy Policy.",
+    "marketing": "Send me occasional marketplace news and product updates.",
+    "recoverVerification": "Open email verification options",
+    "retryCountdown": "You can try again in {time}",
+    "retryButton": "Try again in {time}",
+    "registerErrors": {
+      "account_exists": "An account may already exist for this email. Sign in, or use the verification options below if you have not confirmed it yet.",
+      "email_rate_limited": "Too many confirmation emails were requested. Wait a few minutes, then try the verification options below.",
+      "signup_unavailable": "New account registration is temporarily unavailable. Please try again later.",
+      "email_delivery": "Your account request could not send its confirmation email. Use the verification options below or contact support if it continues.",
+      "registration_failed": "We could not create your account. Please try again. If it continues, contact support.",
+      "rate_limited": "Too many account creation attempts. Please wait before trying again.",
+      "backend": "Registration is temporarily unavailable because a required service could not be reached.",
+      "validation": "Check the registration fields and try again."
+    },
+    "errors": {
+      "name": "Enter your full name.",
+      "terms": "Accept the Terms of Service to continue.",
+      "privacy": "Accept the Privacy Policy to continue."
+    }
+  }
+}

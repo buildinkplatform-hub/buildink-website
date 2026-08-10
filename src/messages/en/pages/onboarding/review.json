@@ -1,0 +1,19 @@
+{
+  "onboarding": {
+    "reviewTitle": "Review and submit your profile",
+    "reviewBody": "Check your profile type, details, documents and privacy choices before submission.",
+    "publicConsent": "I consent to publishing only the approved profile details I have provided.",
+    "documentConsent": "I consent to private processing of these documents for verification.",
+    "submit": "Submit profile",
+    "profileType": "Profile type",
+    "details": "Profile details",
+    "documents": "Verification documents",
+    "privacy": "Privacy choices",
+    "edit": "Edit",
+    "pendingTitle": "Your profile will be pending verification",
+    "pendingBody": "Submission does not automatically verify your account. Buildink may approve it or request changes after review.",
+    "errors": {
+      "consent": "Both privacy choices are required to submit."
+    }
+  }
+}

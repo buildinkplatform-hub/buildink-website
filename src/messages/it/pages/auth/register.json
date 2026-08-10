@@ -1,0 +1,29 @@
+{
+  "auth": {
+    "name": "Nome e cognome",
+    "hasAccount": "Hai già un account?",
+    "registerTitle": "Crea il tuo account Buildink",
+    "registerBody": "Crea prima l'account. Nel passaggio successivo sceglierai e completerai il tuo profilo marketplace.",
+    "terms": "Accetto i Termini di servizio.",
+    "privacy": "Ho letto e accetto l'Informativa sulla privacy.",
+    "marketing": "Inviatemi occasionalmente notizie sul marketplace e aggiornamenti sul prodotto.",
+    "recoverVerification": "Apri le opzioni di verifica email",
+    "retryCountdown": "Potrai riprovare tra {time}",
+    "retryButton": "Riprova tra {time}",
+    "registerErrors": {
+      "account_exists": "Potrebbe esistere già un account per questa email. Accedi oppure usa le opzioni di verifica qui sotto se non l'hai ancora confermata.",
+      "email_rate_limited": "Sono state richieste troppe email di conferma. Attendi qualche minuto, quindi usa le opzioni di verifica qui sotto.",
+      "signup_unavailable": "La registrazione di nuovi account non è temporaneamente disponibile. Riprova più tardi.",
+      "email_delivery": "Non è stato possibile inviare l'email di conferma per la richiesta di account. Usa le opzioni di verifica qui sotto o contatta l'assistenza.",
+      "registration_failed": "Non è stato possibile creare l'account. Riprova e, se il problema continua, contatta l'assistenza.",
+      "rate_limited": "Troppi tentativi di creazione dell'account. Attendi prima di riprovare.",
+      "backend": "La registrazione non è temporaneamente disponibile perché un servizio necessario non è raggiungibile.",
+      "validation": "Controlla i campi di registrazione e riprova."
+    },
+    "errors": {
+      "name": "Inserisci nome e cognome.",
+      "terms": "Accetta i Termini di servizio per continuare.",
+      "privacy": "Accetta l'Informativa sulla privacy per continuare."
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "onboarding": {
+    "documentsTitle": "المستندات والتحقق",
+    "documentsBody": "أضف كل مستند بشكل منفصل ليحتفظ بنوعه وتاريخ انتهائه وبلد إصداره وبيانات صاحبه.",
+    "documentPrivacy": "مستندات التحقق خاصة ويجب ألا تُخزن أبدًا في مساحة وسائط عامة.",
+    "documentMetadataTitle": "بيانات المستند",
+    "documentMetadataBody": "سيتم حفظ هذه البيانات مع هذا المستند فقط.",
+    "chooseFiles": "اختر ملف المستند",
+    "fileRequirements": "PDF أو JPEG أو PNG - بحد أقصى 25 ميجابايت لكل ملف",
+    "selectedFile": "الملف المحدد - {size} ميجابايت. اختر مرة أخرى لاستبداله.",
+    "addDocument": "رفع هذا المستند",
+    "addAnotherDocument": "إضافة مستند آخر",
+    "cancelAddDocument": "إلغاء إضافة المستند",
+    "uploadedDocuments": "المستندات المرفوعة ({count})",
+    "uploadContinue": "متابعة",
+    "uploading": "جاري رفع المستند...",
+    "selectDate": "اختر تاريخ الانتهاء",
+    "expires": "ينتهي في {date}",
+    "remove": "إزالة",
+    "options": {
+      "identity": "وثيقة هوية",
+      "certificate": "شهادة",
+      "license": "ترخيص",
+      "company_authorization": "إثبات التفويض من الشركة",
+      "trade_proof": "إثبات النشاط",
+      "professional_proof": "إثبات مهني",
+      "registration": "تسجيل الشركة",
+      "vat_proof": "إثبات ضريبة القيمة المضافة",
+      "other": "مستند تحقق آخر"
+    },
+    "errors": {
+      "fileType": "استخدم ملفات PDF أو JPEG أو PNG فقط.",
+      "fileSize": "يجب ألا يتجاوز حجم كل ملف 25 ميجابايت.",
+      "fileRequired": "اختر ملف مستند قبل الرفع.",
+      "deleteFailed": "تعذرت إزالة المستند. يرجى المحاولة مرة أخرى.",
+      "documentRequired": "أضف مستند تحقق واحدًا على الأقل قبل المتابعة."
+    }
+  }
+}

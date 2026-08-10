@@ -1,0 +1,60 @@
+{
+  "onboarding": {
+    "profileTitle": "Build your marketplace profile",
+    "profileBody": "Complete the common details and the fields required for your selected profile type.",
+    "chooseProfileImage": "Choose a profile image or logo",
+    "profileImageRequirements": "JPEG, PNG, WebP or AVIF - maximum 10 MB",
+    "fields": {
+      "phone": "Phone number",
+      "country": "Country",
+      "region": "Region",
+      "city": "City",
+      "preferredLocale": "Preferred language",
+      "contactPreference": "Public contact preference",
+      "bio": "Short bio",
+      "profileImage": "Profile image or logo",
+      "profileVisibility": "Profile visibility",
+      "interests": "Category and subcategory",
+      "profession": "Profession or trade",
+      "skills": "Skills and specializations",
+      "yearsExperience": "Years of experience",
+      "availability": "Availability or lead time",
+      "languages": "Languages",
+      "contractorIdentity": "Contractor display or business name",
+      "primaryTrade": "Primary trade",
+      "categories": "Category and subcategory",
+      "serviceRegions": "Service or delivery regions",
+      "capabilityStatement": "Capability statement",
+      "jobTitle": "Job title",
+      "organizationMode": "Supplier organization relationship",
+      "supplierName": "Supplier legal or display name",
+      "vatNumber": "P.IVA / VAT number",
+      "businessDescription": "Supplier business description",
+      "providerIdentity": "Service provider identity",
+      "professionalBackground": "Professional background",
+      "documentType": "Document type",
+      "expiryDate": "Expiry date",
+      "issuingCountry": "Issuing country",
+      "ownerName": "Document owner or entity"
+    },
+    "hints": {
+      "phone": "Choose the country code and enter the local phone number."
+    },
+    "options": {
+      "platform_only": "Contact through Buildink only",
+      "public_contact": "Allow approved public contact",
+      "public": "Public after approval",
+      "private": "Private",
+      "select": "Select an existing supplier",
+      "create": "Create a supplier organization",
+      "claim": "Claim an existing supplier"
+    },
+    "errors": {
+      "field": "Complete this field.",
+      "phone": "Enter a valid international phone number.",
+      "imageType": "Use a JPEG, PNG, WebP or AVIF image.",
+      "imageSize": "The profile image must be 10 MB or smaller.",
+      "years": "Enter a number from 0 to 80."
+    }
+  }
+}

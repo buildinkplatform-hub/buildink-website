@@ -1,0 +1,39 @@
+{
+  "onboarding": {
+    "documentsTitle": "Documents and verification",
+    "documentsBody": "Add each document separately so it keeps its own type, expiry date, issuing country and owner information.",
+    "documentPrivacy": "Verification documents are private and must never be stored in a public media bucket.",
+    "documentMetadataTitle": "Document details",
+    "documentMetadataBody": "These details will be saved with this document only.",
+    "chooseFiles": "Choose a document file",
+    "fileRequirements": "PDF, JPEG or PNG - maximum 25 MB per file",
+    "selectedFile": "Selected file - {size} MB. Choose again to replace it.",
+    "addDocument": "Upload this document",
+    "addAnotherDocument": "Add another document",
+    "cancelAddDocument": "Cancel adding document",
+    "uploadedDocuments": "Uploaded documents ({count})",
+    "uploadContinue": "Continue",
+    "uploading": "Uploading document...",
+    "selectDate": "Select expiry date",
+    "expires": "Expires {date}",
+    "remove": "Remove",
+    "options": {
+      "identity": "Identity document",
+      "certificate": "Certificate",
+      "license": "License",
+      "company_authorization": "Proof of company authorization",
+      "trade_proof": "Trade proof",
+      "professional_proof": "Professional proof",
+      "registration": "Company registration",
+      "vat_proof": "VAT proof",
+      "other": "Other verification document"
+    },
+    "errors": {
+      "fileType": "Use PDF, JPEG or PNG files only.",
+      "fileSize": "Each file must be 25 MB or smaller.",
+      "fileRequired": "Choose a document file before uploading.",
+      "deleteFailed": "The document could not be removed. Please try again.",
+      "documentRequired": "Add at least one verification document before continuing."
+    }
+  }
+}

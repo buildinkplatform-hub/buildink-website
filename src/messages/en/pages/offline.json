@@ -1,0 +1,8 @@
+{
+  "offline": {
+    "title": "You are offline",
+    "body": "Buildink could not reach the network. Reconnect and try again; private account data is never cached.",
+    "retry": "Try again",
+    "home": "Go to Buildink"
+  }
+}

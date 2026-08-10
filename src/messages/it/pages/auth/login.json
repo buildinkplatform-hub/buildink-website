@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "welcome": "Bentornato",
+    "loginBody": "Accedi per continuare nel tuo spazio Buildink.",
+    "remember": "Mantieni l’accesso per 7 giorni",
+    "forgot": "Password dimenticata?",
+    "noAccount": "Nuovo su Buildink?",
+    "demoHint": "Le credenziali demo sono indicate nel README del progetto."
+  }
+}

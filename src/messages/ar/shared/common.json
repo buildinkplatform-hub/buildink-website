@@ -1,0 +1,29 @@
+{
+  "common": {
+    "brandTagline": "ابنِ بلا حدود",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "continue": "متابعة",
+    "back": "رجوع",
+    "saveContinue": "احفظ وتابع",
+    "logout": "تسجيل الخروج",
+    "cancel": "إلغاء",
+    "logoutConfirmTitle": "هل تريد تسجيل الخروج من Buildink؟",
+    "logoutConfirmBody": "سيتم تسجيل خروجك من الموقع وستحتاج إلى تسجيل الدخول مرة أخرى لمتابعة الإجراءات المحمية.",
+    "logoutConfirmAction": "نعم، تسجيل الخروج",
+    "language": "اللغة",
+    "dashboard": "لوحة التحكم",
+    "visitDashboard": "اذهب إلى لوحة التحكم",
+    "visitHome": "اذهب إلى الصفحة الرئيسية",
+    "comingSoon": "قريبًا",
+    "comingSoonBody": "هذه المساحة مرتبطة بالتنقل بالفعل. ستتوفر أدواتها العملية في المرحلة القادمة من Buildink.",
+    "returnDashboard": "العودة إلى لوحة التحكم",
+    "openMenu": "فتح التنقل",
+    "closeMenu": "إغلاق التنقل",
+    "notifications": "الإشعارات",
+    "profile": "الملف الشخصي",
+    "skipContent": "الانتقال إلى المحتوى",
+    "required": "مطلوب",
+    "optional": "اختياري"
+  }
+}

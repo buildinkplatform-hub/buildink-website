@@ -1,0 +1,29 @@
+{
+  "common": {
+    "brandTagline": "Build beyond limits",
+    "login": "Log in",
+    "register": "Create account",
+    "continue": "Continue",
+    "back": "Back",
+    "saveContinue": "Save and continue",
+    "logout": "Log out",
+    "cancel": "Cancel",
+    "logoutConfirmTitle": "Log out of Buildink?",
+    "logoutConfirmBody": "You will be signed out from the website and need to log in again to continue protected actions.",
+    "logoutConfirmAction": "Yes, log out",
+    "language": "Language",
+    "dashboard": "Dashboard",
+    "visitDashboard": "Visit dashboard",
+    "visitHome": "Visit home page",
+    "comingSoon": "Coming soon",
+    "comingSoonBody": "This workspace is already connected to your navigation. Its working tools will arrive in the next Buildink milestone.",
+    "returnDashboard": "Return to dashboard",
+    "openMenu": "Open navigation",
+    "closeMenu": "Close navigation",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "skipContent": "Skip to content",
+    "required": "Required",
+    "optional": "Optional"
+  }
+}

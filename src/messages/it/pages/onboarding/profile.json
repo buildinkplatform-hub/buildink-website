@@ -1,0 +1,60 @@
+{
+  "onboarding": {
+    "profileTitle": "Crea il tuo profilo marketplace",
+    "profileBody": "Completa i dati comuni e i campi richiesti per il tipo di profilo selezionato.",
+    "chooseProfileImage": "Scegli un'immagine del profilo o un logo",
+    "profileImageRequirements": "JPEG, PNG, WebP o AVIF - massimo 10 MB",
+    "fields": {
+      "phone": "Numero di telefono",
+      "country": "Paese",
+      "region": "Regione",
+      "city": "Citta",
+      "preferredLocale": "Lingua preferita",
+      "contactPreference": "Preferenza di contatto pubblico",
+      "bio": "Breve biografia",
+      "profileImage": "Immagine del profilo o logo",
+      "profileVisibility": "Visibilita del profilo",
+      "interests": "Categoria e sottocategoria",
+      "profession": "Professione o mestiere",
+      "skills": "Competenze e specializzazioni",
+      "yearsExperience": "Anni di esperienza",
+      "availability": "Disponibilita o tempi di attesa",
+      "languages": "Lingue",
+      "contractorIdentity": "Nome pubblico o aziendale dell'appaltatore",
+      "primaryTrade": "Attivita principale",
+      "categories": "Categoria e sottocategoria",
+      "serviceRegions": "Regioni di servizio o consegna",
+      "capabilityStatement": "Presentazione delle capacita",
+      "jobTitle": "Ruolo professionale",
+      "organizationMode": "Rapporto con l'organizzazione fornitrice",
+      "supplierName": "Ragione sociale o nome pubblico del fornitore",
+      "vatNumber": "Partita IVA",
+      "businessDescription": "Descrizione dell'attivita del fornitore",
+      "providerIdentity": "Identita del fornitore di servizi",
+      "professionalBackground": "Esperienza professionale",
+      "documentType": "Tipo di documento",
+      "expiryDate": "Data di scadenza",
+      "issuingCountry": "Paese di emissione",
+      "ownerName": "Titolare o entita del documento"
+    },
+    "hints": {
+      "phone": "Scegli il prefisso internazionale e inserisci il numero locale."
+    },
+    "options": {
+      "platform_only": "Contatto solo tramite Buildink",
+      "public_contact": "Consenti il contatto pubblico approvato",
+      "public": "Pubblico dopo l'approvazione",
+      "private": "Privato",
+      "select": "Seleziona un fornitore esistente",
+      "create": "Crea un'organizzazione fornitrice",
+      "claim": "Rivendica un fornitore esistente"
+    },
+    "errors": {
+      "field": "Completa questo campo.",
+      "phone": "Inserisci un numero di telefono internazionale valido.",
+      "imageType": "Usa un'immagine JPEG, PNG, WebP o AVIF.",
+      "imageSize": "L'immagine del profilo deve avere una dimensione massima di 10 MB.",
+      "years": "Inserisci un numero da 0 a 80."
+    }
+  }
+}

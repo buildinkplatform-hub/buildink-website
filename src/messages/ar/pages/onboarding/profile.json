@@ -1,0 +1,60 @@
+{
+  "onboarding": {
+    "profileTitle": "أنشئ ملفك في السوق",
+    "profileBody": "أكمل البيانات العامة والحقول المطلوبة لنوع الملف الذي اخترته.",
+    "chooseProfileImage": "اختر صورة للملف أو شعارًا",
+    "profileImageRequirements": "JPEG أو PNG أو WebP أو AVIF - بحد أقصى 10 ميجابايت",
+    "fields": {
+      "phone": "رقم الهاتف",
+      "country": "الدولة",
+      "region": "المنطقة",
+      "city": "المدينة",
+      "preferredLocale": "اللغة المفضلة",
+      "contactPreference": "تفضيل التواصل العام",
+      "bio": "نبذة قصيرة",
+      "profileImage": "صورة الملف أو الشعار",
+      "profileVisibility": "ظهور الملف",
+      "interests": "الفئة والفئة الفرعية",
+      "profession": "المهنة أو الحرفة",
+      "skills": "المهارات والتخصصات",
+      "yearsExperience": "سنوات الخبرة",
+      "availability": "التوفر أو مدة الانتظار",
+      "languages": "اللغات",
+      "contractorIdentity": "الاسم الظاهر أو التجاري للمقاول",
+      "primaryTrade": "الحرفة الرئيسية",
+      "categories": "الفئة والفئة الفرعية",
+      "serviceRegions": "مناطق الخدمة أو التوصيل",
+      "capabilityStatement": "بيان القدرات",
+      "jobTitle": "المسمى الوظيفي",
+      "organizationMode": "العلاقة مع مؤسسة المورد",
+      "supplierName": "الاسم القانوني أو الظاهر للمورد",
+      "vatNumber": "رقم ضريبة القيمة المضافة",
+      "businessDescription": "وصف نشاط المورد",
+      "providerIdentity": "هوية مقدم الخدمة",
+      "professionalBackground": "الخلفية المهنية",
+      "documentType": "نوع المستند",
+      "expiryDate": "تاريخ الانتهاء",
+      "issuingCountry": "دولة الإصدار",
+      "ownerName": "صاحب المستند أو الجهة"
+    },
+    "hints": {
+      "phone": "اختر رمز الدولة ثم أدخل رقم الهاتف المحلي."
+    },
+    "options": {
+      "platform_only": "التواصل عبر Buildink فقط",
+      "public_contact": "السماح بالتواصل العام بعد الموافقة",
+      "public": "عام بعد الموافقة",
+      "private": "خاص",
+      "select": "اختيار مورد موجود",
+      "create": "إنشاء مؤسسة موردة",
+      "claim": "المطالبة بمورد موجود"
+    },
+    "errors": {
+      "field": "أكمل هذا الحقل.",
+      "phone": "أدخل رقم هاتف دوليًا صالحًا.",
+      "imageType": "استخدم صورة JPEG أو PNG أو WebP أو AVIF.",
+      "imageSize": "يجب ألا يتجاوز حجم صورة الملف 10 ميجابايت.",
+      "years": "أدخل رقمًا من 0 إلى 80."
+    }
+  }
+}

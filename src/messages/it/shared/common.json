@@ -1,0 +1,29 @@
+{
+  "common": {
+    "brandTagline": "Costruisci senza limiti",
+    "login": "Accedi",
+    "register": "Crea account",
+    "continue": "Continua",
+    "back": "Indietro",
+    "saveContinue": "Salva e continua",
+    "logout": "Esci",
+    "cancel": "Annulla",
+    "logoutConfirmTitle": "Vuoi uscire da Buildink?",
+    "logoutConfirmBody": "Verrai disconnesso dal sito e dovrai accedere di nuovo per continuare le azioni protette.",
+    "logoutConfirmAction": "Sì, esci",
+    "language": "Lingua",
+    "dashboard": "Dashboard",
+    "visitDashboard": "Vai alla dashboard",
+    "visitHome": "Vai alla home",
+    "comingSoon": "Prossimamente",
+    "comingSoonBody": "Questo spazio è già collegato alla navigazione. Gli strumenti operativi arriveranno nel prossimo traguardo Buildink.",
+    "returnDashboard": "Torna alla dashboard",
+    "openMenu": "Apri navigazione",
+    "closeMenu": "Chiudi navigazione",
+    "notifications": "Notifiche",
+    "profile": "Profilo",
+    "skipContent": "Vai al contenuto",
+    "required": "Obbligatorio",
+    "optional": "Facoltativo"
+  }
+}

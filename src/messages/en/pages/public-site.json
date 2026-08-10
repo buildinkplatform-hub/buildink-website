@@ -1,0 +1,281 @@
+{
+  "publicSite": {
+    "nav": {
+      "groups": {
+        "browse": "Browse tenders",
+        "marketplace": "Companies & services",
+        "resources": "Resources"
+      },
+      "items": {
+        "home": "Home",
+        "search": "Global search",
+        "companies": "Companies",
+        "profiles": "Public profiles",
+        "suppliers": "Suppliers",
+        "equipment": "Equipment marketplace",
+        "projects": "Projects",
+        "tenders": "Open tenders",
+        "companyRequests": "Looking for a company",
+        "workerRequests": "Looking for workers",
+        "howItWorks": "How it works",
+        "verification": "Verification & safety",
+        "help": "Help center",
+        "faq": "FAQ",
+        "blog": "Blog & insights",
+        "about": "About Buildink",
+        "contact": "Contact",
+        "privacy": "Privacy policy",
+        "terms": "Terms of service",
+        "cookies": "Cookie policy"
+      }
+    },
+    "footer": {
+      "platform": "Platform",
+      "resources": "Resources",
+      "company": "Company",
+      "legal": "Legal",
+      "note": "Buildink public marketplace foundation",
+      "details": "Built for multilingual construction discovery, trust and protected workflow handoff."
+    },
+    "newsletter": {
+      "title": "Stay close to the next Buildink opportunities",
+      "body": "Get product updates, selected marketplace insights and launch news in a measured, consent-based way.",
+      "placeholder": "Enter your email address",
+      "consent": "By subscribing, you confirm you want occasional marketplace and product updates and can unsubscribe at any time.",
+      "action": "Subscribe",
+      "success": "Thanks - your email has been captured for the public-site newsletter flow."
+    },
+    "cookiesBanner": {
+      "title": "We use cookies to keep the public marketplace fast, secure and relevant.",
+      "body": "You can accept the recommended cookie setup now or manage your preferences later from the cookie policy page.",
+      "accept": "Accept cookies",
+      "manage": "Manage cookies"
+    },
+    "filters": {
+      "title": "Refine results",
+      "search": "Search",
+      "searchPlaceholder": "Search by keyword, service, trade or company name",
+      "region": "Region",
+      "allRegions": "All regions",
+      "category": "Category",
+      "allCategories": "All categories",
+      "verification": "Verification",
+      "allStatuses": "All statuses"
+    },
+    "actions": {
+      "clearFilters": "Clear filters",
+      "applyFilters": "Apply filters",
+      "viewDetails": "View details",
+      "primaryContact": "Contact or request quote",
+      "saveItem": "Save after login",
+      "readArticle": "Read article"
+    },
+    "search": {
+      "resultCount": "{count} public results",
+      "emptyTitle": "No public results matched yet",
+      "emptyBody": "Try broadening the region, category or verification filters to reopen the discovery flow."
+    },
+    "stats": {
+      "publicResults": "Public results",
+      "regions": "Regions",
+      "categories": "Categories",
+      "verificationStates": "Verification states"
+    },
+    "directory": {
+      "quickGuideTitle": "Quick guide",
+      "quickGuideBody": "Use category, region and verification filters together to move from broad discovery into shortlist mode."
+    },
+    "modules": {
+      "companies": "Companies",
+      "profiles": "Profiles",
+      "suppliers": "Suppliers",
+      "equipment": "Equipment",
+      "projects": "Projects",
+      "tenders": "Tenders",
+      "opportunities-companies": "Company requests",
+      "opportunities-workers": "Worker requests"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "services": "Services",
+      "projects": "Projects",
+      "reviews": "Reviews",
+      "certifications": "Certifications",
+      "contact": "Contact"
+    },
+    "detail": {
+      "contactTitle": "Contact and trust",
+      "reportHint": "Public detail pages should always give visitors a safe way to report incorrect or unsafe public content.",
+      "relatedTitle": "Related public items",
+      "relatedBody": "Keep discovery moving by linking to a small, relevant set of neighboring public records.",
+      "reviewSummary": "{rating} ({count} reviews)",
+      "aboutTitle": "About {name}",
+      "keyMetricsTitle": "Key metrics",
+      "officialWebsiteTitle": "Official website",
+      "officialWebsiteBody": "Continue to the approved public website when you need more company context.",
+      "visitWebsite": "Visit website"
+    },
+    "cta": {
+      "title": "Move from public discovery to a protected Buildink workflow",
+      "body": "The public website should explain value clearly, then hand off to registration and role-aware workspace actions without creating dead ends.",
+      "action": "Create your Buildink account"
+    },
+    "faq": {
+      "items": {
+        "profileType": "How do I choose the right profile type?",
+        "verification": "What does verification actually mean?",
+        "contact": "How do public contact settings work?"
+      },
+      "answers": {
+        "profileType": "Profile type describes how you show up in the public marketplace. Company authority still comes from memberships and permissions, not from the label alone.",
+        "verification": "Verification explains which public checks Buildink completed. It should never imply guarantees beyond the published verification scope.",
+        "contact": "Public detail pages should expose only approved contact methods, while sensitive or unapproved contact data stays private."
+      }
+    },
+    "legal": {
+      "updated": "Updated {date}"
+    },
+    "pages": {
+      "search": {
+        "eyebrow": "One search surface",
+        "title": "Search across the public Buildink marketplace",
+        "description": "Browse companies, people, suppliers, equipment, projects, tenders and open requests from one multilingual discovery flow."
+      },
+      "companies": {
+        "eyebrow": "Company discovery",
+        "title": "Find construction companies with public proof",
+        "description": "Search by region, category and trust signals to move quickly from public evaluation into the right next action."
+      },
+      "profiles": {
+        "eyebrow": "Professional discovery",
+        "title": "Browse public marketplace profiles",
+        "description": "Explore the final five profile types with role-aware cards, public proof and privacy-safe contact pathways."
+      },
+      "suppliers": {
+        "eyebrow": "Supplier discovery",
+        "title": "Explore supplier businesses and approved catalogs",
+        "description": "Public supplier pages should clarify what the business offers, where it operates and how visitors can enquire."
+      },
+      "equipment": {
+        "eyebrow": "Equipment marketplace",
+        "title": "Browse equipment with clear availability signals",
+        "description": "Keep equipment discovery scannable with category, condition, availability and provider context up front."
+      },
+      "projects": {
+        "eyebrow": "Projects and opportunities",
+        "title": "Discover public construction projects",
+        "description": "Public project pages should expose scope, timing, location and public budget rules without leaking private delivery data."
+      },
+      "tenders": {
+        "eyebrow": "Tender discovery",
+        "title": "Monitor open tenders and deadlines",
+        "description": "Tender listings should emphasize source attribution, date clarity and a clean handoff into protected bidding workflows."
+      },
+      "companyRequests": {
+        "eyebrow": "Looking for a company",
+        "title": "Open requests for companies and subcontractors",
+        "description": "These listings should feel distinct from projects and tenders while still staying structured, indexable and easy to compare."
+      },
+      "workerRequests": {
+        "eyebrow": "Looking for workers",
+        "title": "Public workforce requests by trade and region",
+        "description": "Show trade, quantity, timing and public terms clearly so workers and contractors can decide whether to continue."
+      },
+      "howItWorks": {
+        "eyebrow": "Process clarity",
+        "title": "How Buildink works for every public audience",
+        "description": "Explain discovery, verification, posting and response flows before asking visitors to create an account.",
+        "sectionOneTitle": "Role-aware pathways",
+        "sectionOneBody": "This page should answer the first practical question every visitor has: what can I do here, and what happens next?",
+        "cards": {
+          "card1Title": "For companies and owners",
+          "card1Body": "Clarify how companies publish public identities, projects, requests and approved contact paths.",
+          "card2Title": "For professionals",
+          "card2Body": "Show how workers, contractors and service providers are discovered and verified in a public-safe way.",
+          "card3Title": "For suppliers and equipment providers",
+          "card3Body": "Explain how supplier and equipment visibility turns into real enquiries without exposing private data."
+        }
+      },
+      "verification": {
+        "eyebrow": "Trust and safety",
+        "title": "What Buildink verifies - and what it does not",
+        "description": "Use plain language to describe public verification meaning, privacy boundaries and how visitors can report concerns.",
+        "sectionOneTitle": "Verification with honest boundaries",
+        "sectionOneBody": "Trust pages work best when they increase confidence without over-claiming what the platform can guarantee.",
+        "cards": {
+          "card1Title": "Verification badges",
+          "card1Body": "Explain what a badge represents on company, profile and listing pages.",
+          "card2Title": "Privacy handling",
+          "card2Body": "Make it clear that private identity and verification files do not belong on the public surface.",
+          "card3Title": "Report and review flow",
+          "card3Body": "Visitors should always know how to report unsafe, misleading or incorrect public content."
+        }
+      },
+      "about": {
+        "eyebrow": "Platform story",
+        "title": "About Buildink",
+        "description": "Present the Italy-first marketplace story, the trust model and the practical problem Buildink is solving.",
+        "sectionOneTitle": "A product story grounded in real work",
+        "sectionOneBody": "The About page should feel credible and specific, not like generic startup filler.",
+        "cards": {
+          "card1Title": "Mission",
+          "card1Body": "Show why Buildink exists and which fragmented workflows it is trying to simplify.",
+          "card2Title": "Who it serves",
+          "card2Body": "Speak clearly to companies, professionals, suppliers, equipment owners and project teams.",
+          "card3Title": "Trust principles",
+          "card3Body": "Connect the public website story to verification, privacy and safer professional discovery."
+        }
+      },
+      "contact": {
+        "eyebrow": "Direct contact",
+        "title": "Contact Buildink",
+        "description": "Create a clear route for business, support and general enquiries with privacy-safe contact guidance.",
+        "sectionOneTitle": "Reliable contact paths",
+        "sectionOneBody": "Contact pages should feel practical, well-structured and respectful of regional and language differences.",
+        "cards": {
+          "card1Title": "Topic-based routing",
+          "card1Body": "Help visitors choose between support, partnerships, marketplace questions and general business enquiries.",
+          "card2Title": "Business details",
+          "card2Body": "Surface only approved official address, email, phone and working hours.",
+          "card3Title": "Privacy-aware forms",
+          "card3Body": "The public contact flow should validate cleanly and explain what happens after submission."
+        }
+      },
+      "help": {
+        "eyebrow": "Self-service support",
+        "title": "Help center",
+        "description": "Lead with task-based support content so public visitors can answer common questions before opening a ticket."
+      },
+      "faq": {
+        "eyebrow": "Frequently asked",
+        "title": "Buildink FAQ",
+        "description": "Keep common marketplace questions concise, scannable and easy to navigate across languages."
+      },
+      "blog": {
+        "eyebrow": "Editorial and SEO",
+        "title": "Blog and insights",
+        "description": "Publish trustworthy long-form content that supports discovery, trust and multilingual search visibility."
+      },
+      "privacy": {
+        "eyebrow": "Legal",
+        "title": "Privacy policy",
+        "description": "This page is structured for approved client legal text with clear navigation and update visibility."
+      },
+      "terms": {
+        "eyebrow": "Legal",
+        "title": "Terms of service",
+        "description": "Present the approved service terms with the same readability and information hierarchy as the rest of the site."
+      },
+      "cookies": {
+        "eyebrow": "Legal",
+        "title": "Cookie policy",
+        "description": "Explain cookie categories, vendor intent and user controls in a way that stays understandable on mobile."
+      }
+    },
+    "home": {
+      "proofEyebrow": "Marketplace proof",
+      "proofTitle": "Designed to look credible before a user ever logs in",
+      "proofBody": "The public experience should show real marketplace depth, trust signals and role-specific pathways without exposing private operational data."
+    }
+  }
+}

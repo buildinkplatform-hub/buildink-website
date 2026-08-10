@@ -1,0 +1,8 @@
+.next
+.next-e2e
+node_modules
+coverage
+playwright-report
+test-results
+Buildink_Public_Website_Multilingual_PWA_SEO_Blueprint.pdf
+next-env.d.ts

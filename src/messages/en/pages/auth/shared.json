@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "email": "Email address",
+    "password": "Password",
+    "passwordHint": "Use at least 8 characters with uppercase, lowercase, a number and a symbol.",
+    "confirmPassword": "Confirm password",
+    "invalid": "The email or password is incorrect. Try again.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "errors": {
+      "email": "Enter a valid email address.",
+      "password": "Use 8+ characters with uppercase, lowercase, a number and a symbol.",
+      "passwordMatch": "Passwords must match."
+    }
+  }
+}

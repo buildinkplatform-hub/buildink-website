@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "email": "Indirizzo email",
+    "password": "Password",
+    "passwordHint": "Usa almeno 8 caratteri con maiuscole, minuscole, un numero e un simbolo.",
+    "confirmPassword": "Conferma password",
+    "invalid": "Email o password non corrette. Riprova.",
+    "showPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "errors": {
+      "email": "Inserisci un indirizzo email valido.",
+      "password": "Usa almeno 8 caratteri con maiuscola, minuscola, numero e simbolo.",
+      "passwordMatch": "Le password devono coincidere."
+    }
+  }
+}

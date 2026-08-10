@@ -1,0 +1,39 @@
+{
+  "onboarding": {
+    "documentsTitle": "Documenti e verifica",
+    "documentsBody": "Aggiungi ogni documento separatamente, così conserva il proprio tipo, la data di scadenza, il Paese di rilascio e il titolare.",
+    "documentPrivacy": "I documenti di verifica sono privati e non devono mai essere archiviati in un contenitore multimediale pubblico.",
+    "documentMetadataTitle": "Dati del documento",
+    "documentMetadataBody": "Questi dati verranno salvati soltanto con questo documento.",
+    "chooseFiles": "Scegli un file del documento",
+    "fileRequirements": "PDF, JPEG o PNG - massimo 25 MB per file",
+    "selectedFile": "File selezionato - {size} MB. Scegli di nuovo per sostituirlo.",
+    "addDocument": "Carica questo documento",
+    "addAnotherDocument": "Aggiungi un altro documento",
+    "cancelAddDocument": "Annulla aggiunta documento",
+    "uploadedDocuments": "Documenti caricati ({count})",
+    "uploadContinue": "Continua",
+    "uploading": "Caricamento del documento...",
+    "selectDate": "Seleziona la data di scadenza",
+    "expires": "Scade il {date}",
+    "remove": "Rimuovi",
+    "options": {
+      "identity": "Documento di identita",
+      "certificate": "Certificato",
+      "license": "Licenza",
+      "company_authorization": "Prova dell'autorizzazione aziendale",
+      "trade_proof": "Prova dell'attivita",
+      "professional_proof": "Prova professionale",
+      "registration": "Registrazione aziendale",
+      "vat_proof": "Prova IVA",
+      "other": "Altro documento di verifica"
+    },
+    "errors": {
+      "fileType": "Usa solo file PDF, JPEG o PNG.",
+      "fileSize": "Ogni file deve avere una dimensione massima di 25 MB.",
+      "fileRequired": "Scegli un file del documento prima del caricamento.",
+      "deleteFailed": "Impossibile rimuovere il documento. Riprova.",
+      "documentRequired": "Aggiungi almeno un documento di verifica prima di continuare."
+    }
+  }
+}

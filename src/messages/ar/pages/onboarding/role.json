@@ -1,0 +1,21 @@
+{
+  "onboarding": {
+    "roleTitle": "اختر نوع ملفك",
+    "roleBody": "اختر الهوية التي تصف بشكل أفضل طريقة استخدامك لسوق Buildink.",
+    "errors": {
+      "profileType": "اختر نوع الملف للمتابعة."
+    }
+  },
+  "roles": {
+    "individual": "فرد",
+    "individualBody": "تصفح واحفظ وتواصل مع أعضاء السوق من خلال ملف شخصي.",
+    "worker": "عامل",
+    "workerBody": "اعرض مهنتك ومهاراتك وشهاداتك ومدى توفرك لأصحاب العمل.",
+    "contractor": "مقاول",
+    "contractorBody": "اكتشف الفرص وقدّم العروض واعرض خدمات المقاولات.",
+    "supplierContact": "ممثل مورد",
+    "supplierContactBody": "مثّل مؤسسة موردة وأدر كتالوجها واستفساراتها.",
+    "serviceProvider": "مقدم خدمات",
+    "serviceProviderBody": "قدّم خدمات متخصصة وشهادات وأعمالاً مرجعية."
+  }
+}

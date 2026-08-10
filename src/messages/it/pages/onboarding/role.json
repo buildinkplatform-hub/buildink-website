@@ -1,0 +1,21 @@
+{
+  "onboarding": {
+    "roleTitle": "Scegli il tipo di profilo",
+    "roleBody": "Seleziona l'identità che descrive meglio come utilizzerai il marketplace Buildink.",
+    "errors": {
+      "profileType": "Scegli un tipo di profilo per continuare."
+    }
+  },
+  "roles": {
+    "individual": "Privato",
+    "individualBody": "Esplora, salva e contatta i membri del marketplace con un profilo personale.",
+    "worker": "Lavoratore",
+    "workerBody": "Presenta il tuo mestiere, le competenze, i certificati e la disponibilità ai datori di lavoro.",
+    "contractor": "Appaltatore",
+    "contractorBody": "Scopri opportunità, invia proposte e presenta i tuoi servizi di appalto.",
+    "supplierContact": "Referente fornitore",
+    "supplierContactBody": "Rappresenta un'organizzazione fornitrice e gestiscine catalogo e richieste.",
+    "serviceProvider": "Fornitore di servizi",
+    "serviceProviderBody": "Offri servizi specialistici, certificazioni e lavori di riferimento."
+  }
+}

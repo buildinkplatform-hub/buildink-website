@@ -1,0 +1,17 @@
+{
+  "onboarding": {
+    "step": "Passaggio {current} di 4",
+    "noFiles": "Nessun documento selezionato.",
+    "selectCategory": "Seleziona categoria",
+    "selectSubcategory": "Seleziona sottocategoria",
+    "viewFull": "Visualizza a dimensione intera",
+    "preview": "Anteprima del file",
+    "previewLoading": "Caricamento dell'anteprima protetta...",
+    "openNewTab": "Apri visualizzazione completa",
+    "closePreview": "Chiudi anteprima",
+    "errors": {
+      "uploadFailed": "Il caricamento non e riuscito. Riprova.",
+      "previewFailed": "Impossibile caricare l'anteprima protetta. Riprova."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "onboarding": {
+    "step": "Step {current} of 4",
+    "noFiles": "No documents selected yet.",
+    "selectCategory": "Select category",
+    "selectSubcategory": "Select subcategory",
+    "viewFull": "View full size",
+    "preview": "File preview",
+    "previewLoading": "Loading secure preview...",
+    "openNewTab": "Open full view",
+    "closePreview": "Close preview",
+    "errors": {
+      "uploadFailed": "The upload failed. Please try again.",
+      "previewFailed": "The secure preview could not be loaded. Please try again."
+    }
+  }
+}

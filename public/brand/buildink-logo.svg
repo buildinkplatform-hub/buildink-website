@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="160" viewBox="0 0 620 160">
+  <rect width="620" height="160" fill="none"/>
+  <g transform="translate(10,14)">
+    <path d="M12 112 L12 48 L48 22 L48 112 Z" fill="#176BFF"/>
+    <path d="M52 112 L52 12 L88 36 L88 112 Z" fill="#31B5FF"/>
+    <path d="M92 112 L92 54 L128 30 L128 112 Z" fill="#2D8CFF"/>
+    <rect x="4" y="112" width="132" height="14" rx="7" fill="#071A33"/>
+    <path d="M36 72 L70 46 L104 66" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>
+  </g>
+  <text x="165" y="78" font-family="Inter,Arial,sans-serif" font-weight="700" font-size="58" letter-spacing="1" fill="#071A33">BUILDINK</text>
+  <text x="168" y="114" font-family="Inter,Arial,sans-serif" font-weight="600" font-size="18" letter-spacing="5" fill="#176BFF">BUILD BEYOND LIMITS</text>
+</svg>
