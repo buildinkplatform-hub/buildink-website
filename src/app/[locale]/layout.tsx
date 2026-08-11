@@ -12,6 +12,7 @@ import { Toaster } from "sonner"
 
 import { SkipLink } from "@/components/shared/skip-link"
 import { routing } from "@/i18n/routing"
+import { resolveConfiguredPublicOrigin } from "@/lib/url/public-origin"
 import { localeMetadata } from "@/shared/constants/platform"
 import type { Locale } from "@/shared/types/platform"
 
@@ -40,7 +41,7 @@ export async function generateMetadata({
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) return {}
   const t = await getTranslations({ locale, namespace: "meta" })
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  const siteUrl = resolveConfiguredPublicOrigin()
   return {
     metadataBase: new URL(siteUrl),
     title: { default: t("title"), template: `%s | Buildink` },

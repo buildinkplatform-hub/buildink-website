@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { resolvePublicOriginFromHeaders } from "./public-origin"
 
@@ -11,6 +11,10 @@ function headerStore(values: Record<string, string>) {
 }
 
 describe("resolvePublicOriginFromHeaders", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
   it("prefers forwarded host and protocol", () => {
     expect(
       resolvePublicOriginFromHeaders(
@@ -23,14 +27,32 @@ describe("resolvePublicOriginFromHeaders", () => {
     ).toBe("https://buildink.example.com")
   })
 
-  it("falls back to the request origin when forwarded headers are missing", () => {
+  it("prefers the request origin over a localhost host fallback", () => {
     expect(
       resolvePublicOriginFromHeaders(
         headerStore({
-          origin: "https://portal.buildink.example.com",
+          host: "localhost:3000",
+          origin: "https://buildink-website.vercel.app",
         }),
       ),
-    ).toBe("https://portal.buildink.example.com")
+    ).toBe("https://buildink-website.vercel.app")
+  })
+
+  it("falls back to referer when origin is missing", () => {
+    expect(
+      resolvePublicOriginFromHeaders(
+        headerStore({
+          referer: "https://buildink-website.vercel.app/en/login",
+        }),
+      ),
+    ).toBe("https://buildink-website.vercel.app")
+  })
+
+  it("falls back to the Vercel production domain before the site env", () => {
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "buildink.com")
+    expect(
+      resolvePublicOriginFromHeaders(headerStore({}), "http://localhost:3000"),
+    ).toBe("https://buildink.com")
   })
 
   it("falls back to the configured site url when request headers are unavailable", () => {
