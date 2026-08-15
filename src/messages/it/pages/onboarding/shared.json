@@ -1,9 +1,23 @@
 {
   "onboarding": {
     "step": "Passaggio {current} di 4",
+    "stepAccountType": "Tipo di account",
+    "stepProfile": "Dati essenziali del profilo",
+    "stepDocuments": "Verifica",
+    "stepReview": "Revisione e pubblicazione",
+    "whyWeAsk": "Perché lo chiediamo",
+    "visibilityPublic": "Pubblico",
+    "visibilityPrivate": "Privato finché non scegli diversamente",
+    "why": {
+      "phone": "Serve per il recupero dell'account e, se lo consenti, per i contatti del marketplace.",
+      "country": "L'abbinamento territoriale dipende da dove operi.",
+      "region": "Le opportunità sono classificate per raggio di servizio e regione.",
+      "contactPreference": "Controlla se telefono o email possono comparire pubblicamente."
+    },
     "noFiles": "Nessun documento selezionato.",
     "selectCategory": "Seleziona categoria",
     "selectSubcategory": "Seleziona sottocategoria",
+    "searchCompany": "Cerca un'azienda esistente",
     "viewFull": "Visualizza a dimensione intera",
     "preview": "Anteprima del file",
     "previewLoading": "Caricamento dell'anteprima protetta...",

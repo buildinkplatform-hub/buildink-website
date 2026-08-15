@@ -1,0 +1,39 @@
+{
+  "onboarding": {
+    "documentsTitle": "Documente și verificare",
+    "documentsBody": "Adaugă fiecare document separat, ca să păstreze tipul, data expirării, țara emitentă și titularul.",
+    "documentPrivacy": "Documentele de verificare sunt private și nu trebuie stocate niciodată într-un bucket public de media.",
+    "documentMetadataTitle": "Detalii document",
+    "documentMetadataBody": "Aceste detalii se salvează doar cu acest document.",
+    "chooseFiles": "Alege un fișier document",
+    "fileRequirements": "PDF, JPEG sau PNG - maximum 25 MB per fișier",
+    "selectedFile": "Fișier selectat - {size} MB. Alege din nou pentru a-l înlocui.",
+    "addDocument": "Încarcă acest document",
+    "addAnotherDocument": "Adaugă alt document",
+    "cancelAddDocument": "Anulează adăugarea documentului",
+    "uploadedDocuments": "Documente încărcate ({count})",
+    "uploadContinue": "Continuă",
+    "uploading": "Se încarcă documentul...",
+    "selectDate": "Selectează data expirării",
+    "expires": "Expiră {date}",
+    "remove": "Elimină",
+    "options": {
+      "identity": "Document de identitate",
+      "certificate": "Certificat",
+      "license": "Licență",
+      "company_authorization": "Dovadă de autorizare a companiei",
+      "trade_proof": "Dovadă de meserie",
+      "professional_proof": "Dovadă profesională",
+      "registration": "Înregistrare companie",
+      "vat_proof": "Dovadă TVA",
+      "other": "Alt document de verificare"
+    },
+    "errors": {
+      "fileType": "Folosește doar fișiere PDF, JPEG sau PNG.",
+      "fileSize": "Fiecare fișier trebuie să aibă maximum 25 MB.",
+      "fileRequired": "Alege un fișier document înainte de încărcare.",
+      "deleteFailed": "Documentul nu a putut fi eliminat. Încearcă din nou.",
+      "documentRequired": "Adaugă cel puțin un document de verificare înainte de a continua."
+    }
+  }
+}

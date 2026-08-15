@@ -1,7 +1,9 @@
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
+import path from "node:path"
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts")
+const repoRoot = path.join(__dirname, "..")
 
 const privateNoStoreHeaders = [
   {
@@ -15,21 +17,24 @@ const privateNoStoreHeaders = [
 ]
 
 const privateRoutes = [
-  "/:locale(it|en|ar)/login",
-  "/:locale(it|en|ar)/register",
-  "/:locale(it|en|ar)/forgot-password",
-  "/:locale(it|en|ar)/reset-password",
-  "/:locale(it|en|ar)/verify-email",
-  "/:locale(it|en|ar)/account-restricted",
-  "/:locale(it|en|ar)/auth/:path*",
-  "/:locale(it|en|ar)/onboarding/:path*",
-  "/:locale(it|en|ar)/dashboard/:path*",
+  "/:locale(it|en|ar|ro|sq)/login",
+  "/:locale(it|en|ar|ro|sq)/register",
+  "/:locale(it|en|ar|ro|sq)/forgot-password",
+  "/:locale(it|en|ar|ro|sq)/reset-password",
+  "/:locale(it|en|ar|ro|sq)/verify-email",
+  "/:locale(it|en|ar|ro|sq)/account-restricted",
+  "/:locale(it|en|ar|ro|sq)/auth/:path*",
+  "/:locale(it|en|ar|ro|sq)/onboarding/:path*",
+  "/:locale(it|en|ar|ro|sq)/dashboard/:path*",
 ]
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
+  turbopack: {
+    root: repoRoot,
+  },
   async headers() {
     return [
       {

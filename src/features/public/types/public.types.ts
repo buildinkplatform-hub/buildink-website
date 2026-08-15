@@ -15,6 +15,7 @@ export interface DirectoryQuery {
   region?: string
   category?: string
   verification?: string
+  accountType?: string
   page?: number
 }
 
@@ -44,6 +45,7 @@ export interface PublicSection {
   title: string
   body: string
   items?: string[]
+  itemLinks?: Array<{ label: string; href: string }>
 }
 
 export interface PublicSubpage {
@@ -54,6 +56,7 @@ export interface PublicSubpage {
 }
 
 export interface PublicEntityRecord {
+  id?: string
   module: PublicModule
   slug: string
   title: string
@@ -68,6 +71,49 @@ export interface PublicEntityRecord {
   sections: PublicSection[]
   subpages?: PublicSubpage[]
   relatedSlugs?: string[]
+  reviewTarget?: PublicReviewTarget | null
+}
+
+export type PublicReviewTargetType = "COMPANY" | "PROJECT" | "WORKER"
+
+export interface PublicReviewTarget {
+  type: PublicReviewTargetType
+  id: string
+}
+
+export interface PublicReview {
+  id: string
+  rating: number
+  title: string
+  comment: string
+  locale: string
+  verifiedEngagement: boolean
+  createdAt: string
+  authorDisplayName: string
+}
+
+export interface PublicReviewSummary {
+  average: number
+  count: number
+  histogram: Array<{ rating: number; count: number }>
+}
+
+export interface PublicReviewsResult {
+  items: PublicReview[]
+  summary: PublicReviewSummary
+}
+
+export type ReviewEligibilityReason =
+  | "self_target"
+  | "already_reviewed"
+  | "not_eligible"
+  | "verified_engagement"
+  | "verified_interaction"
+
+export interface ReviewEligibility {
+  eligible: boolean
+  verifiedEngagement: boolean
+  reason: ReviewEligibilityReason
 }
 
 export interface PublicArticle {

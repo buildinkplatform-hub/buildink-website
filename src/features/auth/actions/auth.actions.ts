@@ -21,8 +21,7 @@ import {
   AuthRateLimitExceededError,
   limitAuthAction,
 } from "@/lib/auth/rate-limit"
-import { getApplicationIdentity } from "@/lib/auth/session"
-import { resolvePublicOrigin } from "@/lib/url/public-origin"
+import { resolveConfiguredPublicOrigin } from "@/lib/url/public-origin"
 import { createClient } from "@/lib/supabase/server"
 import { isLocale } from "@/shared/constants/platform"
 import type { Locale } from "@/shared/types/platform"
@@ -57,15 +56,6 @@ async function checkLimit(
   }
 }
 
-async function destination(
-  locale: Locale,
-  requested?: string,
-): Promise<string> {
-  const me = await getApplicationIdentity()
-  if (!me) return `/${locale}/verify-email`
-  return getSignedInDestination(locale, me.account?.nextAction, requested)
-}
-
 export async function loginAction(
   locale: Locale,
   input: LoginInput,
@@ -80,13 +70,24 @@ export async function loginAction(
     15 * 60,
   )
   if (limited) return limited
-  const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword({
+  const supabase = await createClient({
+    sessionMaxAgeSeconds: parsed.data.remember
+      ? 60 * 60 * 24 * 7
+      : 60 * 60 * 8,
+  })
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email.toLowerCase(),
     password: parsed.data.password,
   })
   if (error) return { success: false, error: "invalid" }
-  redirect(await destination(locale, parsed.data.next))
+  if (!data.user?.email_confirmed_at) {
+    redirect(
+      `/${locale}/verify-email?email=${encodeURIComponent(data.user?.email ?? parsed.data.email)}`,
+    )
+  }
+  redirect(
+    getSignedInDestination(locale, "enter_portal", parsed.data.next),
+  )
 }
 
 export async function registerAction(
@@ -108,7 +109,7 @@ export async function registerAction(
       error: limited.error === "rate_limited" ? "rate_limited" : "backend",
       retryAfterSeconds: limited.retryAfterSeconds,
     }
-  const siteUrl = await resolvePublicOrigin()
+  const siteUrl = resolveConfiguredPublicOrigin()
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email.toLowerCase(),
@@ -139,7 +140,7 @@ export async function googleLoginAction(locale: Locale, next?: string) {
     next ?? `/${locale}/onboarding/profile-type`,
     locale,
   )
-  const siteUrl = await resolvePublicOrigin()
+  const siteUrl = resolveConfiguredPublicOrigin()
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -156,7 +157,7 @@ export async function resendVerificationAction(locale: Locale, email: string) {
     return { success: true as const }
   const limited = await checkLimit("resend-verification", email, 3, 60 * 60)
   if (limited) return { success: true as const }
-  const siteUrl = await resolvePublicOrigin()
+  const siteUrl = resolveConfiguredPublicOrigin()
   const supabase = await createClient()
   await supabase.auth.resend({
     type: "signup",
@@ -181,7 +182,7 @@ export async function forgotPasswordAction(
       60 * 60,
     )
     if (limited) return { success: true as const }
-    const siteUrl = await resolvePublicOrigin()
+    const siteUrl = resolveConfiguredPublicOrigin()
     const supabase = await createClient()
     await supabase.auth.resetPasswordForEmail(parsed.data.email.toLowerCase(), {
       redirectTo: `${siteUrl}/${locale}/auth/callback?next=/${locale}/reset-password`,
@@ -206,7 +207,9 @@ export async function resetPasswordAction(input: ResetPasswordInput) {
   const { error } = await supabase.auth.updateUser({
     password: parsed.data.password,
   })
-  return { success: !error }
+  if (error) return { success: false }
+  await supabase.auth.signOut()
+  return { success: true }
 }
 
 export async function logoutAction(locale: Locale) {

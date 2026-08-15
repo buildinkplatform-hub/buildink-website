@@ -1,0 +1,31 @@
+{
+  "onboarding": {
+    "step": "Pasul {current} din 4",
+    "stepAccountType": "Tip de cont",
+    "stepProfile": "Date esențiale de profil",
+    "stepDocuments": "Verificare",
+    "stepReview": "Revizuire și publicare",
+    "whyWeAsk": "De ce întrebăm",
+    "visibilityPublic": "Public",
+    "visibilityPrivate": "Privat până alegi altfel",
+    "why": {
+      "phone": "Folosit pentru recuperarea contului și, dacă permiți, pentru contactul din piață.",
+      "country": "Potrivirea regională depinde de unde operezi.",
+      "region": "Oportunitățile sunt clasate după raza de serviciu și regiune.",
+      "contactPreference": "Controlează dacă telefonul sau emailul pot apărea public."
+    },
+    "noFiles": "Niciun document selectat încă.",
+    "selectCategory": "Selectează categoria",
+    "selectSubcategory": "Selectează subcategoria",
+    "searchCompany": "Caută o companie existentă",
+    "viewFull": "Vezi la dimensiune completă",
+    "preview": "Previzualizare fișier",
+    "previewLoading": "Se încarcă previzualizarea protejată...",
+    "openNewTab": "Deschide vizualizarea completă",
+    "closePreview": "Închide previzualizarea",
+    "errors": {
+      "uploadFailed": "Încărcarea a eșuat. Încearcă din nou.",
+      "previewFailed": "Previzualizarea protejată nu a putut fi încărcată. Încearcă din nou."
+    }
+  }
+}

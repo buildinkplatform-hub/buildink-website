@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "email": "Adresa e-mail",
+    "password": "Fjalëkalimi",
+    "passwordHint": "Përdor të paktën 8 karaktere me shkronjë të madhe, të vogël, një numër dhe një simbol.",
+    "confirmPassword": "Konfirmo fjalëkalimin",
+    "invalid": "Email ose fjalëkalimi është i pasaktë. Provo sërish.",
+    "showPassword": "Shfaq fjalëkalimin",
+    "hidePassword": "Fshih fjalëkalimin",
+    "portal": "Portali Buildink",
+    "separator": "ose",
+    "continueWithGoogle": "Vazhdo me Google",
+    "verifyTitle": "Verifiko emailin",
+    "verifyBody": "Hap lidhjen e konfirmimit të dërguar në email para se të fillosh onboarding-un.",
+    "resend": "Ridërgo emailin e verifikimit",
+    "resent": "Email u dërgua",
+    "resendFailed": "Emaili nuk u dërgua. Provo sërish.",
+    "errors": {
+      "email": "Shkruaj një adresë e-mail të vlefshme.",
+      "password": "Përdor 8+ karaktere me shkronjë të madhe, të vogël, një numër dhe një simbol.",
+      "passwordMatch": "Fjalëkalimet duhet të përputhen."
+    }
+  }
+}

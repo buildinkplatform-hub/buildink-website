@@ -1,9 +1,9 @@
 {
   "onboarding": {
-    "roleTitle": "Choose your profile type",
-    "roleBody": "Select the identity that best describes how you will use the Buildink marketplace.",
+    "roleTitle": "Choose your account type",
+    "roleBody": "Select how you will use the Buildink marketplace.",
     "errors": {
-      "profileType": "Choose a profile type to continue."
+      "profileType": "Choose an account type to continue."
     }
   },
   "roles": {
@@ -16,6 +16,12 @@
     "supplierContact": "Supplier Contact",
     "supplierContactBody": "Represent a supplier organization and manage its catalog and enquiries.",
     "serviceProvider": "Service Provider",
-    "serviceProviderBody": "Offer specialized services, certifications and reference work."
+    "serviceProviderBody": "Offer specialized services, certifications and reference work. Create, join or claim a company when you represent an organization.",
+    "company": "Company",
+    "companyBody": "Represent a construction company. Create, join or claim an organization and manage its marketplace presence.",
+    "projectOwner": "Project owner",
+    "projectOwnerBody": "Publish projects, review proposals and hire marketplace professionals as a client or project owner.",
+    "subcontractor": "Subcontractor",
+    "subcontractorBody": "Offer trade services, associate with a company and bid on project opportunities."
   }
 }

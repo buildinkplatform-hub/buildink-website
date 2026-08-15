@@ -26,7 +26,8 @@
       "serviceRegions": "Regioni di servizio o consegna",
       "capabilityStatement": "Presentazione delle capacita",
       "jobTitle": "Ruolo professionale",
-      "organizationMode": "Rapporto con l'organizzazione fornitrice",
+      "organizationMode": "Rapporto con l'azienda",
+      "companyId": "Azienda esistente",
       "supplierName": "Ragione sociale o nome pubblico del fornitore",
       "vatNumber": "Partita IVA",
       "businessDescription": "Descrizione dell'attivita del fornitore",
@@ -45,9 +46,9 @@
       "public_contact": "Consenti il contatto pubblico approvato",
       "public": "Pubblico dopo l'approvazione",
       "private": "Privato",
-      "select": "Seleziona un fornitore esistente",
-      "create": "Crea un'organizzazione fornitrice",
-      "claim": "Rivendica un fornitore esistente"
+      "select": "Seleziona un'azienda esistente",
+      "create": "Crea un'azienda",
+      "claim": "Rivendica un'azienda esistente"
     },
     "errors": {
       "field": "Completa questo campo.",

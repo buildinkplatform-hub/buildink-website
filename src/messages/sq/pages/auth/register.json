@@ -1,0 +1,29 @@
+{
+  "auth": {
+    "name": "Emri i plotë",
+    "hasAccount": "Ke tashmë një llogari?",
+    "registerTitle": "Krijo llogarinë tënde Buildink",
+    "registerBody": "Krijo fillimisht llogarinë. Pastaj do të zgjedhësh dhe do të ndërtosh profilin e tregut.",
+    "terms": "Pranoj Kushtet e Shërbimit.",
+    "privacy": "Kam lexuar dhe pranoj Politikën e Privatësisë.",
+    "marketing": "Më dërgo herë pas here lajme të tregut dhe përditësime produkti.",
+    "recoverVerification": "Hap opsionet e verifikimit të emailit",
+    "retryCountdown": "Mund të provosh sërish pas {time}",
+    "retryButton": "Provo sërish pas {time}",
+    "registerErrors": {
+      "account_exists": "Mund të ekzistojë tashmë një llogari për këtë email. Hyr, ose përdor opsionet e verifikimit më poshtë nëse nuk e ke konfirmuar ende.",
+      "email_rate_limited": "U kërkuan shumë emailë konfirmimi. Prit disa minuta, pastaj përdor opsionet e verifikimit më poshtë.",
+      "signup_unavailable": "Regjistrimi i llogarive të reja është përkohësisht i padisponueshëm. Provo sërish më vonë.",
+      "email_delivery": "Kërkesa e llogarisë nuk mundi të dërgojë emailin e konfirmimit. Përdor opsionet e verifikimit më poshtë ose kontakto mbështetjen.",
+      "registration_failed": "Nuk mundëm të krijojmë llogarinë. Provo sërish. Nëse vazhdon, kontakto mbështetjen.",
+      "rate_limited": "Shumë tentativa për krijimin e llogarisë. Prit para se të provosh sërish.",
+      "backend": "Regjistrimi është përkohësisht i padisponueshëm sepse një shërbim i nevojshëm nuk u arrit.",
+      "validation": "Kontrollo fushat e regjistrimit dhe provo sërish."
+    },
+    "errors": {
+      "name": "Shkruaj emrin e plotë.",
+      "terms": "Prano Kushtet e Shërbimit për të vazhduar.",
+      "privacy": "Prano Politikën e Privatësisë për të vazhduar."
+    }
+  }
+}

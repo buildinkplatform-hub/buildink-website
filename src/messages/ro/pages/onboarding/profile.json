@@ -1,0 +1,61 @@
+{
+  "onboarding": {
+    "profileTitle": "Construiește-ți profilul de marketplace",
+    "profileBody": "Completează datele comune și câmpurile cerute pentru tipul de profil selectat.",
+    "chooseProfileImage": "Alege o imagine de profil sau un logo",
+    "profileImageRequirements": "JPEG, PNG, WebP sau AVIF - maximum 10 MB",
+    "fields": {
+      "phone": "Număr de telefon",
+      "country": "Țară",
+      "region": "Regiune",
+      "city": "Oraș",
+      "preferredLocale": "Limba preferată",
+      "contactPreference": "Preferință de contact public",
+      "bio": "Scurtă biografie",
+      "profileImage": "Imagine de profil sau logo",
+      "profileVisibility": "Vizibilitatea profilului",
+      "interests": "Categorie și subcategorie",
+      "profession": "Profesie sau meserie",
+      "skills": "Competențe și specializări",
+      "yearsExperience": "Ani de experiență",
+      "availability": "Disponibilitate sau termen de livrare",
+      "languages": "Limbi",
+      "contractorIdentity": "Numele public sau comercial al antreprenorului",
+      "primaryTrade": "Meseria principală",
+      "categories": "Categorie și subcategorie",
+      "serviceRegions": "Regiuni de serviciu sau livrare",
+      "capabilityStatement": "Declarație de capacitate",
+      "jobTitle": "Funcție",
+      "organizationMode": "Relația cu compania",
+      "companyId": "Companie existentă",
+      "supplierName": "Nume legal sau public al furnizorului",
+      "vatNumber": "Cod TVA / CUI",
+      "businessDescription": "Descrierea activității furnizorului",
+      "providerIdentity": "Identitatea prestatorului de servicii",
+      "professionalBackground": "Experiență profesională",
+      "documentType": "Tip document",
+      "expiryDate": "Data expirării",
+      "issuingCountry": "Țara emitentă",
+      "ownerName": "Titularul sau entitatea documentului"
+    },
+    "hints": {
+      "phone": "Alege prefixul de țară și introdu numărul local."
+    },
+    "options": {
+      "platform_only": "Contact doar prin Buildink",
+      "public_contact": "Permite contactul public aprobat",
+      "public": "Public după aprobare",
+      "private": "Privat",
+      "select": "Selectează o companie existentă",
+      "create": "Creează o companie",
+      "claim": "Revendică o companie existentă"
+    },
+    "errors": {
+      "field": "Completează acest câmp.",
+      "phone": "Introdu un număr de telefon internațional valid.",
+      "imageType": "Folosește o imagine JPEG, PNG, WebP sau AVIF.",
+      "imageSize": "Imaginea de profil trebuie să aibă maximum 10 MB.",
+      "years": "Introdu un număr de la 0 la 80."
+    }
+  }
+}

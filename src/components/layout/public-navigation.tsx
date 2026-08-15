@@ -17,10 +17,11 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"
 export function PublicNavigation() {
   const t = useTranslations("publicSite")
+  const common = useTranslations("common")
 
   return (
     <>
-      <nav className="hidden items-center gap-2 xl:flex" aria-label="Primary">
+      <nav className="hidden items-center gap-2 xl:flex" aria-label={common("primaryNav")}>
         {publicNavGroups.map((group) => (
           <DropdownMenu key={group.key}>
             <DropdownMenuTrigger asChild>

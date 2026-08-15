@@ -1,6 +1,7 @@
 import { z } from "zod"
 
-import { locales, type ProfileType } from "@/shared/types/platform"
+import { profileTypeForAccountType } from "@/shared/lib/account-type-mapping"
+import { locales, type PrimaryAccountType, type ProfileType } from "@/shared/types/platform"
 
 const requiredText = z.string().trim().min(1).max(500)
 const optionalText = z.string().trim().max(500)
@@ -41,6 +42,8 @@ export const profileSchemas = {
   contractor: z.object({
     ...commonProfileFields,
     contractorIdentity: requiredText,
+    organizationMode: z.enum(["select", "create", "claim"]),
+    companyId: z.string().uuid().optional().or(z.literal("")),
     primaryTrade: requiredText,
     categories: requiredText,
     yearsExperience: yearsOfExperience,
@@ -52,6 +55,7 @@ export const profileSchemas = {
     ...commonProfileFields,
     jobTitle: requiredText,
     organizationMode: z.enum(["select", "create", "claim"]),
+    companyId: z.string().uuid().optional().or(z.literal("")),
     supplierName: requiredText,
     vatNumber: optionalText,
     categories: requiredText,
@@ -61,6 +65,8 @@ export const profileSchemas = {
   service_provider: z.object({
     ...commonProfileFields,
     providerIdentity: requiredText,
+    organizationMode: z.enum(["select", "create", "claim"]),
+    companyId: z.string().uuid().optional().or(z.literal("")),
     categories: requiredText,
     yearsExperience: yearsOfExperience,
     professionalBackground: requiredText,
@@ -74,21 +80,45 @@ export function getProfileSchema(profileType: ProfileType) {
   return profileSchemas[profileType]
 }
 
-export const documentMetadataSchema = z.object({
-  documentType: z.enum([
-    "identity",
-    "certificate",
-    "license",
-    "trade_proof",
-    "professional_proof",
-    "company_authorization",
-    "registration",
-    "vat_proof",
-    "other",
-  ]),
-  expiryDate: z.iso.date(),
-  issuingCountry: z.string().trim().length(2),
-  ownerName: requiredText,
-})
+export function getProfileSchemaForAccountType(
+  accountType: PrimaryAccountType,
+  existingProfileType?: ProfileType,
+) {
+  return profileSchemas[profileTypeForAccountType(accountType, existingProfileType)]
+}
+
+export function expiryRequiredForDocument(documentType: string) {
+  return documentType === "identity" || documentType === "license"
+}
+
+export const documentMetadataSchema = z
+  .object({
+    documentType: z.enum([
+      "identity",
+      "certificate",
+      "license",
+      "trade_proof",
+      "professional_proof",
+      "company_authorization",
+      "registration",
+      "vat_proof",
+      "other",
+    ]),
+    expiryDate: z.union([z.iso.date(), z.literal("")]).optional(),
+    issuingCountry: z.string().trim().length(2),
+    ownerName: requiredText,
+  })
+  .superRefine((value, ctx) => {
+    if (
+      expiryRequiredForDocument(value.documentType) &&
+      !value.expiryDate
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["expiryDate"],
+        message: "Expiry date is required for this document",
+      })
+    }
+  })
 
 export type DocumentMetadata = z.infer<typeof documentMetadataSchema>

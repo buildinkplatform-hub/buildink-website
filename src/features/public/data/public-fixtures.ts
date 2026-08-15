@@ -28,7 +28,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
       metrics: [
         { label: "Active public projects", value: "8" },
         { label: "Approved certifications", value: "6" },
-        { label: "Average review score", value: "4.8/5" },
+        { label: "Average review score", value: "—" },
       ],
       contact: {
         email: "contact@alpinebuild.example",
@@ -108,7 +108,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
             {
               id: "ratings",
               title: "Public review summary",
-              body: "This profile highlights delivery quality, coordination and safety communication based on approved review excerpts.",
+              body: "No published reviews yet.",
             },
           ],
         },

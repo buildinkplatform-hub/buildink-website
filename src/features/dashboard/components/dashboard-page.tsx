@@ -5,11 +5,18 @@ import {
   Clock3,
   Sparkles,
 } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getFormatter, getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { demoDashboardRepository } from "@/features/dashboard/data/dashboard.repository"
+import { PortalPageHeader } from "@/features/dashboard/components/portal-page-header"
+import { overviewFromAccount } from "@/features/dashboard/data/dashboard.repository"
+import {
+  getPortalBootstrap,
+  getPortalDashboardMetrics,
+  listPortalNotifications,
+} from "@/features/dashboard/data/portal-client"
+import { portalNotificationTitle } from "@/features/dashboard/notifications/notification-copy"
 import { Link } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
 import type { SessionClaims } from "@/shared/types/platform"
@@ -23,73 +30,102 @@ const toneClasses = {
 
 const actionRoutes: Record<string, string> = {
   publishProject: "projects",
-  requestWorkers: "worker-requests",
+  requestWorkers: "workforce",
   browseTenders: "tenders",
-  createProposal: "proposals",
-  updateAvailability: "availability",
-  addCertificate: "documents",
-  addCatalogItem: "catalog",
-  reviewRequests: "requests",
+  createProposal: "offers",
+  updateAvailability: "workforce",
+  addCertificate: "verification",
+  addCatalogItem: "catalogue",
+  reviewRequests: "offers",
   addEquipment: "equipment",
-  reviewEnquiries: "enquiries",
+  reviewEnquiries: "messages",
 }
 
 export async function DashboardPage({ session }: { session: SessionClaims }) {
   const t = await getTranslations()
-  const data = await demoDashboardRepository.getOverview(session.profileType)
+  const eventT = await getTranslations("dashboard.notificationEvents")
+  const format = await getFormatter()
+  const [bootstrap, notifications, dashboard] = await Promise.all([
+    getPortalBootstrap(),
+    listPortalNotifications(
+      { pageSize: 4 },
+      { signal: AbortSignal.timeout(6_000) },
+    ),
+    getPortalDashboardMetrics({ signal: AbortSignal.timeout(6_000) }),
+  ])
+
+  const data = overviewFromAccount({
+    profileType: session.profileType,
+    primaryAccountType: session.primaryAccountType,
+    modules: bootstrap?.entitlements.modules ?? session.modules,
+    counts: bootstrap?.counts ?? session.counts,
+    metrics: dashboard.metrics,
+    completion: dashboard.completion,
+    verificationStatus: bootstrap?.profile.verificationStatus,
+    displayName: bootstrap?.profile.displayName,
+    phone: bootstrap?.profile.phone,
+  })
+  const recent = notifications.items.slice(0, 4)
+
   return (
-    <div className="mx-auto max-w-[1320px]">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-primary text-sm font-bold tracking-widest uppercase">
-            {t("common.dashboard")}
-          </p>
-          <h1 className="text-brand-navy mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-            {t("dashboard.greeting", { name: session.name })}
-          </h1>
-          <p className="text-muted mt-2">{t("dashboard.subtitle")}</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {data.quickActionKeys.map((action, index) => (
-            <Button
-              key={action}
-              asChild
-              variant={index ? "secondary" : "primary"}
-              size="sm"
-            >
-              <Link href={`/dashboard/${actionRoutes[action]}`}>
-                {t(`dashboard.actions.${action}`)}
-                <ArrowRight className="size-4 rtl:rotate-180" />
-              </Link>
-            </Button>
-          ))}
-        </div>
-      </div>
+    <div className="w-full space-y-6">
+      <PortalPageHeader
+        eyebrow={t("common.dashboard")}
+        title={t("dashboard.greeting", { name: session.name })}
+        description={`${t("dashboard.subtitle")} ${t("dashboard.accountOnly")}`}
+        actions={
+          data.quickActionKeys.length ? (
+            <>
+              {data.quickActionKeys.map((action, index) => (
+                <Button
+                  key={action}
+                  asChild
+                  variant={index ? "secondary" : "primary"}
+                  size="sm"
+                  className={index ? "bg-white/90" : ""}
+                >
+                  <Link href={`/dashboard/${actionRoutes[action] ?? "profile"}`}>
+                    {t(`dashboard.actions.${action}`)}
+                    <ArrowRight className="size-4 rtl:rotate-180" />
+                  </Link>
+                </Button>
+              ))}
+            </>
+          ) : undefined
+        }
+      />
 
       <section
-        className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
-        aria-label="Metrics"
+        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        aria-label={t("common.metrics")}
       >
         {data.metrics.map((metric) => (
-          <Card key={metric.labelKey} className="p-5 shadow-sm">
-            <div
-              className={cn(
-                "flex size-10 items-center justify-center rounded-xl",
-                toneClasses[metric.tone],
-              )}
-            >
-              <Sparkles className="size-5" />
+          <Card
+            key={metric.labelKey}
+            className="rounded-xl border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(16,24,40,0.03)]"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-2">
+                <p className="text-muted text-sm">{t(metric.labelKey)}</p>
+                <p className="text-brand-navy ltr-content text-3xl font-bold">
+                  {metric.value}
+                </p>
+              </div>
+              <div
+                className={cn(
+                  "flex size-12 items-center justify-center rounded-2xl",
+                  toneClasses[metric.tone],
+                )}
+              >
+                <Sparkles className="size-5" />
+              </div>
             </div>
-            <p className="text-brand-navy ltr-content mt-5 text-3xl font-bold">
-              {metric.value}
-            </p>
-            <p className="text-muted mt-1 text-sm">{t(metric.labelKey)}</p>
           </Card>
         ))}
       </section>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[.8fr_1.2fr]">
-        <Card className="overflow-hidden shadow-sm">
+      <section className="grid gap-6 xl:grid-cols-[.8fr_1.2fr]">
+        <Card className="overflow-hidden rounded-xl border-slate-200/80 shadow-[0_1px_2px_rgba(16,24,40,0.03)]">
           <div className="bg-[linear-gradient(135deg,#071A33,#0B2450)] p-6 text-white">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -113,51 +149,53 @@ export async function DashboardPage({ session }: { session: SessionClaims }) {
             <p className="text-muted leading-7">
               {t("dashboard.completionBody")}
             </p>
-            <Button asChild variant="secondary" className="mt-5 w-full">
+            <Button asChild variant="secondary" className="mt-5 w-full bg-white">
               <Link href="/dashboard/profile">
                 {t("dashboard.completeProfile")}
               </Link>
             </Button>
           </div>
         </Card>
-        <Card className="p-6 shadow-sm">
+
+        <Card className="rounded-xl border-slate-200/80 p-6 shadow-[0_1px_2px_rgba(16,24,40,0.03)]">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-brand-navy text-sm font-bold">
-                {t("dashboard.tasks")}
+                {t("dashboard.workspaceTitle")}
               </p>
               <p className="text-muted mt-1 text-sm">
-                {data.tasks.length} matched items
+                {bootstrap?.workspaces.length
+                  ? t("dashboard.workspaceCount", {
+                      count: bootstrap.workspaces.length,
+                    })
+                  : t("dashboard.noWorkspace")}
               </p>
             </div>
             <Clock3 className="text-primary size-5" />
           </div>
           <div className="divide-line mt-5 divide-y">
-            {data.tasks.map((item) => (
+            {(bootstrap?.workspaces ?? []).slice(0, 4).map((workspace) => (
               <article
-                key={item.titleKey}
-                className="flex gap-4 py-4 first:pt-0 last:pb-0"
+                key={workspace.membershipId}
+                className="py-4 first:pt-0 last:pb-0"
               >
-                <div className="bg-primary mt-1 size-2 shrink-0 rounded-full" />
-                <div className="min-w-0 flex-1">
-                  <h2 className="text-brand-navy font-semibold">
-                    {t(item.titleKey)}
-                  </h2>
-                  <p className="text-muted mt-1 text-sm leading-6">
-                    {t(item.descriptionKey)}
-                  </p>
-                  <p className="text-primary mt-2 text-xs font-semibold">
-                    {t(item.metaKey)}
-                  </p>
-                </div>
+                <h2 className="text-brand-navy font-semibold">
+                  {workspace.name}
+                </h2>
+                <p className="text-muted mt-1 text-sm leading-6">
+                  {workspace.role} - {workspace.status}
+                </p>
               </article>
             ))}
+            {!bootstrap?.workspaces.length ? (
+              <p className="text-muted text-sm">{t("dashboard.moduleReady")}</p>
+            ) : null}
           </div>
         </Card>
       </section>
 
-      <section className="mt-6">
-        <Card className="p-6 shadow-sm">
+      <section>
+        <Card className="rounded-xl border-slate-200/80 p-6 shadow-[0_1px_2px_rgba(16,24,40,0.03)]">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-brand-navy font-bold">
               {t("dashboard.recent")}
@@ -169,25 +207,33 @@ export async function DashboardPage({ session }: { session: SessionClaims }) {
             </Button>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {data.notifications.map((item) => (
-              <article
-                key={item.titleKey}
-                className="bg-canvas flex gap-4 rounded-xl p-4"
-              >
-                <div className="bg-light-blue text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">
-                  <BellRing className="size-5" />
-                </div>
-                <div>
-                  <h3 className="text-brand-navy text-sm font-semibold">
-                    {t(item.titleKey)}
-                  </h3>
-                  <p className="text-muted mt-1 text-sm leading-6">
-                    {t(item.descriptionKey)}
-                  </p>
-                  <p className="text-muted mt-2 text-xs">{t(item.metaKey)}</p>
-                </div>
-              </article>
-            ))}
+            {recent.length ? (
+              recent.map((item) => (
+                <article
+                  key={item.id}
+                  className="bg-canvas flex gap-4 rounded-xl border border-slate-200/70 p-4"
+                >
+                  <div className="bg-light-blue text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">
+                    <BellRing className="size-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-brand-navy text-sm font-semibold">
+                      {portalNotificationTitle(eventT, item.type)}
+                    </h3>
+                    <p className="text-muted mt-2 text-xs">
+                      {format.dateTime(new Date(item.createdAt), {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </p>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <p className="text-muted text-sm">
+                {t("dashboard.notificationsEmpty")}
+              </p>
+            )}
           </div>
         </Card>
       </section>

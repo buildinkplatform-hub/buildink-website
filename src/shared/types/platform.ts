@@ -1,4 +1,4 @@
-export const locales = ["it", "en", "ar"] as const
+export const locales = ["it", "en", "ar", "ro", "sq"] as const
 export type Locale = (typeof locales)[number]
 
 export const profileTypes = [
@@ -9,6 +9,39 @@ export const profileTypes = [
   "service_provider",
 ] as const
 export type ProfileType = (typeof profileTypes)[number]
+
+export const primaryAccountTypes = [
+  "COMPANY",
+  "PROJECT_OWNER",
+  "SUBCONTRACTOR",
+  "SERVICE_PROVIDER",
+  "WORKER",
+] as const
+export type PrimaryAccountType = (typeof primaryAccountTypes)[number]
+
+export const portalModules = [
+  "overview",
+  "profile",
+  "verification",
+  "notifications",
+  "messages",
+  "saved",
+  "settings",
+  "projects",
+  "opportunities",
+  "offers",
+  "applications",
+  "tenders",
+  "workforce",
+  "catalogue",
+  "equipment",
+  "engagements",
+  "workspace",
+  "members",
+  "support",
+] as const
+export type PortalModule = (typeof portalModules)[number]
+
 export type VerificationStatus = "pending" | "verified" | "changes_requested"
 
 export interface SessionClaims {
@@ -16,10 +49,26 @@ export interface SessionClaims {
   name: string
   email: string
   profileType: ProfileType
+  primaryAccountType?: PrimaryAccountType | null
+  modules: PortalModule[]
+  permissions: string[]
+  capabilities: string[]
+  hasActiveWorkspace: boolean
+  counts?: PortalAccountCounts
   onboardingComplete: boolean
   verificationStatus: VerificationStatus
   issuedAt: number
   expiresAt: number
+}
+
+export interface PortalAccountCounts {
+  projects: number
+  opportunities: number
+  offers: number
+  applications: number
+  engagements: number
+  unreadNotifications: number
+  savedItems: number
 }
 
 export interface PublicViewer {
@@ -59,7 +108,7 @@ export interface OnboardingCatalog {
 
 export interface OnboardingDocument extends OnboardingFile {
   documentType: string
-  expiryDate: string
+  expiryDate?: string
   issuingCountry: string
   ownerName: string
 }
@@ -77,10 +126,21 @@ export interface OnboardingDraft {
     marketing: boolean
   }
   profileType?: ProfileType
+  primaryAccountType?: PrimaryAccountType | null
   profile: Record<string, unknown>
   profileImage?: OnboardingFile
   documents: OnboardingDocument[]
-  consent: { publicProfile: boolean; documentProcessing: boolean }
+  consent: {
+    publicProfile: boolean
+    documentProcessing: boolean
+    terms: boolean
+    privacy: boolean
+  }
+  reviewFeedback?: {
+    status: string
+    closedReason?: string | null
+    issues: Array<{ fieldPath: string; message: string }>
+  } | null
 }
 
 export interface DashboardMetric {
@@ -97,20 +157,22 @@ export interface DashboardItem {
 
 export interface DashboardViewModel {
   profileType: ProfileType
+  primaryAccountType?: PrimaryAccountType | null
   completion: number
   metrics: DashboardMetric[]
   tasks: DashboardItem[]
   notifications: DashboardItem[]
   quickActionKeys: string[]
+  accountOnly: true
 }
 
 export type PortalRouteState = "active" | "coming-soon"
 
 export interface PortalRouteDefinition {
   segment: string
+  module: PortalModule
   labelKey: string
   descriptionKey: string
-  profileTypes: ProfileType[]
   state: PortalRouteState
 }
 

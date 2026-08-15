@@ -31,5 +31,25 @@ export default defineConfig({
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
+    {
+      name: "compact-mobile",
+      testMatch: /(ui-quality|portal-ui)\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 320, height: 720 },
+        hasTouch: true,
+        isMobile: true,
+      },
+    },
+    {
+      name: "tablet",
+      testMatch: /(ui-quality|portal-ui)\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 768, height: 1024 },
+        hasTouch: true,
+        isMobile: true,
+      },
+    },
   ],
 })

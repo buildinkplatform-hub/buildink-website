@@ -9,6 +9,8 @@ const messageLoaders = {
   en: () => import("@/messages/en"),
   it: () => import("@/messages/it"),
   ar: () => import("@/messages/ar"),
+  ro: () => import("@/messages/ro"),
+  sq: () => import("@/messages/sq"),
 } satisfies Record<Locale, () => Promise<{ default: Messages }>>
 
 export default getRequestConfig(async ({ requestLocale }) => {

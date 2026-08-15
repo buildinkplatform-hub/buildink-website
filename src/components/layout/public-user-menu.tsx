@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { logoutAction } from "@/features/auth/actions/auth.actions"
 import { Link } from "@/i18n/navigation"
+import { cn } from "@/lib/utils/cn"
 import type { Locale } from "@/shared/types/platform"
 
 function LogoutSubmitButton({ label }: { label: string }) {
@@ -31,8 +32,12 @@ function LogoutSubmitButton({ label }: { label: string }) {
 
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? <LoaderCircle className="size-4 animate-spin" /> : <LogOut className="size-4" />}
-      {pending ? label : label}
+      {pending ? (
+        <LoaderCircle className="size-4 animate-spin" />
+      ) : (
+        <LogOut className="size-4" />
+      )}
+      {label}
     </Button>
   )
 }
@@ -50,6 +55,9 @@ export function PublicUserMenu({
   confirmBody,
   confirmActionLabel,
   cancelLabel,
+  mobileIconOnly = false,
+  subtitle,
+  chrome = "default",
 }: {
   locale: Locale
   name: string
@@ -63,17 +71,28 @@ export function PublicUserMenu({
   confirmBody: string
   confirmActionLabel: string
   cancelLabel: string
+  mobileIconOnly?: boolean
+  subtitle?: string
+  chrome?: "default" | "dashboard"
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu dir={locale === "ar" ? "rtl" : "ltr"}>
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="border-line hover:border-primary/40 hover:bg-light-blue focus-visible:ring-primary/20 inline-flex min-h-12 items-center gap-3 rounded-[22px] border bg-white px-2.5 py-2 text-start shadow-[0_10px_30px_rgba(10,31,68,0.08)] transition-all outline-none focus-visible:ring-4"
-            aria-label={name}
+            className={cn(
+              chrome === "dashboard"
+                ? "hover:bg-accent focus:ring-primary/20 inline-flex items-center gap-2.5 rounded-xl p-1.5 text-start transition outline-none focus:ring-2"
+                : "border-line hover:border-line hover:bg-accent focus-visible:ring-primary/20 inline-flex min-h-12 items-center gap-3 rounded-[22px] border bg-white px-2.5 py-2 text-start shadow-[0_10px_30px_rgba(10,31,68,0.08)] transition-all outline-none focus-visible:ring-4",
+              mobileIconOnly &&
+                (chrome === "dashboard"
+                  ? "size-10 justify-center p-0 sm:size-auto sm:justify-start sm:p-1.5"
+                  : "size-11 min-h-11 justify-center px-0 py-0 sm:size-auto sm:min-h-12 sm:justify-start sm:px-2.5 sm:py-2"),
+            )}
+            aria-label={`${name} - ${email}`}
           >
             <span className="bg-light-blue text-primary relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-sm font-bold">
               {profileImageUrl ? (
@@ -88,23 +107,52 @@ export function PublicUserMenu({
                 initials
               )}
             </span>
-            <span className="hidden min-w-0 md:block">
-              <span className="text-brand-navy block truncate text-sm font-semibold">
+            <span
+              className={cn(
+                "hidden min-w-0",
+                chrome === "dashboard" ? "xl:block" : "md:block",
+              )}
+            >
+              <span
+                className={cn(
+                  "block truncate font-semibold text-brand-navy",
+                  chrome === "dashboard" ? "max-w-28 text-xs" : "text-sm",
+                )}
+              >
                 {name}
               </span>
-              <span className="text-muted block max-w-40 truncate text-xs">
-                {email}
+              <span
+                className={cn(
+                  "block truncate text-muted",
+                  chrome === "dashboard" ? "text-[10px]" : "max-w-40 text-xs",
+                )}
+              >
+                {subtitle ?? email}
               </span>
             </span>
-            <ChevronDown aria-hidden="true" className="text-muted size-4 shrink-0" />
+            <ChevronDown
+              aria-hidden="true"
+              className={cn(
+                "text-muted size-4 shrink-0",
+                mobileIconOnly && "hidden sm:block",
+              )}
+            />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-64 rounded-[24px] p-2">
+        <DropdownMenuContent
+          align="end"
+          className={cn(
+            "w-[min(320px,calc(100vw-1rem))] min-w-0 p-2",
+            chrome === "dashboard" ? "rounded-xl" : "rounded-[24px]",
+          )}
+        >
           <DropdownMenuLabel className="px-3 py-2 normal-case">
-            <span className="text-brand-navy block text-sm font-semibold">
+            <span className="text-brand-navy block text-start text-sm font-semibold">
               {name}
             </span>
-            <span className="text-muted mt-0.5 block text-xs">{email}</span>
+            <span className="text-muted ltr-content mt-0.5 block truncate text-start text-xs">
+              {email}
+            </span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-line my-1 h-px" />
           <DropdownMenuItem asChild className="rounded-xl px-3 py-3">

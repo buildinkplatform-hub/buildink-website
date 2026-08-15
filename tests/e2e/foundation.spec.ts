@@ -1,13 +1,21 @@
 import { expect, test } from "@playwright/test"
 
-test("redirects the root to Italian and switches direction for Arabic", async ({
-  page,
-}) => {
+test("sets html lang and dir for every platform locale", async ({ page }) => {
   await page.goto("/")
   await expect(page).toHaveURL(/\/it$/)
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-  await page.goto("/ar")
-  await expect(page.locator("html")).toHaveAttribute("dir", "rtl")
+  const cases = [
+    { path: "/it", lang: "it", dir: "ltr" },
+    { path: "/en", lang: "en", dir: "ltr" },
+    { path: "/ar", lang: "ar", dir: "rtl" },
+    { path: "/ro", lang: "ro", dir: "ltr" },
+    { path: "/sq", lang: "sq", dir: "ltr" },
+  ] as const
+  for (const item of cases) {
+    await page.goto(item.path)
+    await expect(page.locator("html")).toHaveAttribute("lang", item.lang)
+    await expect(page.locator("html")).toHaveAttribute("dir", item.dir)
+  }
 })
 
 test("protects the dashboard and preserves a safe return path", async ({
@@ -22,9 +30,10 @@ test("logs in a provisioned Supabase user and opens a future portal screen", asy
 }) => {
   await page.goto("/en/login")
   await page.getByLabel("Email address").fill(process.env.E2E_USER_EMAIL!)
-  await page
-    .getByLabel("Password", { exact: true })
-    .fill(process.env.E2E_USER_PASSWORD!)
+  await expect(
+    page.getByRole("textbox", { name: "Password", exact: true }),
+  ).toBeVisible()
+  await page.locator("#password").fill(process.env.E2E_USER_PASSWORD!)
   await page.getByRole("button", { name: /log in/i }).click()
   await expect(page).toHaveURL(/\/en\/dashboard$/)
   await expect(

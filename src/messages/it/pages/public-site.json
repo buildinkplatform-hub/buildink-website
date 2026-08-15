@@ -2,7 +2,8 @@
   "publicSite": {
     "nav": {
       "groups": {
-        "browse": "Esplora tender",
+        "browse": "Esplora",
+        "opportunities": "Opportunità",
         "marketplace": "Imprese e servizi",
         "resources": "Risorse"
       },
@@ -11,12 +12,19 @@
         "search": "Ricerca globale",
         "companies": "Imprese",
         "profiles": "Profili pubblici",
+        "workers": "Lavoratori",
+        "subcontractors": "Subappaltatori",
+        "serviceProviders": "Fornitori di servizi",
+        "specializedServices": "Servizi specializzati",
+        "trades": "Mestieri",
+        "safetyCertifications": "Sicurezza e certificazioni",
         "suppliers": "Fornitori",
         "equipment": "Marketplace attrezzature",
         "projects": "Progetti",
         "tenders": "Tender aperti",
         "companyRequests": "Cerco un'impresa",
         "workerRequests": "Cerco lavoratori",
+        "serviceRequests": "Richieste di servizi",
         "howItWorks": "Come funziona",
         "verification": "Verifica e sicurezza",
         "help": "Centro assistenza",
@@ -99,6 +107,8 @@
       "overview": "Panoramica",
       "services": "Servizi",
       "projects": "Progetti",
+      "catalogue": "Catalogo",
+      "equipment": "Attrezzature",
       "reviews": "Recensioni",
       "certifications": "Certificazioni",
       "contact": "Contatti"
@@ -115,10 +125,47 @@
       "officialWebsiteBody": "Vai al sito pubblico approvato quando ti serve più contesto sull'azienda.",
       "visitWebsite": "Visita il sito"
     },
+    "userReviews": {
+      "title": "Recensioni",
+      "subtitle": "Valutazioni dei partner dopo un'offerta, una candidatura o un incarico qualificati.",
+      "emptyTitle": "Nessuna recensione pubblicata",
+      "emptyBody": "Le recensioni approvate compaiono qui. Gli elenchi vuoti restano vuoti: i punteggi non vengono inventati.",
+      "average": "{rating} su 5",
+      "count": "{count} recensioni",
+      "verifiedBadge": "Incarico verificato",
+      "formTitle": "Scrivi una recensione",
+      "rating": "Valutazione",
+      "starLabel": "{count} stelle",
+      "titleLabel": "Titolo",
+      "comment": "Commento",
+      "locale": "Lingua",
+      "submit": "Invia recensione",
+      "success": "Grazie — la recensione è stata inviata in moderazione.",
+      "signIn": "Accedi per scrivere una recensione",
+      "signInBody": "Puoi recensire questo contenuto dopo l'accesso e un'interazione qualificata sul marketplace.",
+      "ineligible": "Non puoi ancora recensire questo contenuto",
+      "ineligibleBody": "Puoi lasciare una recensione dopo un'offerta, una candidatura o un incarico completato. Anche i profili verificati che hanno già interagito possono inviarne una.",
+      "alreadyReviewed": "Hai già inviato una recensione per questo contenuto.",
+      "selfTarget": "Non puoi recensire il tuo stesso contenuto.",
+      "histogram": "Distribuzione valutazioni",
+      "histogramStar": "{count} stelle",
+      "pendingTitle": "In attesa di moderazione",
+      "pendingBody": "Grazie — la recensione è stata inviata e attende moderazione. Comparirà qui dopo l'approvazione."
+    },
     "cta": {
       "title": "Passa dalla scoperta pubblica a un flusso protetto Buildink",
       "body": "Il sito pubblico deve spiegare chiaramente il valore e poi accompagnare verso registrazione e azioni workspace senza creare vicoli ciechi.",
       "action": "Crea il tuo account Buildink"
+    },
+    "forms": {
+      "contactTitle": "Invia un messaggio",
+      "name": "Il tuo nome",
+      "email": "Indirizzo email",
+      "message": "Come possiamo aiutarti?",
+      "send": "Invia messaggio",
+      "contactSuccess": "Grazie — il messaggio è stato ricevuto.",
+      "report": "Segnala questo contenuto",
+      "reportSuccess": "Grazie — la segnalazione è stata ricevuta."
     },
     "faq": {
       "items": {
@@ -180,6 +227,31 @@
         "eyebrow": "Cerco lavoratori",
         "title": "Richieste pubbliche di forza lavoro per mestiere e regione",
         "description": "Mostra chiaramente mestiere, quantità, tempi e condizioni pubbliche così che lavoratori e contractor possano decidere se proseguire."
+      },
+      "serviceRequests": {
+        "eyebrow": "Richieste di servizi",
+        "title": "Richieste pubbliche per servizi specializzati di costruzione",
+        "description": "Trova RFQ di servizi strutturate senza esporre condizioni commerciali private."
+      },
+      "workers": {
+        "eyebrow": "Lavoratori qualificati",
+        "title": "Trova lavoratori verificati per mestiere e regione",
+        "description": "Le card dei lavoratori mostrano professione, competenze, disponibilità e verifica pubblica senza documenti privati."
+      },
+      "subcontractors": {
+        "eyebrow": "Imprese di mestiere",
+        "title": "Scopri subappaltatori pronti a offrire",
+        "description": "Confronta mestiere, dimensione della squadra, raggio di servizio e segnali di qualifica prima di invitare o contattare."
+      },
+      "serviceProviders": {
+        "eyebrow": "Servizi specializzati",
+        "title": "Esplora fornitori professionali di servizi per l'edilizia",
+        "description": "Vedi categorie di servizio, licenze, regioni e segnali di risposta su un profilo pubblico-sicuro."
+      },
+      "trades": {
+        "eyebrow": "Mestieri",
+        "title": "Esplora imprese e professionisti per mestiere",
+        "description": "Parti da un mestiere e passa a imprese, subappaltatori e lavoratori con capacità corrispondenti."
       },
       "howItWorks": {
         "eyebrow": "Chiarezza del processo",

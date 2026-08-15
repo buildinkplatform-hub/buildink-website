@@ -1,5 +1,5 @@
 import { Filter, Search, SlidersHorizontal } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,7 @@ import {
   parseDirectoryQuery,
 } from "@/features/public/lib/public-query"
 import { Link } from "@/i18n/navigation"
+import type { Locale } from "@/shared/types/platform"
 import type {
   DirectoryQuery,
   PublicModule,
@@ -171,17 +172,25 @@ export async function PublicDirectoryPage({
   titleKey,
   descriptionKey,
   searchParams,
+  accountType,
+  href,
 }: {
   module: PublicModule
   titleKey: string
   descriptionKey: string
   searchParams?: Record<string, string | string[] | undefined>
+  accountType?: string
+  href?: string
 }) {
   const t = await getTranslations("publicSite")
-  const query = parseDirectoryQuery(searchParams)
-  const routePrefix = moduleRouteMap[module]
-  const result = listPublicEntities(module, query)
-  const facets = getDirectoryFacets(module)
+  const locale = (await getLocale()) as Locale
+  const query = {
+    ...parseDirectoryQuery(searchParams),
+    ...(accountType ? { accountType } : {}),
+  }
+  const routePrefix = href ?? moduleRouteMap[module]
+  const result = await listPublicEntities(module, query, locale)
+  const facets = await getDirectoryFacets(module, locale)
 
   const paginationItems = Array.from({ length: result.totalPages }, (_, index) => {
     const page = index + 1

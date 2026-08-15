@@ -1,6 +1,7 @@
 "use client"
 
 import { CalendarIcon } from "lucide-react"
+import { useLocale } from "next-intl"
 import { useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -34,6 +35,7 @@ export function DatePicker({
   placeholder = "Select date",
   disabled,
   fromDate,
+  toDate,
 }: {
   id?: string
   value?: string
@@ -42,11 +44,13 @@ export function DatePicker({
   placeholder?: string
   disabled?: boolean
   fromDate?: Date
+  toDate?: Date
 }) {
+  const locale = useLocale()
   const [open, setOpen] = useState(false)
   const selected = useMemo(() => parseIsoDate(value), [value])
   const label = selected
-    ? new Intl.DateTimeFormat(undefined, {
+    ? new Intl.DateTimeFormat(locale, {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -63,19 +67,28 @@ export function DatePicker({
           disabled={disabled}
           onBlur={onBlur}
           className={cn(
-            "text-ink min-h-12 w-full justify-start px-4 text-base font-normal",
-            !selected && "text-muted",
+            "border-input data-[placeholder]:text-muted-foreground h-10 w-full justify-start rounded-lg border bg-white px-3 text-sm font-normal shadow-none",
+            !selected && "text-muted-foreground",
           )}
         >
-          <CalendarIcon className="text-primary size-4" aria-hidden="true" />
+          <CalendarIcon className="text-muted-foreground size-4" aria-hidden="true" />
           {label}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0">
+      <PopoverContent align="start" className="w-auto rounded-xl p-0">
         <Calendar
+          dir={locale === "ar" ? "rtl" : "ltr"}
           mode="single"
           selected={selected}
-          disabled={fromDate ? { before: fromDate } : undefined}
+          disabled={
+            fromDate && toDate
+              ? [{ before: fromDate }, { after: toDate }]
+              : fromDate
+                ? { before: fromDate }
+                : toDate
+                  ? { after: toDate }
+                  : undefined
+          }
           onSelect={(date) => {
             if (!date) return
             onChange(toIsoDate(date))

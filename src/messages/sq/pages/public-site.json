@@ -1,0 +1,353 @@
+{
+  "publicSite": {
+    "nav": {
+      "groups": {
+        "browse": "Shfleto",
+        "opportunities": "Mundësi",
+        "marketplace": "Kompani dhe shërbime",
+        "resources": "Burime"
+      },
+      "items": {
+        "home": "Kryefaqja",
+        "search": "Kërkim global",
+        "companies": "Kompanitë",
+        "profiles": "Profile publike",
+        "workers": "Punëtorët",
+        "subcontractors": "Nënkontraktorët",
+        "serviceProviders": "Ofrues shërbimesh",
+        "specializedServices": "Shërbime të specializuara",
+        "trades": "Zanatet",
+        "safetyCertifications": "Siguria dhe certifikimet",
+        "suppliers": "Furnizuesit",
+        "equipment": "Tregu i pajisjeve",
+        "projects": "Projektet",
+        "tenders": "Tenderë të hapur",
+        "companyRequests": "Po kërkoj një kompani",
+        "workerRequests": "Po kërkoj punëtorë",
+        "serviceRequests": "Kërkesa për shërbime",
+        "howItWorks": "Si funksionon",
+        "verification": "Verifikimi dhe siguria",
+        "help": "Qendra e ndihmës",
+        "faq": "Pyetjet e shpeshta",
+        "blog": "Blog dhe analiza",
+        "about": "Rreth Buildink",
+        "contact": "Kontakti",
+        "privacy": "Politika e privatësisë",
+        "terms": "Kushtet e shërbimit",
+        "cookies": "Politika e cookie-ve"
+      }
+    },
+    "footer": {
+      "platform": "Platforma",
+      "resources": "Burime",
+      "company": "Kompania",
+      "legal": "Ligjore",
+      "note": "Themelimi i tregut publik Buildink",
+      "details": "Ndërtuar për zbulim shumëgjuhësh në ndërtim, besim dhe dorëzim të mbrojtur të rrjedhës së punës."
+    },
+    "newsletter": {
+      "title": "Qëndro afër mundësive të ardhshme Buildink",
+      "body": "Merr përditësime produkti, analiza të zgjedhura të tregut dhe lajme lancimi, me pëlqim.",
+      "placeholder": "Shkruaj adresën e email-it",
+      "consent": "Duke u abonuar, konfirmon se dëshiron përditësime të herëpashershme për tregun dhe produktin dhe mund të çabonohësh në çdo kohë.",
+      "action": "Abonohu",
+      "success": "Faleminderit — email-i u regjistrua për buletinin e faqes publike."
+    },
+    "cookiesBanner": {
+      "title": "Përdorim cookie për ta mbajtur tregun publik të shpejtë, të sigurt dhe relevant.",
+      "body": "Mund të pranosh konfigurimin e rekomanduar tani ose t’i menaxhosh preferencat më vonë nga faqja e politikës së cookie-ve.",
+      "accept": "Prano cookie-t",
+      "manage": "Menaxho cookie-t"
+    },
+    "filters": {
+      "title": "Përpuno rezultatet",
+      "search": "Kërko",
+      "searchPlaceholder": "Kërko sipas fjalës kyçe, shërbimit, zanetit ose emrit të kompanisë",
+      "region": "Rajoni",
+      "allRegions": "Të gjitha rajonet",
+      "category": "Kategoria",
+      "allCategories": "Të gjitha kategoritë",
+      "verification": "Verifikimi",
+      "allStatuses": "Të gjitha statuset"
+    },
+    "actions": {
+      "clearFilters": "Pastro filtrat",
+      "applyFilters": "Apliko filtrat",
+      "viewDetails": "Shiko detajet",
+      "primaryContact": "Kontakto ose kërko ofertë",
+      "saveItem": "Ruaj pas hyrjes",
+      "readArticle": "Lexo artikullin"
+    },
+    "search": {
+      "resultCount": "{count} rezultate publike",
+      "emptyTitle": "Nuk u gjetën ende rezultate publike",
+      "emptyBody": "Provo të zgjerosh filtrat e rajonit, kategorisë ose verifikimit për ta rihapur zbulimin."
+    },
+    "stats": {
+      "publicResults": "Rezultate publike",
+      "regions": "Rajone",
+      "categories": "Kategori",
+      "verificationStates": "Gjendje verifikimi"
+    },
+    "directory": {
+      "quickGuideTitle": "Udhëzues i shpejtë",
+      "quickGuideBody": "Përdor së bashku filtrat e kategorisë, rajonit dhe verifikimit për të kaluar nga zbulimi i gjerë te një listë e shkurtër."
+    },
+    "modules": {
+      "companies": "Kompanitë",
+      "profiles": "Profilet",
+      "suppliers": "Furnizuesit",
+      "equipment": "Pajisjet",
+      "projects": "Projektet",
+      "tenders": "Tenderët",
+      "opportunities-companies": "Kërkesa për kompani",
+      "opportunities-workers": "Kërkesa për punëtorë"
+    },
+    "tabs": {
+      "overview": "Përmbledhje",
+      "services": "Shërbimet",
+      "projects": "Projektet",
+      "catalogue": "Katalogu",
+      "equipment": "Pajisjet",
+      "reviews": "Vlerësimet",
+      "certifications": "Certifikatat",
+      "contact": "Kontakti"
+    },
+    "detail": {
+      "contactTitle": "Kontakt dhe besim",
+      "reportHint": "Faqet publike të detajeve duhet t’u japin vizitorëve një rrugë të sigurt për të raportuar përmbajtje publike të pasaktë ose të pasigurt.",
+      "relatedTitle": "Elemente publike të lidhura",
+      "relatedBody": "Mbaj zbulimin në lëvizje duke lidhur një grup të vogël, relevant të regjistrimeve publike fqinje.",
+      "reviewSummary": "{rating} ({count} vlerësime)",
+      "aboutTitle": "Rreth {name}",
+      "keyMetricsTitle": "Treguesit kryesorë",
+      "officialWebsiteTitle": "Faqja zyrtare",
+      "officialWebsiteBody": "Vazhdo te faqja publike e miratuar kur të duhet më shumë kontekst për kompaninë.",
+      "visitWebsite": "Vizito faqen"
+    },
+    "userReviews": {
+      "title": "Vlerësimet",
+      "subtitle": "Vlerësime nga partnerët pas një oferte, aplikimi ose angazhimi të kualifikuar.",
+      "emptyTitle": "Nuk ka vlerësime të publikuara ende",
+      "emptyBody": "Vlerësimet e miratuara shfaqen këtu. Listimet bosh mbeten bosh — rezultatet nuk shpiken kurrë.",
+      "average": "{rating} nga 5",
+      "count": "{count} vlerësime",
+      "verifiedBadge": "Angazhim i verifikuar",
+      "formTitle": "Shkruaj një vlerësim",
+      "rating": "Vlerësimi",
+      "starLabel": "{count} yje",
+      "titleLabel": "Titulli",
+      "comment": "Komenti",
+      "locale": "Gjuha",
+      "submit": "Dërgo vlerësimin",
+      "success": "Faleminderit — vlerësimi u dërgua për moderim.",
+      "signIn": "Hyr për të shkruar një vlerësim",
+      "signInBody": "Mund ta vlerësosh këtë listim pasi të hysh dhe të kesh një ndërveprim të kualifikuar në treg.",
+      "ineligible": "Nuk mund ta vlerësosh ende këtë listim",
+      "ineligibleBody": "Lë një vlerësim pas një oferte, aplikimi ose angazhimi të përfunduar të kualifikuar. Anëtarët e verifikuar që kanë ndërvepruar tashmë me këtë listim mund të dërgojnë një të tillë.",
+      "alreadyReviewed": "Ke dërguar tashmë një vlerësim për këtë listim.",
+      "selfTarget": "Nuk mund të vlerësosh listimin tënd.",
+      "histogram": "Shpërndarja e vlerësimeve",
+      "histogramStar": "{count} yje",
+      "pendingTitle": "Në pritje të moderimit",
+      "pendingBody": "Faleminderit — vlerësimi u dërgua dhe pret moderim. Do të shfaqet këtu pasi të miratohet."
+    },
+    "cta": {
+      "title": "Kaloni nga zbulimi publik te një rrjedhë pune e mbrojtur Buildink",
+      "body": "Faqja publike duhet të shpjegojë qartë vlerën, pastaj të dorëzojë te regjistrimi dhe veprimet e hapësirës së punës sipas rolit, pa rrugë pa krye.",
+      "action": "Krijo llogarinë tënde Buildink"
+    },
+    "forms": {
+      "contactTitle": "Dërgo një mesazh",
+      "name": "Emri yt",
+      "email": "Adresa e email-it",
+      "message": "Si mund t’ju ndihmojmë?",
+      "send": "Dërgo mesazhin",
+      "contactSuccess": "Faleminderit — mesazhi yt u mor.",
+      "report": "Raporto këtë listim",
+      "reportSuccess": "Faleminderit — raporti u mor."
+    },
+    "faq": {
+      "items": {
+        "profileType": "Si e zgjedh llojin e duhur të profilit?",
+        "verification": "Çfarë do të thotë vërtet verifikimi?",
+        "contact": "Si funksionojnë cilësimet publike të kontaktit?"
+      },
+      "answers": {
+        "profileType": "Lloji i profilit përshkruan se si shfaqesh në tregun publik. Autoriteti i kompanisë vjen nga anëtarësitë dhe lejet, jo vetëm nga etiketimi.",
+        "verification": "Verifikimi shpjegon cilat kontrolle publike ka përfunduar Buildink. Nuk duhet të nënkuptojë garanci përtej fushës së publikuar të verifikimit.",
+        "contact": "Faqet publike të detajeve duhet të tregojnë vetëm metodat e kontaktit të miratuara, ndërsa të dhënat e ndjeshme ose të pamiratuara mbeten private."
+      }
+    },
+    "legal": {
+      "updated": "Përditësuar {date}"
+    },
+    "pages": {
+      "search": {
+        "eyebrow": "Një sipërfaqe kërkimi",
+        "title": "Kërko në tregun publik Buildink",
+        "description": "Shfleto kompani, njerëz, furnizues, pajisje, projekte, tenderë dhe kërkesa të hapura nga një rrjedhë zbulimi shumëgjuhëshe."
+      },
+      "companies": {
+        "eyebrow": "Zbulimi i kompanive",
+        "title": "Gjej kompani ndërtimi me prova publike",
+        "description": "Kërko sipas rajonit, kategorisë dhe sinjaleve të besimit për të kaluar shpejt nga vlerësimi publik te veprimi i duhur tjetër."
+      },
+      "profiles": {
+        "eyebrow": "Zbulim profesional",
+        "title": "Shfleto profilet publike të tregut",
+        "description": "Eksploro pesë llojet përfundimtare të profilit me karta sipas rolit, prova publike dhe rrugë kontakti të sigurta për privatësinë."
+      },
+      "suppliers": {
+        "eyebrow": "Zbulimi i furnizuesve",
+        "title": "Eksploro bizneset e furnizuesve dhe katalogët e miratuar",
+        "description": "Faqet publike të furnizuesve duhet të qartësojnë çfarë ofron biznesi, ku operon dhe si mund të pyesin vizitorët."
+      },
+      "equipment": {
+        "eyebrow": "Tregu i pajisjeve",
+        "title": "Shfleto pajisje me sinjale të qarta disponueshmërie",
+        "description": "Mbaj zbulimin e pajisjeve të lehtë për t’u skanuar, me kategori, gjendje, disponueshmëri dhe kontekstin e ofruesit përpara."
+      },
+      "projects": {
+        "eyebrow": "Projekte dhe mundësi",
+        "title": "Zbulo projekte publike ndërtimi",
+        "description": "Faqet publike të projektit duhet të tregojnë fushën, kohën, vendndodhjen dhe rregullat publike të buxhetit, pa rrjedhur të dhëna private të ekzekutimit."
+      },
+      "tenders": {
+        "eyebrow": "Zbulimi i tenderëve",
+        "title": "Monitoro tenderët e hapur dhe afatet",
+        "description": "Listimet e tenderëve duhet të theksojnë burimin, qartësinë e datave dhe një dorëzim të pastër te rrjedhat e mbrojtura të ofertimit."
+      },
+      "companyRequests": {
+        "eyebrow": "Po kërkoj një kompani",
+        "title": "Kërkesa të hapura për kompani dhe nënkontraktorë",
+        "description": "Këto listime duhet të ndihen të ndryshme nga projektet dhe tenderët, duke mbetur të strukturuara, të indeksueshme dhe të lehta për t’u krahasuar."
+      },
+      "workerRequests": {
+        "eyebrow": "Po kërkoj punëtorë",
+        "title": "Kërkesa publike të fuqisë punëtore sipas zanati dhe rajoni",
+        "description": "Trego qartë zanatin, sasinë, kohën dhe kushtet publike, që punëtorët dhe kontraktorët të vendosin nëse vazhdojnë."
+      },
+      "serviceRequests": {
+        "eyebrow": "Kërkesa për shërbime",
+        "title": "Kërkesa publike për shërbime të specializuara ndërtimi",
+        "description": "Gjej RFQ të strukturuara pa ekspozuar kushte tregtare private."
+      },
+      "workers": {
+        "eyebrow": "Punëtorë të kualifikuar",
+        "title": "Gjej punëtorë të verifikuar sipas zanati dhe rajoni",
+        "description": "Kartat e punëtorëve tregojnë profesionin, aftësitë, disponueshmërinë dhe verifikimin publik pa dokumente private."
+      },
+      "subcontractors": {
+        "eyebrow": "Kontraktorë zanatesh",
+        "title": "Zbulo nënkontraktorë gati për oferta",
+        "description": "Krahaso zanatin, madhësinë e ekuipazhit, rrezen e shërbimit dhe sinjalet e kualifikimit para se të ftosh ose të kontaktosh."
+      },
+      "serviceProviders": {
+        "eyebrow": "Shërbime të specializuara",
+        "title": "Shfleto ofrues profesionistë të shërbimeve të ndërtimit",
+        "description": "Shiko kategoritë e shërbimit, licencat, rajonet dhe sinjalet e përgjigjes në një profil publik të sigurt."
+      },
+      "trades": {
+        "eyebrow": "Zanatet",
+        "title": "Eksploro kompani dhe profesionistë sipas zanati",
+        "description": "Fillo nga një zanat dhe kaloni te kompani, nënkontraktorë dhe punëtorë me aftësi përputhëse."
+      },
+      "howItWorks": {
+        "eyebrow": "Qartësi procesi",
+        "title": "Si funksionon Buildink për çdo audiencë publike",
+        "description": "Shpjego zbulimin, verifikimin, publikimin dhe rrjedhat e përgjigjes para se t’u kërkosh vizitorëve të krijojnë një llogari.",
+        "sectionOneTitle": "Rrugë sipas rolit",
+        "sectionOneBody": "Kjo faqe duhet t’i përgjigjet pyetjes së parë praktike të çdo vizitori: çfarë mund të bëj këtu dhe çfarë ndodh më pas?",
+        "cards": {
+          "card1Title": "Për kompani dhe pronarë",
+          "card1Body": "Qartëso se si kompanitë publikojnë identitete publike, projekte, kërkesa dhe rrugë kontakti të miratuara.",
+          "card2Title": "Për profesionistë",
+          "card2Body": "Trego se si zbulohen dhe verifikohen punëtorët, kontraktorët dhe ofruesit e shërbimeve në një mënyrë të sigurt publike.",
+          "card3Title": "Për furnizues dhe ofrues pajisjesh",
+          "card3Body": "Shpjego se si dukshmëria e furnizuesit dhe pajisjes kthehet në pyetje reale pa ekspozuar të dhëna private."
+        }
+      },
+      "verification": {
+        "eyebrow": "Besim dhe siguri",
+        "title": "Çfarë verifikon Buildink — dhe çfarë jo",
+        "description": "Përdor gjuhë të thjeshtë për të përshkruar kuptimin e verifikimit publik, kufijtë e privatësisë dhe se si vizitorët mund të raportojnë shqetësime.",
+        "sectionOneTitle": "Verifikim me kufij të ndershëm",
+        "sectionOneBody": "Faqet e besimit funksionojnë më mirë kur rrisin besimin pa pretenduar më shumë se sa mund të garantojë platforma.",
+        "cards": {
+          "card1Title": "Distinktivët e verifikimit",
+          "card1Body": "Shpjego se çfarë përfaqëson një distinktiv në faqet e kompanisë, profilit dhe listimit.",
+          "card2Title": "Trajtimi i privatësisë",
+          "card2Body": "Bëj të qartë se identiteti privat dhe skedarët e verifikimit nuk i përkasin sipërfaqes publike.",
+          "card3Title": "Rrjedha e raportimit dhe shqyrtimit",
+          "card3Body": "Vizitorët duhet të dinë gjithmonë si të raportojnë përmbajtje publike të pasigurt, mashtruese ose të pasaktë."
+        }
+      },
+      "about": {
+        "eyebrow": "Historia e platformës",
+        "title": "Rreth Buildink",
+        "description": "Prezanto historinë e tregut me Italinë në fillim, modelin e besimit dhe problemin praktik që Buildink po zgjidh.",
+        "sectionOneTitle": "Një histori produkti e ankoruar në punë reale",
+        "sectionOneBody": "Faqja Rreth duhet të ndihet e besueshme dhe specifike, jo si tekst gjenik start-upi.",
+        "cards": {
+          "card1Title": "Misioni",
+          "card1Body": "Trego pse ekziston Buildink dhe cilat rrjedha të fragmentuara po përpiqet të thjeshtojë.",
+          "card2Title": "Kë shërben",
+          "card2Body": "Fol qartë me kompani, profesionistë, furnizues, pronarë pajisjesh dhe ekipe projekti.",
+          "card3Title": "Parimet e besimit",
+          "card3Body": "Lidh historinë e faqes publike me verifikimin, privatësinë dhe zbulimin profesional më të sigurt."
+        }
+      },
+      "contact": {
+        "eyebrow": "Kontakt i drejtpërdrejtë",
+        "title": "Kontakto Buildink",
+        "description": "Krijo një rrugë të qartë për pyetje biznesi, mbështetje dhe kërkesa të përgjithshme, me udhëzime kontakti që respektojnë privatësinë.",
+        "sectionOneTitle": "Rrugë kontakti të besueshme",
+        "sectionOneBody": "Faqet e kontaktit duhet të jenë praktike, të strukturuara mirë dhe respektuese ndaj dallimeve rajonale dhe gjuhësore.",
+        "cards": {
+          "card1Title": "Drejtim sipas temës",
+          "card1Body": "Ndihmo vizitorët të zgjedhin mes mbështetjes, partneriteteve, pyetjeve të tregut dhe kërkesave të përgjithshme të biznesit.",
+          "card2Title": "Të dhënat e biznesit",
+          "card2Body": "Shfaq vetëm adresën, email-in, telefonin dhe orarin zyrtar të miratuar.",
+          "card3Title": "Formulare të ndërgjegjshme për privatësinë",
+          "card3Body": "Rrjedha publike e kontaktit duhet të vërtetojë pastër dhe të shpjegojë çfarë ndodh pas dërgimit."
+        }
+      },
+      "help": {
+        "eyebrow": "Mbështetje self-service",
+        "title": "Qendra e ndihmës",
+        "description": "Fillo me përmbajtje mbështetjeje sipas detyrave, që vizitorët publikë të përgjigjen pyetjeve të zakonshme para se të hapin një biletë."
+      },
+      "faq": {
+        "eyebrow": "Pyetje të shpeshta",
+        "title": "Pyetjet e shpeshta Buildink",
+        "description": "Mbaj pyetjet e zakonshme të tregut të shkurtra, të lehta për t’u skanuar dhe për t’u lundruar në të gjitha gjuhët."
+      },
+      "blog": {
+        "eyebrow": "Editoriale dhe SEO",
+        "title": "Blog dhe analiza",
+        "description": "Publiko përmbajtje të gjatë të besueshme që mbështet zbulimin, besimin dhe dukshmërinë e kërkimit shumëgjuhësh."
+      },
+      "privacy": {
+        "eyebrow": "Ligjore",
+        "title": "Politika e privatësisë",
+        "description": "Kjo faqe është e strukturuar për tekstin ligjor të miratuar të klientit, me navigim të qartë dhe dukshmëri të përditësimeve."
+      },
+      "terms": {
+        "eyebrow": "Ligjore",
+        "title": "Kushtet e shërbimit",
+        "description": "Prezanto kushtet e miratuara të shërbimit me të njëjtën lexueshmëri dhe hierarki informacioni si pjesa tjetër e faqes."
+      },
+      "cookies": {
+        "eyebrow": "Ligjore",
+        "title": "Politika e cookie-ve",
+        "description": "Shpjego kategoritë e cookie-ve, qëllimin e furnizuesve dhe kontrollet e përdoruesit në një mënyrë të kuptueshme në celular."
+      }
+    },
+    "home": {
+      "proofEyebrow": "Prova e tregut",
+      "proofTitle": "Projektuar të duket e besueshme para se një përdorues të hyjë",
+      "proofBody": "Përvoja publike duhet të tregojë thellësinë reale të tregut, sinjalet e besimit dhe rrugët sipas rolit, pa ekspozuar të dhëna operative private."
+    }
+  }
+}

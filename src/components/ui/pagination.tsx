@@ -42,7 +42,7 @@ export function Pagination({
               className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border px-4 text-sm font-semibold ${
                 item.active
                   ? "border-primary bg-primary text-white"
-                  : "border-line bg-white text-brand-navy hover:bg-light-blue"
+                  : "border-line bg-white text-brand-navy hover:bg-accent"
               }`}
             >
               {item.label}

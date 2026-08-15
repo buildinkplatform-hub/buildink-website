@@ -1,4 +1,4 @@
-import type { Locale, ProfileType } from "@/shared/types/platform"
+import type { Locale, ProfileType, PrimaryAccountType } from "@/shared/types/platform"
 
 export const DEFAULT_LOCALE: Locale = "it"
 export const TIME_ZONE = "Europe/Rome"
@@ -24,6 +24,8 @@ export const localeMetadata: Record<
   it: { nativeLabel: "Italiano", direction: "ltr", intlLocale: "it-IT" },
   en: { nativeLabel: "English", direction: "ltr", intlLocale: "en-GB" },
   ar: { nativeLabel: "العربية", direction: "rtl", intlLocale: "ar-SA" },
+  ro: { nativeLabel: "Română", direction: "ltr", intlLocale: "ro-RO" },
+  sq: { nativeLabel: "Shqip", direction: "ltr", intlLocale: "sq-AL" },
 }
 
 export const profileTypeLabelKeys: Record<ProfileType, string> = {
@@ -34,10 +36,24 @@ export const profileTypeLabelKeys: Record<ProfileType, string> = {
   service_provider: "roles.serviceProvider",
 }
 
-export function isLocale(value?: string): value is Locale {
-  return value === "it" || value === "en" || value === "ar"
+export const primaryAccountTypeLabelKeys: Record<PrimaryAccountType, string> = {
+  COMPANY: "roles.company",
+  PROJECT_OWNER: "roles.projectOwner",
+  SUBCONTRACTOR: "roles.subcontractor",
+  SERVICE_PROVIDER: "roles.serviceProvider",
+  WORKER: "roles.worker",
 }
 
-export function isProfileType(value?: string): value is ProfileType {
+export function isLocale(value?: string): value is Locale {
+  return value === "it" || value === "en" || value === "ar" || value === "ro" || value === "sq"
+}
+
+export function isProfileType(value?: string | null): value is ProfileType {
   return Boolean(value && value in profileTypeLabelKeys)
+}
+
+export function isPrimaryAccountType(
+  value?: string | null,
+): value is PrimaryAccountType {
+  return Boolean(value && value in primaryAccountTypeLabelKeys)
 }

@@ -1,9 +1,9 @@
 {
   "onboarding": {
-    "roleTitle": "Scegli il tipo di profilo",
-    "roleBody": "Seleziona l'identità che descrive meglio come utilizzerai il marketplace Buildink.",
+    "roleTitle": "Scegli il tipo di account",
+    "roleBody": "Seleziona come utilizzerai il marketplace Buildink.",
     "errors": {
-      "profileType": "Scegli un tipo di profilo per continuare."
+      "profileType": "Scegli un tipo di account per continuare."
     }
   },
   "roles": {
@@ -16,6 +16,12 @@
     "supplierContact": "Referente fornitore",
     "supplierContactBody": "Rappresenta un'organizzazione fornitrice e gestiscine catalogo e richieste.",
     "serviceProvider": "Fornitore di servizi",
-    "serviceProviderBody": "Offri servizi specialistici, certificazioni e lavori di riferimento."
+    "serviceProviderBody": "Offri servizi specialistici, certificazioni e lavori di riferimento. Crea, unisciti o rivendica un'azienda se rappresenti un'organizzazione.",
+    "company": "Impresa",
+    "companyBody": "Rappresenta un'impresa edile. Crea, unisciti o rivendica un'organizzazione e gestisci la sua presenza sul marketplace.",
+    "projectOwner": "Committente",
+    "projectOwnerBody": "Pubblica progetti, valuta proposte e incarica professionisti del marketplace come committente.",
+    "subcontractor": "Subappaltatore",
+    "subcontractorBody": "Offri servizi di mestiere, associa un'azienda e partecipa alle opportunità di progetto."
   }
 }

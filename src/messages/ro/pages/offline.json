@@ -1,0 +1,8 @@
+{
+  "offline": {
+    "title": "Ești offline",
+    "body": "Buildink nu a putut ajunge la rețea. Reconectează-te și încearcă din nou; datele private ale contului nu sunt niciodată stocate în cache.",
+    "retry": "Încearcă din nou",
+    "home": "Mergi la Buildink"
+  }
+}

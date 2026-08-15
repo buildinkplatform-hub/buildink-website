@@ -4,6 +4,8 @@
     "reviewBody": "Controlla il tipo di profilo, i dati, i documenti e le scelte sulla privacy prima dell'invio.",
     "publicConsent": "Acconsento alla pubblicazione dei soli dati del profilo forniti e approvati.",
     "documentConsent": "Acconsento al trattamento privato di questi documenti ai fini della verifica.",
+    "termsConsent": "Accetto i Termini di servizio.",
+    "privacyConsent": "Accetto l’Informativa sulla privacy.",
     "submit": "Invia profilo",
     "profileType": "Tipo di profilo",
     "details": "Dati del profilo",
@@ -13,7 +15,7 @@
     "pendingTitle": "Il profilo sarà in attesa di verifica",
     "pendingBody": "L'invio non verifica automaticamente l'account. Dopo il controllo, Buildink potrà approvarlo o richiedere modifiche.",
     "errors": {
-      "consent": "Entrambe le scelte sulla privacy sono obbligatorie per l'invio."
+      "consent": "Per inviare devi accettare termini, privacy e trattamento dei documenti."
     }
   }
 }

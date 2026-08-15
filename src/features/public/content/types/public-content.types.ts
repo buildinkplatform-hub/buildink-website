@@ -23,25 +23,30 @@ export interface PublicFaqItem {
   content: string
 }
 
-export interface PublicContentPageView {
-  type: StaticContentType
+export interface PublicContentContract {
+  contentType: string
   slug: string
+  locale: string
+  version: number
+  publishedAt: string | null
+  updatedAt: string
+}
+
+export interface PublicContentPageView extends PublicContentContract {
+  type: StaticContentType
   eyebrow: string | null
   title: string
   description: string
-  updatedAt: string
   featuredImageUrl: string | null
   sections: PublicContentSection[]
   faqItems: PublicFaqItem[]
 }
 
-export interface PublicContentArticleSummaryView {
-  slug: string
+export interface PublicContentArticleSummaryView extends PublicContentContract {
   title: string
   excerpt: string
   category: string
   author: string | null
-  updatedAt: string
   readingTime: string | null
   featuredImageUrl: string | null
   sections: PublicContentSection[]

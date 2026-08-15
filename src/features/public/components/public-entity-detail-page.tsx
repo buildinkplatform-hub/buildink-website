@@ -6,9 +6,8 @@ import {
   MapPin,
   Phone,
   ShieldCheck,
-  Star,
 } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { Alert } from "@/components/ui/alert"
@@ -19,37 +18,109 @@ import { Card } from "@/components/ui/card"
 import { TabsNav } from "@/components/ui/tabs"
 import { PublicEntityCard } from "@/features/public/components/public-cards"
 import { PublicEntityVisual } from "@/features/public/components/public-visuals"
+import { PublicAbuseForm } from "@/features/public/components/public-abuse-form"
+import { PublicReviewsPanel } from "@/features/public/components/public-reviews-panel"
+import {
+  SaveItemButton,
+} from "@/features/public/components/save-item-button"
+import { entityTypeForModule } from "@/features/saved/saved-items.utils"
 import { EntityDetailShell } from "@/features/public/components/public-shells"
 import {
-  getCompanySubpage,
+  getCompanySubpageFromEntity,
   getPublicEntity,
+  getPublicReviews,
   getRelatedEntities,
 } from "@/features/public/data/public-repository"
+import { getReviewEligibility } from "@/features/dashboard/data/portal-client"
 import { moduleRouteMap } from "@/features/public/config/public-site.config"
 import { Link } from "@/i18n/navigation"
-import type { PublicModule } from "@/features/public/types/public.types"
+import { getPublicViewer } from "@/lib/auth/session"
+import type { Locale } from "@/shared/types/platform"
+import type {
+  PublicEntityRecord,
+  PublicModule,
+  PublicReviewTarget,
+} from "@/features/public/types/public.types"
+
+function resolveReviewTarget(
+  module: PublicModule,
+  item: { id?: string; reviewTarget?: PublicReviewTarget | null },
+): PublicReviewTarget | null {
+  if (item.reviewTarget) return item.reviewTarget
+  if (!item.id) return null
+  switch (module) {
+    case "companies":
+    case "suppliers":
+      return { type: "COMPANY", id: item.id }
+    case "projects":
+      return { type: "PROJECT", id: item.id }
+    case "profiles":
+      return { type: "WORKER", id: item.id }
+    case "equipment":
+    case "tenders":
+    case "opportunities-companies":
+    case "opportunities-workers":
+      return null
+    default: {
+      const exhaustive: never = module
+      return exhaustive
+    }
+  }
+}
 
 export async function PublicEntityDetailPage({
   module,
   slug,
   companySection,
+  record,
 }: {
   module: PublicModule
   slug: string
   companySection?: string
+  record?: PublicEntityRecord
 }) {
   const t = await getTranslations("publicSite")
-  const item = getPublicEntity(module, slug)
+  const locale = (await getLocale()) as Locale
+  const item = record ?? (await getPublicEntity(module, slug, locale))
   if (!item) notFound()
 
-  const related = getRelatedEntities(module, item)
+  const related = await getRelatedEntities(module, item, locale)
+  const isReviewsTab = module === "companies" && companySection === "reviews"
   const companySubpage =
     module === "companies" && companySection
-      ? getCompanySubpage(slug, companySection)
+      ? await getCompanySubpageFromEntity(item, companySection)
       : null
-  const title = companySubpage?.title ?? item.title
-  const description = companySubpage?.description ?? item.subtitle
-  const sections = companySubpage?.sections ?? item.sections
+  const title = isReviewsTab
+    ? t("tabs.reviews")
+    : (companySubpage?.title ?? item.title)
+  const description = isReviewsTab
+    ? t("userReviews.subtitle")
+    : (companySubpage?.description ?? item.subtitle)
+  const sections = isReviewsTab
+    ? []
+    : (companySubpage?.sections ?? item.sections)
+  const reviewTarget = resolveReviewTarget(module, item)
+  const showReviews =
+    Boolean(reviewTarget) && (module !== "companies" || isReviewsTab)
+  const saveEntityType = entityTypeForModule(module)
+  const viewer =
+    showReviews || saveEntityType
+      ? await getPublicViewer(locale)
+      : null
+  const reviews =
+    showReviews && reviewTarget
+      ? await getPublicReviews(reviewTarget, locale)
+      : null
+  const eligibility =
+    showReviews && reviewTarget && viewer
+      ? await getReviewEligibility({
+          targetType: reviewTarget.type,
+          targetId: reviewTarget.id,
+        }).catch(() => null)
+      : null
+  const loginHref = `/${locale}${moduleRouteMap[module]}/${slug}${
+    isReviewsTab ? "/reviews" : ""
+  }`
 
   const tabs =
     module === "companies"
@@ -62,12 +133,19 @@ export async function PublicEntityDetailPage({
                 href: `${moduleRouteMap.companies}/${slug}`,
                 active: !companySection,
               },
-              ...["services", "projects", "reviews", "certifications", "contact"].map((tab) => ({
-                value: tab,
-                label: t(`tabs.${tab}`),
-                href: `${moduleRouteMap.companies}/${slug}/${tab}`,
-                active: companySection === tab,
-              })),
+              ...(["services", "projects", "catalogue", "equipment", "reviews", "certifications", "contact"] as const)
+                .filter((tab) => {
+                  if (tab === "catalogue" || tab === "equipment") {
+                    return Boolean(item.subpages?.some((page) => page.slug === tab))
+                  }
+                  return true
+                })
+                .map((tab) => ({
+                  value: tab,
+                  label: t(`tabs.${tab}`),
+                  href: `${moduleRouteMap.companies}/${slug}/${tab}`,
+                  active: companySection === tab,
+                })),
             ]}
           />
         )
@@ -95,10 +173,6 @@ export async function PublicEntityDetailPage({
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge>{item.verification}</Badge>
-                  <div className="text-muted inline-flex items-center gap-1 text-sm font-semibold">
-                    <Star className="size-4 fill-current text-amber-400" />
-                    {t("detail.reviewSummary", { rating: "4.8", count: "128" })}
-                  </div>
                 </div>
                 <h1 className="text-brand-navy mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
                   {title}
@@ -112,7 +186,11 @@ export async function PublicEntityDetailPage({
               <Button asChild variant="secondary">
                 <Link href={moduleRouteMap[module]}>{t("actions.viewDetails")}</Link>
               </Button>
-              <Button>{t("actions.primaryContact")}</Button>
+              {item.contact?.email ? (
+                <Button asChild>
+                  <a href={`mailto:${item.contact.email}`}>{t("actions.primaryContact")}</a>
+                </Button>
+              ) : null}
             </div>
           </div>
           <div className="mt-6 flex flex-wrap gap-2">
@@ -165,7 +243,22 @@ export async function PublicEntityDetailPage({
             </div>
             <div className="mt-5 grid gap-2">
               <Button>{t("actions.primaryContact")}</Button>
-              <Button variant="secondary">{t("actions.saveItem")}</Button>
+              {saveEntityType ? (
+                <SaveItemButton
+                  entityType={saveEntityType}
+                  entityId={item.id}
+                  label={item.title}
+                  slug={item.slug}
+                  module={module}
+                  kind={
+                    module === "opportunities-workers"
+                      ? "WORKFORCE_REQUEST"
+                      : undefined
+                  }
+                  isAuthenticated={Boolean(viewer)}
+                  loginHref={`/login?next=${encodeURIComponent(loginHref)}`}
+                />
+              ) : null}
             </div>
           </Card>
 
@@ -211,6 +304,16 @@ export async function PublicEntityDetailPage({
           ) : null}
 
           <Alert>{t("detail.reportHint")}</Alert>
+          {item.id ? (
+            <div className="mt-3">
+              <PublicAbuseForm
+                entityType={module}
+                entityId={item.id}
+                action={t("forms.report")}
+                success={t("forms.reportSuccess")}
+              />
+            </div>
+          ) : null}
         </div>
       }
     >
@@ -255,7 +358,18 @@ export async function PublicEntityDetailPage({
             <div>
               <h2 className="text-brand-navy text-2xl font-bold">{section.title}</h2>
               <p className="text-muted mt-4 text-base leading-8">{section.body}</p>
-              {section.items?.length ? (
+              {section.itemLinks?.length ? (
+                <ul className="mt-5 space-y-2 text-sm leading-7 text-muted">
+                  {section.itemLinks.map((entry) => (
+                    <li key={entry.href} className="flex gap-3">
+                      <span className="mt-2 size-1.5 rounded-full bg-primary" />
+                      <Link href={entry.href} className="text-primary font-semibold">
+                        {entry.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : section.items?.length ? (
                 <ul className="mt-5 space-y-2 text-sm leading-7 text-muted">
                   {section.items.map((entry) => (
                     <li key={entry} className="flex gap-3">
@@ -275,6 +389,17 @@ export async function PublicEntityDetailPage({
           </div>
         </Card>
       ))}
+
+      {showReviews && reviewTarget ? (
+        <PublicReviewsPanel
+          target={reviewTarget}
+          locale={locale}
+          signedIn={Boolean(viewer)}
+          loginHref={loginHref}
+          reviews={reviews}
+          eligibility={eligibility}
+        />
+      ) : null}
 
       {related.length ? (
         <section className="space-y-4">

@@ -1,0 +1,39 @@
+{
+  "onboarding": {
+    "documentsTitle": "Dokumente dhe verifikim",
+    "documentsBody": "Shto çdo dokument veçmas që të ruajë llojin, datën e skadimit, shtetin lëshues dhe pronarin.",
+    "documentPrivacy": "Dokumentet e verifikimit janë private dhe nuk duhen ruajtur kurrë në një bucket publik media.",
+    "documentMetadataTitle": "Detajet e dokumentit",
+    "documentMetadataBody": "Këto detaje do të ruhen vetëm me këtë dokument.",
+    "chooseFiles": "Zgjidh një skedar dokumenti",
+    "fileRequirements": "PDF, JPEG ose PNG - maksimumi 25 MB për skedar",
+    "selectedFile": "Skedari i zgjedhur - {size} MB. Zgjidh sërish për ta zëvendësuar.",
+    "addDocument": "Ngarko këtë dokument",
+    "addAnotherDocument": "Shto një dokument tjetër",
+    "cancelAddDocument": "Anulo shtimin e dokumentit",
+    "uploadedDocuments": "Dokumente të ngarkuara ({count})",
+    "uploadContinue": "Vazhdo",
+    "uploading": "Po ngarkohet dokumenti...",
+    "selectDate": "Zgjidh datën e skadimit",
+    "expires": "Skadon {date}",
+    "remove": "Hiq",
+    "options": {
+      "identity": "Dokument identiteti",
+      "certificate": "Certifikatë",
+      "license": "Licencë",
+      "company_authorization": "Dëshmi e autorizimit të kompanisë",
+      "trade_proof": "Dëshmi e zanati",
+      "professional_proof": "Dëshmi profesionale",
+      "registration": "Regjistrimi i kompanisë",
+      "vat_proof": "Dëshmi TVSH",
+      "other": "Dokument tjetër verifikimi"
+    },
+    "errors": {
+      "fileType": "Përdor vetëm skedarë PDF, JPEG ose PNG.",
+      "fileSize": "Çdo skedar duhet të jetë 25 MB ose më i vogël.",
+      "fileRequired": "Zgjidh një skedar dokumenti para ngarkimit.",
+      "deleteFailed": "Dokumenti nuk u hoq. Provo sërish.",
+      "documentRequired": "Shto të paktën një dokument verifikimi para se të vazhdosh."
+    }
+  }
+}

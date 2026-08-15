@@ -4,6 +4,14 @@ import { Check } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils/cn"
+import { Reveal } from "@/components/motion/reveal"
+
+const steps = [
+  "stepAccountType",
+  "stepProfile",
+  "stepDocuments",
+  "stepReview",
+] as const
 
 export function OnboardingFrame({
   step,
@@ -16,7 +24,7 @@ export function OnboardingFrame({
   return (
     <div data-onboarding-frame>
       <p className="text-primary text-sm font-semibold">
-        {t("step", { current: step })}
+        {t("step", { current: step })} · {t(steps[step - 1] ?? "stepAccountType")}
       </p>
       <div
         className="mt-4 grid grid-cols-4 gap-2"
@@ -35,7 +43,7 @@ export function OnboardingFrame({
         ))}
       </div>
       <div className="border-line mt-6 rounded-2xl border bg-white p-6 shadow-[var(--shadow-card)] sm:p-9">
-        {children}
+        <Reveal>{children}</Reveal>
       </div>
     </div>
   )

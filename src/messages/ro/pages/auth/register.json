@@ -1,0 +1,29 @@
+{
+  "auth": {
+    "name": "Nume complet",
+    "hasAccount": "Ai deja un cont?",
+    "registerTitle": "Creează-ți contul Buildink",
+    "registerBody": "Creează mai întâi contul. Apoi vei alege și vei construi profilul de marketplace.",
+    "terms": "Accept Termenii de utilizare.",
+    "privacy": "Am citit și accept Politica de confidențialitate.",
+    "marketing": "Trimite-mi ocazional noutăți despre marketplace și actualizări de produs.",
+    "recoverVerification": "Deschide opțiunile de verificare a emailului",
+    "retryCountdown": "Poți încerca din nou în {time}",
+    "retryButton": "Încearcă din nou în {time}",
+    "registerErrors": {
+      "account_exists": "Poate exista deja un cont pentru acest email. Autentifică-te sau folosește opțiunile de verificare de mai jos dacă nu l-ai confirmat încă.",
+      "email_rate_limited": "Au fost cerute prea multe emailuri de confirmare. Așteaptă câteva minute, apoi folosește opțiunile de verificare de mai jos.",
+      "signup_unavailable": "Înregistrarea de conturi noi este temporar indisponibilă. Încearcă din nou mai târziu.",
+      "email_delivery": "Cererea de cont nu a putut trimite emailul de confirmare. Folosește opțiunile de verificare de mai jos sau contactează asistența.",
+      "registration_failed": "Nu am putut crea contul. Încearcă din nou. Dacă persistă, contactează asistența.",
+      "rate_limited": "Prea multe încercări de creare a contului. Așteaptă înainte de a încerca din nou.",
+      "backend": "Înregistrarea este temporar indisponibilă deoarece un serviciu necesar nu a putut fi contactat.",
+      "validation": "Verifică câmpurile de înregistrare și încearcă din nou."
+    },
+    "errors": {
+      "name": "Introdu numele complet.",
+      "terms": "Acceptă Termenii de utilizare pentru a continua.",
+      "privacy": "Acceptă Politica de confidențialitate pentru a continua."
+    }
+  }
+}

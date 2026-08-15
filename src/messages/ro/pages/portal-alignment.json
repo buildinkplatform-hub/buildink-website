@@ -1,0 +1,362 @@
+{
+  "dashboard": {
+    "portalErrorTitle": "Această pagină a portalului nu a putut fi încărcată",
+    "portalErrorBody": "Solicitarea a eșuat în loc să fie afișată ca date goale. Verifică accesul sau încearcă din nou.",
+    "portalErrorReference": "Referință: {reference}",
+    "permissionDeniedTitle": "Nu ai acces la această acțiune",
+    "permissionDeniedBody": "Rolul tău în acest spațiu de lucru nu include această permisiune. Cere unui proprietar sau administrator al spațiului de lucru să ți-o acorde.",
+    "savedItem": {
+      "title": "Salvează o înregistrare",
+      "entityType": "Tip entitate",
+      "entityId": "ID entitate",
+      "label": "Etichetă (opțional)",
+      "save": "Salvează la favorite",
+      "saved": "Salvat la favorite",
+      "viewAll": "Vezi toate elementele salvate",
+      "types": {
+        "company": "Companie",
+        "profile": "Profil / lucrător",
+        "project": "Proiect",
+        "tender": "Licitație",
+        "equipment": "Echipament",
+        "opportunity": "Loc de muncă / oportunitate",
+        "offer": "Ofertă",
+        "item": "Element din piață"
+      }
+    },
+    "profile": {
+      "accountType": "Tip cont",
+      "onboardingStatus": "Stare înregistrare",
+      "verificationStatus": "Stare verificare",
+      "publicationStatus": "Stare publicare",
+      "preferredLocale": "Limba preferată",
+      "preferredLocaleHint": "Folosită pentru e-mailuri, notificări și documentele trimise către tine."
+    },
+    "metric": {
+      "unreadMessages": "Mesaje necitite",
+      "openSupportTickets": "Tichete de asistență deschise",
+      "draftProjects": "Proiecte în ciornă",
+      "projectsPendingReview": "Proiecte în așteptarea revizuirii",
+      "closingSoonTenders": "Licitații care se închid curând",
+      "openOpportunities": "Oportunități deschise",
+      "draftOffers": "Oferte în ciornă",
+      "submittedOffers": "Oferte trimise",
+      "shortlistedOffers": "Oferte preselectate",
+      "wonOffers": "Oferte câștigate",
+      "lostOffers": "Oferte pierdute",
+      "receivedOffers": "Oferte primite",
+      "shortlistedReceivedOffers": "Oferte primite preselectate",
+      "tenderInvitations": "Invitații la licitații",
+      "unacknowledgedAddenda": "Addendumuri de confirmat",
+      "openBidderQuestions": "Întrebări de la ofertanți",
+      "receivedApplications": "Candidaturi primite",
+      "teamMembers": "Membri ai echipei",
+      "pendingInvitations": "Invitații în așteptare",
+      "receivedEnquiries": "Solicitări de echipamente",
+      "expiringDocuments": "Documente care expiră",
+      "expiringCredentials": "Certificări care expiră",
+      "submittedApplications": "Candidaturi trimise",
+      "shortlistedApplications": "Candidaturi preselectate",
+      "interviewApplications": "Interviuri",
+      "offeredApplications": "Oferte primite",
+      "hiredApplications": "Angajări"
+    },
+    "persona": {
+      "tradingName": "Denumire comercială",
+      "primaryCategory": "Categorie principală",
+      "availabilityStatus": "Stare de disponibilitate",
+      "availableFrom": "Disponibil de la",
+      "employmentTypes": "Tipuri de angajare preferate",
+      "workArrangement": "Mod de lucru preferat",
+      "willingToTravel": "Disponibil să mă deplasez pentru muncă",
+      "travelRadius": "Rază de deplasare (km)",
+      "ownTransport": "Am transport propriu",
+      "workPermits": "Țări cu permis de muncă",
+      "workPermitsHint": "Coduri de țară din două litere separate prin virgulă, de exemplu IT, RO.",
+      "expectedPay": "Remunerație așteptată",
+      "expectedPayHint": "Vizibilă doar angajatorilor la care aplici.",
+      "payCurrency": "Monedă",
+      "payInterval": "Interval de plată",
+      "maxConcurrentProjects": "Proiecte simultane maxime",
+      "crewSize": "Dimensiunea echipei",
+      "emergencyCallout": "Disponibil pentru intervenții urgente",
+      "licenceCountry": "Țara licenței",
+      "professionalBody": "Organism profesional",
+      "hourlyRate": "Tarif orar de la",
+      "rateCurrency": "Moneda tarifului",
+      "remoteServices": "Ofer servicii la distanță",
+      "typicalBudgetMin": "Buget tipic de la",
+      "typicalBudgetMax": "Buget tipic până la",
+      "budgetCurrency": "Moneda bugetului",
+      "acceptsIntroductions": "Accept prezentări din partea furnizorilor",
+      "availabilityStatuses": {
+        "AVAILABLE": "Disponibil",
+        "LIMITED": "Disponibilitate limitată",
+        "UNAVAILABLE": "Indisponibil",
+        "OPEN_TO_OFFERS": "Deschis la oferte",
+        "NOT_DISCLOSED": "Nedeclarat"
+      },
+      "employmentTypeValues": {
+        "FULL_TIME": "Normă întreagă",
+        "PART_TIME": "Normă parțială",
+        "TEMPORARY": "Temporar",
+        "CONTRACT": "Pe contract",
+        "SEASONAL": "Sezonier",
+        "APPRENTICE": "Ucenicie",
+        "DAY_LABOUR": "Muncă cu ziua"
+      },
+      "workArrangementValues": {
+        "ON_SITE": "La fața locului",
+        "HYBRID": "Hibrid",
+        "REMOTE": "La distanță",
+        "MOBILE": "Mobil"
+      },
+      "payIntervalValues": {
+        "HOURLY": "Pe oră",
+        "DAILY": "Pe zi",
+        "WEEKLY": "Pe săptămână",
+        "MONTHLY": "Pe lună",
+        "FIXED": "Preț fix"
+      }
+    },
+    "collections": {
+      "title": "Competențe, limbi și acoperire",
+      "hint": "Determină potrivirea în căutări și ce văd clienții pe profilul tău public.",
+      "skills": "Competențe",
+      "languages": "Limbi",
+      "categories": "Categorii",
+      "serviceRegions": "Regiuni deservite",
+      "level": "Nivel",
+      "proficiency": "Competență",
+      "levels": {
+        "BEGINNER": "Începător",
+        "INTERMEDIATE": "Intermediar",
+        "ADVANCED": "Avansat",
+        "EXPERT": "Expert"
+      },
+      "proficiencies": {
+        "BASIC": "De bază",
+        "CONVERSATIONAL": "Conversațional",
+        "PROFESSIONAL": "Profesional",
+        "NATIVE": "Nativ"
+      }
+    },
+    "marketplace": { "withdraw": "Retrage" },
+    "workforce": {
+      "legendAvailable": "Disponibil",
+      "legendPreferred": "Preferat",
+      "legendUnavailable": "Indisponibil",
+      "legendBusy": "Ocupat (angajament activ)",
+      "engagement": "Angajament"
+    },
+    "workspace": {
+      "tags": "Etichete",
+      "publish": "Solicită publicarea",
+      "publishRequested": "Cererea de publicare a fost trimisă spre verificare.",
+      "remove": "Elimină",
+      "identifiersHint": "Identificatori de firmă precum codul de TVA și numărul de înregistrare. Doar cei publici apar în profil.",
+      "identifierKind": "Tip",
+      "identifierCountry": "Țară",
+      "identifierValue": "Valoare",
+      "identifierPrimary": "Principal",
+      "identifierPublic": "Afișează public",
+      "addIdentifier": "Adaugă identificator",
+      "identifierKinds": {
+        "VAT": "Cod TVA",
+        "FISCAL_CODE": "Cod fiscal",
+        "REGISTRATION_NUMBER": "Număr de înregistrare",
+        "REA": "REA",
+        "EORI": "EORI",
+        "LEI": "LEI",
+        "OTHER": "Altul"
+      },
+      "servicesHint": "Enumeră serviciile oferite de companie pentru a fi găsit de clienți.",
+      "serviceName": "Serviciu",
+      "addService": "Adaugă serviciu",
+      "certificationsHint": "Certificările apar în profilul public și generează notificări de expirare.",
+      "certificationName": "Certificare",
+      "certificationIssuer": "Emisă de",
+      "certificationIssuedAt": "Data emiterii",
+      "certificationExpiresAt": "Data expirării",
+      "addCertification": "Adaugă certificare",
+      "status": {
+        "DRAFT": "Ciornă",
+        "PENDING_VERIFICATION": "În așteptarea verificării",
+        "ACTIVE": "Activă",
+        "REJECTED": "Respinsă",
+        "SUSPENDED": "Suspendată",
+        "ARCHIVED": "Arhivată"
+      },
+      "publication": {
+        "PRIVATE": "Nepublicată",
+        "PENDING_REVIEW": "În așteptarea verificării",
+        "PUBLISHED": "Publicată",
+        "REJECTED": "Respinsă",
+        "ARCHIVED": "Arhivată"
+      },
+      "claims": {
+        "title": "Revendicări de companie",
+        "hint": "Cereri de preluare a unei fișe de companie existente.",
+        "status": {
+          "NOT_SUBMITTED": "Netrimisă",
+          "PENDING": "În verificare",
+          "UNDER_REVIEW": "În verificare",
+          "VERIFIED": "Aprobată",
+          "CHANGES_REQUESTED": "Modificări solicitate",
+          "REJECTED": "Respinsă",
+          "EXPIRED": "Expirată"
+        }
+      }
+    },
+    "companyForm": {
+      "create": "Creează companie",
+      "description": "Înregistrează un spațiu nou al companiei cu identitate, locație și setări de vizibilitate.",
+      "companyType": "Tip companie",
+      "postalCode": "Cod poștal",
+      "subcategory": "Subcategorie",
+      "steps": {
+        "identity": "Identitate",
+        "identifiers": "Identificatori",
+        "operations": "Operațiuni",
+        "visibility": "Vizibilitate"
+      },
+      "types": {
+        "GENERAL_CONTRACTOR": "Antreprenor general",
+        "SUBCONTRACTOR": "Subcontractant",
+        "SUPPLIER": "Furnizor",
+        "EQUIPMENT": "Furnizor de echipamente",
+        "PROFESSIONAL": "Servicii profesionale"
+      }
+    },
+    "verification": {
+      "openIssues": "Modificări solicitate",
+      "decisions": "Istoric verificări",
+      "reviewer": "Evaluator"
+    },
+    "fields": {
+      "title": "Titlu",
+      "reference": "Referință",
+      "description": "Descriere",
+      "category": "Categorie",
+      "city": "Oraș",
+      "country": "Țară",
+      "budget": "Buget",
+      "budgetMin": "Buget minim",
+      "budgetMax": "Buget maxim",
+      "currency": "Monedă",
+      "deadline": "Termen-limită",
+      "startsAt": "Data începerii",
+      "publicationStatus": "Publicare",
+      "status": "Stare",
+      "kind": "Tip",
+      "summary": "Rezumat",
+      "profession": "Profesie",
+      "durationDays": "Durată (zile)",
+      "employmentType": "Tip angajare",
+      "workArrangement": "Regim de lucru",
+      "workersNeeded": "Lucrători necesari",
+      "sourceKind": "Sursă",
+      "submissionChannel": "Canal de depunere",
+      "noticeType": "Tip anunț",
+      "sourceUrl": "URL sursă",
+      "submissionDeadline": "Termen de depunere",
+      "name": "Nume",
+      "listingType": "Tip listare",
+      "condition": "Stare",
+      "brand": "Marcă",
+      "model": "Model",
+      "serialNumber": "Număr de serie",
+      "yearManufactured": "An",
+      "dailyRate": "Tarif zilnic",
+      "weeklyRate": "Tarif săptămânal",
+      "monthlyRate": "Tarif lunar",
+      "salePrice": "Preț de vânzare",
+      "operatorIncluded": "Operator inclus",
+      "deliveryAvailable": "Livrare disponibilă",
+      "coverMessage": "Mesaj de prezentare",
+      "scope": "Domeniu",
+      "assumptions": "Ipoteze",
+      "exclusions": "Excluderi",
+      "proposedPrice": "Preț propus",
+      "totalPrice": "Preț total",
+      "revisionCount": "Revizii",
+      "availabilityDate": "Data disponibilității",
+      "offeringType": "Tip ofertă",
+      "sku": "SKU",
+      "unitOfMeasure": "Unitate",
+      "moq": "Cantitate minimă de comandă",
+      "leadTimeDays": "Timp de livrare (zile)",
+      "priceOnRequest": "Preț la cerere",
+      "indicativePrice": "Preț orientativ",
+      "legalName": "Denumire juridică",
+      "registrationNumber": "Număr de înregistrare",
+      "vatNumber": "Cod TVA",
+      "email": "E-mail",
+      "phone": "Telefon",
+      "website": "Site web",
+      "agreedPrice": "Preț convenit",
+      "budgetPublic": "Buget public",
+      "estimatedEndAt": "Data estimată de finalizare",
+      "actualEndAt": "Data reală de finalizare",
+      "addressLine1": "Adresă",
+      "postalCode": "Cod poștal",
+      "latitude": "Latitudine",
+      "longitude": "Longitudine",
+      "projectStage": "Etapa proiectului",
+      "procurementStage": "Etapa achiziției",
+      "sustainabilityTargets": "Obiective de sustenabilitate",
+      "accessibilityRequirements": "Cerințe de accesibilitate",
+      "updatedAt": "Ultima actualizare",
+      "tags": "Etichete",
+      "packages": "Pachete de lucrări",
+      "criteria": "Criterii de evaluare",
+      "media": "Documente și media",
+      "lots": "Loturi",
+      "value": "Valoare estimată",
+      "procurementMethod": "Metodă de achiziție",
+      "inquiryDeadline": "Termen pentru întrebări",
+      "evaluationAt": "Data evaluării",
+      "awardAt": "Data atribuirii",
+      "submissionMethod": "Metodă de depunere",
+      "eligibility": "Eligibilitate",
+      "awardCriteria": "Criterii de atribuire",
+      "sourceAuthority": "Autoritate sursă",
+      "visibility": "Vizibilitate",
+      "ratePublic": "Tarife publice"
+    },
+    "edit": {
+      "catalogueTitle": "Editează elementul de catalog",
+      "equipmentTitle": "Editează echipamentul"
+    },
+    "members": {
+      "permissions": "Ai {count} permisiuni în spațiul de lucru al acestei companii.",
+      "title": "Funcție",
+      "department": "Departament"
+    }
+  },
+  "locations": {
+    "fields": {
+      "country": "Țară",
+      "region": "Regiune / Provincie",
+      "cityName": "Oraș",
+      "none": "Selectează…"
+    },
+    "errors": {
+      "optionsFailed": "Opțiunile de locație nu au putut fi încărcate. Încearcă din nou."
+    }
+  },
+  "onboarding": {
+    "fields": { "location": "Locație" },
+    "hints": { "location": "Selectează țara, regiunea și orașul din liste." },
+    "reviewFeedback": {
+      "title": "Actualizări solicitate înainte de retrimitere"
+    }
+  },
+  "publicSite": {
+    "actions": {
+      "saveToFavorites": "Salvează la favorite",
+      "savedItem": "Salvat la favorite",
+      "viewSaved": "Vezi elementele salvate"
+    }
+  }
+}

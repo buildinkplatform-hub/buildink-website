@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { DatePicker } from "@/components/ui/date-picker"
@@ -31,6 +31,7 @@ import { AssetPreviewDialog } from "@/features/onboarding/components/asset-previ
 import { uploadOnboardingFile } from "@/features/onboarding/data/upload-file"
 import {
   documentMetadataSchema,
+  expiryRequiredForDocument,
   type DocumentMetadata,
 } from "@/features/onboarding/schemas/onboarding.schemas"
 import { Link, useRouter } from "@/i18n/navigation"
@@ -84,6 +85,7 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
       ownerName: draft.account.name,
     },
   })
+  const documentType = useWatch({ control, name: "documentType" })
 
   function chooseFile(files: FileList | null) {
     const file = files?.[0]
@@ -121,7 +123,7 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
         documentType: metadata.data.documentType,
         ownerName: metadata.data.ownerName,
         issuingCountry: metadata.data.issuingCountry,
-        expiresAt: metadata.data.expiryDate,
+        expiresAt: metadata.data.expiryDate || undefined,
       })
       const document: OnboardingDocument = {
         id,
@@ -224,7 +226,7 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
               error={
                 errors.expiryDate ? t("onboarding.errors.field") : undefined
               }
-              required
+              required={expiryRequiredForDocument(documentType ?? "")}
             >
               <Controller
                 name="expiryDate"
@@ -361,10 +363,14 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
                       (country) => country.code === document.issuingCountry,
                     )?.name ?? document.issuingCountry}
                   </span>
-                  <span aria-hidden="true">•</span>
-                  <span>
-                    {t("onboarding.expires", { date: document.expiryDate })}
-                  </span>
+                  {document.expiryDate ? (
+                    <>
+                      <span aria-hidden="true">•</span>
+                      <span>
+                        {t("onboarding.expires", { date: document.expiryDate })}
+                      </span>
+                    </>
+                  ) : null}
                   <span aria-hidden="true">•</span>
                   <span className="ltr-content">
                     {(document.size / 1024 / 1024).toFixed(2)} MB

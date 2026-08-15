@@ -1,0 +1,7 @@
+{
+  "notFound": {
+    "title": "Pagina nu a fost găsită",
+    "body": "Pagina s-a putut muta sau adresa este incompletă.",
+    "action": "Înapoi acasă"
+  }
+}

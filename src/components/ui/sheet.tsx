@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils/cn"
+import { useTranslations } from "next-intl"
 
 export const Sheet = Dialog.Root
 export const SheetTrigger = Dialog.Trigger
@@ -42,6 +43,7 @@ export function SheetHeader({
   title: string
   children?: ReactNode
 }) {
+  const t = useTranslations("common")
   return (
     <div className="mb-6 flex items-center justify-between gap-3">
       <Dialog.Title className="text-brand-navy text-lg font-bold">
@@ -52,7 +54,7 @@ export function SheetHeader({
           <button
             type="button"
             className="border-line inline-flex size-11 items-center justify-center rounded-xl border bg-white"
-            aria-label="Close"
+            aria-label={t("closeDialog")}
           >
             <X className="size-5" />
           </button>

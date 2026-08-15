@@ -1,9 +1,23 @@
 {
   "onboarding": {
     "step": "Step {current} of 4",
+    "stepAccountType": "Account type",
+    "stepProfile": "Profile essentials",
+    "stepDocuments": "Verification",
+    "stepReview": "Review & publish",
+    "whyWeAsk": "Why we ask",
+    "visibilityPublic": "Public",
+    "visibilityPrivate": "Private until you choose otherwise",
+    "why": {
+      "phone": "Used for account recovery and, if you allow it, marketplace contact.",
+      "country": "Region matching depends on where you operate.",
+      "region": "Opportunities are ranked by service radius and region.",
+      "contactPreference": "Controls whether your phone or email can appear publicly."
+    },
     "noFiles": "No documents selected yet.",
     "selectCategory": "Select category",
     "selectSubcategory": "Select subcategory",
+    "searchCompany": "Search for an existing company",
     "viewFull": "View full size",
     "preview": "File preview",
     "previewLoading": "Loading secure preview...",
@@ -12,6 +26,9 @@
     "errors": {
       "uploadFailed": "The upload failed. Please try again.",
       "previewFailed": "The secure preview could not be loaded. Please try again."
+    },
+    "reviewFeedback": {
+      "title": "Updates requested before resubmitting"
     }
   }
 }

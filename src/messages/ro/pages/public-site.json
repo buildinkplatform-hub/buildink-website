@@ -1,0 +1,353 @@
+{
+  "publicSite": {
+    "nav": {
+      "groups": {
+        "browse": "Răsfoiește",
+        "opportunities": "Oportunități",
+        "marketplace": "Companii și servicii",
+        "resources": "Resurse"
+      },
+      "items": {
+        "home": "Acasă",
+        "search": "Căutare globală",
+        "companies": "Companii",
+        "profiles": "Profile publice",
+        "workers": "Lucrători",
+        "subcontractors": "Subcontractori",
+        "serviceProviders": "Furnizori de servicii",
+        "specializedServices": "Servicii specializate",
+        "trades": "Meserii",
+        "safetyCertifications": "Siguranță și certificări",
+        "suppliers": "Furnizori",
+        "equipment": "Piața de echipamente",
+        "projects": "Proiecte",
+        "tenders": "Licitații deschise",
+        "companyRequests": "Caut o companie",
+        "workerRequests": "Caut lucrători",
+        "serviceRequests": "Cereri de servicii",
+        "howItWorks": "Cum funcționează",
+        "verification": "Verificare și siguranță",
+        "help": "Centru de ajutor",
+        "faq": "Întrebări frecvente",
+        "blog": "Blog și analize",
+        "about": "Despre Buildink",
+        "contact": "Contact",
+        "privacy": "Politica de confidențialitate",
+        "terms": "Termeni și condiții",
+        "cookies": "Politica de cookie-uri"
+      }
+    },
+    "footer": {
+      "platform": "Platformă",
+      "resources": "Resurse",
+      "company": "Companie",
+      "legal": "Legal",
+      "note": "Fundația pieței publice Buildink",
+      "details": "Creată pentru descoperire multilingvă în construcții, încredere și predare protejată a fluxului de lucru."
+    },
+    "newsletter": {
+      "title": "Rămâi aproape de următoarele oportunități Buildink",
+      "body": "Primește actualizări de produs, analize selectate ale pieței și noutăți de lansare, cu consimțământ.",
+      "placeholder": "Introdu adresa de email",
+      "consent": "Abonându-te, confirmi că dorești actualizări ocazionale despre piață și produs și te poți dezabona oricând.",
+      "action": "Abonează-te",
+      "success": "Mulțumim — emailul a fost înregistrat pentru newsletterul site-ului public."
+    },
+    "cookiesBanner": {
+      "title": "Folosim cookie-uri pentru a menține piața publică rapidă, sigură și relevantă.",
+      "body": "Poți accepta configurația recomandată acum sau îți poți gestiona preferințele mai târziu din pagina politicii de cookie-uri.",
+      "accept": "Acceptă cookie-urile",
+      "manage": "Gestionează cookie-urile"
+    },
+    "filters": {
+      "title": "Rafinează rezultatele",
+      "search": "Căutare",
+      "searchPlaceholder": "Caută după cuvânt-cheie, serviciu, meserie sau numele companiei",
+      "region": "Regiune",
+      "allRegions": "Toate regiunile",
+      "category": "Categorie",
+      "allCategories": "Toate categoriile",
+      "verification": "Verificare",
+      "allStatuses": "Toate stările"
+    },
+    "actions": {
+      "clearFilters": "Șterge filtrele",
+      "applyFilters": "Aplică filtrele",
+      "viewDetails": "Vezi detaliile",
+      "primaryContact": "Contactează sau cere o ofertă",
+      "saveItem": "Salvează după autentificare",
+      "readArticle": "Citește articolul"
+    },
+    "search": {
+      "resultCount": "{count} rezultate publice",
+      "emptyTitle": "Niciun rezultat public potrivit încă",
+      "emptyBody": "Încearcă să extinzi filtrele de regiune, categorie sau verificare pentru a redeschide descoperirea."
+    },
+    "stats": {
+      "publicResults": "Rezultate publice",
+      "regions": "Regiuni",
+      "categories": "Categorii",
+      "verificationStates": "Stări de verificare"
+    },
+    "directory": {
+      "quickGuideTitle": "Ghid rapid",
+      "quickGuideBody": "Folosește împreună filtrele de categorie, regiune și verificare pentru a trece de la descoperire largă la o listă scurtă."
+    },
+    "modules": {
+      "companies": "Companii",
+      "profiles": "Profile",
+      "suppliers": "Furnizori",
+      "equipment": "Echipamente",
+      "projects": "Proiecte",
+      "tenders": "Licitații",
+      "opportunities-companies": "Cereri pentru companii",
+      "opportunities-workers": "Cereri pentru lucrători"
+    },
+    "tabs": {
+      "overview": "Prezentare",
+      "services": "Servicii",
+      "projects": "Proiecte",
+      "catalogue": "Catalog",
+      "equipment": "Echipamente",
+      "reviews": "Recenzii",
+      "certifications": "Certificări",
+      "contact": "Contact"
+    },
+    "detail": {
+      "contactTitle": "Contact și încredere",
+      "reportHint": "Paginile publice de detaliu trebuie să ofere vizitatorilor o cale sigură de a raporta conținut public incorect sau nesigur.",
+      "relatedTitle": "Elemente publice conexe",
+      "relatedBody": "Menține descoperirea activă prin legături către un set mic și relevant de înregistrări publice vecine.",
+      "reviewSummary": "{rating} ({count} recenzii)",
+      "aboutTitle": "Despre {name}",
+      "keyMetricsTitle": "Indicatori cheie",
+      "officialWebsiteTitle": "Site oficial",
+      "officialWebsiteBody": "Continuă către site-ul public aprobat când ai nevoie de mai mult context despre companie.",
+      "visitWebsite": "Vizitează site-ul"
+    },
+    "userReviews": {
+      "title": "Recenzii",
+      "subtitle": "Evaluări de la parteneri după o ofertă, candidatură sau colaborare eligibilă.",
+      "emptyTitle": "Nicio recenzie publicată încă",
+      "emptyBody": "Recenziile aprobate apar aici. Listările goale rămân goale — scorurile nu sunt inventate.",
+      "average": "{rating} din 5",
+      "count": "{count} recenzii",
+      "verifiedBadge": "Colaborare verificată",
+      "formTitle": "Scrie o recenzie",
+      "rating": "Evaluare",
+      "starLabel": "{count} stele",
+      "titleLabel": "Titlu",
+      "comment": "Comentariu",
+      "locale": "Limbă",
+      "submit": "Trimite recenzia",
+      "success": "Mulțumim — recenzia a fost trimisă pentru moderare.",
+      "signIn": "Autentifică-te pentru a scrie o recenzie",
+      "signInBody": "Poți recenza această listare după autentificare și o interacțiune eligibilă pe piață.",
+      "ineligible": "Nu poți recenza încă această listare",
+      "ineligibleBody": "Lasă o recenzie după o ofertă, candidatură sau colaborare finalizată eligibilă. Membrii verificați care au interacționat deja cu această listare pot trimite una.",
+      "alreadyReviewed": "Ai trimis deja o recenzie pentru această listare.",
+      "selfTarget": "Nu poți recenza propria listare.",
+      "histogram": "Distribuția evaluărilor",
+      "histogramStar": "{count} stele",
+      "pendingTitle": "În așteptarea moderării",
+      "pendingBody": "Mulțumim — recenzia a fost trimisă și așteaptă moderare. Va apărea aici după aprobare."
+    },
+    "cta": {
+      "title": "Treci de la descoperirea publică la un flux de lucru Buildink protejat",
+      "body": "Site-ul public trebuie să explice valoarea clar, apoi să predea către înregistrare și acțiuni de spațiu de lucru în funcție de rol, fără fundături.",
+      "action": "Creează-ți contul Buildink"
+    },
+    "forms": {
+      "contactTitle": "Trimite un mesaj",
+      "name": "Numele tău",
+      "email": "Adresă de email",
+      "message": "Cum te putem ajuta?",
+      "send": "Trimite mesajul",
+      "contactSuccess": "Mulțumim — mesajul tău a fost primit.",
+      "report": "Raportează această listare",
+      "reportSuccess": "Mulțumim — raportul a fost primit."
+    },
+    "faq": {
+      "items": {
+        "profileType": "Cum aleg tipul potrivit de profil?",
+        "verification": "Ce înseamnă de fapt verificarea?",
+        "contact": "Cum funcționează setările publice de contact?"
+      },
+      "answers": {
+        "profileType": "Tipul de profil descrie cum apari pe piața publică. Autoritatea companiei vine tot din calitatea de membru și permisiuni, nu doar din etichetă.",
+        "verification": "Verificarea explică ce verificări publice a finalizat Buildink. Nu trebuie să sugereze garanții dincolo de domeniul publicat al verificării.",
+        "contact": "Paginile publice de detaliu trebuie să arate doar metodele de contact aprobate, în timp ce datele sensibile sau neaprobate rămân private."
+      }
+    },
+    "legal": {
+      "updated": "Actualizat {date}"
+    },
+    "pages": {
+      "search": {
+        "eyebrow": "O singură suprafață de căutare",
+        "title": "Caută în piața publică Buildink",
+        "description": "Răsfoiește companii, persoane, furnizori, echipamente, proiecte, licitații și cereri deschise dintr-un flux de descoperire multilingv."
+      },
+      "companies": {
+        "eyebrow": "Descoperirea companiilor",
+        "title": "Găsește companii de construcții cu dovezi publice",
+        "description": "Caută după regiune, categorie și semnale de încredere pentru a trece rapid de la evaluarea publică la următoarea acțiune potrivită."
+      },
+      "profiles": {
+        "eyebrow": "Descoperire profesională",
+        "title": "Răsfoiește profilele publice ale pieței",
+        "description": "Explorează cele cinci tipuri de profil cu carduri adaptate rolului, dovezi publice și căi de contact sigure pentru confidențialitate."
+      },
+      "suppliers": {
+        "eyebrow": "Descoperirea furnizorilor",
+        "title": "Explorează afacerile furnizorilor și cataloagele aprobate",
+        "description": "Paginile publice ale furnizorilor trebuie să clarifice ce oferă afacerea, unde operează și cum pot întreba vizitatorii."
+      },
+      "equipment": {
+        "eyebrow": "Piața de echipamente",
+        "title": "Răsfoiește echipamente cu semnale clare de disponibilitate",
+        "description": "Păstrează descoperirea echipamentelor ușor de scanat, cu categorie, stare, disponibilitate și contextul furnizorului în față."
+      },
+      "projects": {
+        "eyebrow": "Proiecte și oportunități",
+        "title": "Descoperă proiecte publice de construcții",
+        "description": "Paginile publice de proiect trebuie să arate domeniul, calendarul, locația și regulile publice de buget, fără a scurge date private de execuție."
+      },
+      "tenders": {
+        "eyebrow": "Descoperirea licitațiilor",
+        "title": "Monitorizează licitațiile deschise și termenele",
+        "description": "Listările de licitații trebuie să evidențieze sursa, claritatea datelor și o predare curată către fluxurile protejate de ofertare."
+      },
+      "companyRequests": {
+        "eyebrow": "Caut o companie",
+        "title": "Cereri deschise pentru companii și subcontractanți",
+        "description": "Aceste listări trebuie să se simtă distincte de proiecte și licitații, rămânând structurate, indexabile și ușor de comparat."
+      },
+      "workerRequests": {
+        "eyebrow": "Caut lucrători",
+        "title": "Cereri publice de forță de muncă după meserie și regiune",
+        "description": "Arată clar meseria, cantitatea, calendarul și termenii publici, ca lucrătorii și contractorii să poată decide dacă continuă."
+      },
+      "serviceRequests": {
+        "eyebrow": "Cereri de servicii",
+        "title": "Cereri publice pentru servicii specializate de construcții",
+        "description": "Găsește RFQ-uri de servicii structurate fără a expune termeni comerciali privați."
+      },
+      "workers": {
+        "eyebrow": "Lucrători calificați",
+        "title": "Găsește lucrători verificați după meserie și regiune",
+        "description": "Cardurile lucrătorilor arată profesia, competențele, disponibilitatea și verificarea publică, fără documente private."
+      },
+      "subcontractors": {
+        "eyebrow": "Contractori de meserie",
+        "title": "Descoperă subcontractori gata să liciteze",
+        "description": "Compară meseria, dimensiunea echipei, raza de serviciu și semnalele de calificare înainte de a invita sau contacta."
+      },
+      "serviceProviders": {
+        "eyebrow": "Servicii specializate",
+        "title": "Răsfoiește furnizori profesioniști de servicii pentru construcții",
+        "description": "Vezi categorii de servicii, licențe, regiuni și semnale de răspuns pe un profil sigur public."
+      },
+      "trades": {
+        "eyebrow": "Meserii",
+        "title": "Explorează companii și profesioniști după meserie",
+        "description": "Pornește de la o meserie și treci la companii, subcontractori și lucrători cu capacități potrivite."
+      },
+      "howItWorks": {
+        "eyebrow": "Claritate de proces",
+        "title": "Cum funcționează Buildink pentru fiecare audiență publică",
+        "description": "Explică descoperirea, verificarea, publicarea și fluxurile de răspuns înainte de a cere vizitatorilor să creeze un cont.",
+        "sectionOneTitle": "Parcursuri adaptate rolului",
+        "sectionOneBody": "Această pagină trebuie să răspundă la prima întrebare practică a fiecărui vizitator: ce pot face aici și ce urmează?",
+        "cards": {
+          "card1Title": "Pentru companii și proprietari",
+          "card1Body": "Clarifică modul în care companiile publică identități publice, proiecte, cereri și căi de contact aprobate.",
+          "card2Title": "Pentru profesioniști",
+          "card2Body": "Arată cum sunt descoperiți și verificați lucrătorii, contractorii și furnizorii de servicii, într-un mod sigur public.",
+          "card3Title": "Pentru furnizori și proprietari de echipamente",
+          "card3Body": "Explică cum vizibilitatea furnizorului și a echipamentului se transformă în solicitări reale, fără a expune date private."
+        }
+      },
+      "verification": {
+        "eyebrow": "Încredere și siguranță",
+        "title": "Ce verifică Buildink — și ce nu",
+        "description": "Folosește un limbaj clar pentru a descrie semnificația verificării publice, limitele de confidențialitate și cum pot raporta vizitatorii îngrijorări.",
+        "sectionOneTitle": "Verificare cu limite oneste",
+        "sectionOneBody": "Paginile de încredere funcționează cel mai bine când sporesc încrederea fără a pretinde mai mult decât poate garanta platforma.",
+        "cards": {
+          "card1Title": "Insigne de verificare",
+          "card1Body": "Explică ce reprezintă o insignă pe paginile de companie, profil și listare.",
+          "card2Title": "Gestionarea confidențialității",
+          "card2Body": "Fă clar că identitatea privată și fișierele de verificare nu aparțin suprafeței publice.",
+          "card3Title": "Flux de raportare și recenzie",
+          "card3Body": "Vizitatorii trebuie să știe întotdeauna cum să raporteze conținut public nesigur, înșelător sau incorect."
+        }
+      },
+      "about": {
+        "eyebrow": "Povestea platformei",
+        "title": "Despre Buildink",
+        "description": "Prezintă povestea pieței cu Italia în prim-plan, modelul de încredere și problema practică pe care Buildink o rezolvă.",
+        "sectionOneTitle": "O poveste de produs ancorată în munca reală",
+        "sectionOneBody": "Pagina Despre trebuie să fie credibilă și specifică, nu un text generic de startup.",
+        "cards": {
+          "card1Title": "Misiune",
+          "card1Body": "Arată de ce există Buildink și ce fluxuri fragmentate încearcă să simplifice.",
+          "card2Title": "Pe cine deservește",
+          "card2Body": "Vorbește clar companiilor, profesioniștilor, furnizorilor, proprietarilor de echipamente și echipelor de proiect.",
+          "card3Title": "Principii de încredere",
+          "card3Body": "Leagă povestea site-ului public de verificare, confidențialitate și descoperire profesională mai sigură."
+        }
+      },
+      "contact": {
+        "eyebrow": "Contact direct",
+        "title": "Contactează Buildink",
+        "description": "Creează o cale clară pentru solicitări de business, suport și întrebări generale, cu ghidaj de contact care respectă confidențialitatea.",
+        "sectionOneTitle": "Căi de contact de încredere",
+        "sectionOneBody": "Paginile de contact trebuie să fie practice, bine structurate și respectuoase față de diferențele regionale și de limbă.",
+        "cards": {
+          "card1Title": "Rutare pe teme",
+          "card1Body": "Ajută vizitatorii să aleagă între suport, parteneriate, întrebări de piață și solicitări generale de business.",
+          "card2Title": "Date de business",
+          "card2Body": "Afișează doar adresa, emailul, telefonul și programul oficiale aprobate.",
+          "card3Title": "Formulare conștiente de confidențialitate",
+          "card3Body": "Fluxul public de contact trebuie să valideze curat și să explice ce se întâmplă după trimitere."
+        }
+      },
+      "help": {
+        "eyebrow": "Suport self-service",
+        "title": "Centru de ajutor",
+        "description": "Începe cu conținut de suport bazat pe sarcini, ca vizitatorii publici să poată răspunde la întrebări comune înainte de a deschide un tichet."
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Întrebări frecvente Buildink",
+        "description": "Păstrează întrebările comune despre piață concise, ușor de scanat și de navigat în toate limbile."
+      },
+      "blog": {
+        "eyebrow": "Editorial și SEO",
+        "title": "Blog și analize",
+        "description": "Publică conținut lung de încredere care susține descoperirea, încrederea și vizibilitatea în căutarea multilingvă."
+      },
+      "privacy": {
+        "eyebrow": "Legal",
+        "title": "Politica de confidențialitate",
+        "description": "Această pagină este structurată pentru textul juridic aprobat al clientului, cu navigare clară și vizibilitatea actualizărilor."
+      },
+      "terms": {
+        "eyebrow": "Legal",
+        "title": "Termeni și condiții",
+        "description": "Prezintă termenii de serviciu aprobați cu aceeași lizibilitate și ierarhie de informații ca restul site-ului."
+      },
+      "cookies": {
+        "eyebrow": "Legal",
+        "title": "Politica de cookie-uri",
+        "description": "Explică categoriile de cookie-uri, intenția furnizorilor și controalele utilizatorului într-un mod ușor de înțeles pe mobil."
+      }
+    },
+    "home": {
+      "proofEyebrow": "Dovezi de piață",
+      "proofTitle": "Conceput să arate credibil înainte ca un utilizator să se autentifice",
+      "proofBody": "Experiența publică trebuie să arate adâncimea reală a pieței, semnale de încredere și parcursuri specifice rolului, fără a expune date operaționale private."
+    }
+  }
+}

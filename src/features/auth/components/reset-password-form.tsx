@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckCircle2, Link2Off, LoaderCircle } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -13,10 +13,21 @@ import { PasswordInput } from "@/features/auth/components/password-input"
 import { resetPasswordAction } from "@/features/auth/actions/auth.actions"
 import { Link } from "@/i18n/navigation"
 
-export function ResetPasswordForm({ validSession }: { validSession: boolean }) {
+export function ResetPasswordForm({
+  validSession,
+  next,
+}: {
+  validSession: boolean
+  next?: string
+}) {
+  const locale = useLocale()
   const t = useTranslations()
   const [complete, setComplete] = useState(false)
   const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
+  const safeNext =
+    next && next.startsWith("/") && !next.startsWith("//")
+      ? next
+      : `/${locale}/onboarding/profile-type`
   const schema = z
     .object({
       password: z.string().regex(passwordRule, t("auth.errors.password")),
@@ -59,7 +70,9 @@ export function ResetPasswordForm({ validSession }: { validSession: boolean }) {
         </h1>
         <p className="text-muted mt-3">{t("auth.resetSuccess")}</p>
         <Button asChild className="mt-7">
-          <Link href="/login">{t("common.login")}</Link>
+          <Link href={{ pathname: "/login", query: { next: safeNext } }}>
+            {t("common.login")}
+          </Link>
         </Button>
       </div>
     )

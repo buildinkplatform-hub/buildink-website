@@ -22,10 +22,12 @@ import {
   deleteUploadAction,
   getUploadDownloadUrlAction,
   saveProfileAction,
+  searchCompaniesAction,
 } from "@/features/onboarding/actions/onboarding.actions"
 import { AssetPreviewDialog } from "@/features/onboarding/components/asset-preview-dialog"
 import { CategoryPicker } from "@/features/onboarding/components/category-picker"
 import { PhoneInput } from "@/features/onboarding/components/phone-input"
+import { CityLocationField } from "@/components/forms/city-location-field"
 import { getProfileSchema } from "@/features/onboarding/schemas/onboarding.schemas"
 import { uploadOnboardingFile } from "@/features/onboarding/data/upload-file"
 import { Link, useRouter } from "@/i18n/navigation"
@@ -34,6 +36,7 @@ import {
   localeMetadata,
   MAX_PROFILE_IMAGE_SIZE,
 } from "@/shared/constants/platform"
+import { profileTypeForAccountType } from "@/shared/lib/account-type-mapping"
 import type { OnboardingCatalog, ProfileType } from "@/shared/types/platform"
 import { locales } from "@/shared/types/platform"
 import { OnboardingFrame } from "./onboarding-frame"
@@ -41,7 +44,15 @@ import { useOnboardingDraft } from "./onboarding-provider"
 
 interface ProfileField {
   name: string
-  kind?: "input" | "textarea" | "select" | "phone" | "country" | "category"
+  kind?:
+    | "input"
+    | "textarea"
+    | "select"
+    | "phone"
+    | "country"
+    | "location"
+    | "category"
+    | "companySearch"
   type?: "text" | "tel" | "number" | "url"
   optional?: boolean
   options?: readonly string[]
@@ -49,9 +60,7 @@ interface ProfileField {
 
 const commonFields: ProfileField[] = [
   { name: "phone", kind: "phone", type: "tel" },
-  { name: "country", kind: "country" },
-  { name: "region" },
-  { name: "city" },
+  { name: "location", kind: "location" },
   { name: "preferredLocale", kind: "select", options: locales },
   {
     name: "contactPreference",
@@ -83,6 +92,12 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
   contractor: [
     ...commonFields,
     { name: "contractorIdentity" },
+    {
+      name: "organizationMode",
+      kind: "select",
+      options: ["select", "create", "claim"],
+    },
+    { name: "companyId", kind: "companySearch", optional: true },
     { name: "primaryTrade" },
     { name: "categories", kind: "category" },
     { name: "yearsExperience", type: "number" },
@@ -98,6 +113,7 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
       kind: "select",
       options: ["select", "create", "claim"],
     },
+    { name: "companyId", kind: "companySearch", optional: true },
     { name: "supplierName" },
     { name: "vatNumber", optional: true },
     { name: "categories", kind: "category" },
@@ -107,6 +123,12 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
   service_provider: [
     ...commonFields,
     { name: "providerIdentity" },
+    {
+      name: "organizationMode",
+      kind: "select",
+      options: ["select", "create", "claim"],
+    },
+    { name: "companyId", kind: "companySearch", optional: true },
     { name: "categories", kind: "category" },
     { name: "yearsExperience", type: "number" },
     { name: "professionalBackground", kind: "textarea" },
@@ -121,6 +143,7 @@ const defaultProfile = {
   country: "IT",
   region: "",
   city: "",
+  cityId: "",
   contactPreference: "platform_only",
   profileVisibility: "private",
   organizationMode: "create",
@@ -147,7 +170,12 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
   }>()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [pending, setPending] = useState(false)
-  const fields = draft.profileType ? fieldsByProfileType[draft.profileType] : []
+  const profileType: ProfileType | undefined =
+    draft.profileType ??
+    (draft.primaryAccountType
+      ? profileTypeForAccountType(draft.primaryAccountType)
+      : undefined)
+  const fields = profileType ? fieldsByProfileType[profileType] : []
   const { control, register, handleSubmit, setValue } = useForm<
     Record<string, string>
   >({
@@ -188,7 +216,7 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
     [localImagePreview],
   )
 
-  if (!draft.profileType)
+  if (!profileType)
     return (
       <div className="rounded-2xl bg-white p-8">
         <Link className="text-primary font-semibold" href="/onboarding/profile-type">
@@ -199,7 +227,7 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
 
   const submit = handleSubmit(async (values) => {
     setPending(true)
-    const parsed = getProfileSchema(draft.profileType!).safeParse(values)
+    const parsed = getProfileSchema(profileType).safeParse(values)
     if (!parsed.success) {
       const errors: Record<string, string> = {}
       for (const issue of parsed.error.issues) {
@@ -220,9 +248,10 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
 
     setValidationErrors({})
     const result = await saveProfileAction(
-      draft.profileType!,
+      profileType,
       parsed.data as Record<string, unknown>,
       draft.version,
+      draft.primaryAccountType,
     )
     if (!result.success) {
       setPending(false)
@@ -254,7 +283,17 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
               error={validationErrors[field.name]}
               required={!field.optional}
               hint={
-                field.name === "phone" ? t("onboarding.hints.phone") : undefined
+                field.kind === "location"
+                  ? t("onboarding.hints.location")
+                  : ["phone", "contactPreference"].includes(field.name)
+                  ? `${t("onboarding.whyWeAsk")}: ${t(`onboarding.why.${field.name === "phone" ? "phone" : field.name}`)}${
+                      field.name === "contactPreference"
+                        ? ` · ${t("onboarding.visibilityPublic")}`
+                        : ""
+                    }`
+                  : field.name === "phone"
+                    ? t("onboarding.hints.phone")
+                    : undefined
               }
             >
               {field.kind === "textarea" ? (
@@ -272,6 +311,22 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                       onBlur={phoneField.onBlur}
                       onChange={phoneField.onChange}
                       onCountryChange={(country) => setValue("country", country)}
+                    />
+                  )}
+                />
+              ) : field.kind === "location" ? (
+                <Controller
+                  name="cityId"
+                  control={control}
+                  render={({ field: locationField }) => (
+                    <CityLocationField
+                      cityId={locationField.value || undefined}
+                      onChange={(nextCityId, meta) => {
+                        locationField.onChange(nextCityId)
+                        if (meta?.countryCode) setValue("country", meta.countryCode)
+                        if (meta?.regionLabel) setValue("region", meta.regionLabel)
+                        if (meta?.cityLabel) setValue("city", meta.cityLabel)
+                      }}
                     />
                   )}
                 />
@@ -310,6 +365,18 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                       onChange={categoryField.onChange}
                       categoryPlaceholder={t("onboarding.selectCategory")}
                       subcategoryPlaceholder={t("onboarding.selectSubcategory")}
+                    />
+                  )}
+                />
+              ) : field.kind === "companySearch" ? (
+                <Controller
+                  name={field.name}
+                  control={control}
+                  render={({ field: companyField }) => (
+                    <CompanySearchField
+                      id={id}
+                      value={companyField.value}
+                      onChange={companyField.onChange}
                     />
                   )}
                 />
@@ -498,5 +565,73 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
         }}
       />
     </OnboardingFrame>
+  )
+}
+
+function CompanySearchField({
+  id,
+  onChange,
+}: {
+  id: string
+  value: string
+  onChange: (value: string) => void
+}) {
+  const t = useTranslations()
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState<
+    Array<{ id: string; name: string; verificationStatus: string }>
+  >([])
+  const [selectedName, setSelectedName] = useState("")
+
+  useEffect(() => {
+    const q = query.trim()
+    if (q.length < 2) {
+      void Promise.resolve().then(() => setResults([]))
+      return
+    }
+    const handle = window.setTimeout(() => {
+      void searchCompaniesAction(q)
+        .then((items) => setResults(items))
+        .catch(() => setResults([]))
+    }, 250)
+    return () => window.clearTimeout(handle)
+  }, [query])
+
+  return (
+    <div className="space-y-2">
+      <Input
+        id={id}
+        value={selectedName || query}
+        placeholder={t("onboarding.searchCompany")}
+        onChange={(event) => {
+          setSelectedName("")
+          onChange("")
+          setQuery(event.target.value)
+        }}
+      />
+      {selectedName ? (
+        <p className="text-muted text-sm">{selectedName}</p>
+      ) : null}
+      {results.length > 0 ? (
+        <ul className="border-line rounded-xl border bg-white p-1">
+          {results.map((company) => (
+            <li key={company.id}>
+              <button
+                type="button"
+                className="hover:bg-light-blue w-full rounded-lg px-3 py-2 text-start text-sm"
+                onClick={() => {
+                  onChange(company.id)
+                  setSelectedName(company.name)
+                  setQuery("")
+                  setResults([])
+                }}
+              >
+                {company.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
   )
 }

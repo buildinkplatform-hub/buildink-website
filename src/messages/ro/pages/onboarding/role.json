@@ -1,0 +1,27 @@
+{
+  "onboarding": {
+    "roleTitle": "Alege tipul de cont",
+    "roleBody": "Selectează cum vei folosi marketplace-ul Buildink.",
+    "errors": {
+      "profileType": "Alege un tip de cont pentru a continua."
+    }
+  },
+  "roles": {
+    "individual": "Persoană fizică",
+    "individualBody": "Explorează, salvează și contactează membrii marketplace-ului cu un profil personal.",
+    "worker": "Lucrător",
+    "workerBody": "Prezintă meseria, competențele, certificatele și disponibilitatea angajatorilor.",
+    "contractor": "Antreprenor",
+    "contractorBody": "Descoperă oportunități, trimite oferte și prezintă servicii de antreprenoriat.",
+    "supplierContact": "Contact furnizor",
+    "supplierContactBody": "Reprezintă o organizație furnizoare și gestionează catalogul și solicitările.",
+    "serviceProvider": "Prestator de servicii",
+    "serviceProviderBody": "Oferă servicii specializate, certificări și lucrări de referință. Creează, alătură-te sau revendică o companie dacă reprezinți o organizație.",
+    "company": "Companie",
+    "companyBody": "Reprezintă o companie de construcții. Creează, alătură-te sau revendică o organizație și gestionează prezența ei pe marketplace.",
+    "projectOwner": "Beneficiar de proiect",
+    "projectOwnerBody": "Publică proiecte, evaluează oferte și angajează profesioniști din marketplace ca beneficiar de proiect.",
+    "subcontractor": "Subantreprenor",
+    "subcontractorBody": "Oferă servicii de meserie, asociază o companie și licitează pentru oportunități de proiect."
+  }
+}

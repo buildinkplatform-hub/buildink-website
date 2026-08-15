@@ -30,7 +30,7 @@ function PopoverContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "border-line bg-surface text-ink z-50 w-72 rounded-xl border p-4 shadow-xl outline-none",
+          "border-line/80 bg-surface text-ink z-50 w-72 rounded-xl border p-4 shadow-[0_18px_40px_rgba(15,23,42,0.08)] outline-none",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           className,
         )}

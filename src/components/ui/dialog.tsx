@@ -37,16 +37,16 @@ function DialogContent({
   return (
     <DialogPortal>
       <DialogOverlay />
-      <DialogPrimitive.Content
+        <DialogPrimitive.Content
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 w-[min(calc(100%-2rem),32rem)] -translate-x-1/2 -translate-y-1/2 rounded-[28px] border border-line bg-white p-6 shadow-[var(--shadow-card)] data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:p-7",
+          "fixed top-1/2 left-1/2 z-50 w-[min(calc(100%-2rem),32rem)] -translate-x-1/2 -translate-y-1/2 rounded-[28px] border border-line/80 bg-white p-6 shadow-[var(--shadow-card)] data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:p-7",
           className,
         )}
         {...props}
       >
         {children}
         {showClose ? (
-          <DialogPrimitive.Close className="text-muted hover:bg-light-blue absolute top-4 end-4 inline-flex size-10 items-center justify-center rounded-full transition-colors">
+          <DialogPrimitive.Close className="text-muted hover:bg-accent absolute top-4 end-4 inline-flex size-10 items-center justify-center rounded-full transition-colors">
             <X className="size-4" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>

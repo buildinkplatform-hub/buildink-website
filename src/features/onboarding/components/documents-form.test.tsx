@@ -52,7 +52,7 @@ const draft: OnboardingDraft = {
       ownerName: "Test User",
     },
   ],
-  consent: { publicProfile: false, documentProcessing: false },
+  consent: { publicProfile: false, documentProcessing: false, terms: false, privacy: false },
 }
 
 describe("DocumentsForm", () => {
@@ -66,7 +66,7 @@ describe("DocumentsForm", () => {
       </NextIntlClientProvider>,
     )
 
-    expect(screen.getByText("identity.pdf")).toBeVisible()
+    expect(screen.getByText("identity.pdf")).toBeInTheDocument()
     await user.click(
       screen.getByRole("button", { name: "Add another document" }),
     )

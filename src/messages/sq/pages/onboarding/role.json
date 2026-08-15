@@ -1,0 +1,27 @@
+{
+  "onboarding": {
+    "roleTitle": "Zgjidh llojin e llogarisë",
+    "roleBody": "Zgjidh se si do ta përdorësh tregun Buildink.",
+    "errors": {
+      "profileType": "Zgjidh një lloj llogarie për të vazhduar."
+    }
+  },
+  "roles": {
+    "individual": "Individ",
+    "individualBody": "Shfleto, ruaj dhe kontakto anëtarët e tregut me një profil personal.",
+    "worker": "Punëtor",
+    "workerBody": "Prezanto zanatin, aftësitë, certifikatat dhe disponueshmërinë te punëdhënësit.",
+    "contractor": "Kontraktori",
+    "contractorBody": "Zbulo mundësi, dërgo oferta dhe prezanto shërbime kontraktimi.",
+    "supplierContact": "Kontakti i furnizuesit",
+    "supplierContactBody": "Përfaqëso një organizatë furnizuese dhe menaxho katalogun dhe kërkesat.",
+    "serviceProvider": "Ofrues shërbimesh",
+    "serviceProviderBody": "Ofro shërbime të specializuara, certifikime dhe punë referuese. Krijo, bashkohu ose kërko një kompani kur përfaqëson një organizatë.",
+    "company": "Kompani",
+    "companyBody": "Përfaqëso një kompani ndërtimi. Krijo, bashkohu ose kërko një organizatë dhe menaxho praninë e saj në treg.",
+    "projectOwner": "Pronari i projektit",
+    "projectOwnerBody": "Publiko projekte, shqyrto propozime dhe punëso profesionistë të tregut si pronar projekti.",
+    "subcontractor": "Nënkontraktori",
+    "subcontractorBody": "Ofroni shërbime zejtare, lidhni një kompani dhe konkurroni për mundësi projektesh."
+  }
+}

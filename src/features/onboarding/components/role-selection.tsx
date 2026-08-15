@@ -2,9 +2,9 @@
 
 import {
   Building2,
+  Hammer,
   HardHat,
   LoaderCircle,
-  PackageOpen,
   User,
   Wrench,
 } from "lucide-react"
@@ -15,32 +15,38 @@ import { Button } from "@/components/ui/button"
 import { saveProfileTypeAction } from "@/features/onboarding/actions/onboarding.actions"
 import { useRouter } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
-import { profileTypeLabelKeys } from "@/shared/constants/platform"
-import { profileTypes, type ProfileType } from "@/shared/types/platform"
+import { primaryAccountTypeLabelKeys } from "@/shared/constants/platform"
+import { accountTypeFromDraft } from "@/shared/lib/account-type-mapping"
+import {
+  primaryAccountTypes,
+  type PrimaryAccountType,
+} from "@/shared/types/platform"
 import { OnboardingFrame } from "./onboarding-frame"
 import { useOnboardingDraft } from "./onboarding-provider"
 
-const profileTypeIcons = {
-  individual: User,
-  worker: HardHat,
-  contractor: Building2,
-  supplier_contact: PackageOpen,
-  service_provider: Wrench,
+const accountTypeIcons: Record<PrimaryAccountType, typeof User> = {
+  COMPANY: Building2,
+  PROJECT_OWNER: User,
+  SUBCONTRACTOR: Hammer,
+  SERVICE_PROVIDER: Wrench,
+  WORKER: HardHat,
 }
-const bodyKeys: Record<ProfileType, string> = {
-  individual: "roles.individualBody",
-  worker: "roles.workerBody",
-  contractor: "roles.contractorBody",
-  supplier_contact: "roles.supplierContactBody",
-  service_provider: "roles.serviceProviderBody",
+
+const bodyKeys: Record<PrimaryAccountType, string> = {
+  COMPANY: "roles.companyBody",
+  PROJECT_OWNER: "roles.projectOwnerBody",
+  SUBCONTRACTOR: "roles.subcontractorBody",
+  SERVICE_PROVIDER: "roles.serviceProviderBody",
+  WORKER: "roles.workerBody",
 }
 
 export function RoleSelection() {
   const t = useTranslations()
   const router = useRouter()
   const { draft, updateDraft } = useOnboardingDraft()
-  const [selected, setSelected] = useState<ProfileType | undefined>(
-    draft.profileType,
+  const invitedType = accountTypeFromDraft(draft)
+  const [selected, setSelected] = useState<PrimaryAccountType | undefined>(
+    invitedType,
   )
   const [error, setError] = useState(false)
   const [pending, setPending] = useState(false)
@@ -55,17 +61,19 @@ export function RoleSelection() {
       </h1>
       <p className="text-muted mt-3">{t("onboarding.roleBody")}</p>
       <div className="mt-7 grid gap-3 sm:grid-cols-2">
-        {profileTypes.map((profileType) => {
-          const Icon = profileTypeIcons[profileType]
-          const active = selected === profileType
+        {primaryAccountTypes.map((accountType) => {
+          const Icon = accountTypeIcons[accountType]
+          const active = selected === accountType
+          const locked = Boolean(invitedType) && accountType !== invitedType
           return (
             <button
-              key={profileType}
+              key={accountType}
               type="button"
               aria-pressed={active}
+              disabled={locked}
               onClick={() => {
-                if (pending) return
-                setSelected(profileType)
+                if (pending || locked) return
+                setSelected(accountType)
                 setError(false)
               }}
               className={cn(
@@ -80,10 +88,10 @@ export function RoleSelection() {
                 aria-hidden="true"
               />
               <span className="text-brand-navy mt-4 block font-bold">
-                {t(profileTypeLabelKeys[profileType])}
+                {t(primaryAccountTypeLabelKeys[accountType])}
               </span>
               <span className="text-muted mt-2 block text-sm leading-6">
-                {t(bodyKeys[profileType])}
+                {t(bodyKeys[accountType])}
               </span>
             </button>
           )
@@ -99,12 +107,21 @@ export function RoleSelection() {
         onClick={async () => {
           if (!selected) return setError(true)
           setPending(true)
-          const result = await saveProfileTypeAction(selected, draft.version)
+          const result = await saveProfileTypeAction(
+            selected,
+            draft.version,
+            draft.profileType,
+          )
           if (!result.success) {
             setPending(false)
             return setError(true)
           }
-          updateDraft({ profileType: selected, profile: {}, version: result.draft.version })
+          updateDraft({
+            primaryAccountType: selected,
+            profileType: result.draft.profileType ?? draft.profileType,
+            profile: {},
+            version: result.draft.version,
+          })
           router.push("/onboarding/profile")
         }}
         disabled={pending}

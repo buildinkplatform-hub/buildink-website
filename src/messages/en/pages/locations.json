@@ -1,0 +1,13 @@
+{
+  "locations": {
+    "fields": {
+      "country": "Country",
+      "region": "Region / Province",
+      "cityName": "City",
+      "none": "Select…"
+    },
+    "errors": {
+      "optionsFailed": "Could not load location options. Try again."
+    }
+  }
+}

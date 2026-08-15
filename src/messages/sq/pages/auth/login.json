@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "welcome": "Mirë se u ktheve",
+    "loginBody": "Hyr për të vazhduar te hapësira jote Buildink.",
+    "remember": "Më mbaj të identifikuar për 7 ditë",
+    "forgot": "Ke harruar fjalëkalimin?",
+    "noAccount": "I ri në Buildink?",
+    "demoHint": "Aksesi demo është dokumentuar në README të projektit."
+  }
+}

@@ -7,6 +7,7 @@
     "fields": {
       "phone": "Phone number",
       "country": "Country",
+      "location": "Location",
       "region": "Region",
       "city": "City",
       "preferredLocale": "Preferred language",
@@ -26,7 +27,8 @@
       "serviceRegions": "Service or delivery regions",
       "capabilityStatement": "Capability statement",
       "jobTitle": "Job title",
-      "organizationMode": "Supplier organization relationship",
+      "organizationMode": "Company relationship",
+      "companyId": "Existing company",
       "supplierName": "Supplier legal or display name",
       "vatNumber": "P.IVA / VAT number",
       "businessDescription": "Supplier business description",
@@ -38,16 +40,17 @@
       "ownerName": "Document owner or entity"
     },
     "hints": {
-      "phone": "Choose the country code and enter the local phone number."
+      "phone": "Choose the country code and enter the local phone number.",
+      "location": "Select your country, region, and city from the lists."
     },
     "options": {
       "platform_only": "Contact through Buildink only",
       "public_contact": "Allow approved public contact",
       "public": "Public after approval",
       "private": "Private",
-      "select": "Select an existing supplier",
-      "create": "Create a supplier organization",
-      "claim": "Claim an existing supplier"
+      "select": "Select an existing company",
+      "create": "Create a company",
+      "claim": "Claim an existing company"
     },
     "errors": {
       "field": "Complete this field.",

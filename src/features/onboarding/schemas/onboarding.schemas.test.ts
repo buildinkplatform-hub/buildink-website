@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { documentMetadataSchema, profileSchemas } from "./onboarding.schemas"
+import {
+  documentMetadataSchema,
+  getProfileSchemaForAccountType,
+  profileSchemas,
+} from "./onboarding.schemas"
 
 const common = {
   phone: "+393331234567",
@@ -11,10 +15,21 @@ const common = {
   contactPreference: "platform_only",
 }
 
+const contractorFields = {
+  contractorIdentity: "Rossi Contracting",
+  organizationMode: "create" as const,
+  primaryTrade: "General construction",
+  categories: "Renovation",
+  yearsExperience: "12",
+  serviceRegions: "Lombardy",
+  capabilityStatement: "Commercial renovation contractor.",
+  availability: "Four-week lead time",
+}
+
 describe("onboarding schemas", () => {
-  it("validates the five final profile types", () => {
+  it("validates profile payloads for the five current account types", () => {
     expect(
-      profileSchemas.individual.safeParse({
+      getProfileSchemaForAccountType("PROJECT_OWNER").safeParse({
         ...common,
         bio: "",
         profileVisibility: "public",
@@ -22,7 +37,7 @@ describe("onboarding schemas", () => {
       }).success,
     ).toBe(true)
     expect(
-      profileSchemas.worker.safeParse({
+      getProfileSchemaForAccountType("WORKER").safeParse({
         ...common,
         profession: "Electrician",
         skills: "Wiring, maintenance",
@@ -33,19 +48,36 @@ describe("onboarding schemas", () => {
       }).success,
     ).toBe(true)
     expect(
-      profileSchemas.contractor.safeParse({
+      getProfileSchemaForAccountType("COMPANY").safeParse({
         ...common,
-        contractorIdentity: "Rossi Contracting",
-        primaryTrade: "General construction",
-        categories: "Renovation",
-        yearsExperience: "12",
-        serviceRegions: "Lombardy",
-        capabilityStatement: "Commercial renovation contractor.",
-        availability: "Four-week lead time",
+        ...contractorFields,
       }).success,
     ).toBe(true)
     expect(
-      profileSchemas.supplier_contact.safeParse({
+      getProfileSchemaForAccountType("SUBCONTRACTOR").safeParse({
+        ...common,
+        ...contractorFields,
+      }).success,
+    ).toBe(true)
+    expect(
+      getProfileSchemaForAccountType("SERVICE_PROVIDER").safeParse({
+        ...common,
+        providerIdentity: "Bianchi Engineering",
+        organizationMode: "select",
+        companyId: "11111111-1111-4111-8111-111111111111",
+        categories: "Structural engineering",
+        yearsExperience: "10",
+        professionalBackground: "Licensed structural engineer.",
+        serviceRegions: "Italy",
+        capabilityStatement: "Design and site consulting.",
+        availability: "Available next month",
+      }).success,
+    ).toBe(true)
+  })
+
+  it("keeps invited supplier payloads on the company account type", () => {
+    expect(
+      getProfileSchemaForAccountType("COMPANY", "supplier_contact").safeParse({
         ...common,
         jobTitle: "Sales manager",
         organizationMode: "create",
@@ -54,18 +86,6 @@ describe("onboarding schemas", () => {
         categories: "Concrete, steel",
         serviceRegions: "Northern Italy",
         businessDescription: "Construction material supplier.",
-      }).success,
-    ).toBe(true)
-    expect(
-      profileSchemas.service_provider.safeParse({
-        ...common,
-        providerIdentity: "Bianchi Engineering",
-        categories: "Structural engineering",
-        yearsExperience: "10",
-        professionalBackground: "Licensed structural engineer.",
-        serviceRegions: "Italy",
-        capabilityStatement: "Design and site consulting.",
-        availability: "Available next month",
       }).success,
     ).toBe(true)
   })
@@ -86,6 +106,41 @@ describe("onboarding schemas", () => {
         expiryDate: "2030-01-01",
         issuingCountry: "IT",
         ownerName: "Giulia Rossi",
+      }).success,
+    ).toBe(true)
+    expect(
+      documentMetadataSchema.safeParse({
+        documentType: "certificate",
+        expiryDate: "",
+        issuingCountry: "IT",
+        ownerName: "Giulia Rossi",
+      }).success,
+    ).toBe(true)
+    expect(
+      documentMetadataSchema.safeParse({
+        documentType: "identity",
+        expiryDate: "",
+        issuingCountry: "IT",
+        ownerName: "Giulia Rossi",
+      }).success,
+    ).toBe(false)
+  })
+
+  it("accepts join and claim association fields for company personas", () => {
+    expect(
+      getProfileSchemaForAccountType("COMPANY").safeParse({
+        ...common,
+        ...contractorFields,
+        organizationMode: "claim",
+        companyId: "11111111-1111-4111-8111-111111111111",
+      }).success,
+    ).toBe(true)
+    expect(
+      getProfileSchemaForAccountType("SUBCONTRACTOR").safeParse({
+        ...common,
+        ...contractorFields,
+        organizationMode: "claim",
+        companyId: "11111111-1111-4111-8111-111111111111",
       }).success,
     ).toBe(true)
   })

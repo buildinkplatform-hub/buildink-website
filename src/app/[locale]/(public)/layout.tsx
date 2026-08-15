@@ -3,8 +3,7 @@ import { PublicHeader } from "@/components/layout/public-header"
 import { PublicCookieBanner } from "@/features/public/components/public-cookie-banner"
 import { getTranslations } from "next-intl/server"
 
-export const dynamic = "force-dynamic"
-export const revalidate = 0
+export const revalidate = 120
 
 export default async function PublicLayout({
   children,

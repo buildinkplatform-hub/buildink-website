@@ -8,6 +8,8 @@
     "saveContinue": "احفظ وتابع",
     "logout": "تسجيل الخروج",
     "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "remove": "إزالة",
     "logoutConfirmTitle": "هل تريد تسجيل الخروج من Buildink؟",
     "logoutConfirmBody": "سيتم تسجيل خروجك من الموقع وستحتاج إلى تسجيل الدخول مرة أخرى لمتابعة الإجراءات المحمية.",
     "logoutConfirmAction": "نعم، تسجيل الخروج",
@@ -20,10 +22,22 @@
     "returnDashboard": "العودة إلى لوحة التحكم",
     "openMenu": "فتح التنقل",
     "closeMenu": "إغلاق التنقل",
+    "expandSidebar": "توسيع الشريط الجانبي",
+    "collapseSidebar": "طي الشريط الجانبي",
     "notifications": "الإشعارات",
     "profile": "الملف الشخصي",
     "skipContent": "الانتقال إلى المحتوى",
     "required": "مطلوب",
-    "optional": "اختياري"
+    "optional": "اختياري",
+    "portalNav": "البوابة",
+    "metrics": "المؤشرات",
+    "subcategory": "الفئة الفرعية",
+    "breadcrumb": "مسار التنقل",
+    "primaryNav": "رئيسي",
+    "home": "الصفحة الرئيسية لـ Buildink",
+    "closeDialog": "إغلاق",
+    "phoneCountry": "دولة الهاتف",
+    "removeConfirmTitle": "إزالة هذا العنصر؟",
+    "removeConfirmBody": "ستتم إزالة {name}. لا يمكن التراجع عن هذا الإجراء."
   }
 }

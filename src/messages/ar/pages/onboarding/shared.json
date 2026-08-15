@@ -1,9 +1,23 @@
 {
   "onboarding": {
     "step": "الخطوة {current} من 4",
+    "stepAccountType": "نوع الحساب",
+    "stepProfile": "أساسيات الملف",
+    "stepDocuments": "التحقق",
+    "stepReview": "المراجعة والنشر",
+    "whyWeAsk": "لماذا نسأل",
+    "visibilityPublic": "عام",
+    "visibilityPrivate": "خاص حتى تختار خلاف ذلك",
+    "why": {
+      "phone": "يُستخدم لاستعادة الحساب، وإن سمحت، للتواصل في السوق.",
+      "country": "المطابقة الإقليمية تعتمد على مكان عملك.",
+      "region": "تُرتَّب الفرص حسب نطاق الخدمة والمنطقة.",
+      "contactPreference": "يحدد ما إذا كان هاتفك أو بريدك يمكن أن يظهر للعلن."
+    },
     "noFiles": "لم يتم اختيار مستندات بعد.",
     "selectCategory": "اختر الفئة",
     "selectSubcategory": "اختر الفئة الفرعية",
+    "searchCompany": "ابحث عن شركة قائمة",
     "viewFull": "عرض بالحجم الكامل",
     "preview": "معاينة الملف",
     "previewLoading": "جارٍ تحميل المعاينة الآمنة...",

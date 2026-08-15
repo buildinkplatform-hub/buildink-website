@@ -3,11 +3,15 @@ import createMiddleware from "next-intl/middleware"
 import { type NextRequest, NextResponse } from "next/server"
 
 import { routing } from "@/i18n/routing"
+import { supabaseAuthCookieOptions } from "@/lib/supabase/cookie-options"
+import { locales } from "@/shared/types/platform"
 
 const handleI18n = createMiddleware(routing)
-const localePath = /^\/(it|en|ar)(?:\/|$)/
-const cacheSensitivePath =
-  /^\/(?:(?:it|en|ar)\/)?(?:$|login|register|forgot-password|reset-password|verify-email|account-restricted|auth(?:\/|$)|onboarding(?:\/|$)|dashboard(?:\/|$))/
+const localeGroup = locales.join("|")
+const localePath = new RegExp(`^/(${localeGroup})(?:/|$)`)
+const cacheSensitivePath = new RegExp(
+  `^/(?:(?:${localeGroup})/)?(?:$|login|register|forgot-password|reset-password|verify-email|account-restricted|auth(?:/|$)|onboarding(?:/|$)|dashboard(?:/|$))`,
+)
 
 function setPrivateNoStore(response: NextResponse) {
   response.headers.set(
@@ -21,12 +25,21 @@ function setPrivateNoStore(response: NextResponse) {
   return response
 }
 
+function redirectPreservingCookies(url: URL, from: NextResponse) {
+  const redirectResponse = NextResponse.redirect(url)
+  from.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie)
+  })
+  return setPrivateNoStore(redirectResponse)
+}
+
 export default async function proxy(request: NextRequest) {
   const response = handleI18n(request)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
+      cookieOptions: supabaseAuthCookieOptions(),
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (cookiesToSet) => {
@@ -40,10 +53,15 @@ export default async function proxy(request: NextRequest) {
       },
     },
   )
-  const { data } = await supabase.auth.getClaims()
-  const authenticated = Boolean(data?.claims)
+  const { data } = await supabase.auth.getUser()
+  const authenticated = Boolean(data.user)
   if (cacheSensitivePath.test(request.nextUrl.pathname))
     setPrivateNoStore(response)
+
+  if (response.status >= 300 && response.status < 400) {
+    return setPrivateNoStore(response)
+  }
+
   const match = request.nextUrl.pathname.match(localePath)
   if (!match) return response
   const locale = match[1]
@@ -69,17 +87,7 @@ export default async function proxy(request: NextRequest) {
       "next",
       `${request.nextUrl.pathname}${request.nextUrl.search}`,
     )
-    return setPrivateNoStore(NextResponse.redirect(loginUrl))
-  }
-  if (
-    (relativePath === "/login" || relativePath === "/register") &&
-    authenticated
-  ) {
-    return setPrivateNoStore(
-      NextResponse.redirect(
-        new URL(`/${locale}/onboarding/profile-type`, request.url),
-      ),
-    )
+    return redirectPreservingCookies(loginUrl, response)
   }
   return response
 }

@@ -1,0 +1,61 @@
+{
+  "onboarding": {
+    "profileTitle": "Ndërto profilin tënd të tregut",
+    "profileBody": "Plotëso të dhënat e përbashkëta dhe fushat e kërkuara për llojin e profilit të zgjedhur.",
+    "chooseProfileImage": "Zgjidh një imazh profili ose logo",
+    "profileImageRequirements": "JPEG, PNG, WebP ose AVIF - maksimumi 10 MB",
+    "fields": {
+      "phone": "Numri i telefonit",
+      "country": "Shteti",
+      "region": "Rajoni",
+      "city": "Qyteti",
+      "preferredLocale": "Gjuha e preferuar",
+      "contactPreference": "Preferenca e kontaktit publik",
+      "bio": "Biografi e shkurtër",
+      "profileImage": "Imazhi i profilit ose logoja",
+      "profileVisibility": "Dukshmëria e profilit",
+      "interests": "Kategoria dhe nënkategoria",
+      "profession": "Profesioni ose zanati",
+      "skills": "Aftësi dhe specializime",
+      "yearsExperience": "Vite përvoje",
+      "availability": "Disponueshmëria ose koha e pritjes",
+      "languages": "Gjuhët",
+      "contractorIdentity": "Emri publik ose i biznesit i kontraktorit",
+      "primaryTrade": "Zanati kryesor",
+      "categories": "Kategoria dhe nënkategoria",
+      "serviceRegions": "Rajonet e shërbimit ose dërgimit",
+      "capabilityStatement": "Deklarata e kapacitetit",
+      "jobTitle": "Titulli profesional",
+      "organizationMode": "Marrëdhënia me kompaninë",
+      "companyId": "Kompania ekzistuese",
+      "supplierName": "Emri ligjor ose publik i furnizuesit",
+      "vatNumber": "Numri i TVSH-së / NIPT",
+      "businessDescription": "Përshkrimi i biznesit të furnizuesit",
+      "providerIdentity": "Identiteti i ofruesit të shërbimeve",
+      "professionalBackground": "Përvoja profesionale",
+      "documentType": "Lloji i dokumentit",
+      "expiryDate": "Data e skadimit",
+      "issuingCountry": "Shteti lëshues",
+      "ownerName": "Pronari ose entiteti i dokumentit"
+    },
+    "hints": {
+      "phone": "Zgjidh kodin e shtetit dhe shkruaj numrin lokal."
+    },
+    "options": {
+      "platform_only": "Kontakt vetëm përmes Buildink",
+      "public_contact": "Lejo kontaktin publik të miratuar",
+      "public": "Publik pas miratimit",
+      "private": "Privat",
+      "select": "Zgjidh një kompani ekzistuese",
+      "create": "Krijo një kompani",
+      "claim": "Kërko një kompani ekzistuese"
+    },
+    "errors": {
+      "field": "Plotëso këtë fushë.",
+      "phone": "Shkruaj një numër telefoni ndërkombëtar të vlefshëm.",
+      "imageType": "Përdor një imazh JPEG, PNG, WebP ose AVIF.",
+      "imageSize": "Imazhi i profilit duhet të jetë 10 MB ose më i vogël.",
+      "years": "Shkruaj një numër nga 0 deri në 80."
+    }
+  }
+}

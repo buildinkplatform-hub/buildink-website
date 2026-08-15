@@ -9,6 +9,7 @@ import home from "./pages/home.json"
 import notFound from "./pages/not-found.json"
 import offline from "./pages/offline.json"
 import publicSite from "./pages/public-site.json"
+import portalAlignment from "./pages/portal-alignment.json"
 import onboardingDocuments from "./pages/onboarding/documents.json"
 import onboardingProfile from "./pages/onboarding/profile.json"
 import onboardingReview from "./pages/onboarding/review.json"
@@ -33,6 +34,7 @@ export default mergeMessages(
   onboardingDocuments,
   onboardingReview,
   dashboard,
+  portalAlignment,
   offline,
   notFound,
 )

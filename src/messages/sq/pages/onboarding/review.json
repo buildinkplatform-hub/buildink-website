@@ -1,0 +1,21 @@
+{
+  "onboarding": {
+    "reviewTitle": "Rishiko dhe dërgo profilin",
+    "reviewBody": "Kontrollo llojin e profilit, të dhënat, dokumentet dhe zgjedhjet e privatësisë para dërgimit.",
+    "publicConsent": "Pranoj publikimin vetëm të detajeve të profilit që kam dhënë dhe janë miratuar.",
+    "documentConsent": "Pranoj përpunimin privat të këtyre dokumenteve për verifikim.",
+    "termsConsent": "Pranoj Kushtet e Shërbimit.",
+    "privacyConsent": "Pranoj Politikën e Privatësisë.",
+    "submit": "Dërgo profilin",
+    "profileType": "Lloji i profilit",
+    "details": "Detajet e profilit",
+    "documents": "Dokumente verifikimi",
+    "privacy": "Zgjedhjet e privatësisë",
+    "edit": "Ndrysho",
+    "pendingTitle": "Profili yt do të jetë në pritje të verifikimit",
+    "pendingBody": "Dërgimi nuk e verifikon automatikisht llogarinë. Buildink mund ta miratojë ose të kërkojë ndryshime pas shqyrtimit.",
+    "errors": {
+      "consent": "Prano kushtet, politikën e privatësisë dhe përpunimin e dokumenteve për të dërguar."
+    }
+  }
+}

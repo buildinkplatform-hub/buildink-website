@@ -1,12 +1,13 @@
 "use client"
 
+import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
-import type * as React from "react"
 
 import { cn } from "@/lib/utils/cn"
 
 const Select = SelectPrimitive.Root
+const SelectGroup = SelectPrimitive.Group
 const SelectValue = SelectPrimitive.Value
 
 function SelectTrigger({
@@ -17,14 +18,14 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "border-line text-ink data-[placeholder]:text-muted focus:border-primary focus:ring-primary/20 flex min-h-12 w-full items-center justify-between gap-2 rounded-xl border bg-white px-4 text-base transition outline-none focus:ring-3 disabled:opacity-50 [&>span]:truncate",
+        "border-input data-[placeholder]:text-muted-foreground focus-visible:border-ring/60 focus-visible:ring-ring/12 flex h-10 w-full min-w-0 items-center justify-between gap-2 rounded-lg border bg-white px-3 text-sm outline-none transition-[border-color,box-shadow,background-color] hover:border-line/90 focus-visible:ring-2 disabled:opacity-50 [&>span]:truncate",
         className,
       )}
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="text-muted size-4 shrink-0" />
+        <ChevronDown className="text-muted-foreground size-4 shrink-0" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -38,9 +39,9 @@ function SelectContent({
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
   return (
     <SelectPrimitive.Portal>
-      <SelectPrimitive.Content
+        <SelectPrimitive.Content
         className={cn(
-          "border-line bg-surface text-ink relative z-[70] max-h-72 min-w-48 overflow-hidden rounded-xl border shadow-xl outline-none",
+          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative z-[70] max-h-72 min-w-[8rem] overflow-hidden rounded-xl border border-line/80 shadow-[0_18px_40px_rgba(15,23,42,0.08)]",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className,
@@ -68,6 +69,21 @@ function SelectContent({
   )
 }
 
+function SelectLabel({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+  return (
+    <SelectPrimitive.Label
+      className={cn(
+        "text-muted-foreground px-2.5 py-2 text-xs font-semibold uppercase",
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
 function SelectItem({
   className,
   children,
@@ -76,14 +92,14 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        "focus:bg-light-blue focus:text-brand-navy relative flex w-full cursor-pointer items-center rounded-lg py-2 ps-2.5 pe-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-pointer items-center rounded-lg py-2 ps-2.5 pe-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent data-[highlighted]:text-brand-navy",
         className,
       )}
       {...props}
     >
       <span className="absolute end-2 flex size-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="text-primary size-4" />
+          <Check className="size-4" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -91,4 +107,25 @@ function SelectItem({
   )
 }
 
-export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue }
+function SelectSeparator({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+  return (
+    <SelectPrimitive.Separator
+      className={cn("bg-border -mx-1 my-1 h-px", className)}
+      {...props}
+    />
+  )
+}
+
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+}

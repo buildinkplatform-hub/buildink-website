@@ -4,15 +4,32 @@ import { redirect } from "next/navigation"
 import { z } from "zod"
 
 import { backendApi } from "@/lib/backend/api"
-import { isLocale, isProfileType } from "@/shared/constants/platform"
-import type { Locale, OnboardingCatalog, OnboardingDraft, ProfileType } from "@/shared/types/platform"
+import { isLocale, isPrimaryAccountType, isProfileType } from "@/shared/constants/platform"
+import {
+  accountTypeFromProfileType,
+  needsCompanyAssociation,
+  profileTypeForAccountType,
+} from "@/shared/lib/account-type-mapping"
+import type {
+  Locale,
+  OnboardingCatalog,
+  OnboardingDraft,
+  PrimaryAccountType,
+  ProfileType,
+} from "@/shared/types/platform"
 
 interface BackendDraft {
   id: string
   currentStep: string
-  profileType: ProfileType | null
+  profileType: ProfileType | string | null
+  primaryAccountType?: PrimaryAccountType | string | null
   payload: Record<string, unknown>
   version: number
+  reviewFeedback?: {
+    status: string
+    closedReason?: string | null
+    issues: Array<{ fieldPath: string; message: string }>
+  } | null
   assets: Array<{
     id: string
     originalName: string
@@ -154,47 +171,60 @@ export async function getOnboardingCatalogAction(locale: Locale): Promise<Onboar
   }
 }
 
-export async function saveProfileTypeAction(profileType: ProfileType, version?: number) {
-  if (!isProfileType(profileType)) return { success: false as const }
+export async function saveProfileTypeAction(
+  primaryAccountType: PrimaryAccountType,
+  version?: number,
+  existingProfileType?: ProfileType,
+) {
+  if (!isPrimaryAccountType(primaryAccountType)) return { success: false as const }
+  const profileType = profileTypeForAccountType(
+    primaryAccountType,
+    existingProfileType,
+  )
   const draft = await backendApi<BackendDraft>("/api/v1/onboarding/profile-type", {
     method: "PUT",
-    body: JSON.stringify({ profileType, version }),
+    body: JSON.stringify({ primaryAccountType, profileType, version }),
   })
-  return { success: true as const, draft }
+  return { success: true as const, draft: mapBackendDraft(draft) }
 }
 
-export async function saveProfileAction(profileType: ProfileType, profile: Record<string, unknown>, version?: number) {
+export async function saveProfileAction(
+  profileType: ProfileType,
+  profile: Record<string, unknown>,
+  version?: number,
+  primaryAccountType?: PrimaryAccountType | null,
+) {
   if (!isProfileType(profileType)) return { success: false as const }
   const normalized = normalizeProfile(profileType, profile)
   const draft = await backendApi<BackendDraft>("/api/v1/onboarding/profile", {
     method: "PUT",
     body: JSON.stringify({ profile: normalized, version }),
   })
-  if (profileType === "supplier_contact") {
-    const mode = String(profile.organizationMode ?? "create")
-    const association = mode === "create"
-      ? {
-          mode: "create",
-          company: {
-            name: String(profile.supplierName ?? ""),
-            vatNumber: String(profile.vatNumber ?? "") || undefined,
-            companyType: "supplier",
-            description: String(profile.businessDescription ?? ""),
-          },
-        }
-      : null
-    if (association) {
-      await backendApi("/api/v1/onboarding/company-association", {
-        method: "PUT",
-        body: JSON.stringify({ association }),
-      })
-    }
+  const association = buildCompanyAssociation(
+    profileType,
+    profile,
+    primaryAccountType,
+  )
+  if (association) {
+    await backendApi("/api/v1/onboarding/company-association", {
+      method: "PUT",
+      body: JSON.stringify({ association }),
+    })
   }
-  return { success: true as const, draft }
+  return { success: true as const, draft: mapBackendDraft(draft) }
 }
 
-export async function saveConsentsAction(locale: Locale, documentProcessing: boolean, marketing: boolean, version?: number) {
-  if (!isLocale(locale) || !documentProcessing) return { success: false as const }
+export async function saveConsentsAction(
+  locale: Locale,
+  documentProcessing: boolean,
+  marketing: boolean,
+  version?: number,
+  terms = false,
+  privacy = false,
+) {
+  if (!isLocale(locale) || !documentProcessing || !terms || !privacy) {
+    return { success: false as const }
+  }
   const draft = await backendApi<BackendDraft>("/api/v1/onboarding/consents", {
     method: "PUT",
     body: JSON.stringify({
@@ -246,6 +276,118 @@ export async function submitOnboardingAction(locale: Locale, version?: number) {
   redirect(`/${locale}/onboarding/pending`)
 }
 
+export async function searchCompaniesAction(query: string) {
+  const q = query.trim()
+  if (q.length < 2) return [] as Array<{
+    id: string
+    name: string
+    slug: string
+    companyType: string
+    verificationStatus: string
+  }>
+  return backendApi<
+    Array<{
+      id: string
+      name: string
+      slug: string
+      companyType: string
+      verificationStatus: string
+    }>
+  >(`/api/v1/onboarding/companies/search?q=${encodeURIComponent(q)}`)
+}
+
+function buildCompanyAssociation(
+  profileType: ProfileType,
+  profile: Record<string, unknown>,
+  primaryAccountType?: PrimaryAccountType | null,
+) {
+  const accountType =
+    primaryAccountType ?? accountTypeFromProfileType(profileType)
+  const mode = String(profile.organizationMode ?? "")
+  if (accountType === "WORKER") return null
+  if (!needsCompanyAssociation(accountType) && !mode) return null
+  switch (profileType) {
+    case "individual":
+    case "worker":
+      return null
+    case "contractor":
+    case "supplier_contact":
+    case "service_provider":
+      break
+    default: {
+      const exhaustive: never = profileType
+      return exhaustive
+    }
+  }
+  const resolvedMode = mode || "create"
+  const companyId = String(profile.companyId ?? "")
+  if (resolvedMode === "claim" && companyId) return { mode: "claim" as const, companyId }
+  if (resolvedMode === "select" && companyId) return { mode: "join" as const, companyId }
+  if (resolvedMode !== "create") return null
+  return {
+    mode: "create" as const,
+    company: {
+      name: associationCompanyName(profileType, profile),
+      vatNumber: String(profile.vatNumber ?? "") || undefined,
+      companyType: associationCompanyType(profileType),
+      description: associationDescription(profileType, profile),
+    },
+  }
+}
+
+function associationCompanyName(
+  profileType: "contractor" | "supplier_contact" | "service_provider",
+  profile: Record<string, unknown>,
+) {
+  switch (profileType) {
+    case "contractor":
+      return String(profile.contractorIdentity ?? "")
+    case "supplier_contact":
+      return String(profile.supplierName ?? "")
+    case "service_provider":
+      return String(profile.providerIdentity ?? "")
+    default: {
+      const exhaustive: never = profileType
+      return exhaustive
+    }
+  }
+}
+
+function associationCompanyType(
+  profileType: "contractor" | "supplier_contact" | "service_provider",
+) {
+  switch (profileType) {
+    case "contractor":
+      return "contractor"
+    case "supplier_contact":
+      return "supplier"
+    case "service_provider":
+      return "professional"
+    default: {
+      const exhaustive: never = profileType
+      return exhaustive
+    }
+  }
+}
+
+function associationDescription(
+  profileType: "contractor" | "supplier_contact" | "service_provider",
+  profile: Record<string, unknown>,
+) {
+  switch (profileType) {
+    case "contractor":
+      return String(profile.capabilityStatement ?? "")
+    case "supplier_contact":
+      return String(profile.businessDescription ?? "")
+    case "service_provider":
+      return String(profile.professionalBackground ?? "")
+    default: {
+      const exhaustive: never = profileType
+      return exhaustive
+    }
+  }
+}
+
 function normalizeProfile(profileType: ProfileType, profile: Record<string, unknown>) {
   const result: Record<string, unknown> = {
     ...profile,
@@ -255,20 +397,48 @@ function normalizeProfile(profileType: ProfileType, profile: Record<string, unkn
     if (typeof result[key] === "string") result[key] = result[key].split(",").map((value) => value.trim()).filter(Boolean)
   }
   delete result.organizationMode
+  delete result.companyId
   if (profileType !== "individual") delete result.profileVisibility
   return result
 }
 
+function consentAccepted(value: unknown) {
+  if (typeof value === "boolean") return value
+  if (value && typeof value === "object" && "accepted" in value) {
+    return Boolean((value as { accepted?: unknown }).accepted)
+  }
+  return false
+}
+
+function mapBackendDraft(draft: BackendDraft) {
+  const payloadAccountType =
+    typeof draft.payload?.primaryAccountType === "string"
+      ? draft.payload.primaryAccountType
+      : draft.primaryAccountType
+  const normalizedProfileType = draft.profileType?.toLowerCase() ?? null
+  const profileType = isProfileType(normalizedProfileType)
+    ? normalizedProfileType
+    : null
+  const primaryAccountType = isPrimaryAccountType(payloadAccountType)
+    ? payloadAccountType
+    : profileType
+      ? accountTypeFromProfileType(profileType)
+      : null
+  return { ...draft, profileType, primaryAccountType }
+}
+
 function mapDraft(draft: BackendDraft, account: OnboardingDraft["account"]): OnboardingDraft {
-  const payload = draft.payload ?? {}
-  const profileImage = draft.assets.find((asset) => asset.purpose === "profile_image")
+  const mapped = mapBackendDraft(draft)
+  const payload = mapped.payload ?? {}
+  const profileImage = mapped.assets.find((asset) => asset.purpose === "profile_image")
   const storedProfile = (payload.profile as Record<string, unknown> | undefined) ?? {}
   return {
-    id: draft.id,
-    version: draft.version,
-    currentStep: draft.currentStep,
+    id: mapped.id,
+    version: mapped.version,
+    currentStep: mapped.currentStep,
     account,
-    profileType: draft.profileType ?? undefined,
+    profileType: mapped.profileType ?? undefined,
+    primaryAccountType: mapped.primaryAccountType,
     profile: Object.fromEntries(
       Object.entries(storedProfile).map(([key, value]) => [
         key,
@@ -290,7 +460,16 @@ function mapDraft(draft: BackendDraft, account: OnboardingDraft["account"]): Onb
     })),
     consent: {
       publicProfile: false,
-      documentProcessing: Boolean((payload.consents as Record<string, unknown> | undefined)?.documentProcessing),
+      documentProcessing: consentAccepted(
+        (payload.consents as Record<string, unknown> | undefined)?.documentProcessing,
+      ),
+      terms: consentAccepted(
+        (payload.consents as Record<string, unknown> | undefined)?.terms,
+      ),
+      privacy: consentAccepted(
+        (payload.consents as Record<string, unknown> | undefined)?.privacy,
+      ),
     },
+    reviewFeedback: draft.reviewFeedback ?? null,
   }
 }

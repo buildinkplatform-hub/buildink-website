@@ -1,4 +1,5 @@
 import { ChevronRight } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Link } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
@@ -15,8 +16,9 @@ export function Breadcrumb({
   items: BreadcrumbItem[]
   className?: string
 }) {
+  const t = useTranslations("common")
   return (
-    <nav aria-label="Breadcrumb" className={cn("text-sm", className)}>
+    <nav aria-label={t("breadcrumb")} className={cn("text-sm", className)}>
       <ol className="text-muted flex flex-wrap items-center gap-2">
         {items.map((item, index) => (
           <li key={`${item.label}-${index}`} className="flex items-center gap-2">

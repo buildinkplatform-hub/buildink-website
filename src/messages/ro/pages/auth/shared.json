@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "email": "Adresă de email",
+    "password": "Parolă",
+    "passwordHint": "Folosește cel puțin 8 caractere, cu majusculă, minusculă, o cifră și un simbol.",
+    "confirmPassword": "Confirmă parola",
+    "invalid": "Emailul sau parola este greșită. Încearcă din nou.",
+    "showPassword": "Afișează parola",
+    "hidePassword": "Ascunde parola",
+    "portal": "Portal Buildink",
+    "separator": "sau",
+    "continueWithGoogle": "Continuă cu Google",
+    "verifyTitle": "Verifică-ți emailul",
+    "verifyBody": "Deschide linkul de confirmare trimis pe email înainte de a începe onboarding-ul.",
+    "resend": "Retrimite emailul de verificare",
+    "resent": "Email trimis",
+    "resendFailed": "Emailul nu a putut fi trimis. Încearcă din nou.",
+    "errors": {
+      "email": "Introdu o adresă de email validă.",
+      "password": "Folosește cel puțin 8 caractere, cu majusculă, minusculă, o cifră și un simbol.",
+      "passwordMatch": "Parolele trebuie să coincidă."
+    }
+  }
+}

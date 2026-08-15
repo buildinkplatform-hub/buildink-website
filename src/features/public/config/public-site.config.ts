@@ -17,8 +17,22 @@ export const publicNavGroups: PublicNavGroup[] = [
     key: "browse",
     labelKey: "nav.groups.browse",
     items: [
-      { href: "/tenders", labelKey: "nav.items.tenders" },
+      { href: "/search", labelKey: "nav.items.search" },
+      { href: "/companies", labelKey: "nav.items.companies" },
+      { href: "/profiles", labelKey: "nav.items.profiles" },
+      { href: "/workers", labelKey: "nav.items.workers" },
+      { href: "/subcontractors", labelKey: "nav.items.subcontractors" },
+      { href: "/service-providers", labelKey: "nav.items.serviceProviders" },
+      { href: "/suppliers", labelKey: "nav.items.suppliers" },
+      { href: "/equipment", labelKey: "nav.items.equipment" },
+    ],
+  },
+  {
+    key: "opportunities",
+    labelKey: "nav.groups.opportunities",
+    items: [
       { href: "/projects", labelKey: "nav.items.projects" },
+      { href: "/tenders", labelKey: "nav.items.tenders" },
       {
         href: "/opportunities/companies",
         labelKey: "nav.items.companyRequests",
@@ -27,6 +41,10 @@ export const publicNavGroups: PublicNavGroup[] = [
         href: "/opportunities/workers",
         labelKey: "nav.items.workerRequests",
       },
+      {
+        href: "/opportunities/services",
+        labelKey: "nav.items.serviceRequests",
+      },
     ],
   },
   {
@@ -34,10 +52,14 @@ export const publicNavGroups: PublicNavGroup[] = [
     labelKey: "nav.groups.marketplace",
     items: [
       { href: "/companies", labelKey: "nav.items.companies" },
-      { href: "/profiles", labelKey: "nav.items.profiles" },
+      { href: "/trades", labelKey: "nav.items.trades" },
+      {
+        href: "/service-providers",
+        labelKey: "nav.items.specializedServices",
+      },
       { href: "/suppliers", labelKey: "nav.items.suppliers" },
       { href: "/equipment", labelKey: "nav.items.equipment" },
-      { href: "/search", labelKey: "nav.items.search" },
+      { href: "/verification", labelKey: "nav.items.safetyCertifications" },
     ],
   },
   {
@@ -46,10 +68,11 @@ export const publicNavGroups: PublicNavGroup[] = [
     items: [
       { href: "/how-it-works", labelKey: "nav.items.howItWorks" },
       { href: "/verification", labelKey: "nav.items.verification" },
-      { href: "/help", labelKey: "nav.items.help" },
       { href: "/faq", labelKey: "nav.items.faq" },
+      { href: "/help", labelKey: "nav.items.help" },
       { href: "/blog", labelKey: "nav.items.blog" },
       { href: "/about", labelKey: "nav.items.about" },
+      { href: "/contact", labelKey: "nav.items.contact" },
     ],
   },
 ]
@@ -61,7 +84,8 @@ export const footerColumns = [
     items: [
       { href: "/tenders", labelKey: "nav.items.tenders" },
       { href: "/companies", labelKey: "nav.items.companies" },
-      { href: "/profiles", labelKey: "nav.items.profiles" },
+      { href: "/workers", labelKey: "nav.items.workers" },
+      { href: "/subcontractors", labelKey: "nav.items.subcontractors" },
       { href: "/equipment", labelKey: "nav.items.equipment" },
       { href: "/projects", labelKey: "nav.items.projects" },
     ],

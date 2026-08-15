@@ -1,0 +1,8 @@
+{
+  "offline": {
+    "title": "Je jashtë linje",
+    "body": "Buildink nuk arriti të lidhet me rrjetin. Rilidhu dhe provo sërish; të dhënat private të llogarisë nuk ruhen kurrë në cache.",
+    "retry": "Provo sërish",
+    "home": "Shko te Buildink"
+  }
+}

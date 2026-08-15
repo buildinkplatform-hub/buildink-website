@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import type { RegistrationActionError } from "@/features/auth/actions/auth-errors"
@@ -172,9 +173,8 @@ export function RegisterForm() {
           </Field>
         </div>
         <label className="text-muted flex cursor-pointer items-start gap-3 text-sm leading-6">
-          <input
-            type="checkbox"
-            className="accent-primary mt-1 size-4 shrink-0"
+          <Checkbox
+            aria-invalid={Boolean(errors.terms)}
             {...register("terms")}
           />
           <span>
@@ -185,9 +185,8 @@ export function RegisterForm() {
           </span>
         </label>
         <label className="text-muted flex cursor-pointer items-start gap-3 text-sm leading-6">
-          <input
-            type="checkbox"
-            className="accent-primary mt-1 size-4 shrink-0"
+          <Checkbox
+            aria-invalid={Boolean(errors.privacy)}
             {...register("privacy")}
           />
           <span>
@@ -200,11 +199,7 @@ export function RegisterForm() {
           </span>
         </label>
         <label className="text-muted flex cursor-pointer items-start gap-3 text-sm leading-6">
-          <input
-            type="checkbox"
-            className="accent-primary mt-1 size-4 shrink-0"
-            {...register("marketing")}
-          />
+          <Checkbox {...register("marketing")} />
           {t("auth.marketing")}
         </label>
         <Button
@@ -222,7 +217,7 @@ export function RegisterForm() {
       </form>
       <div className="text-muted my-5 flex items-center gap-3 text-xs">
         <span className="bg-line h-px flex-1" />
-        <span>or</span>
+        <span>{t("auth.separator")}</span>
         <span className="bg-line h-px flex-1" />
       </div>
       <Button
@@ -238,7 +233,7 @@ export function RegisterForm() {
         {googlePending ? (
           <LoaderCircle className="size-4 animate-spin" />
         ) : null}
-        Continue with Google
+        {t("auth.continueWithGoogle")}
       </Button>
       <p className="text-muted mt-6 text-center text-sm">
         {t("auth.hasAccount")}{" "}

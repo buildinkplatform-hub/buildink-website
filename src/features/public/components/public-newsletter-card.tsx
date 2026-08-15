@@ -4,6 +4,8 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { subscribePublicNewsletterAction } from "@/features/public/actions/public-forms.actions"
+import type { Locale } from "@/shared/types/platform"
 
 export function PublicNewsletterCard({
   title,
@@ -12,6 +14,7 @@ export function PublicNewsletterCard({
   consent,
   action,
   success,
+  locale = "it",
 }: {
   title: string
   body: string
@@ -19,8 +22,10 @@ export function PublicNewsletterCard({
   consent: string
   action: string
   success: string
+  locale?: Locale
 }) {
   const [done, setDone] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   return (
     <div className="rounded-[32px] border border-primary/10 bg-[linear-gradient(135deg,#0b2450_0%,#176bff_140%)] p-6 text-white shadow-[var(--shadow-card)] sm:p-8">
@@ -38,13 +43,22 @@ export function PublicNewsletterCard({
       ) : (
         <form
           className="mt-6 flex flex-col gap-3 sm:flex-row"
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault()
-            setDone(true)
+            const form = new FormData(event.currentTarget)
+            const email = String(form.get("email") ?? "")
+            const result = await subscribePublicNewsletterAction({ email, locale })
+            if (result.ok) {
+              setDone(true)
+              setError(null)
+            } else {
+              setError(result.message)
+            }
           }}
         >
           <Input
             type="email"
+            name="email"
             required
             placeholder={placeholder}
             className="border-white/20 bg-white text-brand-navy"
@@ -54,6 +68,7 @@ export function PublicNewsletterCard({
           </Button>
         </form>
       )}
+      {error ? <p className="mt-3 text-sm text-white/90">{error}</p> : null}
       <p className="mt-3 text-xs leading-6 text-white/70">{consent}</p>
     </div>
   )

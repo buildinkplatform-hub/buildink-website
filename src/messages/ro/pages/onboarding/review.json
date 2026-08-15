@@ -1,0 +1,21 @@
+{
+  "onboarding": {
+    "reviewTitle": "Verifică și trimite profilul",
+    "reviewBody": "Verifică tipul de profil, datele, documentele și alegerile de confidențialitate înainte de trimitere.",
+    "publicConsent": "Sunt de acord să se publice doar detaliile de profil furnizate și aprobate.",
+    "documentConsent": "Sunt de acord cu prelucrarea privată a acestor documente pentru verificare.",
+    "termsConsent": "Accept Termenii de utilizare.",
+    "privacyConsent": "Accept Politica de confidențialitate.",
+    "submit": "Trimite profilul",
+    "profileType": "Tip de profil",
+    "details": "Detalii profil",
+    "documents": "Documente de verificare",
+    "privacy": "Alegeri de confidențialitate",
+    "edit": "Editează",
+    "pendingTitle": "Profilul va fi în așteptarea verificării",
+    "pendingBody": "Trimiterea nu verifică automat contul. Buildink poate să-l aprobe sau să ceară modificări după analiză.",
+    "errors": {
+      "consent": "Acceptă termenii, politica de confidențialitate și prelucrarea documentelor pentru a trimite."
+    }
+  }
+}

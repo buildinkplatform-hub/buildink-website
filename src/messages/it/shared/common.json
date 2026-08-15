@@ -8,6 +8,8 @@
     "saveContinue": "Salva e continua",
     "logout": "Esci",
     "cancel": "Annulla",
+    "confirm": "Conferma",
+    "remove": "Rimuovi",
     "logoutConfirmTitle": "Vuoi uscire da Buildink?",
     "logoutConfirmBody": "Verrai disconnesso dal sito e dovrai accedere di nuovo per continuare le azioni protette.",
     "logoutConfirmAction": "Sì, esci",
@@ -20,10 +22,22 @@
     "returnDashboard": "Torna alla dashboard",
     "openMenu": "Apri navigazione",
     "closeMenu": "Chiudi navigazione",
+    "expandSidebar": "Espandi barra laterale",
+    "collapseSidebar": "Comprimi barra laterale",
     "notifications": "Notifiche",
     "profile": "Profilo",
     "skipContent": "Vai al contenuto",
     "required": "Obbligatorio",
-    "optional": "Facoltativo"
+    "optional": "Facoltativo",
+    "portalNav": "Portale",
+    "metrics": "Metriche",
+    "subcategory": "Sottocategoria",
+    "breadcrumb": "Percorso",
+    "primaryNav": "Principale",
+    "home": "Home Buildink",
+    "closeDialog": "Chiudi",
+    "phoneCountry": "Paese del telefono",
+    "removeConfirmTitle": "Rimuovere questo elemento?",
+    "removeConfirmBody": "{name} verrà rimosso. Questa azione non può essere annullata."
   }
 }

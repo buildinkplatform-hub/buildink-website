@@ -1,5 +1,5 @@
 import { Search } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { PublicEntityCard } from "@/features/public/components/public-cards"
 import { DirectoryShell } from "@/features/public/components/public-shells"
 import { moduleRouteMap } from "@/features/public/config/public-site.config"
+import type { Locale } from "@/shared/types/platform"
 import { searchAll } from "@/features/public/data/public-repository"
 
 export async function PublicSearchPage({
@@ -15,8 +16,9 @@ export async function PublicSearchPage({
   searchParams?: Record<string, string | string[] | undefined>
 }) {
   const t = await getTranslations("publicSite")
+  const locale = (await getLocale()) as Locale
   const q = Array.isArray(searchParams?.q) ? searchParams?.q[0] : searchParams?.q
-  const results = searchAll({ q })
+  const results = await searchAll({ q }, locale)
 
   return (
     <DirectoryShell

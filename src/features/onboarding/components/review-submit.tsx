@@ -5,13 +5,18 @@ import { useLocale, useTranslations } from "next-intl"
 import { useState, useTransition } from "react"
 
 import { Button } from "@/components/ui/button"
-import { saveConsentsAction, submitOnboardingAction } from "@/features/onboarding/actions/onboarding.actions"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  saveConsentsAction,
+  submitOnboardingAction,
+} from "@/features/onboarding/actions/onboarding.actions"
 import { Link } from "@/i18n/navigation"
 import {
   isLocale,
   localeMetadata,
-  profileTypeLabelKeys,
+  primaryAccountTypeLabelKeys,
 } from "@/shared/constants/platform"
+import { accountTypeFromDraft } from "@/shared/lib/account-type-mapping"
 import type { Locale } from "@/shared/types/platform"
 import { OnboardingFrame } from "./onboarding-frame"
 import { useOnboardingDraft } from "./onboarding-provider"
@@ -33,23 +38,40 @@ export function ReviewSubmit() {
   ])
 
   function displayProfileValue(key: string, value: unknown) {
-    if (key === "preferredLocale" && typeof value === "string" && isLocale(value))
+    if (
+      key === "preferredLocale" &&
+      typeof value === "string" &&
+      isLocale(value)
+    )
       return localeMetadata[value].nativeLabel
-    if (typeof value === "string" && translatedOptions.has(value)) return t(`onboarding.options.${value}`)
+    if (typeof value === "string" && translatedOptions.has(value))
+      return t(`onboarding.options.${value}`)
     return Array.isArray(value) ? value.join(", ") : String(value)
   }
 
-  if (!draft.profileType)
+  if (!draft.profileType && !draft.primaryAccountType)
     return (
       <div className="rounded-2xl bg-white p-8">
-        <Link href="/onboarding/profile-type" className="text-primary font-semibold">
+        <Link
+          href="/onboarding/profile-type"
+          className="text-primary font-semibold"
+        >
           {t("common.back")}
         </Link>
       </div>
     )
 
+  const accountType = accountTypeFromDraft(draft)
+  const accountTypeLabel = accountType
+    ? t(primaryAccountTypeLabelKeys[accountType])
+    : "—"
+
   const submit = () => {
-    if (!draft.consent.documentProcessing)
+    if (
+      !draft.consent.documentProcessing ||
+      !draft.consent.terms ||
+      !draft.consent.privacy
+    )
       return setError(true)
     startTransition(async () => {
       const result = await saveConsentsAction(
@@ -57,6 +79,8 @@ export function ReviewSubmit() {
         draft.consent.documentProcessing,
         draft.account.marketing,
         draft.version,
+        draft.consent.terms,
+        draft.consent.privacy,
       )
       if (!result.success) return setError(true)
       await submitOnboardingAction(locale, result.draft.version)
@@ -82,9 +106,7 @@ export function ReviewSubmit() {
               {t("onboarding.edit")}
             </Link>
           </div>
-          <p className="text-muted mt-2">
-            {t(profileTypeLabelKeys[draft.profileType])}
-          </p>
+          <p className="text-muted mt-2">{accountTypeLabel}</p>
         </section>
         <section className="border-line rounded-xl border p-5">
           <div className="flex items-center justify-between gap-3">
@@ -157,8 +179,43 @@ export function ReviewSubmit() {
       </div>
       <div className="bg-canvas mt-6 space-y-3 rounded-xl p-5">
         <label className="flex cursor-pointer items-start gap-3 text-sm leading-6">
-          <input
-            type="checkbox"
+          <Checkbox
+            checked={draft.consent.terms}
+            onChange={(event) => {
+              setError(false)
+              updateDraft({
+                consent: {
+                  ...draft.consent,
+                  terms: event.target.checked,
+                },
+              })
+            }}
+          />
+          <span>
+            {t("onboarding.termsConsent")}{" "}
+            <span className="text-danger">*</span>
+          </span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-3 text-sm leading-6">
+          <Checkbox
+            checked={draft.consent.privacy}
+            onChange={(event) => {
+              setError(false)
+              updateDraft({
+                consent: {
+                  ...draft.consent,
+                  privacy: event.target.checked,
+                },
+              })
+            }}
+          />
+          <span>
+            {t("onboarding.privacyConsent")}{" "}
+            <span className="text-danger">*</span>
+          </span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-3 text-sm leading-6">
+          <Checkbox
             checked={draft.consent.publicProfile}
             onChange={(event) => {
               setError(false)
@@ -169,13 +226,11 @@ export function ReviewSubmit() {
                 },
               })
             }}
-            className="accent-primary mt-1 size-4"
           />
           {t("onboarding.publicConsent")}
         </label>
         <label className="flex cursor-pointer items-start gap-3 text-sm leading-6">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={draft.consent.documentProcessing}
             onChange={(event) => {
               setError(false)
@@ -186,7 +241,6 @@ export function ReviewSubmit() {
                 },
               })
             }}
-            className="accent-primary mt-1 size-4"
           />
           <span>
             {t("onboarding.documentConsent")}{" "}

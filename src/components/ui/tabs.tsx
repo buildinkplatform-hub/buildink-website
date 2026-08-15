@@ -29,7 +29,7 @@ export function TabsNav({
                 "inline-flex min-h-11 items-center rounded-full px-4 text-sm font-semibold transition-colors",
                 item.active
                   ? "bg-primary text-white"
-                  : "border-line bg-white text-brand-navy hover:bg-light-blue",
+                  : "border-line bg-white text-brand-navy hover:bg-accent",
               )}
             >
               {item.label}

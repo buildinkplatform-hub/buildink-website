@@ -1,13 +1,12 @@
 import { getTranslations } from "next-intl/server"
 
 import { BrandLogo } from "@/components/shared/brand-logo"
-import {
-  footerColumns,
-} from "@/features/public/config/public-site.config"
+import { footerColumns } from "@/features/public/config/public-site.config"
 import { Link } from "@/i18n/navigation"
 
 export async function PublicFooter() {
   const t = await getTranslations("publicSite")
+  const home = await getTranslations("public")
 
   return (
     <footer className="bg-brand-navy py-14 text-white">
@@ -40,7 +39,7 @@ export async function PublicFooter() {
         ))}
       </div>
       <div className="page-container mt-10 border-t border-white/10 pt-6 text-xs text-white/55">
-        {"\u00A9"} 2026 Buildink. All rights reserved.
+        {home("copyright")}
       </div>
     </footer>
   )

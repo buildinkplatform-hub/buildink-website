@@ -66,11 +66,11 @@ describe("PublicAuthControls", () => {
     expect(
       screen.queryByRole("link", { name: "Create account" }),
     ).not.toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Test User" })).toHaveTextContent(
+    expect(screen.getByRole("button", { name: /Test User/ })).toHaveTextContent(
       "TU",
     )
 
-    await user.click(screen.getByRole("button", { name: "Test User" }))
+    await user.click(screen.getByRole("button", { name: /Test User/ }))
 
     expect(screen.getByRole("menuitem", { name: "Dashboard" })).toHaveAttribute(
       "href",

@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { useState } from "react"
 import { describe, expect, it } from "vitest"
+import { NextIntlClientProvider } from "next-intl"
 
 import type { CategoryOption } from "@/shared/types/platform"
 import { CategoryPicker } from "./category-picker"
@@ -34,12 +35,18 @@ const categories: CategoryOption[] = [
 function CategoryPickerHarness({ initialValue = "" }: { initialValue?: string }) {
   const [value, setValue] = useState(initialValue)
   return (
-    <CategoryPicker
-      id="category"
-      value={value}
-      categories={categories}
-      onChange={setValue}
-    />
+    <NextIntlClientProvider
+      locale="en"
+      timeZone="UTC"
+      messages={{ common: { subcategory: "Subcategory" } }}
+    >
+      <CategoryPicker
+        id="category"
+        value={value}
+        categories={categories}
+        onChange={setValue}
+      />
+    </NextIntlClientProvider>
   )
 }
 

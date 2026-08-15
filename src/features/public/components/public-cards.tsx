@@ -22,17 +22,13 @@ export function PublicEntityCard({
   actionLabel: string
 }) {
   return (
-    <Card className="overflow-hidden rounded-[30px] border-white/70 p-4 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-xl">
+    <Card className="directory-card overflow-hidden rounded-[30px] border-white/70 p-4 shadow-[var(--shadow-card)]">
       <PublicEntityVisual module={item.module} title={item.title} />
       <div className="mt-5 flex items-start gap-4">
         <Avatar name={item.title} className="size-14 rounded-2xl" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <Badge>{item.verification}</Badge>
-            <div className="text-muted inline-flex items-center gap-1 text-xs font-semibold">
-              <Star className="size-3.5 fill-current text-amber-400" />
-              4.8
-            </div>
           </div>
           <h3 className="text-brand-navy mt-3 text-xl font-bold">{item.title}</h3>
           <p className="text-muted mt-1 text-sm font-medium">{item.subtitle}</p>

@@ -4,6 +4,8 @@
     "reviewBody": "Check your profile type, details, documents and privacy choices before submission.",
     "publicConsent": "I consent to publishing only the approved profile details I have provided.",
     "documentConsent": "I consent to private processing of these documents for verification.",
+    "termsConsent": "I accept the Terms of Service.",
+    "privacyConsent": "I accept the Privacy Policy.",
     "submit": "Submit profile",
     "profileType": "Profile type",
     "details": "Profile details",
@@ -13,7 +15,7 @@
     "pendingTitle": "Your profile will be pending verification",
     "pendingBody": "Submission does not automatically verify your account. Buildink may approve it or request changes after review.",
     "errors": {
-      "consent": "Both privacy choices are required to submit."
+      "consent": "Accept the terms, privacy policy, and document processing to submit."
     }
   }
 }

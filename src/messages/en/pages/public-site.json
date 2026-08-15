@@ -2,7 +2,8 @@
   "publicSite": {
     "nav": {
       "groups": {
-        "browse": "Browse tenders",
+        "browse": "Browse",
+        "opportunities": "Opportunities",
         "marketplace": "Companies & services",
         "resources": "Resources"
       },
@@ -11,12 +12,19 @@
         "search": "Global search",
         "companies": "Companies",
         "profiles": "Public profiles",
+        "workers": "Workers",
+        "subcontractors": "Subcontractors",
+        "serviceProviders": "Service providers",
+        "specializedServices": "Specialized services",
+        "trades": "Trades",
+        "safetyCertifications": "Safety & certifications",
         "suppliers": "Suppliers",
         "equipment": "Equipment marketplace",
         "projects": "Projects",
         "tenders": "Open tenders",
-        "companyRequests": "Looking for a company",
+        "companyRequests": "Looking for companies / subcontractors",
         "workerRequests": "Looking for workers",
+        "serviceRequests": "Service requests",
         "howItWorks": "How it works",
         "verification": "Verification & safety",
         "help": "Help center",
@@ -68,6 +76,9 @@
       "viewDetails": "View details",
       "primaryContact": "Contact or request quote",
       "saveItem": "Save after login",
+      "saveToFavorites": "Save to favorites",
+      "savedItem": "Saved to favorites",
+      "viewSaved": "View saved items",
       "readArticle": "Read article"
     },
     "search": {
@@ -99,6 +110,8 @@
       "overview": "Overview",
       "services": "Services",
       "projects": "Projects",
+      "catalogue": "Catalogue",
+      "equipment": "Equipment",
       "reviews": "Reviews",
       "certifications": "Certifications",
       "contact": "Contact"
@@ -115,10 +128,47 @@
       "officialWebsiteBody": "Continue to the approved public website when you need more company context.",
       "visitWebsite": "Visit website"
     },
+    "userReviews": {
+      "title": "Reviews",
+      "subtitle": "Ratings from partners after a qualifying offer, application or engagement.",
+      "emptyTitle": "No published reviews yet",
+      "emptyBody": "Approved reviews appear here. Empty listings stay empty — scores are never invented.",
+      "average": "{rating} out of 5",
+      "count": "{count} reviews",
+      "verifiedBadge": "Verified engagement",
+      "formTitle": "Write a review",
+      "rating": "Rating",
+      "starLabel": "{count} stars",
+      "titleLabel": "Title",
+      "comment": "Comment",
+      "locale": "Language",
+      "submit": "Submit review",
+      "success": "Thanks — your review was submitted for moderation.",
+      "signIn": "Sign in to write a review",
+      "signInBody": "You can review this listing after you sign in and have a qualifying marketplace interaction.",
+      "ineligible": "You cannot review this listing yet",
+      "ineligibleBody": "Leave a review after a qualifying offer, application or completed engagement. Verified members who already interacted with this listing can also submit one.",
+      "alreadyReviewed": "You have already submitted a review for this listing.",
+      "selfTarget": "You cannot review your own listing.",
+      "histogram": "Rating breakdown",
+      "histogramStar": "{count} stars",
+      "pendingTitle": "Awaiting moderation",
+      "pendingBody": "Thanks — your review was submitted and is waiting for moderation. It will appear here after it is approved."
+    },
     "cta": {
       "title": "Move from public discovery to a protected Buildink workflow",
       "body": "The public website should explain value clearly, then hand off to registration and role-aware workspace actions without creating dead ends.",
       "action": "Create your Buildink account"
+    },
+    "forms": {
+      "contactTitle": "Send a message",
+      "name": "Your name",
+      "email": "Email address",
+      "message": "How can we help?",
+      "send": "Send message",
+      "contactSuccess": "Thanks — your message has been received.",
+      "report": "Report this listing",
+      "reportSuccess": "Thanks — the report was received."
     },
     "faq": {
       "items": {
@@ -180,6 +230,31 @@
         "eyebrow": "Looking for workers",
         "title": "Public workforce requests by trade and region",
         "description": "Show trade, quantity, timing and public terms clearly so workers and contractors can decide whether to continue."
+      },
+      "serviceRequests": {
+        "eyebrow": "Service requests",
+        "title": "Public requests for specialized construction services",
+        "description": "Find structured service RFQs without exposing private commercial terms."
+      },
+      "workers": {
+        "eyebrow": "Skilled workers",
+        "title": "Find verified workers by trade and region",
+        "description": "Worker cards should show profession, skills, availability and public verification without private documents."
+      },
+      "subcontractors": {
+        "eyebrow": "Trade contractors",
+        "title": "Discover subcontractors ready to bid",
+        "description": "Compare trade, crew size, service radius and qualification signals before inviting or contacting."
+      },
+      "serviceProviders": {
+        "eyebrow": "Specialized services",
+        "title": "Browse professional construction service providers",
+        "description": "See service categories, licences, regions and response signals on a public-safe profile."
+      },
+      "trades": {
+        "eyebrow": "Trades",
+        "title": "Explore companies and professionals by trade",
+        "description": "Start from a trade and move into companies, subcontractors and workers with matching capabilities."
       },
       "howItWorks": {
         "eyebrow": "Process clarity",

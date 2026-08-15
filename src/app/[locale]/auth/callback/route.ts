@@ -17,11 +17,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
   const { locale: requestedLocale } = await params
   const locale = isLocale(requestedLocale) ? requestedLocale : "it"
   const url = new URL(request.url)
+  const forwardedHost = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim()
+  const forwardedProto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() ?? "https"
   const code = url.searchParams.get("code")
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) return NextResponse.redirect(new URL(safePath(url.searchParams.get("next"), locale), url.origin))
+    if (!error) {
+      const callbackOrigin = forwardedHost
+        ? `${forwardedProto}://${forwardedHost}`
+        : url.origin
+      return NextResponse.redirect(
+        new URL(safePath(url.searchParams.get("next"), locale), callbackOrigin),
+      )
+    }
   }
   return NextResponse.redirect(new URL(`/${locale}/login?error=auth_callback`, url.origin))
 }

@@ -8,10 +8,14 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Link } from "@/i18n/navigation"
-import { googleLoginAction, loginAction } from "@/features/auth/actions/auth.actions"
+import {
+  googleLoginAction,
+  loginAction,
+} from "@/features/auth/actions/auth.actions"
 import { PasswordInput } from "./password-input"
 import type { Locale } from "@/shared/types/platform"
 
@@ -44,7 +48,7 @@ export function LoginForm({ next }: { next?: string }) {
   return (
     <div className="border-line rounded-2xl border bg-white p-6 shadow-[var(--shadow-card)] sm:p-9">
       <p className="text-primary text-sm font-bold tracking-widest uppercase">
-        Buildink portal
+        {t("auth.portal")}
       </p>
       <h1 className="text-brand-navy mt-3 text-3xl font-bold">
         {t("auth.welcome")}
@@ -94,11 +98,7 @@ export function LoginForm({ next }: { next?: string }) {
         </Field>
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
           <label className="text-muted flex min-h-11 cursor-pointer items-center gap-2">
-            <input
-              type="checkbox"
-              className="accent-primary size-4"
-              {...register("remember")}
-            />
+            <Checkbox {...register("remember")} />
             {t("auth.remember")}
           </label>
           <Link
@@ -116,7 +116,11 @@ export function LoginForm({ next }: { next?: string }) {
           <ArrowRight className="size-4 rtl:rotate-180" aria-hidden="true" />
         </Button>
       </form>
-      <div className="my-5 flex items-center gap-3 text-xs text-muted"><span className="h-px flex-1 bg-line" /><span>or</span><span className="h-px flex-1 bg-line" /></div>
+      <div className="text-muted my-5 flex items-center gap-3 text-xs">
+        <span className="bg-line h-px flex-1" />
+        <span>{t("auth.separator")}</span>
+        <span className="bg-line h-px flex-1" />
+      </div>
       <Button
         type="button"
         variant="secondary"
@@ -124,13 +128,15 @@ export function LoginForm({ next }: { next?: string }) {
         disabled={isSubmitting || googlePending}
         onClick={async () => {
           setGooglePending(true)
-          await googleLoginAction(locale, next).catch(() => setGooglePending(false))
+          await googleLoginAction(locale, next).catch(() =>
+            setGooglePending(false),
+          )
         }}
       >
         {googlePending ? (
           <LoaderCircle className="size-4 animate-spin" />
         ) : null}
-        Continue with Google
+        {t("auth.continueWithGoogle")}
       </Button>
       <p className="text-muted mt-6 text-center text-sm">
         {t("auth.noAccount")}{" "}

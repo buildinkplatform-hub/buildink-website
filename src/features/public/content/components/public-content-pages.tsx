@@ -8,6 +8,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { PublicArticleCard } from "@/features/public/components/public-cards"
+import { PublicContactForm } from "@/features/public/components/public-contact-form"
 import { PublicNewsletterCard } from "@/features/public/components/public-newsletter-card"
 import { ContentShell } from "@/features/public/components/public-shells"
 import {
@@ -95,6 +96,22 @@ export async function PublicContentPage({
           ) : null}
         </Card>
       ))}
+      {type === "contact" ? (
+        <Card className="p-6 shadow-[var(--shadow-card)]">
+          <h2 className="text-brand-navy text-2xl font-bold">
+            {t("forms.contactTitle")}
+          </h2>
+          <div className="mt-4">
+            <PublicContactForm
+              nameLabel={t("forms.name")}
+              emailLabel={t("forms.email")}
+              messageLabel={t("forms.message")}
+              action={t("forms.send")}
+              success={t("forms.contactSuccess")}
+            />
+          </div>
+        </Card>
+      ) : null}
       <Card className="overflow-hidden bg-brand-navy p-8 text-white shadow-[var(--shadow-card)]">
         <h2 className="text-3xl font-bold">{t("cta.title")}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-white/75 sm:text-base">
@@ -169,6 +186,7 @@ export async function PublicContentCollectionPage({
           consent={t("newsletter.consent")}
           action={t("newsletter.action")}
           success={t("newsletter.success")}
+          locale={locale}
         />
       ) : null}
     </ContentShell>

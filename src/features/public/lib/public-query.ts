@@ -19,6 +19,7 @@ export function parseDirectoryQuery(
     region: value("region"),
     category: value("category"),
     verification: value("verification"),
+    accountType: value("accountType"),
     page: Number.isFinite(page) && page > 0 ? page : 1,
   }
 }

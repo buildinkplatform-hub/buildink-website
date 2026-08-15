@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import type { CategoryOption } from "@/shared/types/platform"
+import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 
 export function CategoryPicker({
@@ -27,6 +28,7 @@ export function CategoryPicker({
   categoryPlaceholder?: string
   subcategoryPlaceholder?: string
 }) {
+  const t = useTranslations("common")
   const normalizedValue = Array.isArray(value) ? (value[0] ?? "") : (value ?? "")
   const parentForValue = useMemo(
     () =>
@@ -74,7 +76,7 @@ export function CategoryPicker({
         onValueChange={onChange}
         disabled={!selectedParent || !childOptions.length}
       >
-        <SelectTrigger aria-label="Subcategory">
+        <SelectTrigger aria-label={t("subcategory")}>
           <SelectValue placeholder={subcategoryPlaceholder} />
         </SelectTrigger>
         <SelectContent>

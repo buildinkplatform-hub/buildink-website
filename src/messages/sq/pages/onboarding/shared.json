@@ -1,0 +1,31 @@
+{
+  "onboarding": {
+    "step": "Hapi {current} nga 4",
+    "stepAccountType": "Lloji i llogarisë",
+    "stepProfile": "Të dhënat thelbësore të profilit",
+    "stepDocuments": "Verifikimi",
+    "stepReview": "Rishikimi dhe publikimi",
+    "whyWeAsk": "Pse e pyesim",
+    "visibilityPublic": "Publik",
+    "visibilityPrivate": "Privat derisa të zgjedhësh ndryshe",
+    "why": {
+      "phone": "Përdoret për rikuperimin e llogarisë dhe, nëse e lejon, për kontaktin e tregut.",
+      "country": "Përputhja rajonale varet nga vendi ku operon.",
+      "region": "Mundësitë renditen sipas rrezes së shërbimit dhe rajonit.",
+      "contactPreference": "Kontrollon nëse telefoni ose emaili mund të shfaqen publikisht."
+    },
+    "noFiles": "Nuk është zgjedhur asnjë dokument ende.",
+    "selectCategory": "Zgjidh kategorinë",
+    "selectSubcategory": "Zgjidh nënkategorinë",
+    "searchCompany": "Kërko një kompani ekzistuese",
+    "viewFull": "Shiko në madhësi të plotë",
+    "preview": "Parapamja e skedarit",
+    "previewLoading": "Po ngarkohet parapamja e sigurt...",
+    "openNewTab": "Hap pamjen e plotë",
+    "closePreview": "Mbyll parapamjen",
+    "errors": {
+      "uploadFailed": "Ngarkimi dështoi. Provo sërish.",
+      "previewFailed": "Parapamja e sigurt nuk u ngarkua. Provo sërish."
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { hasLocale } from "next-intl"
 import {
   getMessages,
@@ -17,6 +17,12 @@ import { localeMetadata } from "@/shared/constants/platform"
 import type { Locale } from "@/shared/types/platform"
 
 import "@/styles/globals.css"
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+}
 
 const inter = Inter({
   subsets: ["latin"],
@@ -52,7 +58,14 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: `/${locale}`,
-      languages: { it: "/it", en: "/en", ar: "/ar", "x-default": "/it" },
+      languages: {
+        it: "/it",
+        en: "/en",
+        ar: "/ar",
+        ro: "/ro",
+        sq: "/sq",
+        "x-default": "/it",
+      },
     },
   }
 }
