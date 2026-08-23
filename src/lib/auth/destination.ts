@@ -43,6 +43,7 @@ export function getSignedInDestination(
     case "await_review":
       return `/${locale}/onboarding/pending`
     case "update_onboarding":
+      return `/${locale}/onboarding/profile`
     case "continue_onboarding":
       return `/${locale}/onboarding/profile-type`
     case "onboarding_rejected":

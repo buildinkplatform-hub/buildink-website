@@ -1,6 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react"
 
 import {
   getPortalVapidPublicKeyAction,
@@ -32,6 +38,22 @@ function isPushSupported() {
   )
 }
 
+const noopSubscribe = () => () => {}
+
+/**
+ * Browser-capability read that is hydration-safe: the server (and therefore
+ * the first client render during hydration) always reports "not supported",
+ * then React re-renders with the real browser value. Without this, banners
+ * that depend on push support cause hydration mismatches.
+ */
+function usePushSupported(): boolean {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => isPushSupported(),
+    () => false,
+  )
+}
+
 function hasAutoPrompted() {
   try {
     return window.localStorage.getItem(AUTO_PROMPT_STORAGE_KEY) === "1"
@@ -49,6 +71,7 @@ function markAutoPrompted() {
 }
 
 export function usePortalPushNotifications(enabled: boolean) {
+  const supported = usePushSupported()
   const [permission, setPermission] = useState<PermissionState>(
     isPushSupported() ? Notification.permission : "unsupported",
   )
@@ -159,7 +182,7 @@ export function usePortalPushNotifications(enabled: boolean) {
   }, [])
 
   return {
-    supported: isPushSupported(),
+    supported,
     permission,
     subscribed,
     loading,

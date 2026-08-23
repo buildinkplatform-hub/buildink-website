@@ -17,6 +17,8 @@
     "selectDate": "Seleziona la data di scadenza",
     "expires": "Scade il {date}",
     "remove": "Rimuovi",
+    "requiredDocumentsTitle": "Documenti richiesti",
+    "requiredOr": "o",
     "options": {
       "identity": "Documento di identita",
       "certificate": "Certificato",
@@ -33,7 +35,8 @@
       "fileSize": "Ogni file deve avere una dimensione massima di 25 MB.",
       "fileRequired": "Scegli un file del documento prima del caricamento.",
       "deleteFailed": "Impossibile rimuovere il documento. Riprova.",
-      "documentRequired": "Aggiungi almeno un documento di verifica prima di continuare."
+      "documentRequired": "Aggiungi almeno un documento di verifica prima di continuare.",
+      "requiredDocuments": "Carica i tipi di documento richiesti prima di continuare."
     }
   }
 }

@@ -10,7 +10,7 @@ export default async function WorkersPage({
 }) {
   return (
     <PublicDirectoryPage
-      module="profiles"
+      module="workers"
       titleKey="workers"
       descriptionKey="workers"
       accountType="WORKER"

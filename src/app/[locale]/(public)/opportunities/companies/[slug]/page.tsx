@@ -6,6 +6,6 @@ export default async function OpportunityCompanyDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  return <PublicEntityDetailPage module="opportunities-companies" slug={slug} />
+  return <PublicEntityDetailPage module="opportunities" slug={slug} />
 }
 

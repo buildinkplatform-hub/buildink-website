@@ -19,6 +19,7 @@ export function CategoryPicker({
   onBlur,
   categoryPlaceholder = "Select category",
   subcategoryPlaceholder = "Select subcategory",
+  triggerClassName,
 }: {
   id: string
   value?: string | string[]
@@ -27,6 +28,7 @@ export function CategoryPicker({
   onBlur?: () => void
   categoryPlaceholder?: string
   subcategoryPlaceholder?: string
+  triggerClassName?: string
 }) {
   const t = useTranslations("common")
   const normalizedValue = Array.isArray(value) ? (value[0] ?? "") : (value ?? "")
@@ -56,7 +58,7 @@ export function CategoryPicker({
           onChange(parent?.children.length ? "" : slug)
         }}
       >
-        <SelectTrigger id={id} onBlur={onBlur}>
+        <SelectTrigger id={id} onBlur={onBlur} className={triggerClassName}>
           <SelectValue placeholder={categoryPlaceholder} />
         </SelectTrigger>
         <SelectContent>
@@ -76,7 +78,7 @@ export function CategoryPicker({
         onValueChange={onChange}
         disabled={!selectedParent || !childOptions.length}
       >
-        <SelectTrigger aria-label={t("subcategory")}>
+        <SelectTrigger aria-label={t("subcategory")} className={triggerClassName}>
           <SelectValue placeholder={subcategoryPlaceholder} />
         </SelectTrigger>
         <SelectContent>

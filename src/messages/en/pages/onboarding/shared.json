@@ -15,6 +15,11 @@
       "contactPreference": "Controls whether your phone or email can appear publicly."
     },
     "noFiles": "No documents selected yet.",
+    "pushTitle": "Get notified about your review",
+    "pushBody": "We'll send you a browser notification the moment your profile is approved or needs changes — even with the site closed.",
+    "pushEnable": "Enable notifications",
+    "pushDenied": "Browser notifications are blocked. Enable them in your browser settings to receive review updates.",
+    "pushDone": "Notifications enabled — we'll alert you when the review is complete.",
     "selectCategory": "Select category",
     "selectSubcategory": "Select subcategory",
     "searchCompany": "Search for an existing company",

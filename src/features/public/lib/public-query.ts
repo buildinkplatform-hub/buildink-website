@@ -16,7 +16,9 @@ export function parseDirectoryQuery(
 
   return {
     q: value("q"),
+    country: value("country"),
     region: value("region"),
+    city: value("city"),
     category: value("category"),
     verification: value("verification"),
     accountType: value("accountType"),

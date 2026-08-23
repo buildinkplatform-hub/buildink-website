@@ -11,6 +11,7 @@
         "home": "الرئيسية",
         "search": "البحث العام",
         "companies": "الشركات",
+        "projectOwners": "أصحاب المشاريع",
         "profiles": "الملفات العامة",
         "workers": "العمّال",
         "subcontractors": "المقاولون من الباطن",
@@ -63,8 +64,12 @@
       "title": "تصفية النتائج",
       "search": "بحث",
       "searchPlaceholder": "ابحث بالكلمة المفتاحية أو الخدمة أو التخصص أو اسم الشركة",
+      "country": "الدولة",
+      "allCountries": "جميع الدول",
       "region": "المنطقة",
       "allRegions": "كل المناطق",
+      "city": "المدينة",
+      "allCities": "جميع المدن",
       "category": "الفئة",
       "allCategories": "كل الفئات",
       "verification": "التحقق",
@@ -85,7 +90,9 @@
     },
     "stats": {
       "publicResults": "النتائج العامة",
+      "countries": "الدول",
       "regions": "المناطق",
+      "cities": "المدن",
       "categories": "الفئات",
       "verificationStates": "حالات التحقق"
     },
@@ -95,11 +102,16 @@
     },
     "modules": {
       "companies": "الشركات",
+      "project-owners": "أصحاب المشاريع",
+      "subcontractors": "المقاولون من الباطن",
+      "service-providers": "مقدمو الخدمات",
+      "workers": "العمال",
       "profiles": "الملفات",
       "suppliers": "المورّدون",
       "equipment": "المعدات",
       "projects": "المشاريع",
       "tenders": "المناقصات",
+      "opportunities": "الفرص",
       "opportunities-companies": "طلبات الشركات",
       "opportunities-workers": "طلبات العمّال"
     },
@@ -192,6 +204,11 @@
         "eyebrow": "اكتشاف الشركات",
         "title": "اعثر على شركات البناء مع إثبات عام",
         "description": "ابحث حسب المنطقة والفئة وإشارات الثقة للانتقال بسرعة من التقييم العام إلى الإجراء المناسب."
+      },
+      "projectOwners": {
+        "eyebrow": "أصحاب المشاريع",
+        "title": "تصفح أصحاب المشاريع النشطين",
+        "description": "استكشف ملفات أصحاب المشاريع المنشورة وعناصر السوق النشطة المرتبطة بها."
       },
       "profiles": {
         "eyebrow": "اكتشاف المهنيين",

@@ -36,6 +36,57 @@ export function ReviewSubmit() {
     "create",
     "claim",
   ])
+  const fieldLabels: Record<string, string> = {
+    phone: t("onboarding.fields.phone"),
+    country: t("onboarding.fields.country"),
+    region: t("onboarding.fields.region"),
+    city: t("onboarding.fields.city"),
+    cityId: t("onboarding.fields.city"),
+    preferredLocale: t("onboarding.fields.preferredLocale"),
+    contactPreference: t("onboarding.fields.contactPreference"),
+    bio: t("onboarding.fields.bio"),
+    profileVisibility: t("onboarding.fields.profileVisibility"),
+    interests: t("onboarding.fields.interests"),
+    profession: t("onboarding.fields.profession"),
+    skills: t("onboarding.fields.skills"),
+    yearsExperience: t("onboarding.fields.yearsExperience"),
+    availability: t("onboarding.fields.availability"),
+    languages: t("onboarding.fields.languages"),
+    contractorIdentity: t("onboarding.fields.contractorIdentity"),
+    primaryTrade: t("onboarding.fields.primaryTrade"),
+    categories: t("onboarding.fields.categories"),
+    serviceRegions: t("onboarding.fields.serviceRegions"),
+    capabilityStatement: t("onboarding.fields.capabilityStatement"),
+    jobTitle: t("onboarding.fields.jobTitle"),
+    organizationMode: t("onboarding.fields.organizationMode"),
+    companyId: t("onboarding.fields.companyId"),
+    supplierName: t("onboarding.fields.supplierName"),
+    vatNumber: t("onboarding.fields.vatNumber"),
+    businessDescription: t("onboarding.fields.businessDescription"),
+    providerIdentity: t("onboarding.fields.providerIdentity"),
+    professionalBackground: t("onboarding.fields.professionalBackground"),
+    companyName: t("onboarding.fields.companyName"),
+    companyLegalName: t("onboarding.fields.companyLegalName"),
+    companyType: t("onboarding.fields.companyType"),
+    companyRegistrationNumber: t("onboarding.fields.companyRegistrationNumber"),
+    companyEmail: t("onboarding.fields.companyEmail"),
+    companyPhone: t("onboarding.fields.companyPhone"),
+    companyWebsite: t("onboarding.fields.companyWebsite"),
+    companyCategoryId: t("onboarding.fields.companyCategoryId"),
+    companySubcategoryId: t("onboarding.fields.companySubcategoryId"),
+    companyCityId: t("onboarding.fields.companyLocation"),
+    companyRegion: t("onboarding.fields.companyLocation"),
+    companyLocation: t("onboarding.fields.companyLocation"),
+    companyAddress: t("onboarding.fields.companyAddress"),
+    companyDescription: t("onboarding.fields.companyDescription"),
+    companyBusinessHours: t("onboarding.fields.companyBusinessHours"),
+    companySize: t("onboarding.fields.companySize"),
+    companyTimezone: t("onboarding.fields.companyTimezone"),
+  }
+
+  function fieldLabel(key: string) {
+    return fieldLabels[key] ?? key.replace(/([A-Z])/g, " $1").trim()
+  }
 
   function displayProfileValue(key: string, value: unknown) {
     if (
@@ -44,9 +95,21 @@ export function ReviewSubmit() {
       isLocale(value)
     )
       return localeMetadata[value].nativeLabel
+    if (key === "companySize" && typeof value === "string")
+      return t(`onboarding.companySizes.${value.replace("+", "_plus")}`)
+    if (key === "companyTimezone" && typeof value === "string")
+      return t(`onboarding.timezones.${value.replace("/", "_")}`)
+    if (key === "companyType" && typeof value === "string")
+      return t(`onboarding.companyTypes.${value}`)
     if (typeof value === "string" && translatedOptions.has(value))
       return t(`onboarding.options.${value}`)
     return Array.isArray(value) ? value.join(", ") : String(value)
+  }
+
+  function shouldShowValue(value: unknown) {
+    if (Array.isArray(value)) return value.length > 0
+    if (typeof value === "string") return value.trim().length > 0
+    return value !== undefined && value !== null
   }
 
   if (!draft.profileType && !draft.primaryAccountType)
@@ -65,6 +128,19 @@ export function ReviewSubmit() {
   const accountTypeLabel = accountType
     ? t(primaryAccountTypeLabelKeys[accountType])
     : "—"
+
+  const accountDetails = [
+    ["Name", draft.account.name],
+    ["Email", draft.account.email],
+    [
+      t("onboarding.fields.preferredLocale"),
+      localeMetadata[draft.account.preferredLocale].nativeLabel,
+    ],
+    [t("onboarding.profileType"), accountTypeLabel],
+  ] as const
+  const profileDetails = Object.entries(draft.profile).filter(([, value]) =>
+    shouldShowValue(value),
+  )
 
   const submit = () => {
     if (
@@ -106,7 +182,16 @@ export function ReviewSubmit() {
               {t("onboarding.edit")}
             </Link>
           </div>
-          <p className="text-muted mt-2">{accountTypeLabel}</p>
+          <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+            {accountDetails.map(([label, value]) => (
+              <div key={label}>
+                <dt className="text-muted text-xs font-semibold">{label}</dt>
+                <dd className="text-brand-navy mt-1 text-sm" dir="auto">
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
         <section className="border-line rounded-xl border p-5">
           <div className="flex items-center justify-between gap-3">
@@ -121,10 +206,10 @@ export function ReviewSubmit() {
             </Link>
           </div>
           <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-            {Object.entries(draft.profile).map(([key, value]) => (
+            {profileDetails.map(([key, value]) => (
               <div key={key}>
                 <dt className="text-muted text-xs font-semibold">
-                  {t(`onboarding.fields.${key}`)}
+                  {fieldLabel(key)}
                 </dt>
                 <dd className="text-brand-navy mt-1 text-sm" dir="auto">
                   {displayProfileValue(key, value)}
@@ -167,6 +252,37 @@ export function ReviewSubmit() {
                   · {t(`onboarding.options.${document.documentType}`)}
                 </span>
               </p>
+            ))}
+            {draft.documents.map((document) => (
+              <dl
+                key={`${document.id}-metadata`}
+                className="border-line/70 text-muted grid gap-2 rounded-xl border p-3 text-sm sm:grid-cols-2"
+              >
+                <div>
+                  <dt className="text-xs font-semibold">
+                    {t("onboarding.fields.documentType")}
+                  </dt>
+                  <dd>{t(`onboarding.options.${document.documentType}`)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold">
+                    {t("onboarding.fields.ownerName")}
+                  </dt>
+                  <dd>{document.ownerName || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold">
+                    {t("onboarding.fields.issuingCountry")}
+                  </dt>
+                  <dd>{document.issuingCountry || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold">
+                    {t("onboarding.fields.expiryDate")}
+                  </dt>
+                  <dd>{document.expiryDate || "-"}</dd>
+                </div>
+              </dl>
             ))}
           </div>
         </section>

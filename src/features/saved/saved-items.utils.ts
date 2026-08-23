@@ -14,9 +14,11 @@ export type SavedEntityType =
 export function entityTypeForModule(module: PublicModule): SavedEntityType | null {
   switch (module) {
     case "companies":
-    case "suppliers":
       return "COMPANY"
-    case "profiles":
+    case "project-owners":
+    case "subcontractors":
+    case "service-providers":
+    case "workers":
       return "PROFILE"
     case "projects":
       return "PROJECT"
@@ -24,8 +26,7 @@ export function entityTypeForModule(module: PublicModule): SavedEntityType | nul
       return "TENDER"
     case "equipment":
       return "EQUIPMENT"
-    case "opportunities-companies":
-    case "opportunities-workers":
+    case "opportunities":
       return "OPPORTUNITY"
     default: {
       const exhaustive: never = module
@@ -46,7 +47,16 @@ export function savedItemHref(item: PortalSavedItem) {
     case "COMPANY":
       return `${moduleRouteMap.companies}/${slug}`
     case "PROFILE":
-      return `${moduleRouteMap.profiles}/${slug}`
+      if (savedModule === "project-owners") {
+        return `${moduleRouteMap["project-owners"]}/${slug}`
+      }
+      if (savedModule === "subcontractors") {
+        return `${moduleRouteMap.subcontractors}/${slug}`
+      }
+      if (savedModule === "service-providers") {
+        return `${moduleRouteMap["service-providers"]}/${slug}`
+      }
+      return `${moduleRouteMap.workers}/${slug}`
     case "PROJECT":
       return `${moduleRouteMap.projects}/${slug}`
     case "TENDER":
@@ -54,13 +64,7 @@ export function savedItemHref(item: PortalSavedItem) {
     case "EQUIPMENT":
       return `${moduleRouteMap.equipment}/${slug}`
     case "OPPORTUNITY":
-      if (savedModule === "opportunities-workers") {
-        return `${moduleRouteMap["opportunities-workers"]}/${slug}`
-      }
-      if (item.metadata?.kind === "WORKFORCE_REQUEST") {
-        return `${moduleRouteMap["opportunities-workers"]}/${slug}`
-      }
-      return `${moduleRouteMap["opportunities-companies"]}/${slug}`
+      return `${moduleRouteMap.opportunities}/${slug}`
     case "OFFER":
       return `/dashboard/offers/${item.entityId}`
     default:

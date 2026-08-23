@@ -10,7 +10,7 @@ export default async function SuppliersPage({
 }) {
   return (
     <PublicDirectoryPage
-      module="suppliers"
+      module="companies"
       titleKey="suppliers"
       descriptionKey="suppliers"
       searchParams={await searchParams}

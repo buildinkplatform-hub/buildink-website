@@ -2,11 +2,22 @@ import { Search } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { PublicEntityCard } from "@/features/public/components/public-cards"
 import { DirectoryShell } from "@/features/public/components/public-shells"
 import { moduleRouteMap } from "@/features/public/config/public-site.config"
+import { getDirectoryFacets } from "@/features/public/data/public-repository"
+import { buildQueryString, parseDirectoryQuery } from "@/features/public/lib/public-query"
+import { Link } from "@/i18n/navigation"
 import type { Locale } from "@/shared/types/platform"
 import { searchAll } from "@/features/public/data/public-repository"
 
@@ -17,8 +28,44 @@ export async function PublicSearchPage({
 }) {
   const t = await getTranslations("publicSite")
   const locale = (await getLocale()) as Locale
-  const q = Array.isArray(searchParams?.q) ? searchParams?.q[0] : searchParams?.q
-  const results = await searchAll({ q }, locale)
+  const geographyText =
+    locale === "it"
+      ? {
+          country: "Paese",
+          allCountries: "Tutti i paesi",
+          city: "CittÃ ",
+          allCities: "Tutte le cittÃ ",
+        }
+      : locale === "ar"
+        ? {
+            country: "Ø§Ù„Ø¯ÙˆÙ„Ø©",
+            allCountries: "ÙƒÙ„ Ø§Ù„Ø¯ÙˆÙ„",
+            city: "Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©",
+            allCities: "ÙƒÙ„ Ø§Ù„Ù…Ø¯Ù†",
+          }
+        : locale === "ro"
+          ? {
+              country: "ÈšarÄƒ",
+              allCountries: "Toate È›Äƒrile",
+              city: "OraÈ™",
+              allCities: "Toate oraÈ™ele",
+            }
+          : locale === "sq"
+            ? {
+                country: "Shteti",
+                allCountries: "TÃ« gjitha shtetet",
+                city: "Qyteti",
+                allCities: "TÃ« gjitha qytetet",
+              }
+            : {
+                country: "Country",
+                allCountries: "All countries",
+                city: "City",
+                allCities: "All cities",
+              }
+  const query = parseDirectoryQuery(searchParams)
+  const results = await searchAll(query, locale)
+  const companyFacets = await getDirectoryFacets("companies", locale)
 
   return (
     <DirectoryShell
@@ -34,7 +81,7 @@ export async function PublicSearchPage({
         </div>
       }
       filters={
-        <Card className="p-4">
+        <Card className="rounded-[28px] border-white/70 p-4 shadow-[var(--shadow-card)]">
           <h2 className="text-brand-navy text-base font-bold">
             {t("filters.title")}
           </h2>
@@ -45,9 +92,87 @@ export async function PublicSearchPage({
               </label>
               <Input
                 name="q"
-                defaultValue={q}
+                defaultValue={query.q}
                 placeholder={t("pages.search.title")}
               />
+            </div>
+            <div>
+              <label className="text-brand-navy mb-2 block text-sm font-semibold">
+                {geographyText.country}
+              </label>
+              <Select name="country" defaultValue={query.country ?? "__all__"}>
+                <SelectTrigger>
+                  <SelectValue placeholder={geographyText.allCountries} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">{geographyText.allCountries}</SelectItem>
+                  {companyFacets.countries.map((country) => (
+                    <SelectItem key={country} value={country}>
+                      {country}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-brand-navy mb-2 block text-sm font-semibold">
+                {t("filters.region")}
+              </label>
+              <Select name="region" defaultValue={query.region ?? "__all__"}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t("filters.allRegions")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">{t("filters.allRegions")}</SelectItem>
+                  {companyFacets.regions.map((region) => (
+                    <SelectItem key={region} value={region}>
+                      {region}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-brand-navy mb-2 block text-sm font-semibold">
+                {geographyText.city}
+              </label>
+              <Select name="city" defaultValue={query.city ?? "__all__"}>
+                <SelectTrigger>
+                  <SelectValue placeholder={geographyText.allCities} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">{geographyText.allCities}</SelectItem>
+                  {companyFacets.cities.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-brand-navy mb-2 block text-sm font-semibold">
+                {t("filters.category")}
+              </label>
+              <Select name="category" defaultValue={query.category ?? "__all__"}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t("filters.allCategories")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">{t("filters.allCategories")}</SelectItem>
+                  {companyFacets.categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button type="submit">{t("actions.applyFilters")}</Button>
+              <Button asChild type="button" variant="secondary">
+                <Link href="/search">{t("actions.clearFilters")}</Link>
+              </Button>
             </div>
           </form>
         </Card>
@@ -56,11 +181,23 @@ export async function PublicSearchPage({
       <div>
         <div className="mb-5 flex items-center gap-3">
           <Badge>{t("search.resultCount", { count: String(results.length) })}</Badge>
-          {q ? (
+          {query.q ? (
             <Badge className="bg-white text-brand-navy">
               <Search className="size-3.5" />
-              {q}
+              {query.q}
             </Badge>
+          ) : null}
+          {query.category ? (
+            <Badge className="bg-white text-brand-navy">{query.category}</Badge>
+          ) : null}
+          {query.country ? (
+            <Badge className="bg-white text-brand-navy">{query.country}</Badge>
+          ) : null}
+          {query.region ? (
+            <Badge className="bg-white text-brand-navy">{query.region}</Badge>
+          ) : null}
+          {query.city ? (
+            <Badge className="bg-white text-brand-navy">{query.city}</Badge>
           ) : null}
         </div>
         {results.length ? (
@@ -84,6 +221,19 @@ export async function PublicSearchPage({
             </p>
           </Card>
         )}
+        {results.length ? (
+          <div className="mt-6 flex flex-wrap gap-2">
+            {companyFacets.categories.slice(0, 8).map((category) => (
+              <a
+                key={category}
+                href={`/search?${buildQueryString({ ...query, category, page: 1 })}`}
+                className="rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-xs font-semibold text-brand-navy transition hover:bg-primary/10"
+              >
+                {category}
+              </a>
+            ))}
+          </div>
+        ) : null}
       </div>
     </DirectoryShell>
   )

@@ -1,5 +1,5 @@
-import { PublicPageSkeleton } from "@/components/shared/page-skeletons"
+import { PublicHomeSkeleton } from "@/components/shared/page-skeletons"
 
 export default function PublicLoading() {
-  return <PublicPageSkeleton />
+  return <PublicHomeSkeleton />
 }

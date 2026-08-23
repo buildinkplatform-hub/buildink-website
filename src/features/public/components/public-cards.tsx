@@ -4,7 +4,10 @@ import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { PublicEntityVisual } from "@/features/public/components/public-visuals"
+import {
+  PublicEntityVisual,
+  selectPrimaryVisual,
+} from "@/features/public/components/public-visuals"
 import { Link } from "@/i18n/navigation"
 import type {
   PublicArticle,
@@ -23,9 +26,17 @@ export function PublicEntityCard({
 }) {
   return (
     <Card className="directory-card overflow-hidden rounded-[30px] border-white/70 p-4 shadow-[var(--shadow-card)]">
-      <PublicEntityVisual module={item.module} title={item.title} />
+      <PublicEntityVisual
+        module={item.module}
+        title={item.title}
+        imageUrl={selectPrimaryVisual(item)}
+      />
       <div className="mt-5 flex items-start gap-4">
-        <Avatar name={item.title} className="size-14 rounded-2xl" />
+        <Avatar
+          name={item.title}
+          src={item.avatarUrl ?? item.logoUrl ?? item.coverUrl}
+          className="size-14 rounded-2xl"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <Badge>{item.verification}</Badge>
@@ -99,16 +110,19 @@ export function PublicArticleCard({
   article,
   href,
   actionLabel,
+  imageUrl,
 }: {
   article: PublicArticle | PublicHelpArticle
   href: string
   actionLabel: string
+  imageUrl?: string | null
 }) {
   return (
     <Card className="overflow-hidden rounded-[28px] border-white/70 p-0 shadow-[var(--shadow-card)]">
       <PublicEntityVisual
         module="companies"
         title={article.title}
+        imageUrl={imageUrl}
         className="h-44 rounded-none border-0"
         compact
       />

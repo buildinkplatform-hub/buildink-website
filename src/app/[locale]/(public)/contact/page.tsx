@@ -1,14 +1,13 @@
 import type { Metadata } from "next"
-import { getTranslations } from "next-intl/server"
+import { getLocale } from "next-intl/server"
 
 import { PublicContentPage } from "@/features/public/content/components/public-content-pages"
+import { publicContentPageMetadata } from "@/features/public/content/lib/public-content-metadata"
+import type { Locale } from "@/shared/types/platform"
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("publicSite")
-  return {
-    title: t("pages.contact.title"),
-    description: t("pages.contact.description"),
-  }
+  const locale = (await getLocale()) as Locale
+  return publicContentPageMetadata("contact", locale)
 }
 
 export default function ContactPage() {

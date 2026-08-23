@@ -10,7 +10,7 @@ export default async function ServiceProvidersPage({
 }) {
   return (
     <PublicDirectoryPage
-      module="profiles"
+      module="service-providers"
       titleKey="serviceProviders"
       descriptionKey="serviceProviders"
       accountType="SERVICE_PROVIDER"

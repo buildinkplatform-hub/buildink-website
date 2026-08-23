@@ -15,6 +15,11 @@
       "contactPreference": "Controlează dacă telefonul sau emailul pot apărea public."
     },
     "noFiles": "Niciun document selectat încă.",
+    "pushTitle": "Primește notificări despre revizuire",
+    "pushBody": "Îți trimitem o notificare în browser în momentul în care profilul tău este aprobat sau necesită modificări — chiar și cu site-ul închis.",
+    "pushEnable": "Activează notificările",
+    "pushDenied": "Notificările din browser sunt blocate. Activează-le din setările browserului pentru a primi actualizări.",
+    "pushDone": "Notificări activate — te vom anunța când revizuirea este completă.",
     "selectCategory": "Selectează categoria",
     "selectSubcategory": "Selectează subcategoria",
     "searchCompany": "Caută o companie existentă",

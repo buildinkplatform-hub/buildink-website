@@ -2,6 +2,7 @@
 
 import {
   Building2,
+  CheckCircle2,
   Hammer,
   HardHat,
   LoaderCircle,
@@ -16,7 +17,6 @@ import { saveProfileTypeAction } from "@/features/onboarding/actions/onboarding.
 import { useRouter } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
 import { primaryAccountTypeLabelKeys } from "@/shared/constants/platform"
-import { accountTypeFromDraft } from "@/shared/lib/account-type-mapping"
 import {
   primaryAccountTypes,
   type PrimaryAccountType,
@@ -44,11 +44,8 @@ export function RoleSelection() {
   const t = useTranslations()
   const router = useRouter()
   const { draft, updateDraft } = useOnboardingDraft()
-  const invitedType = accountTypeFromDraft(draft)
-  const [selected, setSelected] = useState<PrimaryAccountType | undefined>(
-    invitedType,
-  )
-  const [error, setError] = useState(false)
+  const [selected, setSelected] = useState<PrimaryAccountType | undefined>()
+  const [errorKey, setErrorKey] = useState<"profileType" | "saveProfileType">()
   const [pending, setPending] = useState(false)
 
   return (
@@ -64,17 +61,15 @@ export function RoleSelection() {
         {primaryAccountTypes.map((accountType) => {
           const Icon = accountTypeIcons[accountType]
           const active = selected === accountType
-          const locked = Boolean(invitedType) && accountType !== invitedType
           return (
             <button
               key={accountType}
               type="button"
               aria-pressed={active}
-              disabled={locked}
               onClick={() => {
-                if (pending || locked) return
+                if (pending) return
                 setSelected(accountType)
-                setError(false)
+                setErrorKey(undefined)
               }}
               className={cn(
                 "min-h-36 rounded-2xl border p-5 text-start transition",
@@ -83,10 +78,24 @@ export function RoleSelection() {
                   : "border-line hover:border-primary/50 hover:bg-canvas",
               )}
             >
-              <Icon
-                className={cn("size-6", active ? "text-primary" : "text-muted")}
-                aria-hidden="true"
-              />
+              <div className="flex items-start justify-between gap-3">
+                <Icon
+                  className={cn(
+                    "size-6",
+                    active ? "text-primary" : "text-muted",
+                  )}
+                  aria-hidden="true"
+                />
+                <CheckCircle2
+                  className={cn(
+                    "size-5 transition-opacity",
+                    active
+                      ? "text-primary opacity-100"
+                      : "text-muted/30 opacity-0",
+                  )}
+                  aria-hidden="true"
+                />
+              </div>
               <span className="text-brand-navy mt-4 block font-bold">
                 {t(primaryAccountTypeLabelKeys[accountType])}
               </span>
@@ -97,32 +106,37 @@ export function RoleSelection() {
           )
         })}
       </div>
-      {error ? (
+      {errorKey ? (
         <p role="alert" className="text-danger mt-4 text-sm">
-          {t("onboarding.errors.profileType")}
+          {t(`onboarding.errors.${errorKey}`)}
         </p>
       ) : null}
       <Button
         className="mt-7 w-full sm:w-auto"
         onClick={async () => {
-          if (!selected) return setError(true)
+          if (!selected) return setErrorKey("profileType")
           setPending(true)
-          const result = await saveProfileTypeAction(
-            selected,
-            draft.version,
-            draft.profileType,
-          )
-          if (!result.success) {
+          try {
+            const result = await saveProfileTypeAction(
+              selected,
+              draft.version,
+              draft.profileType,
+            )
+            if (!result.success) {
+              setPending(false)
+              return setErrorKey("saveProfileType")
+            }
+            updateDraft({
+              primaryAccountType: selected,
+              profileType: result.draft.profileType ?? draft.profileType,
+              profile: {},
+              version: result.draft.version,
+            })
+            router.push("/onboarding/profile")
+          } catch {
             setPending(false)
-            return setError(true)
+            return setErrorKey("saveProfileType")
           }
-          updateDraft({
-            primaryAccountType: selected,
-            profileType: result.draft.profileType ?? draft.profileType,
-            profile: {},
-            version: result.draft.version,
-          })
-          router.push("/onboarding/profile")
         }}
         disabled={pending}
       >

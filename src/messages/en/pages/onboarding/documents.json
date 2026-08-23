@@ -17,6 +17,8 @@
     "selectDate": "Select expiry date",
     "expires": "Expires {date}",
     "remove": "Remove",
+    "requiredDocumentsTitle": "Required documents",
+    "requiredOr": "or",
     "options": {
       "identity": "Identity document",
       "certificate": "Certificate",
@@ -33,7 +35,8 @@
       "fileSize": "Each file must be 25 MB or smaller.",
       "fileRequired": "Choose a document file before uploading.",
       "deleteFailed": "The document could not be removed. Please try again.",
-      "documentRequired": "Add at least one verification document before continuing."
+      "documentRequired": "Add at least one verification document before continuing.",
+      "requiredDocuments": "Upload the required document types before continuing."
     }
   }
 }

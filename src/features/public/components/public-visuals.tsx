@@ -2,13 +2,16 @@ import Image from "next/image"
 
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils/cn"
+import type { PublicMediaAsset } from "@/features/public/types/public.types"
 import type { PublicModule } from "@/features/public/types/public.types"
 
 function visualConfig(module: PublicModule) {
   switch (module) {
     case "companies":
-    case "profiles":
-    case "suppliers":
+    case "project-owners":
+    case "subcontractors":
+    case "service-providers":
+    case "workers":
     case "equipment":
       return {
         src: "/branding/company-visual.png",
@@ -17,8 +20,7 @@ function visualConfig(module: PublicModule) {
       }
     case "projects":
     case "tenders":
-    case "opportunities-companies":
-    case "opportunities-workers":
+    case "opportunities":
       return {
         src: "/branding/hero-construction-marketplace.png",
         objectPosition: "72% 48%",
@@ -30,11 +32,13 @@ function visualConfig(module: PublicModule) {
 export function PublicEntityVisual({
   module,
   title,
+  imageUrl,
   className,
   compact = false,
 }: {
   module: PublicModule
   title: string
+  imageUrl?: string | null
   className?: string
   compact?: boolean
 }) {
@@ -49,11 +53,11 @@ export function PublicEntityVisual({
       )}
     >
       <Image
-        src={visual.src}
+        src={imageUrl ?? visual.src}
         alt={title}
         fill
         className="object-cover"
-        style={{ objectPosition: visual.objectPosition }}
+        style={{ objectPosition: imageUrl ? "50% 50%" : visual.objectPosition }}
         unoptimized
       />
       <div
@@ -64,6 +68,23 @@ export function PublicEntityVisual({
       />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/50 to-transparent" />
     </div>
+  )
+}
+
+export function selectPrimaryVisual(
+  item: {
+    coverUrl?: string | null
+    logoUrl?: string | null
+    avatarUrl?: string | null
+    gallery?: PublicMediaAsset[]
+  },
+) {
+  return (
+    item.coverUrl ??
+    item.gallery?.[0]?.url ??
+    item.logoUrl ??
+    item.avatarUrl ??
+    null
   )
 }
 

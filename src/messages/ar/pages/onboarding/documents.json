@@ -17,6 +17,8 @@
     "selectDate": "اختر تاريخ الانتهاء",
     "expires": "ينتهي في {date}",
     "remove": "إزالة",
+    "requiredDocumentsTitle": "المستندات المطلوبة",
+    "requiredOr": "أو",
     "options": {
       "identity": "وثيقة هوية",
       "certificate": "شهادة",
@@ -33,7 +35,8 @@
       "fileSize": "يجب ألا يتجاوز حجم كل ملف 25 ميجابايت.",
       "fileRequired": "اختر ملف مستند قبل الرفع.",
       "deleteFailed": "تعذرت إزالة المستند. يرجى المحاولة مرة أخرى.",
-      "documentRequired": "أضف مستند تحقق واحدًا على الأقل قبل المتابعة."
+      "documentRequired": "أضف مستند تحقق واحدًا على الأقل قبل المتابعة.",
+      "requiredDocuments": "ارفع أنواع المستندات المطلوبة قبل المتابعة."
     }
   }
 }

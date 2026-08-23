@@ -11,15 +11,20 @@ import { getLocale, getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { Alert } from "@/components/ui/alert"
+import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { TabsNav } from "@/components/ui/tabs"
 import { PublicEntityCard } from "@/features/public/components/public-cards"
-import { PublicEntityVisual } from "@/features/public/components/public-visuals"
 import { PublicAbuseForm } from "@/features/public/components/public-abuse-form"
+import { PublicMediaGallery } from "@/features/public/components/public-media-gallery"
 import { PublicReviewsPanel } from "@/features/public/components/public-reviews-panel"
+import {
+  PublicEntityVisual,
+  selectPrimaryVisual,
+} from "@/features/public/components/public-visuals"
 import {
   SaveItemButton,
 } from "@/features/public/components/save-item-button"
@@ -50,16 +55,17 @@ function resolveReviewTarget(
   if (!item.id) return null
   switch (module) {
     case "companies":
-    case "suppliers":
       return { type: "COMPANY", id: item.id }
     case "projects":
       return { type: "PROJECT", id: item.id }
-    case "profiles":
+    case "project-owners":
+    case "subcontractors":
+    case "service-providers":
+    case "workers":
       return { type: "WORKER", id: item.id }
     case "equipment":
     case "tenders":
-    case "opportunities-companies":
-    case "opportunities-workers":
+    case "opportunities":
       return null
     default: {
       const exhaustive: never = module
@@ -84,12 +90,25 @@ export async function PublicEntityDetailPage({
   const item = record ?? (await getPublicEntity(module, slug, locale))
   if (!item) notFound()
 
-  const related = await getRelatedEntities(module, item, locale)
   const isReviewsTab = module === "companies" && companySection === "reviews"
-  const companySubpage =
+  const reviewTarget = resolveReviewTarget(module, item)
+  const showReviews =
+    Boolean(reviewTarget) && (module !== "companies" || isReviewsTab)
+  // Related entities, the company subpage, the viewer profile and reviews are
+  // all independent once the entity is known — load them in parallel.
+  const [related, companySubpage, viewer, reviews] = await Promise.all([
+    getRelatedEntities(module, item, locale),
     module === "companies" && companySection
-      ? await getCompanySubpageFromEntity(item, companySection)
-      : null
+      ? getCompanySubpageFromEntity(item, companySection)
+      : null,
+    showReviews || entityTypeForModule(module)
+      ? getPublicViewer(locale)
+      : null,
+    showReviews && reviewTarget
+      ? getPublicReviews(reviewTarget, locale)
+      : null,
+  ])
+  const saveEntityType = entityTypeForModule(module)
   const title = isReviewsTab
     ? t("tabs.reviews")
     : (companySubpage?.title ?? item.title)
@@ -99,18 +118,6 @@ export async function PublicEntityDetailPage({
   const sections = isReviewsTab
     ? []
     : (companySubpage?.sections ?? item.sections)
-  const reviewTarget = resolveReviewTarget(module, item)
-  const showReviews =
-    Boolean(reviewTarget) && (module !== "companies" || isReviewsTab)
-  const saveEntityType = entityTypeForModule(module)
-  const viewer =
-    showReviews || saveEntityType
-      ? await getPublicViewer(locale)
-      : null
-  const reviews =
-    showReviews && reviewTarget
-      ? await getPublicReviews(reviewTarget, locale)
-      : null
   const eligibility =
     showReviews && reviewTarget && viewer
       ? await getReviewEligibility({
@@ -121,6 +128,7 @@ export async function PublicEntityDetailPage({
   const loginHref = `/${locale}${moduleRouteMap[module]}/${slug}${
     isReviewsTab ? "/reviews" : ""
   }`
+  const primaryVisual = selectPrimaryVisual(item)
 
   const tabs =
     module === "companies"
@@ -167,9 +175,17 @@ export async function PublicEntityDetailPage({
           />
           <div className="mt-5 flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex items-start gap-4">
-              <div className="bg-light-blue text-primary flex size-18 shrink-0 items-center justify-center rounded-[28px]">
-                <Building2 className="size-9" />
-              </div>
+              {item.avatarUrl || item.logoUrl || item.coverUrl ? (
+                <Avatar
+                  name={item.title}
+                  src={item.avatarUrl ?? item.logoUrl ?? item.coverUrl}
+                  className="size-18 shrink-0 rounded-[28px]"
+                />
+              ) : (
+                <div className="bg-light-blue text-primary flex size-18 shrink-0 items-center justify-center rounded-[28px]">
+                  <Building2 className="size-9" />
+                </div>
+              )}
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge>{item.verification}</Badge>
@@ -251,9 +267,7 @@ export async function PublicEntityDetailPage({
                   slug={item.slug}
                   module={module}
                   kind={
-                    module === "opportunities-workers"
-                      ? "WORKFORCE_REQUEST"
-                      : undefined
+                    module === "opportunities" ? "WORKFORCE_REQUEST" : undefined
                   }
                   isAuthenticated={Boolean(viewer)}
                   loginHref={`/login?next=${encodeURIComponent(loginHref)}`}
@@ -343,11 +357,18 @@ export async function PublicEntityDetailPage({
             <PublicEntityVisual
               module={module}
               title={title}
+              imageUrl={primaryVisual}
               className="h-full min-h-80 rounded-[28px]"
             />
           </div>
         </div>
       </Card>
+
+      <PublicMediaGallery
+        title={`${title} media`}
+        gallery={item.gallery}
+        documents={item.documents}
+      />
 
       {sections.map((section, index) => (
         <Card
@@ -383,6 +404,7 @@ export async function PublicEntityDetailPage({
             <PublicEntityVisual
               module={module}
               title={`${title}-${section.id}`}
+              imageUrl={primaryVisual}
               compact
               className={index % 2 === 0 ? "h-48 lg:h-full" : "h-48 lg:h-full"}
             />

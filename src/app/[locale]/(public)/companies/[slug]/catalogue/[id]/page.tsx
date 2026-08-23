@@ -31,6 +31,6 @@ export default async function CatalogueItemPage({
   const item = await getPublicCatalogueItem(id, locale)
   if (!item) notFound()
   return (
-    <PublicEntityDetailPage module="suppliers" slug={item.slug} record={item} />
+    <PublicEntityDetailPage module="companies" slug={item.slug} record={item} />
   )
 }

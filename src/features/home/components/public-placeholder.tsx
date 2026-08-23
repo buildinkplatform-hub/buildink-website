@@ -114,9 +114,13 @@ export async function PublicPlaceholder() {
   const t = await getTranslations({ locale, namespace: "public" })
   const common = await getTranslations({ locale, namespace: "common" })
   const site = await getTranslations({ locale, namespace: "publicSite" })
-  const viewer = await getPublicViewer(locale)
-  const home = await getHomeView(locale)
-  const companyFacets = await getDirectoryFacets("companies", locale)
+  // The viewer (personalized CTA), home view and facets are independent —
+  // fetch them in parallel so the landing page pays one round-trip, not three.
+  const [viewer, home, companyFacets] = await Promise.all([
+    getPublicViewer(locale),
+    getHomeView(locale),
+    getDirectoryFacets("companies", locale),
+  ])
   const heroCategories = companyFacets.categories.slice(0, 8)
   const secondaryCategories = [
     t("categoryGeneralContractor"),
@@ -138,8 +142,8 @@ export async function PublicPlaceholder() {
       })),
     },
     {
-      title: t("topRatedWorkers"),
-      href: "/workers",
+      title: t("pathProjectOwner"),
+      href: "/project-owners",
       items: home.featured.profiles.map((item) => ({
         item,
         metric: item.metrics[0]?.value ?? "—",
@@ -219,6 +223,7 @@ export async function PublicPlaceholder() {
                   <div className="mt-5 flex flex-wrap gap-2">
                     {[
                       { href: "/companies", label: t("ctaFindCompanies") },
+                      { href: "/project-owners", label: t("pathProjectOwner") },
                       { href: "/tenders", label: t("ctaBrowseTenders") },
                       { href: "/projects", label: t("ctaDiscoverProjects") },
                       { href: "/workers", label: t("ctaFindWorkers") },
@@ -250,6 +255,7 @@ export async function PublicPlaceholder() {
                         className="object-cover"
                         style={{ objectPosition: "72% 48%" }}
                         priority
+                        loading="eager"
                         unoptimized
                       />
                       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,31,68,0.06)_0%,rgba(10,31,68,0)_45%,rgba(10,31,68,0.05)_100%)]" />

@@ -44,13 +44,19 @@ import type {
 function FiltersForm({
   title,
   query,
+  countries,
   regions,
+  cities,
   categories,
   verifications,
   searchLabel,
   searchPlaceholder,
+  countryLabel,
+  allCountriesLabel,
   regionLabel,
   allRegionsLabel,
+  cityLabel,
+  allCitiesLabel,
   categoryLabel,
   allCategoriesLabel,
   verificationLabel,
@@ -61,13 +67,19 @@ function FiltersForm({
 }: {
   title: string
   query: DirectoryQuery
+  countries: string[]
   regions: string[]
+  cities: string[]
   categories: string[]
   verifications: string[]
   searchLabel: string
   searchPlaceholder: string
+  countryLabel: string
+  allCountriesLabel: string
   regionLabel: string
   allRegionsLabel: string
+  cityLabel: string
+  allCitiesLabel: string
   categoryLabel: string
   allCategoriesLabel: string
   verificationLabel: string
@@ -101,6 +113,24 @@ function FiltersForm({
         </div>
         <div>
           <label className="text-brand-navy mb-2 block text-sm font-semibold">
+            {countryLabel}
+          </label>
+          <Select name="country" defaultValue={query.country ?? "__all__"}>
+            <SelectTrigger className="min-h-12 rounded-2xl">
+              <SelectValue placeholder={allCountriesLabel} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{allCountriesLabel}</SelectItem>
+              {countries.map((country) => (
+                <SelectItem key={country} value={country}>
+                  {country}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="text-brand-navy mb-2 block text-sm font-semibold">
             {regionLabel}
           </label>
           <Select name="region" defaultValue={query.region ?? "__all__"}>
@@ -112,6 +142,24 @@ function FiltersForm({
               {regions.map((region) => (
                 <SelectItem key={region} value={region}>
                   {region}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="text-brand-navy mb-2 block text-sm font-semibold">
+            {cityLabel}
+          </label>
+          <Select name="city" defaultValue={query.city ?? "__all__"}>
+            <SelectTrigger className="min-h-12 rounded-2xl">
+              <SelectValue placeholder={allCitiesLabel} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{allCitiesLabel}</SelectItem>
+              {cities.map((city) => (
+                <SelectItem key={city} value={city}>
+                  {city}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -189,8 +237,10 @@ export async function PublicDirectoryPage({
     ...(accountType ? { accountType } : {}),
   }
   const routePrefix = href ?? moduleRouteMap[module]
-  const result = await listPublicEntities(module, query, locale)
-  const facets = await getDirectoryFacets(module, locale)
+  const [result, facets] = await Promise.all([
+    listPublicEntities(module, query, locale),
+    getDirectoryFacets(module, locale),
+  ])
 
   const paginationItems = Array.from({ length: result.totalPages }, (_, index) => {
     const page = index + 1
@@ -215,13 +265,19 @@ export async function PublicDirectoryPage({
     <FiltersForm
       title={t("filters.title")}
       query={query}
+      countries={facets.countries}
       regions={facets.regions}
+      cities={facets.cities}
       categories={facets.categories}
       verifications={facets.verifications}
       searchLabel={t("filters.search")}
       searchPlaceholder={t("filters.searchPlaceholder")}
+      countryLabel={t("filters.country")}
+      allCountriesLabel={t("filters.allCountries")}
       regionLabel={t("filters.region")}
       allRegionsLabel={t("filters.allRegions")}
+      cityLabel={t("filters.city")}
+      allCitiesLabel={t("filters.allCities")}
       categoryLabel={t("filters.category")}
       allCategoriesLabel={t("filters.allCategories")}
       verificationLabel={t("filters.verification")}
@@ -264,7 +320,11 @@ export async function PublicDirectoryPage({
                   {facets.categories.slice(0, 6).map((category) => (
                     <Link
                       key={category}
-                      href={`${routePrefix}?category=${encodeURIComponent(category)}`}
+                      href={`${routePrefix}?${buildQueryString({
+                        ...query,
+                        category,
+                        page: 1,
+                      })}`}
                       className="rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-xs font-semibold text-brand-navy transition hover:bg-primary/10"
                     >
                       {category}
@@ -280,7 +340,9 @@ export async function PublicDirectoryPage({
           <PublicMetricStrip
             items={[
               { label: t("stats.publicResults"), value: String(result.total) },
+              { label: t("stats.countries"), value: String(facets.countries.length) },
               { label: t("stats.regions"), value: String(facets.regions.length) },
+              { label: t("stats.cities"), value: String(facets.cities.length) },
               { label: t("stats.categories"), value: String(facets.categories.length) },
               { label: t("stats.verificationStates"), value: String(facets.verifications.length) },
             ]}

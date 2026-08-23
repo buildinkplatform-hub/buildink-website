@@ -9,10 +9,10 @@ export async function PublicFooter() {
   const home = await getTranslations("public")
 
   return (
-    <footer className="bg-brand-navy py-14 text-white">
-      <div className="page-container grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
+    <footer className="border-t bg-brand-navy py-14 text-white">
+      <div className="page-container grid gap-10 lg:grid-cols-[1.35fr_1fr_1fr_1fr_1fr]">
         <div className="max-w-sm space-y-4">
-          <BrandLogo className="rounded-lg bg-white p-1" />
+          <BrandLogo className="rounded-xl bg-white p-1.5" />
           <p className="mt-4 text-sm leading-6 text-white/65">
             {t("footer.note")}
           </p>
@@ -22,8 +22,10 @@ export async function PublicFooter() {
         </div>
         {footerColumns.map((column) => (
           <div key={column.key}>
-            <h2 className="text-sm font-semibold">{t(column.labelKey)}</h2>
-            <div className="mt-4 h-px w-16 bg-white/20" />
+            <h2 className="text-sm font-semibold tracking-[0.08em] uppercase text-white/90">
+              {t(column.labelKey)}
+            </h2>
+            <div className="mt-4 h-px w-16 bg-white/15" />
             <div className="mt-4 space-y-3">
               {column.items.map((item) => (
                 <Link

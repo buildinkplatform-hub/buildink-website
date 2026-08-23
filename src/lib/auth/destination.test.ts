@@ -34,7 +34,7 @@ describe("getSignedInDestination", () => {
       "/en/onboarding/profile-type",
     )
     expect(getSignedInDestination("en", "update_onboarding")).toBe(
-      "/en/onboarding/profile-type",
+      "/en/onboarding/profile",
     )
   })
 

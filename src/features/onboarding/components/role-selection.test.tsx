@@ -107,7 +107,7 @@ describe("RoleSelection", () => {
     expect(push).toHaveBeenCalledWith("/onboarding/profile")
   })
 
-  it("locks the invited account type mapped from a legacy profile type", () => {
+  it("does not preselect a previously saved account type", () => {
     renderRoleSelection(
       draft({
         profileType: "supplier_contact",
@@ -115,12 +115,61 @@ describe("RoleSelection", () => {
       }),
     )
 
-    expect(screen.getByRole("button", { name: /^Company/ })).toBeEnabled()
-    expect(screen.getByRole("button", { name: /^Project owner/ })).toBeDisabled()
-    expect(screen.getByRole("button", { name: /^Worker/ })).toBeDisabled()
-    expect(screen.getByRole("button", { name: /^Subcontractor/ })).toBeDisabled()
+    expect(screen.getByRole("button", { name: /^Company/ })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    )
     expect(
-      screen.getByRole("button", { name: /^Service Provider/ }),
-    ).toBeDisabled()
+      screen.getByRole("button", { name: /^Project owner/ }),
+    ).toHaveAttribute("aria-pressed", "false")
+  })
+
+  it("allows changing away from a previously saved account type", async () => {
+    const user = userEvent.setup()
+    vi.mocked(saveProfileTypeAction).mockResolvedValue({
+      success: true,
+      draft: {
+        id: "draft-1",
+        currentStep: "profile",
+        profileType: "worker",
+        primaryAccountType: "WORKER",
+        payload: {},
+        version: 2,
+        assets: [],
+      },
+    })
+
+    renderRoleSelection(
+      draft({
+        profileType: "supplier_contact",
+        primaryAccountType: "COMPANY",
+      }),
+    )
+
+    await user.click(screen.getByRole("button", { name: /^Worker/ }))
+    await user.click(screen.getByRole("button", { name: /^Continue$/i }))
+
+    expect(saveProfileTypeAction).toHaveBeenCalledWith(
+      "WORKER",
+      undefined,
+      "supplier_contact",
+    )
+    expect(push).toHaveBeenCalledWith("/onboarding/profile")
+  })
+
+  it("shows a save error instead of a selection error when saving fails", async () => {
+    const user = userEvent.setup()
+    vi.mocked(saveProfileTypeAction).mockResolvedValue({ success: false })
+    renderRoleSelection(draft())
+
+    await user.click(screen.getByRole("button", { name: /^Company/ }))
+    await user.click(screen.getByRole("button", { name: /^Continue$/i }))
+
+    expect(
+      screen.getByText("We couldn't save your account type. Please try again."),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText("Choose an account type to continue."),
+    ).not.toBeInTheDocument()
   })
 })

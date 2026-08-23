@@ -6,6 +6,6 @@ export default async function ProfileDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  return <PublicEntityDetailPage module="profiles" slug={slug} />
+  return <PublicEntityDetailPage module="workers" slug={slug} />
 }
 

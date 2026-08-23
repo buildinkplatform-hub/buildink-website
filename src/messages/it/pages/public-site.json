@@ -11,6 +11,7 @@
         "home": "Home",
         "search": "Ricerca globale",
         "companies": "Imprese",
+        "projectOwners": "Proprietari di progetto",
         "profiles": "Profili pubblici",
         "workers": "Lavoratori",
         "subcontractors": "Subappaltatori",
@@ -63,8 +64,12 @@
       "title": "Affina i risultati",
       "search": "Cerca",
       "searchPlaceholder": "Cerca per parola chiave, servizio, mestiere o nome azienda",
+      "country": "Paese",
+      "allCountries": "Tutti i paesi",
       "region": "Regione",
       "allRegions": "Tutte le regioni",
+      "city": "Città",
+      "allCities": "Tutte le città",
       "category": "Categoria",
       "allCategories": "Tutte le categorie",
       "verification": "Verifica",
@@ -85,7 +90,9 @@
     },
     "stats": {
       "publicResults": "Risultati pubblici",
+      "countries": "Paesi",
       "regions": "Regioni",
+      "cities": "Città",
       "categories": "Categorie",
       "verificationStates": "Stati di verifica"
     },
@@ -95,11 +102,16 @@
     },
     "modules": {
       "companies": "Imprese",
+      "project-owners": "Proprietari di progetto",
+      "subcontractors": "Subappaltatori",
+      "service-providers": "Fornitori di servizi",
+      "workers": "Lavoratori",
       "profiles": "Profili",
       "suppliers": "Fornitori",
       "equipment": "Attrezzature",
       "projects": "Progetti",
       "tenders": "Tender",
+      "opportunities": "Opportunita",
       "opportunities-companies": "Richieste per imprese",
       "opportunities-workers": "Richieste per lavoratori"
     },
@@ -192,6 +204,11 @@
         "eyebrow": "Scoperta imprese",
         "title": "Trova imprese edili con prove pubbliche",
         "description": "Cerca per regione, categoria e segnali di fiducia per passare rapidamente dalla valutazione pubblica all'azione corretta."
+      },
+      "projectOwners": {
+        "eyebrow": "Proprietari di progetto",
+        "title": "Esplora i proprietari di progetto attivi",
+        "description": "Consulta i profili pubblicati dei proprietari di progetto e gli elementi di marketplace attivi collegati."
       },
       "profiles": {
         "eyebrow": "Scoperta professionisti",

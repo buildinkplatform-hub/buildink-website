@@ -10,7 +10,7 @@ export default async function SubcontractorsPage({
 }) {
   return (
     <PublicDirectoryPage
-      module="profiles"
+      module="subcontractors"
       titleKey="subcontractors"
       descriptionKey="subcontractors"
       accountType="SUBCONTRACTOR"

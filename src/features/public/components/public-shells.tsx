@@ -10,7 +10,7 @@ export function PublicLandingShell({
   children: ReactNode
 }) {
   return (
-    <main id="main-content">
+    <main id="main-content" className="bg-background">
       {hero}
       <div className="space-y-16 py-16 sm:space-y-20 sm:py-20">{children}</div>
     </main>
@@ -64,7 +64,7 @@ export function DirectoryShell({
   sidebar?: ReactNode
 }) {
   return (
-    <main id="main-content" className="page-container py-10 sm:py-12">
+    <main id="main-content" className="page-container py-8 sm:py-10 lg:py-12">
       {header}
       <div className="mt-8 grid gap-8 lg:grid-cols-[280px_1fr]">
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
@@ -89,7 +89,7 @@ export function EntityDetailShell({
   aside?: ReactNode
 }) {
   return (
-    <main id="main-content" className="page-container py-10 sm:py-12">
+    <main id="main-content" className="page-container py-8 sm:py-10 lg:py-12">
       {hero}
       {tabs ? <div className="mt-6">{tabs}</div> : null}
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -110,7 +110,7 @@ export function ContentShell({
   aside?: ReactNode
 }) {
   return (
-    <main id="main-content" className="page-container py-10 sm:py-12">
+    <main id="main-content" className="page-container py-8 sm:py-10 lg:py-12">
       {hero}
       <div className={cn("mt-8 grid gap-8", aside && "lg:grid-cols-[minmax(0,1fr)_280px]")}>
         <div className="space-y-6">{children}</div>

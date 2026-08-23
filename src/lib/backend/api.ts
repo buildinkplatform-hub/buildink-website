@@ -48,6 +48,7 @@ export async function readBackendEnvelope<T>(
 export async function backendApi<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = await getAccessToken()
   if (!token) throw new BackendApiError(401, "AUTH_REQUIRED", "Authentication is required")
+  const useDataCache = Boolean(init.next)
   const response = await fetch(`${process.env.BACKEND_API_URL ?? "http://localhost:4000"}${path}`, {
     ...init,
     headers: {
@@ -55,7 +56,8 @@ export async function backendApi<T>(path: string, init: RequestInit = {}): Promi
       authorization: `Bearer ${token}`,
       ...init.headers,
     },
-    cache: "no-store",
+    // Only force no-store when the caller has not opted into the Next.js data cache.
+    ...(useDataCache ? {} : { cache: init.cache ?? ("no-store" as const) }),
     signal: init.signal ?? AbortSignal.timeout(Number(process.env.BACKEND_API_TIMEOUT_MS ?? 25_000)),
   })
   const payload = await readBackendEnvelope<T>(response)

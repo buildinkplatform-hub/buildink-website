@@ -3,7 +3,8 @@
     "roleTitle": "Choose your account type",
     "roleBody": "Select how you will use the Buildink marketplace.",
     "errors": {
-      "profileType": "Choose an account type to continue."
+      "profileType": "Choose an account type to continue.",
+      "saveProfileType": "We couldn't save your account type. Please try again."
     }
   },
   "roles": {

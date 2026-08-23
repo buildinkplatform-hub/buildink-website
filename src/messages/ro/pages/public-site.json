@@ -11,6 +11,7 @@
         "home": "Acasă",
         "search": "Căutare globală",
         "companies": "Companii",
+        "projectOwners": "Proprietari de proiect",
         "profiles": "Profile publice",
         "workers": "Lucrători",
         "subcontractors": "Subcontractori",
@@ -63,8 +64,12 @@
       "title": "Rafinează rezultatele",
       "search": "Căutare",
       "searchPlaceholder": "Caută după cuvânt-cheie, serviciu, meserie sau numele companiei",
+      "country": "Țară",
+      "allCountries": "Toate țările",
       "region": "Regiune",
       "allRegions": "Toate regiunile",
+      "city": "Oraș",
+      "allCities": "Toate orașele",
       "category": "Categorie",
       "allCategories": "Toate categoriile",
       "verification": "Verificare",
@@ -85,7 +90,9 @@
     },
     "stats": {
       "publicResults": "Rezultate publice",
+      "countries": "Țări",
       "regions": "Regiuni",
+      "cities": "Orașe",
       "categories": "Categorii",
       "verificationStates": "Stări de verificare"
     },
@@ -95,11 +102,16 @@
     },
     "modules": {
       "companies": "Companii",
+      "project-owners": "Proprietari de proiect",
+      "subcontractors": "Subcontractori",
+      "service-providers": "Furnizori de servicii",
+      "workers": "Lucrători",
       "profiles": "Profile",
       "suppliers": "Furnizori",
       "equipment": "Echipamente",
       "projects": "Proiecte",
       "tenders": "Licitații",
+      "opportunities": "Oportunități",
       "opportunities-companies": "Cereri pentru companii",
       "opportunities-workers": "Cereri pentru lucrători"
     },
@@ -192,6 +204,11 @@
         "eyebrow": "Descoperirea companiilor",
         "title": "Găsește companii de construcții cu dovezi publice",
         "description": "Caută după regiune, categorie și semnale de încredere pentru a trece rapid de la evaluarea publică la următoarea acțiune potrivită."
+      },
+      "projectOwners": {
+        "eyebrow": "Proprietari de proiect",
+        "title": "Răsfoiește proprietarii de proiect activi",
+        "description": "Explorează profilurile publicate ale proprietarilor de proiect și elementele active de marketplace conectate."
       },
       "profiles": {
         "eyebrow": "Descoperire profesională",

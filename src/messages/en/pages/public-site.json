@@ -11,6 +11,7 @@
         "home": "Home",
         "search": "Global search",
         "companies": "Companies",
+        "projectOwners": "Project owners",
         "profiles": "Public profiles",
         "workers": "Workers",
         "subcontractors": "Subcontractors",
@@ -63,8 +64,12 @@
       "title": "Refine results",
       "search": "Search",
       "searchPlaceholder": "Search by keyword, service, trade or company name",
+      "country": "Country",
+      "allCountries": "All countries",
       "region": "Region",
       "allRegions": "All regions",
+      "city": "City",
+      "allCities": "All cities",
       "category": "Category",
       "allCategories": "All categories",
       "verification": "Verification",
@@ -88,21 +93,28 @@
     },
     "stats": {
       "publicResults": "Public results",
+      "countries": "Countries",
       "regions": "Regions",
+      "cities": "Cities",
       "categories": "Categories",
       "verificationStates": "Verification states"
     },
     "directory": {
       "quickGuideTitle": "Quick guide",
-      "quickGuideBody": "Use category, region and verification filters together to move from broad discovery into shortlist mode."
+      "quickGuideBody": "Use country, city, category and verification filters together to move from broad discovery into shortlist mode."
     },
     "modules": {
       "companies": "Companies",
+      "project-owners": "Project owners",
+      "subcontractors": "Subcontractors",
+      "service-providers": "Service providers",
+      "workers": "Workers",
       "profiles": "Profiles",
       "suppliers": "Suppliers",
       "equipment": "Equipment",
       "projects": "Projects",
       "tenders": "Tenders",
+      "opportunities": "Opportunities",
       "opportunities-companies": "Company requests",
       "opportunities-workers": "Worker requests"
     },
@@ -195,6 +207,11 @@
         "eyebrow": "Company discovery",
         "title": "Find construction companies with public proof",
         "description": "Search by region, category and trust signals to move quickly from public evaluation into the right next action."
+      },
+      "projectOwners": {
+        "eyebrow": "Project owners",
+        "title": "Browse active project owners",
+        "description": "Explore published project-owner profiles and the active marketplace items connected to them."
       },
       "profiles": {
         "eyebrow": "Professional discovery",

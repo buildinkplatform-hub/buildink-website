@@ -17,12 +17,12 @@ export async function PublicHeader() {
   const common = await getTranslations("common")
 
   return (
-    <header className="border-line/80 sticky top-0 z-40 border-b bg-white/95 backdrop-blur">
-      <div className="page-container flex min-h-18 items-center justify-between gap-4">
-        <Link href="/" aria-label={common("home")}>
+    <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur">
+      <div className="page-container flex min-h-[76px] items-center justify-between gap-3">
+        <Link href="/" aria-label={common("home")} className="shrink-0">
           <BrandLogo />
         </Link>
-        <div className="flex flex-1 items-center justify-end gap-2 xl:justify-between">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-2 xl:justify-between xl:gap-4">
           <PublicNavigation />
           <div className="hidden xl:block">
             <Suspense fallback={<HeaderAuthSkeleton />}>

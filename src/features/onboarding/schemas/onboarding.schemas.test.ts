@@ -9,8 +9,8 @@ import {
 const common = {
   phone: "+393331234567",
   country: "Italy",
-  region: "Lombardy",
-  city: "Milan",
+  region: "",
+  city: "",
   preferredLocale: "en",
   contactPreference: "platform_only",
 }
@@ -24,6 +24,27 @@ const contractorFields = {
   serviceRegions: "Lombardy",
   capabilityStatement: "Commercial renovation contractor.",
   availability: "Four-week lead time",
+  companyEmail: "ops@rossi.example",
+  companyPhone: "+393331111111",
+  companyCategoryId: "11111111-1111-4111-8111-111111111111",
+  companyRegion: "Lombardy",
+  companyAddress: "Via Torino 10, Milan",
+  companySize: "11-50",
+  companyTimezone: "Europe/Rome",
+}
+
+const companyAccountFields = {
+  organizationMode: "create" as const,
+  companyName: "Rossi Contracting",
+  companyType: "GENERAL_CONTRACTOR",
+  companyRegistrationNumber: "BR-2021-0184",
+  companyEmail: "ops@rossi.example",
+  companyPhone: "+393331111111",
+  companyCategoryId: "11111111-1111-4111-8111-111111111111",
+  companyRegion: "Lombardy",
+  companyAddress: "Via Torino 10, Milan",
+  companySize: "11-50",
+  companyTimezone: "Europe/Rome",
 }
 
 describe("onboarding schemas", () => {
@@ -31,6 +52,8 @@ describe("onboarding schemas", () => {
     expect(
       getProfileSchemaForAccountType("PROJECT_OWNER").safeParse({
         ...common,
+        organizationMode: "select",
+        companyId: "11111111-1111-4111-8111-111111111111",
         bio: "",
         profileVisibility: "public",
         interests: "Renovation",
@@ -49,14 +72,15 @@ describe("onboarding schemas", () => {
     ).toBe(true)
     expect(
       getProfileSchemaForAccountType("COMPANY").safeParse({
-        ...common,
-        ...contractorFields,
+        ...companyAccountFields,
       }).success,
     ).toBe(true)
     expect(
       getProfileSchemaForAccountType("SUBCONTRACTOR").safeParse({
         ...common,
         ...contractorFields,
+        organizationMode: "select",
+        companyId: "11111111-1111-4111-8111-111111111111",
       }).success,
     ).toBe(true)
     expect(
@@ -78,14 +102,9 @@ describe("onboarding schemas", () => {
   it("keeps invited supplier payloads on the company account type", () => {
     expect(
       getProfileSchemaForAccountType("COMPANY", "supplier_contact").safeParse({
-        ...common,
-        jobTitle: "Sales manager",
-        organizationMode: "create",
-        supplierName: "Build Supply SRL",
+        ...companyAccountFields,
+        companyName: "Build Supply SRL",
         vatNumber: "IT12345678901",
-        categories: "Concrete, steel",
-        serviceRegions: "Northern Italy",
-        businessDescription: "Construction material supplier.",
       }).success,
     ).toBe(true)
   })
@@ -126,11 +145,9 @@ describe("onboarding schemas", () => {
     ).toBe(false)
   })
 
-  it("accepts join and claim association fields for company personas", () => {
+  it("accepts join and claim association fields for company personas and requires select for non-company paths", () => {
     expect(
       getProfileSchemaForAccountType("COMPANY").safeParse({
-        ...common,
-        ...contractorFields,
         organizationMode: "claim",
         companyId: "11111111-1111-4111-8111-111111111111",
       }).success,
@@ -139,9 +156,16 @@ describe("onboarding schemas", () => {
       getProfileSchemaForAccountType("SUBCONTRACTOR").safeParse({
         ...common,
         ...contractorFields,
-        organizationMode: "claim",
+        organizationMode: "select",
         companyId: "11111111-1111-4111-8111-111111111111",
       }).success,
     ).toBe(true)
+    expect(
+      getProfileSchemaForAccountType("SUBCONTRACTOR").safeParse({
+        ...common,
+        ...contractorFields,
+        organizationMode: "create",
+      }).success,
+    ).toBe(false)
   })
 })

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import {
   getCountryCallingCode,
@@ -52,12 +52,17 @@ function PhoneCountrySelect({
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const selected = options.find((option) => option.code === value)
-  const filtered = options.filter((option) => {
-    if (!query.trim()) return true
-    const callingCode = `+${getCountryCallingCode(option.code as Country)}`
-    const haystack = `${option.name} ${option.code} ${callingCode}`.toLowerCase()
-    return haystack.includes(query.trim().toLowerCase())
-  })
+  const filtered = useMemo(
+    () =>
+      options.filter((option) => {
+        if (!query.trim()) return true
+        const callingCode = `+${getCountryCallingCode(option.code as Country)}`
+        const haystack =
+          `${option.name} ${option.code} ${callingCode}`.toLowerCase()
+        return haystack.includes(query.trim().toLowerCase())
+      }),
+    [options, query],
+  )
 
   return (
     <Popover
@@ -71,7 +76,7 @@ function PhoneCountrySelect({
         <Button
           type="button"
           variant="secondary"
-          className="h-11 min-h-0 w-auto shrink-0 gap-1.5 rounded-s-[10px] rounded-e-none border-e-0 px-2.5 font-medium shadow-xs"
+          className="h-12 min-h-0 w-auto shrink-0 gap-1.5 rounded-s-2xl rounded-e-none border-e-0 px-3 font-medium shadow-xs"
           aria-label={ariaLabel}
         >
           <FlagIcon country={value} label={selected?.name ?? ariaLabel} />
@@ -157,12 +162,14 @@ export function PhoneInput({
   onBlur?: () => void
 }) {
   const t = useTranslations("common")
-  const supportedCountries = countries.filter((country) =>
-    isSupportedCountry(country.code),
+  const supportedCountries = useMemo(
+    () => countries.filter((country) => isSupportedCountry(country.code)),
+    [countries],
   )
   const selectedCountry = (
     countryCode && isSupportedCountry(countryCode) ? countryCode : "IT"
   ) as Country
+  const phoneValue = (value || undefined) as Value | undefined
 
   return (
     <div className="flex w-full items-stretch">
@@ -176,18 +183,20 @@ export function PhoneInput({
             ? (`+${getCountryCallingCode(nextCountry)}${parsed.nationalNumber}` as Value)
             : undefined
 
-          onCountryChange(nextCountry)
-          onChange(nextValue ?? "")
+          if (nextCountry !== selectedCountry) onCountryChange(nextCountry)
+          if ((nextValue ?? "") !== (value ?? "")) onChange(nextValue ?? "")
         }}
       />
       <PhoneNumberInput
         id={id}
         country={selectedCountry}
-        value={(value || undefined) as Value | undefined}
-        onChange={(nextValue) => onChange(nextValue ?? "")}
+        value={phoneValue}
+        onChange={(nextValue) => {
+          if ((nextValue ?? "") !== (value ?? "")) onChange(nextValue ?? "")
+        }}
         onBlur={onBlur}
         autoComplete="tel"
-        className="border-line text-ink placeholder:text-muted/65 focus:border-primary focus:ring-primary/20 aria-invalid:border-danger ltr-content h-11 min-h-0 w-full rounded-s-none rounded-e-[10px] border border-s-0 bg-white px-4 text-base transition outline-none focus:ring-3 disabled:cursor-not-allowed disabled:opacity-60"
+        className="border-line text-ink placeholder:text-muted/65 focus:border-primary/60 focus:ring-primary/12 aria-invalid:border-danger ltr-content h-12 min-h-0 w-full rounded-s-none rounded-e-2xl border border-s-0 bg-white px-4 text-sm transition-[border-color,box-shadow,background-color] outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60"
       />
     </div>
   )

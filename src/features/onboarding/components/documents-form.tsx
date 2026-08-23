@@ -55,6 +55,28 @@ const documentTypes = [
   "other",
 ] as const
 
+type DocumentType = (typeof documentTypes)[number]
+
+function requiredDocumentGroups(input: {
+  profileType?: string
+  associationMode?: string
+}): DocumentType[][] {
+  const groups: DocumentType[][] = [["identity"]]
+  if (input.profileType === "contractor") {
+    groups.push(["trade_proof", "professional_proof", "certificate", "license"])
+  }
+  if (input.profileType === "service_provider") {
+    groups.push(["professional_proof", "certificate", "license"])
+  }
+  if (input.profileType === "supplier_contact") {
+    groups.push(["company_authorization"])
+    if (input.associationMode === "create" || input.associationMode === "claim") {
+      groups.push(["registration", "vat_proof"])
+    }
+  }
+  return groups
+}
+
 export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
   const t = useTranslations()
   const router = useRouter()
@@ -86,6 +108,20 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
     },
   })
   const documentType = useWatch({ control, name: "documentType" })
+  const associationMode =
+    typeof draft.profile.organizationMode === "string"
+      ? draft.profile.organizationMode
+      : undefined
+  const requiredGroups = requiredDocumentGroups({
+    profileType: draft.profileType,
+    associationMode,
+  })
+  const uploadedTypes = new Set(
+    draft.documents.map((document) => document.documentType),
+  )
+  const missingRequiredGroups = requiredGroups.filter(
+    (group) => !group.some((type) => uploadedTypes.has(type)),
+  )
 
   function chooseFile(files: FileList | null) {
     const file = files?.[0]
@@ -162,6 +198,36 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
         <ShieldCheck className="text-primary mt-0.5 size-5 shrink-0" />
         <p>{t("onboarding.documentPrivacy")}</p>
       </div>
+
+      <section className="border-line mt-5 rounded-2xl border bg-white p-4">
+        <h2 className="text-brand-navy text-sm font-semibold">
+          {t("onboarding.requiredDocumentsTitle")}
+        </h2>
+        <div className="mt-3 space-y-2">
+          {requiredGroups.map((group) => {
+            const complete = group.some((type) => uploadedTypes.has(type))
+            return (
+              <div
+                key={group.join("-")}
+                className="flex items-start gap-2 text-sm"
+              >
+                <ShieldCheck
+                  className={
+                    complete
+                      ? "text-success mt-0.5 size-4 shrink-0"
+                      : "text-muted mt-0.5 size-4 shrink-0"
+                  }
+                />
+                <span className={complete ? "text-brand-navy" : "text-muted"}>
+                  {group
+                    .map((type) => t(`onboarding.options.${type}`))
+                    .join(` ${t("onboarding.requiredOr")} `)}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </section>
 
       {showEditor ? (
         <section className="border-line bg-surface mt-7 rounded-2xl border p-4 shadow-sm sm:p-6">
@@ -451,10 +517,17 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
           <Link href="/onboarding/profile">{t("common.back")}</Link>
         </Button>
         <Button
-          disabled={!draft.documents.length || uploading || continuePending}
+          disabled={
+            !draft.documents.length ||
+            Boolean(missingRequiredGroups.length) ||
+            uploading ||
+            continuePending
+          }
           onClick={() => {
             if (!draft.documents.length)
               return setFileError(t("onboarding.errors.documentRequired"))
+            if (missingRequiredGroups.length)
+              return setFileError(t("onboarding.errors.requiredDocuments"))
             setContinuePending(true)
             router.push("/onboarding/review")
           }}

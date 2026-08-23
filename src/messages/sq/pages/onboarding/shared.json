@@ -15,6 +15,11 @@
       "contactPreference": "Kontrollon nëse telefoni ose emaili mund të shfaqen publikisht."
     },
     "noFiles": "Nuk është zgjedhur asnjë dokument ende.",
+    "pushTitle": "Merr njoftime për rishikimin",
+    "pushBody": "Do të të dërgojmë një njoftim në shfletues sapo profili të aprovohet ose të kërkojë ndryshime — edhe kur faqja është e mbyllur.",
+    "pushEnable": "Aktivizo njoftimet",
+    "pushDenied": "Njoftimet e shfletuesit janë bllokuar. Aktivizoji nga cilësimet e shfletuesit për të marrë përditësime.",
+    "pushDone": "Njoftimet u aktivizuan — do të të njoftojmë kur rishikimi të përfundojë.",
     "selectCategory": "Zgjidh kategorinë",
     "selectSubcategory": "Zgjidh nënkategorinë",
     "searchCompany": "Kërko një kompani ekzistuese",

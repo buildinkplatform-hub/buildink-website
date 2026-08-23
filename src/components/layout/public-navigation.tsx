@@ -2,6 +2,7 @@
 
 import { ChevronDown, Menu } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Suspense } from "react"
 
 import { Link } from "@/i18n/navigation"
 import { LocaleSwitcher } from "@/components/shared/locale-switcher"
@@ -21,19 +22,25 @@ export function PublicNavigation() {
 
   return (
     <>
-      <nav className="hidden items-center gap-2 xl:flex" aria-label={common("primaryNav")}>
+      <nav
+        className="hidden min-w-0 items-center gap-2 xl:flex"
+        aria-label={common("primaryNav")}
+      >
         {publicNavGroups.map((group) => (
           <DropdownMenu key={group.key}>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="text-brand-navy hover:bg-light-blue hover:text-primary focus-visible:ring-primary/20 inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-sm font-semibold transition-all outline-none focus-visible:ring-4"
+                className="text-brand-navy hover:bg-light-blue hover:text-primary focus-visible:ring-primary/20 inline-flex min-h-11 items-center gap-2 rounded-2xl border border-transparent px-4 text-sm font-semibold transition-all outline-none focus-visible:ring-4"
               >
                 {t(group.labelKey)}
                 <ChevronDown aria-hidden="true" className="size-4 opacity-70" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-72 rounded-[24px] p-2">
+            <DropdownMenuContent
+              align="start"
+              className="min-w-72 rounded-[24px] border-white/70 p-2 shadow-[var(--shadow-card)]"
+            >
               <DropdownMenuLabel>{t(group.labelKey)}</DropdownMenuLabel>
               {group.items.map((item) => {
                 const label = t(item.labelKey)
@@ -52,7 +59,9 @@ export function PublicNavigation() {
         ))}
       </nav>
       <div className="flex items-center gap-2 xl:hidden">
-        <LocaleSwitcher compact />
+        <Suspense fallback={null}>
+          <LocaleSwitcher compact />
+        </Suspense>
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -63,7 +72,7 @@ export function PublicNavigation() {
               <Menu className="size-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left">
+          <SheetContent side="left" className="border-white/70">
             <SheetHeader title="Buildink" />
             <div className="space-y-6">
               {publicNavGroups.map((group) => (

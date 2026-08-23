@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
-import { backendApi } from "@/lib/backend/api"
+import { BackendApiError, backendApi } from "@/lib/backend/api"
 import { isLocale, isPrimaryAccountType, isProfileType } from "@/shared/constants/platform"
 import {
   accountTypeFromProfileType,
@@ -148,15 +148,25 @@ const fallbackCatalog: OnboardingCatalog = {
 }
 
 export async function getOnboardingDraftAction(account: OnboardingDraft["account"]): Promise<OnboardingDraft> {
-  const draft = await backendApi<BackendDraft>("/api/v1/onboarding/draft")
-  return mapDraft(draft, account)
+  try {
+    const draft = await backendApi<BackendDraft>("/api/v1/onboarding/draft")
+    return mapDraft(draft, account)
+  } catch (error) {
+    if (error instanceof BackendApiError && error.code !== "AUTH_REQUIRED") {
+      return createEmptyDraft(account)
+    }
+    throw error
+  }
 }
 
 export async function getOnboardingCatalogAction(locale: Locale): Promise<OnboardingCatalog> {
   if (!isLocale(locale)) return { countries: [], categories: [] }
   try {
+    // The catalog is user-independent reference data; cache it in the Next.js
+    // data cache so step navigation does not refetch it every time.
     const catalog = await backendApi<OnboardingCatalog>(
       `/api/v1/onboarding/catalog?locale=${locale}`,
+      { next: { revalidate: 300, tags: ["onboarding-catalog"] } },
     )
     return {
       countries: catalog.countries.length
@@ -195,8 +205,8 @@ export async function saveProfileAction(
   primaryAccountType?: PrimaryAccountType | null,
 ) {
   if (!isProfileType(profileType)) return { success: false as const }
-  const normalized = normalizeProfile(profileType, profile)
-  const draft = await backendApi<BackendDraft>("/api/v1/onboarding/profile", {
+  const normalized = normalizeProfile(profileType, profile, primaryAccountType)
+  let draft = await backendApi<BackendDraft>("/api/v1/onboarding/profile", {
     method: "PUT",
     body: JSON.stringify({ profile: normalized, version }),
   })
@@ -206,7 +216,7 @@ export async function saveProfileAction(
     primaryAccountType,
   )
   if (association) {
-    await backendApi("/api/v1/onboarding/company-association", {
+    draft = await backendApi<BackendDraft>("/api/v1/onboarding/company-association", {
       method: "PUT",
       body: JSON.stringify({ association }),
     })
@@ -225,10 +235,9 @@ export async function saveConsentsAction(
   if (!isLocale(locale) || !documentProcessing || !terms || !privacy) {
     return { success: false as const }
   }
-  const draft = await backendApi<BackendDraft>("/api/v1/onboarding/consents", {
-    method: "PUT",
-    body: JSON.stringify({
-      version,
+  const body = (draftVersion?: number) =>
+    JSON.stringify({
+      version: draftVersion,
       consents: {
         locale,
         terms: { accepted: true, version: "2026-08-08" },
@@ -236,8 +245,28 @@ export async function saveConsentsAction(
         documentProcessing: { accepted: true, version: "2026-08-08" },
         marketing: { accepted: marketing, version: "2026-08-08" },
       },
-    }),
-  })
+    })
+  const save = (draftVersion?: number) =>
+    backendApi<BackendDraft>("/api/v1/onboarding/consents", {
+      method: "PUT",
+      body: body(draftVersion),
+    })
+  let draft: BackendDraft
+  try {
+    draft = await save(version)
+  } catch (error) {
+    const currentVersion =
+      error instanceof BackendApiError &&
+      error.code === "STALE_VERSION" &&
+      error.details &&
+      typeof error.details === "object" &&
+      "currentVersion" in error.details &&
+      typeof error.details.currentVersion === "number"
+        ? error.details.currentVersion
+        : undefined
+    if (!currentVersion) throw error
+    draft = await save(currentVersion)
+  }
   return { success: true as const, draft }
 }
 
@@ -278,13 +307,6 @@ export async function submitOnboardingAction(locale: Locale, version?: number) {
 
 export async function searchCompaniesAction(query: string) {
   const q = query.trim()
-  if (q.length < 2) return [] as Array<{
-    id: string
-    name: string
-    slug: string
-    companyType: string
-    verificationStatus: string
-  }>
   return backendApi<
     Array<{
       id: string
@@ -307,9 +329,10 @@ function buildCompanyAssociation(
   if (accountType === "WORKER") return null
   if (!needsCompanyAssociation(accountType) && !mode) return null
   switch (profileType) {
-    case "individual":
     case "worker":
       return null
+    case "individual":
+      break
     case "contractor":
     case "supplier_contact":
     case "service_provider":
@@ -324,13 +347,28 @@ function buildCompanyAssociation(
   if (resolvedMode === "claim" && companyId) return { mode: "claim" as const, companyId }
   if (resolvedMode === "select" && companyId) return { mode: "join" as const, companyId }
   if (resolvedMode !== "create") return null
+  if (profileType === "individual") return null
   return {
     mode: "create" as const,
     company: {
       name: associationCompanyName(profileType, profile),
+      legalName: stringOrUndefined(profile.companyLegalName),
+      registrationNumber: stringOrUndefined(profile.companyRegistrationNumber),
       vatNumber: String(profile.vatNumber ?? "") || undefined,
-      companyType: associationCompanyType(profileType),
+      companyType: associationCompanyType(profileType, profile),
       description: associationDescription(profileType, profile),
+      email: stringOrUndefined(profile.companyEmail),
+      phone: stringOrUndefined(profile.companyPhone),
+      website: stringOrUndefined(profile.companyWebsite),
+      categoryId: stringOrUndefined(profile.companyCategoryId),
+      subcategoryId: stringOrUndefined(profile.companySubcategoryId),
+      cityId: stringOrUndefined(profile.companyCityId),
+      region: stringOrUndefined(profile.companyRegion),
+      address: stringOrUndefined(profile.companyAddress),
+      businessHours: stringOrUndefined(profile.companyBusinessHours),
+      size: stringOrUndefined(profile.companySize),
+      timezone: stringOrUndefined(profile.companyTimezone),
+      ownerEmail: stringOrUndefined(profile.companyEmail),
     },
   }
 }
@@ -339,6 +377,10 @@ function associationCompanyName(
   profileType: "contractor" | "supplier_contact" | "service_provider",
   profile: Record<string, unknown>,
 ) {
+  const companyName = stringOrUndefined(profile.companyName)
+  if (companyName) return companyName
+  const legalName = stringOrUndefined(profile.companyLegalName)
+  if (legalName) return legalName
   switch (profileType) {
     case "contractor":
       return String(profile.contractorIdentity ?? "")
@@ -355,14 +397,27 @@ function associationCompanyName(
 
 function associationCompanyType(
   profileType: "contractor" | "supplier_contact" | "service_provider",
+  profile: Record<string, unknown>,
 ) {
+  const companyType = String(profile.companyType ?? "")
+  if (
+    [
+      "GENERAL_CONTRACTOR",
+      "SUBCONTRACTOR",
+      "SUPPLIER",
+      "EQUIPMENT",
+      "PROFESSIONAL",
+    ].includes(companyType)
+  ) {
+    return companyType
+  }
   switch (profileType) {
     case "contractor":
-      return "contractor"
+      return "GENERAL_CONTRACTOR"
     case "supplier_contact":
-      return "supplier"
+      return "SUPPLIER"
     case "service_provider":
-      return "professional"
+      return "PROFESSIONAL"
     default: {
       const exhaustive: never = profileType
       return exhaustive
@@ -374,6 +429,8 @@ function associationDescription(
   profileType: "contractor" | "supplier_contact" | "service_provider",
   profile: Record<string, unknown>,
 ) {
+  const companyDescription = stringOrUndefined(profile.companyDescription)
+  if (companyDescription) return companyDescription
   switch (profileType) {
     case "contractor":
       return String(profile.capabilityStatement ?? "")
@@ -388,7 +445,11 @@ function associationDescription(
   }
 }
 
-function normalizeProfile(profileType: ProfileType, profile: Record<string, unknown>) {
+function normalizeProfile(
+  profileType: ProfileType,
+  profile: Record<string, unknown>,
+  primaryAccountType?: PrimaryAccountType | null,
+) {
   const result: Record<string, unknown> = {
     ...profile,
     country: String(profile.country ?? "IT").toUpperCase().slice(0, 2),
@@ -396,10 +457,39 @@ function normalizeProfile(profileType: ProfileType, profile: Record<string, unkn
   for (const key of ["interests", "skills", "languages", "categories", "serviceRegions"]) {
     if (typeof result[key] === "string") result[key] = result[key].split(",").map((value) => value.trim()).filter(Boolean)
   }
+  if (primaryAccountType === "COMPANY") {
+    delete result.country
+    return result
+  }
   delete result.organizationMode
   delete result.companyId
+  for (const key of [
+    "companyName",
+    "companyLegalName",
+    "companyType",
+    "companyRegistrationNumber",
+    "companyCategoryId",
+    "companySubcategoryId",
+    "companyCityId",
+    "companyRegion",
+    "companyAddress",
+    "companyDescription",
+    "companyBusinessHours",
+    "companySize",
+    "companyTimezone",
+    "companyWebsite",
+    "companyEmail",
+    "companyPhone",
+    "companyIdentifiers",
+  ]) {
+    delete result[key]
+  }
   if (profileType !== "individual") delete result.profileVisibility
   return result
+}
+
+function stringOrUndefined(value: unknown) {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined
 }
 
 function consentAccepted(value: unknown) {
@@ -471,5 +561,20 @@ function mapDraft(draft: BackendDraft, account: OnboardingDraft["account"]): Onb
       ),
     },
     reviewFeedback: draft.reviewFeedback ?? null,
+  }
+}
+
+function createEmptyDraft(account: OnboardingDraft["account"]): OnboardingDraft {
+  return {
+    account,
+    profile: {},
+    documents: [],
+    consent: {
+      publicProfile: false,
+      documentProcessing: false,
+      terms: false,
+      privacy: false,
+    },
+    reviewFeedback: null,
   }
 }

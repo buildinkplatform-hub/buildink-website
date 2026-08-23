@@ -17,6 +17,8 @@
     "selectDate": "Zgjidh datën e skadimit",
     "expires": "Skadon {date}",
     "remove": "Hiq",
+    "requiredDocumentsTitle": "Dokumentet e kërkuara",
+    "requiredOr": "ose",
     "options": {
       "identity": "Dokument identiteti",
       "certificate": "Certifikatë",
@@ -33,7 +35,8 @@
       "fileSize": "Çdo skedar duhet të jetë 25 MB ose më i vogël.",
       "fileRequired": "Zgjidh një skedar dokumenti para ngarkimit.",
       "deleteFailed": "Dokumenti nuk u hoq. Provo sërish.",
-      "documentRequired": "Shto të paktën një dokument verifikimi para se të vazhdosh."
+      "documentRequired": "Shto të paktën një dokument verifikimi para se të vazhdosh.",
+      "requiredDocuments": "Ngarko llojet e kërkuara të dokumenteve para se të vazhdosh."
     }
   }
 }

@@ -2,21 +2,32 @@ import type { Locale } from "@/shared/types/platform"
 
 export type PublicModule =
   | "companies"
-  | "profiles"
-  | "suppliers"
+  | "project-owners"
+  | "subcontractors"
+  | "service-providers"
+  | "workers"
   | "equipment"
   | "projects"
   | "tenders"
-  | "opportunities-companies"
-  | "opportunities-workers"
+  | "opportunities"
 
 export interface DirectoryQuery {
   q?: string
+  country?: string
   region?: string
+  city?: string
   category?: string
   verification?: string
   accountType?: string
   page?: number
+}
+
+export interface PublicDirectoryFacets {
+  countries: string[]
+  regions: string[]
+  cities: string[]
+  categories: string[]
+  verifications: string[]
 }
 
 export interface DirectoryResult<T> {
@@ -38,6 +49,14 @@ export interface PublicEntityContact {
   website?: string
   address?: string
   hours?: string
+}
+
+export interface PublicMediaAsset {
+  id: string
+  url: string
+  name: string
+  mimeType: string
+  sizeBytes: number
 }
 
 export interface PublicSection {
@@ -67,6 +86,11 @@ export interface PublicEntityRecord {
   categories: string[]
   tags: string[]
   metrics: PublicStat[]
+  avatarUrl?: string | null
+  logoUrl?: string | null
+  coverUrl?: string | null
+  gallery?: PublicMediaAsset[]
+  documents?: PublicMediaAsset[]
   contact: PublicEntityContact
   sections: PublicSection[]
   subpages?: PublicSubpage[]

@@ -3,8 +3,17 @@ import type {
   PublicEntityRecord,
   PublicHelpArticle,
   PublicLegalDocument,
-  PublicModule,
 } from "@/features/public/types/public.types"
+
+type FixtureModule =
+  | "companies"
+  | "profiles"
+  | "suppliers"
+  | "equipment"
+  | "projects"
+  | "tenders"
+  | "opportunities-companies"
+  | "opportunities-workers"
 
 function record(
   input: PublicEntityRecord,
@@ -12,7 +21,7 @@ function record(
   return input
 }
 
-export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
+export const publicEntities: Record<FixtureModule, PublicEntityRecord[]> = {
   companies: [
     record({
       module: "companies",
@@ -178,7 +187,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
   ],
   profiles: [
     record({
-      module: "profiles",
+      module: "workers",
       slug: "marco-ferri-contractor",
       title: "Marco Ferri",
       subtitle: "Contractor profile • Envelope and façade packages",
@@ -217,7 +226,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
       relatedSlugs: ["alpine-build-italia"],
     }),
     record({
-      module: "profiles",
+      module: "workers",
       slug: "sara-amin-worker",
       title: "Sara Amin",
       subtitle: "Worker profile • Site document control and coordination",
@@ -246,7 +255,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
   ],
   suppliers: [
     record({
-      module: "suppliers",
+      module: "companies",
       slug: "nord-steel-supply",
       title: "Nord Steel Supply",
       subtitle: "Structural steel and metal package supplier",
@@ -375,7 +384,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
   ],
   "opportunities-companies": [
     record({
-      module: "opportunities-companies",
+      module: "opportunities",
       slug: "bari-hotel-fitout-subcontractors",
       title: "Seeking hotel fit-out subcontractors",
       subtitle: "Looking for a company",
@@ -404,7 +413,7 @@ export const publicEntities: Record<PublicModule, PublicEntityRecord[]> = {
   ],
   "opportunities-workers": [
     record({
-      module: "opportunities-workers",
+      module: "opportunities",
       slug: "venice-mep-coordination-team",
       title: "Looking for MEP coordination team",
       subtitle: "Looking for workers",

@@ -7,6 +7,7 @@ export function Field({
   error,
   hint,
   required = false,
+  hideLabel = false,
   children,
 }: {
   label: string
@@ -14,21 +15,24 @@ export function Field({
   error?: string
   hint?: string
   required?: boolean
+  hideLabel?: boolean
   children: ReactNode
 }) {
   return (
     <div className="space-y-2">
-      <Label.Root
-        className="text-brand-navy text-sm font-semibold"
-        htmlFor={htmlFor}
-      >
-        {label}
-        {required ? (
-          <span className="text-danger ms-1" aria-hidden="true">
-            *
-          </span>
-        ) : null}
-      </Label.Root>
+      {hideLabel ? null : (
+        <Label.Root
+          className="text-brand-navy text-sm font-semibold"
+          htmlFor={htmlFor}
+        >
+          {label}
+          {required ? (
+            <span className="text-danger ms-1" aria-hidden="true">
+              *
+            </span>
+          ) : null}
+        </Label.Root>
+      )}
       {children}
       {hint && !error ? <p className="text-muted text-xs">{hint}</p> : null}
       {error ? (

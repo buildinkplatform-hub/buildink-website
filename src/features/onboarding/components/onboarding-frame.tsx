@@ -1,10 +1,9 @@
 "use client"
 
-import { Check } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { cn } from "@/lib/utils/cn"
 import { Reveal } from "@/components/motion/reveal"
+import { cn } from "@/lib/utils/cn"
 
 const steps = [
   "stepAccountType",
@@ -21,10 +20,12 @@ export function OnboardingFrame({
   children: React.ReactNode
 }) {
   const t = useTranslations("onboarding")
+
   return (
     <div data-onboarding-frame>
       <p className="text-primary text-sm font-semibold">
-        {t("step", { current: step })} · {t(steps[step - 1] ?? "stepAccountType")}
+        {t("step", { current: step })} /{" "}
+        {t(steps[step - 1] ?? "stepAccountType")}
       </p>
       <div
         className="mt-4 grid grid-cols-4 gap-2"
@@ -38,7 +39,9 @@ export function OnboardingFrame({
               item <= step ? "bg-primary" : "bg-line",
             )}
           >
-            <span className="sr-only">{item < step ? <Check /> : item}</span>
+            <span className="sr-only">
+              {item < step ? `Completed step ${item}` : `Step ${item}`}
+            </span>
           </div>
         ))}
       </div>

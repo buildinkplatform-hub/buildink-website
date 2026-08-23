@@ -19,11 +19,10 @@ export const publicNavGroups: PublicNavGroup[] = [
     items: [
       { href: "/search", labelKey: "nav.items.search" },
       { href: "/companies", labelKey: "nav.items.companies" },
-      { href: "/profiles", labelKey: "nav.items.profiles" },
+      { href: "/project-owners", labelKey: "nav.items.projectOwners" },
       { href: "/workers", labelKey: "nav.items.workers" },
       { href: "/subcontractors", labelKey: "nav.items.subcontractors" },
       { href: "/service-providers", labelKey: "nav.items.serviceProviders" },
-      { href: "/suppliers", labelKey: "nav.items.suppliers" },
       { href: "/equipment", labelKey: "nav.items.equipment" },
     ],
   },
@@ -33,18 +32,10 @@ export const publicNavGroups: PublicNavGroup[] = [
     items: [
       { href: "/projects", labelKey: "nav.items.projects" },
       { href: "/tenders", labelKey: "nav.items.tenders" },
-      {
-        href: "/opportunities/companies",
-        labelKey: "nav.items.companyRequests",
-      },
-      {
-        href: "/opportunities/workers",
-        labelKey: "nav.items.workerRequests",
-      },
-      {
-        href: "/opportunities/services",
-        labelKey: "nav.items.serviceRequests",
-      },
+      { href: "/opportunities", labelKey: "modules.opportunities" },
+      { href: "/opportunities/companies", labelKey: "nav.items.companyRequests" },
+      { href: "/opportunities/workers", labelKey: "nav.items.workerRequests" },
+      { href: "/opportunities/services", labelKey: "nav.items.serviceRequests" },
     ],
   },
   {
@@ -52,12 +43,13 @@ export const publicNavGroups: PublicNavGroup[] = [
     labelKey: "nav.groups.marketplace",
     items: [
       { href: "/companies", labelKey: "nav.items.companies" },
-      { href: "/trades", labelKey: "nav.items.trades" },
+      { href: "/project-owners", labelKey: "nav.items.projectOwners" },
+      { href: "/subcontractors", labelKey: "nav.items.subcontractors" },
+      { href: "/workers", labelKey: "nav.items.workers" },
       {
         href: "/service-providers",
         labelKey: "nav.items.specializedServices",
       },
-      { href: "/suppliers", labelKey: "nav.items.suppliers" },
       { href: "/equipment", labelKey: "nav.items.equipment" },
       { href: "/verification", labelKey: "nav.items.safetyCertifications" },
     ],
@@ -84,8 +76,10 @@ export const footerColumns = [
     items: [
       { href: "/tenders", labelKey: "nav.items.tenders" },
       { href: "/companies", labelKey: "nav.items.companies" },
+      { href: "/project-owners", labelKey: "nav.items.projectOwners" },
       { href: "/workers", labelKey: "nav.items.workers" },
       { href: "/subcontractors", labelKey: "nav.items.subcontractors" },
+      { href: "/service-providers", labelKey: "nav.items.serviceProviders" },
       { href: "/equipment", labelKey: "nav.items.equipment" },
       { href: "/projects", labelKey: "nav.items.projects" },
     ],
@@ -122,13 +116,14 @@ export const footerColumns = [
 
 export const moduleRouteMap: Record<PublicModule, string> = {
   companies: "/companies",
-  profiles: "/profiles",
-  suppliers: "/suppliers",
+  "project-owners": "/project-owners",
+  subcontractors: "/subcontractors",
+  "service-providers": "/service-providers",
+  workers: "/workers",
   equipment: "/equipment",
   projects: "/projects",
   tenders: "/tenders",
-  "opportunities-companies": "/opportunities/companies",
-  "opportunities-workers": "/opportunities/workers",
+  opportunities: "/opportunities",
 }
 
 export function localizedHref(locale: Locale, href: string) {

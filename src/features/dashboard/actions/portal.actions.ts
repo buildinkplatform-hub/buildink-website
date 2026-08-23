@@ -79,7 +79,6 @@ import {
   withdrawPortalOffer,
 } from "@/features/dashboard/data/portal-client"
 import {
-  memberInviteContract,
   memberUpdateContract,
   personaUpdateContract,
   profileCollectionsContract,
@@ -220,7 +219,7 @@ export async function inviteWorkspaceMemberAction(
   input: MemberInviteContract,
 ) {
   try {
-    await invitePortalMember(companyId, memberInviteContract.parse(input))
+    await invitePortalMember(companyId, input)
     revalidatePath("/dashboard")
     return { ok: true as const }
   } catch (error) {

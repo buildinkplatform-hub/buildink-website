@@ -25,17 +25,22 @@ export default async function OnboardingLayout({
   const { locale: requestedLocale } = await params
   const locale = isLocale(requestedLocale) ? requestedLocale : "it"
   const supabase = await createClient()
-  const { data } = await supabase.auth.getUser()
-  if (!data.user) redirect(`/${locale}/login`)
-  if (!data.user.email_confirmed_at)
+  // Run the auth check, portal bootstrap and identity lookup in parallel so a
+  // cold onboarding load pays one round-trip instead of three.
+  const [authResult, bootstrap, identity] = await Promise.all([
+    supabase.auth.getUser(),
+    getPortalBootstrap(),
+    getApplicationIdentity(),
+  ])
+  const user = authResult.data.user
+  if (!user) redirect(`/${locale}/login`)
+  if (!user.email_confirmed_at)
     redirect(
-      `/${locale}/verify-email?email=${encodeURIComponent(data.user.email ?? "")}`,
+      `/${locale}/verify-email?email=${encodeURIComponent(user.email ?? "")}`,
     )
-  const bootstrap = await getPortalBootstrap()
   if (canUsePortalAccess(bootstrap?.access)) {
     redirect(getSignedInDestination(locale, "enter_portal"))
   }
-  const identity = await getApplicationIdentity()
   const nextAction = identity?.account?.nextAction
   if (
     nextAction === "await_review" ||
@@ -44,7 +49,7 @@ export default async function OnboardingLayout({
   ) {
     redirect(getSignedInDestination(locale, nextAction))
   }
-  const metadata = data.user.user_metadata as Record<string, unknown>
+  const metadata = user.user_metadata as Record<string, unknown>
   const initialDraft = await getOnboardingDraftAction({
     name:
       typeof metadata.name === "string"
@@ -52,7 +57,7 @@ export default async function OnboardingLayout({
         : typeof metadata.full_name === "string"
           ? metadata.full_name
           : "",
-    email: data.user.email ?? "",
+    email: user.email ?? "",
     preferredLocale: locale,
     termsAcceptedAt: "",
     privacyAcceptedAt: "",

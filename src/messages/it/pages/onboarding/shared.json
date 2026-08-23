@@ -15,6 +15,11 @@
       "contactPreference": "Controlla se telefono o email possono comparire pubblicamente."
     },
     "noFiles": "Nessun documento selezionato.",
+    "pushTitle": "Ricevi aggiornamenti sulla revisione",
+    "pushBody": "Ti invieremo una notifica del browser appena il tuo profilo viene approvato o richiede modifiche, anche a sito chiuso.",
+    "pushEnable": "Attiva le notifiche",
+    "pushDenied": "Le notifiche del browser sono bloccate. Attivale nelle impostazioni del browser per ricevere gli aggiornamenti.",
+    "pushDone": "Notifiche attive: ti avviseremo quando la revisione sarà completata.",
     "selectCategory": "Seleziona categoria",
     "selectSubcategory": "Seleziona sottocategoria",
     "searchCompany": "Cerca un'azienda esistente",

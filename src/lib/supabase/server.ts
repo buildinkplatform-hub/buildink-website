@@ -2,6 +2,7 @@ import "server-only"
 
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import { cache } from "react"
 
 import { supabaseAuthCookieOptions } from "./cookie-options"
 
@@ -30,14 +31,16 @@ export async function createClient(options?: {
   )
 }
 
-export async function getAccessToken(): Promise<string | null> {
-  const supabase = await createClient()
-  const { data: sessionData } = await supabase.auth.getSession()
-  if (sessionData.session?.access_token) return sessionData.session.access_token
+export const getAccessToken = cache(
+  async (): Promise<string | null> => {
+    const supabase = await createClient()
+    const { data: sessionData } = await supabase.auth.getSession()
+    if (sessionData.session?.access_token) return sessionData.session.access_token
 
-  const { data: userData } = await supabase.auth.getUser()
-  if (!userData.user) return null
+    const { data: userData } = await supabase.auth.getUser()
+    if (!userData.user) return null
 
-  const { data: retry } = await supabase.auth.getSession()
-  return retry.session?.access_token ?? null
-}
+    const { data: retry } = await supabase.auth.getSession()
+    return retry.session?.access_token ?? null
+  },
+)

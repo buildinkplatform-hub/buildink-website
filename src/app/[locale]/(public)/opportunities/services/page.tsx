@@ -10,7 +10,7 @@ export default async function ServiceRequestsPage({
 }) {
   return (
     <PublicDirectoryPage
-      module="opportunities-companies"
+      module="opportunities"
       titleKey="serviceRequests"
       descriptionKey="serviceRequests"
       href="/opportunities/services"

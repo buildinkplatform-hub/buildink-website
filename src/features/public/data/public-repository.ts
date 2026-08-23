@@ -1,6 +1,7 @@
 import type { Locale } from "@/shared/types/platform"
 import type {
   DirectoryQuery,
+  PublicDirectoryFacets,
   DirectoryResult,
   PublicArticle,
   PublicEntityRecord,
@@ -28,6 +29,38 @@ import {
 
 const PAGE_SIZE = 6
 const allowFixtures = process.env.NODE_ENV !== "production"
+
+const CANONICAL_PROFILE_MODULES = new Set([
+  "project-owners",
+  "subcontractors",
+  "service-providers",
+  "workers",
+] as const)
+
+function isCanonicalProfileModule(
+  module: PublicModule,
+): module is "project-owners" | "subcontractors" | "service-providers" | "workers" {
+  return CANONICAL_PROFILE_MODULES.has(
+    module as "project-owners" | "subcontractors" | "service-providers" | "workers",
+  )
+}
+
+function fixtureModuleFor(module: PublicModule): keyof typeof publicEntities {
+  switch (module) {
+    case "workers":
+    case "project-owners":
+    case "subcontractors":
+    case "service-providers":
+      return "profiles"
+    case "opportunities":
+      return "opportunities-companies"
+    case "companies":
+    case "equipment":
+    case "projects":
+    case "tenders":
+      return module
+  }
+}
 
 function emptyDirectory(
   module: PublicModule,
@@ -70,8 +103,14 @@ function matchesQuery(item: PublicEntityRecord, query: DirectoryQuery) {
   )
     return false
 
+  const country = normalize(query.country)
+  if (country && !item.location.toLowerCase().includes(country)) return false
+
   const region = normalize(query.region)
   if (region && !item.location.toLowerCase().includes(region)) return false
+
+  const city = normalize(query.city)
+  if (city && !item.location.toLowerCase().includes(city)) return false
 
   const category = normalize(query.category)
   if (
@@ -97,7 +136,10 @@ function listPublicEntitiesFromFixtures(
   query: DirectoryQuery,
 ): DirectoryResult<PublicEntityRecord> {
   const page = Math.max(1, query.page ?? 1)
-  const filtered = publicEntities[module].filter((item) => matchesQuery(item, query))
+  const fixtureModule = fixtureModuleFor(module)
+  const filtered = publicEntities[fixtureModule].filter((item) =>
+    matchesQuery(item, query),
+  )
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const start = (page - 1) * PAGE_SIZE
   return {
@@ -110,13 +152,39 @@ function listPublicEntitiesFromFixtures(
 }
 
 function getDirectoryFacetsFromFixtures(module: PublicModule) {
-  const items = publicEntities[module]
-  const regions = [...new Set(items.map((item) => item.location))].sort()
+  const fixtureModule = fixtureModuleFor(module)
+  const items = publicEntities[fixtureModule]
+  const locationParts = items.map((item) => {
+    const parts = item.location
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean)
+    return {
+      city: parts[0] ?? null,
+      region: parts.length >= 3 ? parts[1] ?? null : null,
+      country: parts.length >= 2 ? parts[parts.length - 1] ?? null : null,
+    }
+  })
+  const countries = [
+    ...new Set(
+      locationParts
+        .map((item) => item.country)
+        .filter((item): item is string => Boolean(item)),
+    ),
+  ].sort()
+  const regions = [
+    ...new Set(
+      locationParts
+        .map((item) => item.region)
+        .filter((item): item is string => Boolean(item)),
+    ),
+  ].sort()
+  const cities = [...new Set(locationParts.map((item) => item.city).filter(Boolean))].sort()
   const categories = [
     ...new Set(items.flatMap((item) => [...item.categories, ...item.tags])),
   ].sort()
   const verifications = [...new Set(items.map((item) => item.verification))].sort()
-  return { regions, categories, verifications }
+  return { countries, regions, cities, categories, verifications }
 }
 
 export async function getHomeView(locale: Locale): Promise<PublicHomeView> {
@@ -189,10 +257,18 @@ export async function listPublicEntities(
 export async function getDirectoryFacets(
   module: PublicModule,
   locale: Locale = "en",
-) {
+): Promise<PublicDirectoryFacets> {
   const api = await fetchPublicFacets(module, locale)
   if (api) return api
-  if (!allowFixtures) return { regions: [], categories: [], verifications: [] }
+  if (!allowFixtures) {
+    return {
+      countries: [],
+      regions: [],
+      cities: [],
+      categories: [],
+      verifications: [],
+    }
+  }
   return getDirectoryFacetsFromFixtures(module)
 }
 
@@ -204,7 +280,8 @@ export async function getPublicEntity(
   const api = await fetchPublicEntity(module, slug, locale)
   if (api) return api
   if (!allowFixtures) return null
-  return publicEntities[module].find((item) => item.slug === slug) ?? null
+  const fixtureModule = fixtureModuleFor(module)
+  return publicEntities[fixtureModule].find((item) => item.slug === slug) ?? null
 }
 
 export async function getPublicCatalogueItem(
@@ -235,7 +312,9 @@ export async function getRelatedEntities(
   const targetModule =
     module === "projects" || module === "tenders" || module === "equipment"
       ? "companies"
-      : module
+      : isCanonicalProfileModule(module)
+        ? "workers"
+        : module
   const resolved = await Promise.all(
     related.map((slug) => getPublicEntity(targetModule, slug, locale)),
   )
@@ -246,7 +325,7 @@ export async function searchAll(query: DirectoryQuery, locale: Locale = "en") {
   const api = await fetchPublicSearch(locale, query)
   if (api.items.length) return api.items
   if (!allowFixtures) return []
-  return (Object.keys(publicEntities) as PublicModule[]).flatMap((module) =>
+  return (Object.keys(publicEntities) as Array<keyof typeof publicEntities>).flatMap((module) =>
     publicEntities[module]
       .filter((item) => matchesQuery(item, query))
       .slice(0, 2),

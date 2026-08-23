@@ -17,6 +17,8 @@
     "selectDate": "Selectează data expirării",
     "expires": "Expiră {date}",
     "remove": "Elimină",
+    "requiredDocumentsTitle": "Documente necesare",
+    "requiredOr": "sau",
     "options": {
       "identity": "Document de identitate",
       "certificate": "Certificat",
@@ -33,7 +35,8 @@
       "fileSize": "Fiecare fișier trebuie să aibă maximum 25 MB.",
       "fileRequired": "Alege un fișier document înainte de încărcare.",
       "deleteFailed": "Documentul nu a putut fi eliminat. Încearcă din nou.",
-      "documentRequired": "Adaugă cel puțin un document de verificare înainte de a continua."
+      "documentRequired": "Adaugă cel puțin un document de verificare înainte de a continua.",
+      "requiredDocuments": "Încarcă tipurile de documente necesare înainte de a continua."
     }
   }
 }

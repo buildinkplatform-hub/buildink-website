@@ -5,14 +5,24 @@ import { resolveConfiguredPublicOrigin } from "@/lib/url/public-origin"
 
 const directoryPaths = [
   "/companies",
-  "/profiles",
-  "/suppliers",
+  "/project-owners",
+  "/subcontractors",
+  "/service-providers",
+  "/workers",
   "/equipment",
   "/projects",
   "/tenders",
-  "/opportunities/companies",
-  "/opportunities/workers",
-  "/search",
+  "/opportunities",
+  "/about",
+  "/contact",
+  "/how-it-works",
+  "/verification",
+  "/help",
+  "/faq",
+  "/blog",
+  "/privacy",
+  "/terms",
+  "/cookies",
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -21,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     directoryPaths.map((path) => ({
       url: `${origin}/${locale}${path}`,
       changeFrequency: "daily",
-      priority: path === "/search" ? 0.6 : 0.8,
+      priority: path === "/companies" ? 0.9 : 0.8,
     })),
   )
 }

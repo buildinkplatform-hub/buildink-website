@@ -28,7 +28,7 @@ import { AssetPreviewDialog } from "@/features/onboarding/components/asset-previ
 import { CategoryPicker } from "@/features/onboarding/components/category-picker"
 import { PhoneInput } from "@/features/onboarding/components/phone-input"
 import { CityLocationField } from "@/components/forms/city-location-field"
-import { getProfileSchema } from "@/features/onboarding/schemas/onboarding.schemas"
+import { getProfileSchemaForAccountType } from "@/features/onboarding/schemas/onboarding.schemas"
 import { uploadOnboardingFile } from "@/features/onboarding/data/upload-file"
 import { Link, useRouter } from "@/i18n/navigation"
 import {
@@ -52,15 +52,64 @@ interface ProfileField {
     | "country"
     | "location"
     | "category"
-    | "companySearch"
-  type?: "text" | "tel" | "number" | "url"
+    | "companySelect"
+    | "companyLocation"
+    | "companyCategory"
+    | "companySubcategory"
+  type?: "text" | "tel" | "number" | "url" | "email"
   optional?: boolean
   options?: readonly string[]
 }
 
+const companySizeOptions = ["1-10", "11-50", "51-200", "201-500", "501+"] as const
+const companyTypeOptions = [
+  "GENERAL_CONTRACTOR",
+  "SUBCONTRACTOR",
+  "SUPPLIER",
+  "EQUIPMENT",
+  "PROFESSIONAL",
+] as const
+const companyTimezoneOptions = [
+  "Europe/Rome",
+  "Europe/London",
+  "Europe/Berlin",
+  "Europe/Paris",
+  "Europe/Bucharest",
+  "Europe/Tirane",
+  "Asia/Dubai",
+  "Asia/Riyadh",
+  "Asia/Karachi",
+  "America/New_York",
+] as const
+
+const companyAccountFields: ProfileField[] = [
+  {
+    name: "organizationMode",
+    kind: "select",
+    options: ["create", "select", "claim"],
+  },
+  { name: "companyId", kind: "companySelect" },
+  { name: "companyName" },
+  { name: "companyLegalName", optional: true },
+  { name: "companyType", kind: "select", options: companyTypeOptions },
+  { name: "companyRegistrationNumber", optional: true },
+  { name: "vatNumber", optional: true },
+  { name: "companyEmail", type: "email" },
+  { name: "companyPhone", kind: "phone", type: "tel" },
+  { name: "companyWebsite", type: "url", optional: true },
+  { name: "companyCategoryId", kind: "companyCategory" },
+  { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+  { name: "companyLocation", kind: "companyLocation" },
+  { name: "companyAddress", kind: "textarea" },
+  { name: "companyDescription", kind: "textarea", optional: true },
+  { name: "companyBusinessHours", kind: "textarea", optional: true },
+  { name: "companySize", kind: "select", options: companySizeOptions },
+  { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
+]
+
 const commonFields: ProfileField[] = [
   { name: "phone", kind: "phone", type: "tel" },
-  { name: "location", kind: "location" },
+  { name: "country", kind: "country" },
   { name: "preferredLocale", kind: "select", options: locales },
   {
     name: "contactPreference",
@@ -79,6 +128,7 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
       options: ["public", "private"],
     },
     { name: "interests", kind: "category" },
+    { name: "companyId", kind: "companySelect" },
   ],
   worker: [
     ...commonFields,
@@ -97,13 +147,25 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
       kind: "select",
       options: ["select", "create", "claim"],
     },
-    { name: "companyId", kind: "companySearch", optional: true },
+    { name: "companyId", kind: "companySelect" },
     { name: "primaryTrade" },
     { name: "categories", kind: "category" },
     { name: "yearsExperience", type: "number" },
     { name: "serviceRegions" },
     { name: "capabilityStatement", kind: "textarea" },
     { name: "availability" },
+    { name: "companyLegalName", optional: true },
+    { name: "companyRegistrationNumber", optional: true },
+    { name: "companyEmail", type: "email" },
+    { name: "companyPhone", kind: "phone", type: "tel" },
+    { name: "companyWebsite", type: "url", optional: true },
+    { name: "companyCategoryId", kind: "companyCategory" },
+    { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+    { name: "companyLocation", kind: "companyLocation" },
+    { name: "companyAddress", kind: "textarea" },
+    { name: "companyBusinessHours", kind: "textarea", optional: true },
+    { name: "companySize", kind: "select", options: companySizeOptions },
+    { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
   ],
   supplier_contact: [
     ...commonFields,
@@ -113,12 +175,24 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
       kind: "select",
       options: ["select", "create", "claim"],
     },
-    { name: "companyId", kind: "companySearch", optional: true },
+    { name: "companyId", kind: "companySelect" },
     { name: "supplierName" },
     { name: "vatNumber", optional: true },
     { name: "categories", kind: "category" },
     { name: "serviceRegions" },
     { name: "businessDescription", kind: "textarea" },
+    { name: "companyLegalName", optional: true },
+    { name: "companyRegistrationNumber", optional: true },
+    { name: "companyEmail", type: "email" },
+    { name: "companyPhone", kind: "phone", type: "tel" },
+    { name: "companyWebsite", type: "url", optional: true },
+    { name: "companyCategoryId", kind: "companyCategory" },
+    { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+    { name: "companyLocation", kind: "companyLocation" },
+    { name: "companyAddress", kind: "textarea" },
+    { name: "companyBusinessHours", kind: "textarea", optional: true },
+    { name: "companySize", kind: "select", options: companySizeOptions },
+    { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
   ],
   service_provider: [
     ...commonFields,
@@ -128,13 +202,25 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
       kind: "select",
       options: ["select", "create", "claim"],
     },
-    { name: "companyId", kind: "companySearch", optional: true },
+    { name: "companyId", kind: "companySelect" },
     { name: "categories", kind: "category" },
     { name: "yearsExperience", type: "number" },
     { name: "professionalBackground", kind: "textarea" },
     { name: "serviceRegions" },
     { name: "capabilityStatement", kind: "textarea" },
     { name: "availability" },
+    { name: "companyLegalName", optional: true },
+    { name: "companyRegistrationNumber", optional: true },
+    { name: "companyEmail", type: "email" },
+    { name: "companyPhone", kind: "phone", type: "tel" },
+    { name: "companyWebsite", type: "url", optional: true },
+    { name: "companyCategoryId", kind: "companyCategory" },
+    { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+    { name: "companyLocation", kind: "companyLocation" },
+    { name: "companyAddress", kind: "textarea" },
+    { name: "companyBusinessHours", kind: "textarea", optional: true },
+    { name: "companySize", kind: "select", options: companySizeOptions },
+    { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
   ],
 }
 
@@ -151,7 +237,10 @@ const defaultProfile = {
   interests: "",
   categories: "",
   vatNumber: "",
+  companyType: "GENERAL_CONTRACTOR",
 }
+
+const selectTriggerClassName = "h-12 min-h-12 rounded-2xl px-4 text-sm"
 
 export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
   const t = useTranslations()
@@ -175,7 +264,12 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
     (draft.primaryAccountType
       ? profileTypeForAccountType(draft.primaryAccountType)
       : undefined)
-  const fields = profileType ? fieldsByProfileType[profileType] : []
+  const canCreateCompany = draft.primaryAccountType === "COMPANY"
+  const fields = profileType
+    ? canCreateCompany
+      ? companyAccountFields
+      : fieldsByProfileType[profileType]
+    : []
   const { control, register, handleSubmit, setValue } = useForm<
     Record<string, string>
   >({
@@ -185,12 +279,51 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
       ...draft.profile,
     },
   })
+  const organizationMode = useWatch({ control, name: "organizationMode" })
+  const companyCategoryId = useWatch({ control, name: "companyCategoryId" })
+  const companyCategories = catalog.categories
+  const companySubcategories =
+    companyCategories.find((category) => category.id === companyCategoryId)?.children ?? []
   const selectedCountry = useWatch({ control, name: "country" }) || "IT"
   const imagePreview =
     localImagePreview ??
     (remoteImagePreview?.assetId === draft.profileImage?.id
       ? remoteImagePreview?.url
       : undefined)
+
+  const placeholderForField = (field: ProfileField, label: string) => {
+    if (field.kind === "companySelect") return t("onboarding.selectCompany")
+    if (field.kind === "select") return label
+    if (field.kind === "country") return label
+    if (field.kind === "companyCategory") return label
+    if (field.kind === "companySubcategory") return label
+    if (field.kind === "companyLocation") return label
+    if (field.kind === "location") return label
+    return label
+  }
+
+  const optionLabel = (field: ProfileField, option: string) => {
+    if (field.name === "preferredLocale") {
+      return localeMetadata[option as keyof typeof localeMetadata].nativeLabel
+    }
+    if (field.name === "companyTimezone") {
+      return t(`onboarding.timezones.${option.replace("/", "_")}`)
+    }
+    if (field.name === "companySize") {
+      return t(`onboarding.companySizes.${option.replace("+", "_plus")}`)
+    }
+    if (field.name === "companyType") {
+      return t(`onboarding.companyTypes.${option}`)
+    }
+    return t(`onboarding.options.${option}`)
+  }
+
+  const optionsForField = (field: ProfileField) => {
+    if (field.name === "organizationMode" && !canCreateCompany) {
+      return ["select"] as const
+    }
+    return field.options
+  }
 
   useEffect(() => {
     const assetId = draft.profileImage?.id
@@ -216,6 +349,14 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
     [localImagePreview],
   )
 
+  useEffect(() => {
+    if (organizationMode === "create") setValue("companyId", "")
+  }, [organizationMode, setValue])
+
+  useEffect(() => {
+    if (!canCreateCompany) setValue("organizationMode", "select")
+  }, [canCreateCompany, setValue])
+
   if (!profileType)
     return (
       <div className="rounded-2xl bg-white p-8">
@@ -227,7 +368,10 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
 
   const submit = handleSubmit(async (values) => {
     setPending(true)
-    const parsed = getProfileSchema(profileType).safeParse(values)
+    const parsed = getProfileSchemaForAccountType(
+      draft.primaryAccountType ?? "PROJECT_OWNER",
+      profileType,
+    ).safeParse(values)
     if (!parsed.success) {
       const errors: Record<string, string> = {}
       for (const issue of parsed.error.issues) {
@@ -271,9 +415,17 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
       </h1>
       <p className="text-muted mt-3">{t("onboarding.profileBody")}</p>
       <form className="mt-7 space-y-5" onSubmit={submit} noValidate>
-        {fields.map((field) => {
+        {fields
+          .filter((field) => {
+            if (field.name === "companyId") return organizationMode !== "create"
+            if (field.name.startsWith("company"))
+              return canCreateCompany && organizationMode === "create"
+            return true
+          })
+          .map((field) => {
           const id = `profile-${field.name}`
           const label = t(`onboarding.fields.${field.name}`)
+          const placeholder = placeholderForField(field, label)
 
           return (
             <Field
@@ -297,7 +449,7 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
               }
             >
               {field.kind === "textarea" ? (
-                <Textarea id={id} {...register(field.name)} />
+                <Textarea id={id} placeholder={placeholder} {...register(field.name)} />
               ) : field.kind === "phone" ? (
                 <Controller
                   name={field.name}
@@ -330,6 +482,21 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                     />
                   )}
                 />
+              ) : field.kind === "companyLocation" ? (
+                <Controller
+                  name="companyCityId"
+                  control={control}
+                  render={({ field: locationField }) => (
+                    <CityLocationField
+                      cityId={locationField.value || undefined}
+                      onChange={(nextCityId, meta) => {
+                        locationField.onChange(nextCityId)
+                        if (meta?.regionLabel)
+                          setValue("companyRegion", meta.regionLabel)
+                      }}
+                    />
+                  )}
+                />
               ) : field.kind === "country" ? (
                 <Controller
                   name={field.name}
@@ -339,8 +506,12 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                       value={countryField.value}
                       onValueChange={countryField.onChange}
                     >
-                      <SelectTrigger id={id} onBlur={countryField.onBlur}>
-                        <SelectValue />
+                      <SelectTrigger
+                        id={id}
+                        onBlur={countryField.onBlur}
+                        className={selectTriggerClassName}
+                      >
+                        <SelectValue placeholder={placeholder} />
                       </SelectTrigger>
                       <SelectContent>
                         {catalog.countries.map((country) => (
@@ -365,17 +536,76 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                       onChange={categoryField.onChange}
                       categoryPlaceholder={t("onboarding.selectCategory")}
                       subcategoryPlaceholder={t("onboarding.selectSubcategory")}
+                      triggerClassName={selectTriggerClassName}
                     />
                   )}
                 />
-              ) : field.kind === "companySearch" ? (
+              ) : field.kind === "companyCategory" ? (
+                <Controller
+                  name={field.name}
+                  control={control}
+                  render={({ field: categoryField }) => (
+                    <Select
+                      value={categoryField.value}
+                      onValueChange={(value) => {
+                        categoryField.onChange(value)
+                        setValue("companySubcategoryId", "")
+                      }}
+                    >
+                      <SelectTrigger
+                        id={id}
+                        onBlur={categoryField.onBlur}
+                        className={selectTriggerClassName}
+                      >
+                        <SelectValue placeholder={placeholder} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {companyCategories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              ) : field.kind === "companySubcategory" ? (
+                <Controller
+                  name={field.name}
+                  control={control}
+                  render={({ field: categoryField }) => (
+                    <Select
+                      value={categoryField.value}
+                      onValueChange={categoryField.onChange}
+                    >
+                      <SelectTrigger
+                        id={id}
+                        onBlur={categoryField.onBlur}
+                        className={selectTriggerClassName}
+                      >
+                        <SelectValue placeholder={placeholder} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {companySubcategories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              ) : field.kind === "companySelect" ? (
                 <Controller
                   name={field.name}
                   control={control}
                   render={({ field: companyField }) => (
-                    <CompanySearchField
+                    <CompanySelectField
                       id={id}
                       value={companyField.value}
+                      placeholder={placeholder}
+                      triggerClassName={selectTriggerClassName}
+                      onBlur={companyField.onBlur}
                       onChange={companyField.onChange}
                     />
                   )}
@@ -389,17 +619,17 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                       value={selectField.value}
                       onValueChange={selectField.onChange}
                     >
-                      <SelectTrigger id={id} onBlur={selectField.onBlur}>
-                        <SelectValue />
+                      <SelectTrigger
+                        id={id}
+                        onBlur={selectField.onBlur}
+                        className={selectTriggerClassName}
+                      >
+                        <SelectValue placeholder={placeholder} />
                       </SelectTrigger>
                       <SelectContent>
-                        {field.options?.map((option) => (
+                        {optionsForField(field)?.map((option) => (
                           <SelectItem key={option} value={option}>
-                            {field.name === "preferredLocale"
-                              ? localeMetadata[
-                                  option as keyof typeof localeMetadata
-                                ].nativeLabel
-                              : t(`onboarding.options.${option}`)}
+                            {optionLabel(field, option)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -410,6 +640,7 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
                 <Input
                   id={id}
                   type={field.type ?? "text"}
+                  placeholder={placeholder}
                   min={field.type === "number" ? 0 : undefined}
                   max={field.type === "number" ? 80 : undefined}
                   inputMode={field.type === "tel" ? "tel" : undefined}
@@ -568,70 +799,70 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
   )
 }
 
-function CompanySearchField({
+function CompanySelectField({
   id,
+  value,
+  placeholder,
+  triggerClassName,
+  onBlur,
   onChange,
 }: {
   id: string
   value: string
+  placeholder: string
+  triggerClassName: string
+  onBlur?: () => void
   onChange: (value: string) => void
 }) {
   const t = useTranslations()
-  const [query, setQuery] = useState("")
-  const [results, setResults] = useState<
+  const [companies, setCompanies] = useState<
     Array<{ id: string; name: string; verificationStatus: string }>
   >([])
-  const [selectedName, setSelectedName] = useState("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const q = query.trim()
-    if (q.length < 2) {
-      void Promise.resolve().then(() => setResults([]))
-      return
+    let active = true
+    const timer = setTimeout(() => {
+      setLoading(true)
+      void searchCompaniesAction("")
+        .then((items) => {
+          if (active) setCompanies(items)
+        })
+        .catch(() => {
+          if (active) setCompanies([])
+        })
+        .finally(() => {
+          if (active) setLoading(false)
+        })
+    }, 0)
+    return () => {
+      active = false
+      clearTimeout(timer)
     }
-    const handle = window.setTimeout(() => {
-      void searchCompaniesAction(q)
-        .then((items) => setResults(items))
-        .catch(() => setResults([]))
-    }, 250)
-    return () => window.clearTimeout(handle)
-  }, [query])
+  }, [])
 
   return (
-    <div className="space-y-2">
-      <Input
-        id={id}
-        value={selectedName || query}
-        placeholder={t("onboarding.searchCompany")}
-        onChange={(event) => {
-          setSelectedName("")
-          onChange("")
-          setQuery(event.target.value)
-        }}
-      />
-      {selectedName ? (
-        <p className="text-muted text-sm">{selectedName}</p>
-      ) : null}
-      {results.length > 0 ? (
-        <ul className="border-line rounded-xl border bg-white p-1">
-          {results.map((company) => (
-            <li key={company.id}>
-              <button
-                type="button"
-                className="hover:bg-light-blue w-full rounded-lg px-3 py-2 text-start text-sm"
-                onClick={() => {
-                  onChange(company.id)
-                  setSelectedName(company.name)
-                  setQuery("")
-                  setResults([])
-                }}
-              >
-                {company.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
+    <Select value={value} onValueChange={onChange} disabled={loading}>
+      <SelectTrigger id={id} onBlur={onBlur} className={triggerClassName}>
+        <SelectValue
+          placeholder={
+            loading ? t("onboarding.companyOptionsLoading") : placeholder
+          }
+        />
+      </SelectTrigger>
+      <SelectContent>
+        {companies.length ? (
+          companies.map((company) => (
+            <SelectItem key={company.id} value={company.id}>
+              {company.name}
+            </SelectItem>
+          ))
+        ) : (
+          <SelectItem value="__empty" disabled>
+            {t("onboarding.companyOptionsEmpty")}
+          </SelectItem>
+        )}
+      </SelectContent>
+    </Select>
   )
 }

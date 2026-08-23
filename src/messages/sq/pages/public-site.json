@@ -11,6 +11,7 @@
         "home": "Kryefaqja",
         "search": "Kërkim global",
         "companies": "Kompanitë",
+        "projectOwners": "Pronarët e projekteve",
         "profiles": "Profile publike",
         "workers": "Punëtorët",
         "subcontractors": "Nënkontraktorët",
@@ -63,8 +64,12 @@
       "title": "Përpuno rezultatet",
       "search": "Kërko",
       "searchPlaceholder": "Kërko sipas fjalës kyçe, shërbimit, zanetit ose emrit të kompanisë",
+      "country": "Shteti",
+      "allCountries": "Të gjitha vendet",
       "region": "Rajoni",
       "allRegions": "Të gjitha rajonet",
+      "city": "Qyteti",
+      "allCities": "Të gjitha qytetet",
       "category": "Kategoria",
       "allCategories": "Të gjitha kategoritë",
       "verification": "Verifikimi",
@@ -85,7 +90,9 @@
     },
     "stats": {
       "publicResults": "Rezultate publike",
+      "countries": "Shtete",
       "regions": "Rajone",
+      "cities": "Qytete",
       "categories": "Kategori",
       "verificationStates": "Gjendje verifikimi"
     },
@@ -95,11 +102,16 @@
     },
     "modules": {
       "companies": "Kompanitë",
+      "project-owners": "Pronarët e projekteve",
+      "subcontractors": "Nënkontraktorët",
+      "service-providers": "Ofrues shërbimesh",
+      "workers": "Punëtorët",
       "profiles": "Profilet",
       "suppliers": "Furnizuesit",
       "equipment": "Pajisjet",
       "projects": "Projektet",
       "tenders": "Tenderët",
+      "opportunities": "Mundësi",
       "opportunities-companies": "Kërkesa për kompani",
       "opportunities-workers": "Kërkesa për punëtorë"
     },
@@ -192,6 +204,11 @@
         "eyebrow": "Zbulimi i kompanive",
         "title": "Gjej kompani ndërtimi me prova publike",
         "description": "Kërko sipas rajonit, kategorisë dhe sinjaleve të besimit për të kaluar shpejt nga vlerësimi publik te veprimi i duhur tjetër."
+      },
+      "projectOwners": {
+        "eyebrow": "Pronarët e projekteve",
+        "title": "Shfleto pronarët aktivë të projekteve",
+        "description": "Eksploro profilet e publikuara të pronarëve të projekteve dhe artikujt aktivë të marketplace të lidhur me to."
       },
       "profiles": {
         "eyebrow": "Zbulim profesional",

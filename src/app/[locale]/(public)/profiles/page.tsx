@@ -10,7 +10,7 @@ export default async function ProfilesPage({
 }) {
   return (
     <PublicDirectoryPage
-      module="profiles"
+      module="workers"
       titleKey="profiles"
       descriptionKey="profiles"
       searchParams={await searchParams}

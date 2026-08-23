@@ -1,6 +1,14 @@
 import { CircleX } from "lucide-react"
 
-export default function OnboardingRejectedPage() {
+import { guardOnboardingTerminalPage } from "@/lib/auth/onboarding-terminal"
+
+export default async function OnboardingRejectedPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: requestedLocale } = await params
+  await guardOnboardingTerminalPage(requestedLocale, "rejected")
   return (
     <div className="border-line mx-auto max-w-xl rounded-2xl border bg-white p-8 text-center shadow-[var(--shadow-card)]">
       <CircleX className="text-danger mx-auto size-12" />

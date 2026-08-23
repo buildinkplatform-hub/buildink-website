@@ -11,6 +11,7 @@ import { PublicArticleCard } from "@/features/public/components/public-cards"
 import { PublicContactForm } from "@/features/public/components/public-contact-form"
 import { PublicNewsletterCard } from "@/features/public/components/public-newsletter-card"
 import { ContentShell } from "@/features/public/components/public-shells"
+import { PublicEntityVisual } from "@/features/public/components/public-visuals"
 import {
   getPublicContentArticle,
   getPublicContentCollection,
@@ -64,20 +65,32 @@ export async function PublicContentPage({
   return (
     <ContentShell
       hero={
-        <div>
-          {page.eyebrow ? <Badge>{page.eyebrow}</Badge> : null}
-          <h1 className="text-brand-navy mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-            {page.title}
-          </h1>
-          <p className="text-muted mt-4 max-w-3xl text-lg leading-8">
-            {page.description}
-          </p>
-          {type === "privacy" || type === "terms" || type === "cookies" ? (
-            <p className="text-muted mt-3 text-sm">
-              {t("legal.updated", { date: page.updatedAt })}
-            </p>
-          ) : null}
-        </div>
+        <Card className="overflow-hidden rounded-[32px] border-white/70 p-0 shadow-[var(--shadow-card)]">
+          <div className="grid gap-0 lg:grid-cols-[1.1fr_.9fr]">
+            <div className="p-6 sm:p-8">
+              {page.eyebrow ? <Badge>{page.eyebrow}</Badge> : null}
+              <h1 className="text-brand-navy mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+                {page.title}
+              </h1>
+              <p className="text-muted mt-4 max-w-3xl text-lg leading-8">
+                {page.description}
+              </p>
+              {type === "privacy" || type === "terms" || type === "cookies" ? (
+                <p className="text-muted mt-3 text-sm">
+                  {t("legal.updated", { date: page.updatedAt })}
+                </p>
+              ) : null}
+            </div>
+            <div className="p-4 sm:p-6">
+              <PublicEntityVisual
+                module="companies"
+                title={page.title}
+                imageUrl={page.featuredImageUrl}
+                className="h-full min-h-72 rounded-[28px]"
+              />
+            </div>
+          </div>
+        </Card>
       }
     >
       {page.sections.map((section) => (
@@ -157,22 +170,23 @@ export async function PublicContentCollectionPage({
     >
       <div className="grid gap-5 xl:grid-cols-2">
         {collection.items.map((article) => (
-            <PublicArticleCard
-              key={article.slug}
-              article={{
-                slug: article.slug,
-                title: article.title,
-                excerpt: article.excerpt,
-                category: article.category,
-                updatedAt: article.updatedAt,
-                sections: [],
-                ...(article.author
-                  ? {
-                      author: article.author,
+          <PublicArticleCard
+            key={article.slug}
+            article={{
+              slug: article.slug,
+              title: article.title,
+              excerpt: article.excerpt,
+              category: article.category,
+              updatedAt: article.updatedAt,
+              sections: [],
+              ...(article.author
+                ? {
+                    author: article.author,
                     readingTime: article.readingTime ?? "",
                   }
                 : {}),
             }}
+            imageUrl={article.featuredImageUrl}
             href={`/${type}/${article.slug}`}
             actionLabel={t("actions.readArticle")}
           />
@@ -213,26 +227,38 @@ export async function PublicContentArticlePage({
   return (
     <ContentShell
       hero={
-        <div>
-          <Breadcrumb
-            items={[
-              { label: t("nav.items.home"), href: "/" },
-              {
-                label: type === "blog" ? t("pages.blog.title") : t("pages.help.title"),
-                href: `/${type}`,
-              },
-              { label: article.title },
-            ]}
-          />
-          <Badge className="mt-5">{article.category}</Badge>
-          <h1 className="text-brand-navy mt-4 max-w-4xl text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-            {article.title}
-          </h1>
-          <p className="text-muted mt-4 max-w-3xl text-lg leading-8">
-            {article.excerpt}
-          </p>
-          <p className="text-muted mt-3 text-sm">{articleMeta}</p>
-        </div>
+        <Card className="overflow-hidden rounded-[32px] border-white/70 p-0 shadow-[var(--shadow-card)]">
+          <div className="grid gap-0 lg:grid-cols-[1.1fr_.9fr]">
+            <div className="p-6 sm:p-8">
+              <Breadcrumb
+                items={[
+                  { label: t("nav.items.home"), href: "/" },
+                  {
+                    label: type === "blog" ? t("pages.blog.title") : t("pages.help.title"),
+                    href: `/${type}`,
+                  },
+                  { label: article.title },
+                ]}
+              />
+              <Badge className="mt-5">{article.category}</Badge>
+              <h1 className="text-brand-navy mt-4 max-w-4xl text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+                {article.title}
+              </h1>
+              <p className="text-muted mt-4 max-w-3xl text-lg leading-8">
+                {article.excerpt}
+              </p>
+              <p className="text-muted mt-3 text-sm">{articleMeta}</p>
+            </div>
+            <div className="p-4 sm:p-6">
+              <PublicEntityVisual
+                module="companies"
+                title={article.title}
+                imageUrl={article.featuredImageUrl}
+                className="h-full min-h-72 rounded-[28px]"
+              />
+            </div>
+          </div>
+        </Card>
       }
       aside={
         <Card className="p-5">
