@@ -30,7 +30,6 @@
         "verification": "Verification & safety",
         "help": "Help center",
         "faq": "FAQ",
-        "blog": "Blog & insights",
         "about": "About Buildink",
         "contact": "Contact",
         "privacy": "Privacy policy",
@@ -73,7 +72,22 @@
       "category": "Category",
       "allCategories": "All categories",
       "verification": "Verification",
-      "allStatuses": "All statuses"
+      "allStatuses": "All statuses",
+      "additional": {
+        "companyType": "Company type",
+        "services": "Services",
+        "accountType": "Account type",
+        "projectStage": "Project stage",
+        "procurementStage": "Procurement stage",
+        "tenderStatus": "Tender status",
+        "sourceType": "Source type",
+        "submissionChannel": "Submission channel",
+        "deadlineBucket": "Deadline",
+        "listingType": "Listing type",
+        "availabilityStatus": "Availability",
+        "opportunityType": "Opportunity type",
+        "opportunityStatus": "Opportunity status"
+      }
     },
     "actions": {
       "clearFilters": "Clear filters",
@@ -342,11 +356,6 @@
         "eyebrow": "Frequently asked",
         "title": "Buildink FAQ",
         "description": "Keep common marketplace questions concise, scannable and easy to navigate across languages."
-      },
-      "blog": {
-        "eyebrow": "Editorial and SEO",
-        "title": "Blog and insights",
-        "description": "Publish trustworthy long-form content that supports discovery, trust and multilingual search visibility."
       },
       "privacy": {
         "eyebrow": "Legal",

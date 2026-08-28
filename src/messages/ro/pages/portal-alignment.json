@@ -141,7 +141,9 @@
         "NATIVE": "Nativ"
       }
     },
-    "marketplace": { "withdraw": "Retrage" },
+    "marketplace": {
+      "withdraw": "Retrage"
+    },
     "workforce": {
       "legendAvailable": "Disponibil",
       "legendPreferred": "Preferat",
@@ -234,26 +236,17 @@
       "reviewer": "Evaluator"
     },
     "fields": {
-      "title": "Titlu",
       "reference": "Referință",
-      "description": "Descriere",
       "category": "Categorie",
       "city": "Oraș",
       "country": "Țară",
-      "budget": "Buget",
-      "budgetMin": "Buget minim",
-      "budgetMax": "Buget maxim",
       "currency": "Monedă",
-      "deadline": "Termen-limită",
       "startsAt": "Data începerii",
       "publicationStatus": "Publicare",
       "status": "Stare",
       "kind": "Tip",
-      "summary": "Rezumat",
       "profession": "Profesie",
       "durationDays": "Durată (zile)",
-      "employmentType": "Tip angajare",
-      "workArrangement": "Regim de lucru",
       "workersNeeded": "Lucrători necesari",
       "sourceKind": "Sursă",
       "submissionChannel": "Canal de depunere",
@@ -331,7 +324,41 @@
     "members": {
       "permissions": "Ai {count} permisiuni în spațiul de lucru al acestei companii.",
       "title": "Funcție",
-      "department": "Departament"
+      "department": "Departament",
+      "member": "Membru",
+      "role": "Rol",
+      "jobTitle": "Funcție",
+      "status": "Stare",
+      "joinedInvited": "Alăturat / invitat",
+      "active": "Activ",
+      "invited": "Invitat",
+      "pending": "Afilieri în așteptare",
+      "suspended": "Suspendat",
+      "actions": "Acțiuni membru",
+      "edit": "Editează membrul",
+      "editTitle": "Edit {name}",
+      "editDescription": "Actualizează rolul și datele de echipă ale membrului.",
+      "approveJoin": "Aprobă afilierea",
+      "rejectJoin": "Respinge afilierea",
+      "resendInvite": "Retrimite invitația",
+      "inviteSuccess": "Invitația a fost trimisă cu succes.",
+      "rows": "rânduri",
+      "cancelInvite": "Anulează invitația",
+      "remove": "Elimină membrul",
+      "emptyDescription": "Invită colegii să colaboreze în acest spațiu de lucru.",
+      "membershipDetails": "Detalii despre calitatea de membru",
+      "rolePermissions": "Permisiunile rolului",
+      "noPermissions": "Nicio permisiune vizibilă.",
+      "externalInvitation": "Invitație externă",
+      "primaryWorkspaceMember": "Membru principal al spațiului de lucru",
+      "workspaceMember": "Membru al spațiului de lucru",
+      "invitedOn": "Invitat",
+      "joined": "S-a alăturat",
+      "lastActive": "Ultima activitate",
+      "updated": "Actualizat",
+      "invitedBy": "Invitat de",
+      "companyRole": "Rol în companie",
+      "email": "Email"
     }
   },
   "locations": {
@@ -346,8 +373,12 @@
     }
   },
   "onboarding": {
-    "fields": { "location": "Locație" },
-    "hints": { "location": "Selectează țara, regiunea și orașul din liste." },
+    "fields": {
+      "location": "Locație"
+    },
+    "hints": {
+      "location": "Selectează țara, regiunea și orașul din liste."
+    },
     "reviewFeedback": {
       "title": "Actualizări solicitate înainte de retrimitere"
     }

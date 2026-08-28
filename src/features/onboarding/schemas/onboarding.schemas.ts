@@ -1,7 +1,11 @@
 import { z } from "zod"
 
 import { profileTypeForAccountType } from "@/shared/lib/account-type-mapping"
-import { locales, type PrimaryAccountType, type ProfileType } from "@/shared/types/platform"
+import {
+  locales,
+  type PrimaryAccountType,
+  type ProfileType,
+} from "@/shared/types/platform"
 
 const requiredText = z.string().trim().min(1).max(500)
 const optionalText = z.string().trim().max(500).optional()
@@ -76,7 +80,10 @@ function requireCompanyCreateDetails(
   value: Record<string, unknown>,
   ctx: z.RefinementCtx,
 ) {
-  if (value.organizationMode === "select" || value.organizationMode === "claim") {
+  if (
+    value.organizationMode === "select" ||
+    value.organizationMode === "claim"
+  ) {
     if (
       typeof value.companyId !== "string" ||
       value.companyId.trim().length === 0
@@ -151,44 +158,50 @@ export const profileSchemas = {
     languages: requiredText,
     bio: requiredText,
   }),
-  contractor: z.object({
-    ...commonProfileFields,
-    contractorIdentity: requiredText,
-    organizationMode: z.enum(["select", "create", "claim"]),
-    companyId: z.string().uuid().optional().or(z.literal("")),
-    primaryTrade: requiredText,
-    categories: requiredText,
-    yearsExperience: yearsOfExperience,
-    serviceRegions: requiredText,
-    capabilityStatement: requiredText,
-    availability: requiredText,
-    ...companyCreateFields,
-  }).superRefine(requireCompanyCreateDetails),
-  supplier_contact: z.object({
-    ...commonProfileFields,
-    jobTitle: requiredText,
-    organizationMode: z.enum(["select", "create", "claim"]),
-    companyId: z.string().uuid().optional().or(z.literal("")),
-    supplierName: requiredText,
-    vatNumber: optionalText,
-    categories: requiredText,
-    serviceRegions: requiredText,
-    businessDescription: requiredText,
-    ...companyCreateFields,
-  }).superRefine(requireCompanyCreateDetails),
-  service_provider: z.object({
-    ...commonProfileFields,
-    providerIdentity: requiredText,
-    organizationMode: z.enum(["select", "create", "claim"]),
-    companyId: z.string().uuid().optional().or(z.literal("")),
-    categories: requiredText,
-    yearsExperience: yearsOfExperience,
-    professionalBackground: requiredText,
-    serviceRegions: requiredText,
-    capabilityStatement: requiredText,
-    availability: requiredText,
-    ...companyCreateFields,
-  }).superRefine(requireCompanyCreateDetails),
+  contractor: z
+    .object({
+      ...commonProfileFields,
+      contractorIdentity: requiredText,
+      organizationMode: z.enum(["select", "create", "claim"]),
+      companyId: z.string().uuid().optional().or(z.literal("")),
+      primaryTrade: requiredText,
+      categories: requiredText,
+      yearsExperience: yearsOfExperience,
+      serviceRegions: requiredText,
+      capabilityStatement: requiredText,
+      availability: requiredText,
+      ...companyCreateFields,
+    })
+    .superRefine(requireCompanyCreateDetails),
+  supplier_contact: z
+    .object({
+      ...commonProfileFields,
+      jobTitle: requiredText,
+      organizationMode: z.enum(["select", "create", "claim"]),
+      companyId: z.string().uuid().optional().or(z.literal("")),
+      supplierName: requiredText,
+      vatNumber: optionalText,
+      categories: requiredText,
+      serviceRegions: requiredText,
+      businessDescription: requiredText,
+      ...companyCreateFields,
+    })
+    .superRefine(requireCompanyCreateDetails),
+  service_provider: z
+    .object({
+      ...commonProfileFields,
+      providerIdentity: requiredText,
+      organizationMode: z.enum(["select", "create", "claim"]),
+      companyId: z.string().uuid().optional().or(z.literal("")),
+      categories: requiredText,
+      yearsExperience: yearsOfExperience,
+      professionalBackground: requiredText,
+      serviceRegions: requiredText,
+      capabilityStatement: requiredText,
+      availability: requiredText,
+      ...companyCreateFields,
+    })
+    .superRefine(requireCompanyCreateDetails),
 } satisfies Record<ProfileType, z.ZodObject>
 
 export function getProfileSchema(profileType: ProfileType) {
@@ -200,9 +213,8 @@ export function getProfileSchemaForAccountType(
   existingProfileType?: ProfileType,
 ) {
   if (accountType === "COMPANY") return companyAccountProfileSchema
-  const schema = profileSchemas[
-    profileTypeForAccountType(accountType, existingProfileType)
-  ]
+  const schema =
+    profileSchemas[profileTypeForAccountType(accountType, existingProfileType)]
   if (
     accountType !== "PROJECT_OWNER" &&
     accountType !== "SUBCONTRACTOR" &&
@@ -247,10 +259,7 @@ export const documentMetadataSchema = z
     ownerName: requiredText,
   })
   .superRefine((value, ctx) => {
-    if (
-      expiryRequiredForDocument(value.documentType) &&
-      !value.expiryDate
-    ) {
+    if (expiryRequiredForDocument(value.documentType) && !value.expiryDate) {
       ctx.addIssue({
         code: "custom",
         path: ["expiryDate"],

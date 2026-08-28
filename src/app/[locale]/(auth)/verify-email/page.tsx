@@ -19,10 +19,16 @@ export default function VerifyEmailPage() {
   const [pending, startTransition] = useTransition()
 
   return (
-    <div className="border-line rounded-2xl border bg-white p-8 text-center shadow-[var(--shadow-card)]">
-      <MailCheck className="text-primary mx-auto size-12" />
-      <h1 className="text-brand-navy mt-5 text-3xl font-bold">{t("verifyTitle")}</h1>
-      <p className="text-muted mt-3 leading-7">{t("verifyBody")}</p>
+    <div className="auth-panel rounded-[30px] p-8 text-center sm:p-10">
+      <div className="border-primary/10 bg-primary/6 mx-auto flex size-14 items-center justify-center rounded-2xl border">
+        <MailCheck className="text-primary size-7" />
+      </div>
+      <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
+        {t("verifyTitle")}
+      </h1>
+      <p className="text-muted mx-auto mt-3 max-w-md leading-7">
+        {t("verifyBody")}
+      </p>
       {email ? (
         <Button
           className="mt-7"
@@ -44,7 +50,10 @@ export default function VerifyEmailPage() {
         </Button>
       ) : null}
       {failed ? (
-        <p className="text-danger mt-3 text-sm" role="alert">
+        <p
+          className="text-danger border-danger/15 bg-danger/5 mt-4 rounded-xl border px-4 py-3 text-sm"
+          role="alert"
+        >
           {t("resendFailed")}
         </p>
       ) : null}

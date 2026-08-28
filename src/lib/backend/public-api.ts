@@ -2,6 +2,13 @@ import "server-only"
 
 import { BackendApiError, readBackendEnvelope } from "@/lib/backend/api"
 
+function publicCacheTags(path: string) {
+  const tags = ["public"]
+  if (path.includes("/public/content/")) tags.push("public-content")
+  if (path.includes("/public/marketplace/")) tags.push("public-marketplace")
+  return tags
+}
+
 export async function publicBackendApi<T>(
   path: string,
   init: RequestInit = {},
@@ -14,7 +21,9 @@ export async function publicBackendApi<T>(
         "content-type": "application/json",
         ...init.headers,
       },
-      next: init.cache ? undefined : { revalidate: 120 },
+      next: init.cache
+        ? undefined
+        : { revalidate: 120, tags: publicCacheTags(path) },
       cache: init.cache,
       signal: init.signal ?? AbortSignal.timeout(8_000),
     },

@@ -8,4 +8,3 @@ export default async function OpportunityWorkerDetailPage({
   const { slug } = await params
   return <PublicEntityDetailPage module="opportunities" slug={slug} />
 }
-

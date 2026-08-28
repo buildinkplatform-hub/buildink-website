@@ -25,7 +25,10 @@ export async function getGeographyCascadingOptionsAction(input: {
     const data = await getPortalGeographyOptions(params.toString())
     return { ok: true as const, items: data.items, level: data.level }
   } catch {
-    return { ok: false as const, items: [] as Array<{ id: string; label: string }> }
+    return {
+      ok: false as const,
+      items: [] as Array<{ id: string; label: string }>,
+    }
   }
 }
 

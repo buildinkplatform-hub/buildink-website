@@ -19,7 +19,6 @@ const directoryPaths = [
   "/verification",
   "/help",
   "/faq",
-  "/blog",
   "/privacy",
   "/terms",
   "/cookies",

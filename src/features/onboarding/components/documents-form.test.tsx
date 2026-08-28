@@ -52,7 +52,12 @@ const draft: OnboardingDraft = {
       ownerName: "Test User",
     },
   ],
-  consent: { publicProfile: false, documentProcessing: false, terms: false, privacy: false },
+  consent: {
+    publicProfile: false,
+    documentProcessing: false,
+    terms: false,
+    privacy: false,
+  },
 }
 
 describe("DocumentsForm", () => {

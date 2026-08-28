@@ -25,10 +25,7 @@ export function PublicHeroActions({
         <Button asChild>
           <Link href={viewer.profileHref}>
             {primaryLabel}{" "}
-            <ArrowRight
-              aria-hidden="true"
-              className="size-4 rtl:rotate-180"
-            />
+            <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" />
           </Link>
         </Button>
       </div>

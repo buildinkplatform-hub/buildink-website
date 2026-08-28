@@ -77,7 +77,10 @@ function Calendar({
           "relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50",
           defaultClassNames.dropdown_root,
         ),
-        dropdown: cn("absolute inset-0 bg-popover opacity-0", defaultClassNames.dropdown),
+        dropdown: cn(
+          "absolute inset-0 bg-popover opacity-0",
+          defaultClassNames.dropdown,
+        ),
         caption_label: cn(
           "font-medium select-none",
           captionLayout === "label"
@@ -141,12 +144,21 @@ function Calendar({
         },
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
-            return <ChevronLeftIcon className={cn("size-4", className)} {...props} />
+            return (
+              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
+            )
           }
           if (orientation === "right") {
-            return <ChevronRightIcon className={cn("size-4", className)} {...props} />
+            return (
+              <ChevronRightIcon
+                className={cn("size-4", className)}
+                {...props}
+              />
+            )
           }
-          return <ChevronDownIcon className={cn("size-4", className)} {...props} />
+          return (
+            <ChevronDownIcon className={cn("size-4", className)} {...props} />
+          )
         },
         DayButton: CalendarDayButton,
         WeekNumber: ({ children, ...props }) => {

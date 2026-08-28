@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "@/i18n/navigation"
+import { useQueryClient } from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
@@ -15,7 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { createSavedSearchAction } from "@/features/dashboard/actions/portal.actions"
+import { createSavedSearchCachedAction } from "@/features/dashboard/actions/portal-saved.actions"
+import type { PortalSavedSearch } from "@/features/dashboard/data/portal-client"
+import { portalQueryKeys } from "@/features/dashboard/query/portal-query-keys"
 
 const searchKinds = [
   "GLOBAL",
@@ -29,7 +32,7 @@ const searchKinds = [
 
 export function SavedSearchForm() {
   const t = useTranslations()
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const [name, setName] = useState("")
   const [kind, setKind] = useState<(typeof searchKinds)[number]>("TENDERS")
   const [query, setQuery] = useState("")
@@ -45,9 +48,10 @@ export function SavedSearchForm() {
       className="space-y-3"
       onSubmit={(event) => {
         event.preventDefault()
+        if (pending) return
         setPending(true)
         setMessage(undefined)
-        void createSavedSearchAction({
+        void createSavedSearchCachedAction({
           name,
           kind,
           query: query || null,
@@ -66,13 +70,24 @@ export function SavedSearchForm() {
             setMessage(result.message)
             return
           }
+          const key = portalQueryKeys.resource("saved-searches")
+          queryClient.setQueryData<{ items: PortalSavedSearch[] }>(
+            key,
+            (current) => ({
+              items: [
+                result.search,
+                ...(current?.items ?? []).filter(
+                  (item) => item.id !== result.search.id,
+                ),
+              ],
+            }),
+          )
           setName("")
           setQuery("")
-          router.refresh()
         })
       }}
     >
-      <h2 className="text-brand-navy text-lg font-semibold">
+      <h2 className="text-foreground text-lg font-semibold">
         {t("dashboard.savedSearch.title")}
       </h2>
       <Field
@@ -83,6 +98,7 @@ export function SavedSearchForm() {
         <Input
           id="saved-search-name"
           value={name}
+          disabled={pending}
           onChange={(event) => setName(event.target.value)}
         />
       </Field>
@@ -92,6 +108,7 @@ export function SavedSearchForm() {
       >
         <Select
           value={kind}
+          disabled={pending}
           onValueChange={(value) =>
             setKind(value as (typeof searchKinds)[number])
           }
@@ -115,12 +132,14 @@ export function SavedSearchForm() {
         <Input
           id="saved-search-query"
           value={query}
+          disabled={pending}
           onChange={(event) => setQuery(event.target.value)}
         />
       </Field>
       <label className="flex min-h-11 items-center gap-3 text-sm">
         <Checkbox
           checked={alerts}
+          disabled={pending}
           onChange={(event) => setAlerts(event.target.checked)}
         />
         {t("dashboard.savedSearch.alerts")}
@@ -132,6 +151,7 @@ export function SavedSearchForm() {
         >
           <Select
             value={frequency}
+            disabled={pending}
             onValueChange={(value) => setFrequency(value as typeof frequency)}
           >
             <SelectTrigger id="saved-search-frequency">
@@ -149,9 +169,10 @@ export function SavedSearchForm() {
           </Select>
         </Field>
       ) : null}
-      {message ? <p className="text-danger text-sm">{message}</p> : null}
+      {message ? <p className="text-destructive text-sm">{message}</p> : null}
       <Button type="submit" disabled={pending || name.trim().length < 2}>
-        {t("dashboard.savedSearch.save")}
+        {pending ? <Loader2 className="size-4 animate-spin" /> : null}
+        {pending ? "Saving…" : t("dashboard.savedSearch.save")}
       </Button>
     </form>
   )

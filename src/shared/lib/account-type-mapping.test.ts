@@ -16,7 +16,9 @@ describe("account type mapping", () => {
       "SUBCONTRACTOR",
     )
     expect(accountTypeFromProfileType("supplier_contact")).toBe("COMPANY")
-    expect(accountTypeFromProfileType("service_provider")).toBe("SERVICE_PROVIDER")
+    expect(accountTypeFromProfileType("service_provider")).toBe(
+      "SERVICE_PROVIDER",
+    )
     expect(accountTypeFromProfileType("service_provider", "company-1")).toBe(
       "SERVICE_PROVIDER",
     )
@@ -44,7 +46,9 @@ describe("account type mapping", () => {
     )
     expect(profileTypeForAccountType("PROJECT_OWNER")).toBe("individual")
     expect(profileTypeForAccountType("SUBCONTRACTOR")).toBe("contractor")
-    expect(profileTypeForAccountType("SERVICE_PROVIDER")).toBe("service_provider")
+    expect(profileTypeForAccountType("SERVICE_PROVIDER")).toBe(
+      "service_provider",
+    )
     expect(profileTypeForAccountType("WORKER")).toBe("worker")
   })
 

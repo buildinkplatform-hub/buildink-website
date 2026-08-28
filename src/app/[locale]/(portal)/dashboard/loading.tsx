@@ -1,5 +1,5 @@
-import { PortalPageSkeleton } from "@/components/shared/page-skeletons"
+import { PortalWorkspaceSkeleton } from "@/features/dashboard/components/portal-workspace-skeleton"
 
 export default function PortalLoading() {
-  return <PortalPageSkeleton />
+  return <PortalWorkspaceSkeleton />
 }

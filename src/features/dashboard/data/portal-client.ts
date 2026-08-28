@@ -91,6 +91,228 @@ export interface PortalBootstrap {
   counts: PortalAccountCounts
 }
 
+export interface OperationsPageInfo {
+  page: number
+  pageSize: number
+  total: number
+  pageCount: number
+  hasNextPage: boolean
+}
+
+export interface WorkforceOperationsOverview {
+  projects: Array<{
+    id: string
+    title: string
+    budgetMinor: string | null
+    contractValueMinor: string | null
+    currency: string | null
+  }>
+  attendance: Array<{ status: string; _count: { _all: number } }>
+  tasks: Array<{ status: string; _count: { _all: number } }>
+  production: {
+    _sum: {
+      completedQuantity: string | null
+      acceptedQuantity: string | null
+      labourMinutes: number | null
+      reworkQuantity: string | null
+    }
+  }
+  costs: Array<{
+    category: string
+    _sum: { amountMinor: string | null }
+  }>
+  alerts: Array<{ severity: string; _count: { _all: number } }>
+  pendingPayroll: number
+}
+
+export interface ProjectOperationsOverview {
+  project: {
+    id: string
+    title: string
+    budgetMinor: string | null
+    contractValueMinor: string | null
+    currency: string | null
+    projectTimezone: string
+  }
+  sites: number
+  shifts: Array<{ status: string; _count: { _all: number } }>
+  tasks: Array<{ status: string; _count: { _all: number } }>
+  production: { _sum: Record<string, string | number | null> }
+  costs: Array<{
+    category: string
+    committed: boolean
+    _sum: { amountMinor: string | null }
+  }>
+  forecast: Record<string, unknown> | null
+  alerts: OperationsAlert[]
+  pipeline: {
+    production: {
+      _sum: { acceptedQuantity: string | null; labourMinutes: number | null }
+    }
+    costs: Array<{ status: string; _sum: { amountMinor: string | null } }>
+  }
+  metrics: {
+    actualMinor: string
+    committedMinor: string
+    productivityPerHour: number
+    labourHours: number
+    reworkQuantity: string
+    wasteQuantity: string
+  }
+}
+
+export interface OperationsShift {
+  id: string
+  projectId: string
+  siteId: string
+  workerId: string
+  workDate: string
+  checkedInAt: string | null
+  checkedOutAt: string | null
+  workedMinutes: number
+  overtimeMinutes: number
+  status: string
+  source: string
+  exceptionCodes: string[]
+  version: number
+}
+
+export interface OperationsTask {
+  id: string
+  title: string
+  description: string | null
+  siteId: string | null
+  costCodeId: string | null
+  crewId: string | null
+  unit: string | null
+  plannedQuantity: string | null
+  plannedMinutes: number | null
+  startsOn: string | null
+  dueOn: string | null
+  priority: number
+  status: string
+  version: number
+}
+
+export interface OperationsCost {
+  id: string
+  category: string
+  description: string
+  amountMinor: string
+  currency: string
+  committed: boolean
+  occurredOn: string
+  status: string
+  version: number
+}
+
+export interface OperationsAlert {
+  id: string
+  alertType: string
+  severity: string
+  status: string
+  title: string
+  message: string
+  dueAt: string | null
+  createdAt: string
+}
+
+export interface WorkerOperationsOverview {
+  activeShift: OperationsShift | null
+  recentShifts: OperationsShift[]
+  assignments: Array<{
+    id: string
+    taskId: string
+    startsOn: string | null
+    endsOn: string | null
+  }>
+  payroll: Array<{
+    id: string
+    regularMinutes: number
+    overtimeMinutes: number
+    grossMinor: string
+    netMinor: string
+  }>
+}
+
+export async function getWorkforceOperationsOverview(companyId: string) {
+  return backendApi<WorkforceOperationsOverview>(
+    `/api/v1/workspaces/${companyId}/workforce/overview`,
+  )
+}
+
+export async function getProjectOperationsOverview(
+  companyId: string,
+  projectId: string,
+) {
+  return backendApi<ProjectOperationsOverview>(
+    `/api/v1/workspaces/${companyId}/projects/${projectId}/operations`,
+  )
+}
+
+export async function getWorkerOperationsOverview() {
+  return backendApi<WorkerOperationsOverview>("/api/v1/me/workforce/operations")
+}
+
+export async function listWorkforceAttendance(companyId: string) {
+  return backendApi<{ items: OperationsShift[]; pageInfo: OperationsPageInfo }>(
+    `/api/v1/workspaces/${companyId}/workforce/attendance?pageSize=50`,
+  )
+}
+
+export async function listWorkforceAlerts(companyId: string) {
+  return backendApi<{ items: OperationsAlert[]; pageInfo: OperationsPageInfo }>(
+    `/api/v1/workspaces/${companyId}/workforce/alerts?pageSize=50`,
+  )
+}
+export async function listWorkforceAlertRules(companyId: string) {
+  return backendApi<{ items: Array<Record<string, unknown>> }>(
+    `/api/v1/workspaces/${companyId}/operations/alert-rules`,
+  )
+}
+
+export async function listWorkforcePayroll(companyId: string) {
+  return backendApi<{ items: Array<Record<string, unknown>> }>(
+    `/api/v1/workspaces/${companyId}/workforce/payroll`,
+  )
+}
+
+export async function listProjectOperationsResource<T>(
+  companyId: string,
+  projectId: string,
+  resource: string,
+) {
+  return backendApi<{ items: T[]; pageInfo?: OperationsPageInfo }>(
+    `/api/v1/workspaces/${companyId}/projects/${projectId}/${resource}?pageSize=50`,
+  )
+}
+
+export async function getComplianceAdministration(
+  companyId: string,
+  projectId: string,
+) {
+  return backendApi<{
+    items: Array<Record<string, unknown>>
+    workers: Array<{ id: string; displayName: string | null }>
+    requirements: Array<{
+      id: string
+      title: string
+      credentialType: string | null
+      required: boolean
+    }>
+    credentials: Array<{
+      id: string
+      profileId: string
+      title: string
+      status: string
+      expiresOn: string | null
+      assetId: string | null
+    }>
+  }>(
+    `/api/v1/workspaces/${companyId}/projects/${projectId}/compliance/assignments`,
+  )
+}
+
 export interface PortalTaxonomyOption {
   id: string
   slug: string
@@ -511,6 +733,16 @@ export async function listWorkspaceApplications(companyId: string) {
   )
 }
 
+export async function getPortalApplication(id: string) {
+  return backendApi<PortalApplication>(`/api/v1/me/applications/${id}`)
+}
+
+export async function getWorkspaceApplication(companyId: string, id: string) {
+  return backendApi<PortalApplication>(
+    `/api/v1/workspaces/${companyId}/applications/${id}`,
+  )
+}
+
 export async function listPortalEngagements() {
   return backendApi<{ items: PortalEngagement[] }>("/api/v1/me/engagements")
 }
@@ -833,8 +1065,12 @@ export interface PortalProject {
   publicationStatus: string
   ownerCompanyId: string | null
   ownerProfileId: string | null
+  ownerCompanyName?: string | null
+  ownerProfileName?: string | null
+  ownerLabel?: string | null
   description?: string
   cityId?: string | null
+  locationLabel?: string | null
   countryCode?: string | null
   addressLine1?: string | null
   postalCode?: string | null
@@ -931,6 +1167,10 @@ export interface PortalOpportunity {
   offerCount: number
   applicationCount: number
   version?: number
+  attachments?: Array<{ id: string; name: string }>
+  cityLabel?: string | null
+  category?: { slug?: string | null; translations?: unknown } | null
+  profession?: { slug?: string | null; translations?: unknown } | null
 }
 
 export interface PortalTender {
@@ -960,6 +1200,8 @@ export interface PortalTender {
   submissionMethod?: string | null
   eligibility?: unknown
   awardCriteria?: unknown
+  tagIds?: string[]
+  media?: PortalTenderMedia[]
   eligibleForOffer: boolean
   lotCount: number
   version?: number
@@ -983,6 +1225,15 @@ export interface PortalTenderCriterion {
   weight: number
   required: boolean
   sortOrder: number
+}
+
+export interface PortalTenderMedia {
+  assetId: string
+  usage: "IMAGE" | "DOCUMENT"
+  position: number
+  name: string
+  mimeType: string
+  kind: string
 }
 
 export interface PortalBidInvite {
@@ -1072,11 +1323,17 @@ export interface PortalMember {
   title: string | null
   department: string | null
   invitationEmail: string | null
+  email: string | null
+  isPrimary: boolean
+  invitedAt: string | null
   joinedAt: string | null
   lastAccessedAt: string | null
+  updatedAt: string
   version: number
   displayName: string | null
-  profileId: string
+  profileId: string | null
+  invitedByName: string | null
+  externalInvite?: boolean
 }
 
 export interface PortalCatalogueItem {
@@ -1285,6 +1542,7 @@ export async function getPortalTender(id: string, page = 1) {
       lots: PortalTenderLot[]
       lotsPage: PortalPageInfo
       criteria: PortalTenderCriterion[]
+      media: PortalTenderMedia[]
     }
   >(`/api/v1/me/tenders/${id}${queryString({ page, pageSize: 10 })}`)
 }
@@ -1502,6 +1760,26 @@ export async function removePortalMember(
   return backendApi(`/api/v1/workspaces/${companyId}/members/${membershipId}`, {
     method: "DELETE",
   })
+}
+
+export async function resendPortalMemberInvite(
+  companyId: string,
+  membershipId: string,
+) {
+  return backendApi(
+    `/api/v1/workspaces/${companyId}/members/${membershipId}/resend`,
+    { method: "POST" },
+  )
+}
+
+export async function cancelPortalMemberInvite(
+  companyId: string,
+  membershipId: string,
+) {
+  return backendApi(
+    `/api/v1/workspaces/${companyId}/members/${membershipId}/cancel`,
+    { method: "POST" },
+  )
 }
 
 export async function listPortalCatalogue(
@@ -1920,6 +2198,18 @@ export async function publishPortalOpportunity(
   })
 }
 
+export async function withdrawPortalOpportunity(
+  id: string,
+  version: number,
+  reason?: string,
+) {
+  return backendApi(`/api/v1/me/opportunities/${id}/withdraw`, {
+    method: "POST",
+    headers: { "If-Match": String(version) },
+    body: JSON.stringify({ version, reason: reason?.trim() || undefined }),
+  })
+}
+
 export async function createPortalTender(
   body: Record<string, unknown>,
   idempotencyKey: string,
@@ -1950,6 +2240,22 @@ export async function publishPortalTender(
       "If-Match": String(version),
     },
     body: JSON.stringify({ confirm: true, version }),
+  })
+}
+
+export async function transitionPortalTender(
+  id: string,
+  input: {
+    status:
+      "OPEN" | "CLOSED" | "EVALUATION" | "AWARDED" | "CANCELLED" | "ARCHIVED"
+    reason?: string
+    version: number
+  },
+) {
+  return backendApi(`/api/v1/me/tenders/${id}/transition`, {
+    method: "POST",
+    headers: { "If-Match": String(input.version) },
+    body: JSON.stringify(input),
   })
 }
 
@@ -2005,6 +2311,7 @@ export async function createPortalUploadIntent(input: {
   kind?: "image" | "document"
   purpose?: "attachment" | "document" | "image"
   documentType?: string
+  issuedAt?: string
   expiresAt?: string
 }) {
   return backendApi<{
@@ -2021,7 +2328,15 @@ export async function createPortalUploadIntent(input: {
 }
 
 export async function completePortalUpload(assetId: string) {
-  return backendApi(`/api/v1/me/uploads/${assetId}/complete`, {
+  return backendApi<{
+    id: string
+    originalName?: string
+    documentType?: string | null
+    purpose?: "attachment" | "document" | "image" | string | null
+    issuedAt?: string | null
+    expiresAt?: string | null
+    status: string
+  }>(`/api/v1/me/uploads/${assetId}/complete`, {
     method: "POST",
   })
 }

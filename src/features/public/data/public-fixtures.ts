@@ -1,5 +1,4 @@
 import type {
-  PublicArticle,
   PublicEntityRecord,
   PublicHelpArticle,
   PublicLegalDocument,
@@ -15,9 +14,7 @@ type FixtureModule =
   | "opportunities-companies"
   | "opportunities-workers"
 
-function record(
-  input: PublicEntityRecord,
-): PublicEntityRecord {
+function record(input: PublicEntityRecord): PublicEntityRecord {
   return input
 }
 
@@ -95,7 +92,8 @@ export const publicEntities: Record<FixtureModule, PublicEntityRecord[]> = {
         {
           slug: "projects",
           title: "Projects portfolio",
-          description: "Approved public project references linked to the company.",
+          description:
+            "Approved public project references linked to the company.",
           sections: [
             {
               id: "portfolio",
@@ -124,13 +122,18 @@ export const publicEntities: Record<FixtureModule, PublicEntityRecord[]> = {
         {
           slug: "certifications",
           title: "Certifications and compliance",
-          description: "Approved public certification metadata without exposing private documents.",
+          description:
+            "Approved public certification metadata without exposing private documents.",
           sections: [
             {
               id: "certificates",
               title: "Certification highlights",
               body: "Only approved metadata is public.",
-              items: ["ISO 9001", "SOA public works category", "Safety management declaration"],
+              items: [
+                "ISO 9001",
+                "SOA public works category",
+                "Safety management declaration",
+              ],
             },
           ],
         },
@@ -441,48 +444,6 @@ export const publicEntities: Record<FixtureModule, PublicEntityRecord[]> = {
     }),
   ],
 }
-
-export const publicArticles: PublicArticle[] = [
-  {
-    slug: "how-verified-profiles-build-faster-trust",
-    title: "How verified profiles build faster trust on construction marketplaces",
-    excerpt:
-      "Why visible verification, clear categories and public contact rules improve conversion before the first message is sent.",
-    category: "Trust",
-    author: "Buildink Editorial",
-    updatedAt: "2026-08-08",
-    readingTime: "6 min read",
-    sections: [
-      {
-        id: "intro",
-        title: "Why this matters",
-        body: "Trust signals reduce hesitation in fragmented procurement and hiring workflows.",
-      },
-      {
-        id: "signals",
-        title: "Signals that matter",
-        body: "Visitors respond best to verification, relevance and availability signals they can interpret quickly.",
-      },
-    ],
-  },
-  {
-    slug: "what-to-publish-on-a-company-profile-first",
-    title: "What to publish on a company profile first",
-    excerpt:
-      "A practical order for publishing public company information without leaking private operational details.",
-    category: "Company profiles",
-    author: "Buildink Editorial",
-    updatedAt: "2026-08-07",
-    readingTime: "4 min read",
-    sections: [
-      {
-        id: "order",
-        title: "Start with the essentials",
-        body: "Identity, categories, approved contact channels and proof projects create the first useful public layer.",
-      },
-    ],
-  },
-]
 
 export const helpArticles: PublicHelpArticle[] = [
   {

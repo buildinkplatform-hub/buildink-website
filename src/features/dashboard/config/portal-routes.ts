@@ -74,6 +74,15 @@ export const portalRoutes: PortalRouteDefinition[] = [
     labelKey: "dashboard.nav.workforce",
     descriptionKey: "dashboard.descriptions.workforce",
     state: "active",
+    section: "people",
+  },
+  {
+    segment: "operations",
+    module: "operations",
+    labelKey: "dashboard.nav.operations",
+    descriptionKey: "dashboard.descriptions.operations",
+    state: "active",
+    section: "operations",
   },
   {
     segment: "catalogue",
@@ -135,7 +144,7 @@ export const portalRoutes: PortalRouteDefinition[] = [
 
 export const PORTAL_RESERVED_SEGMENTS = ["create", "edit"] as const
 
-export type PortalPageAction = "list" | "create" | "detail" | "edit"
+export type PortalPageAction = "list" | "create" | "detail" | "edit" | "subpage"
 
 type PortalRouteCapability = {
   detail?: boolean
@@ -154,6 +163,7 @@ export const PORTAL_ROUTE_CAPABILITIES = {
   applications: { detail: true, create: true },
   tenders: { detail: true, create: true, edit: true },
   workforce: {},
+  operations: {},
   catalogue: { detail: true, create: true, edit: true },
   equipment: { detail: true, create: true, edit: true },
   engagements: { detail: true },
@@ -170,7 +180,49 @@ export type ResolvedPortalRoute = {
   definition: PortalRouteDefinition
   action: PortalPageAction
   recordId?: string
+  subpage?: string
 }
+
+export const operationsSubpages = new Set([
+  "attendance",
+  "crews",
+  "tasks",
+  "production",
+  "labour",
+  "materials",
+  "equipment",
+  "costs",
+  "profit-control",
+  "forecasts",
+  "sal",
+  "daily-reports",
+  "compliance",
+  "payroll",
+  "alerts",
+])
+export const legacyWorkforceOperationsSubpages = new Set([
+  "attendance",
+  "exceptions",
+  "crews",
+  "payroll",
+  "alerts",
+])
+const projectOperationSubpages = new Set([
+  "sites",
+  "operations",
+  "tasks",
+  "production",
+  "labour",
+  "materials",
+  "equipment",
+  "costs",
+  "profit-control",
+  "forecast",
+  "sal",
+  "daily-reports",
+  "compliance",
+  "alerts",
+])
 
 function routeCapability(segment: string): PortalRouteCapability {
   return PORTAL_ROUTE_CAPABILITIES[
@@ -231,6 +283,12 @@ export function resolvePortalRoute(
   }
 
   if (segments.length === 2) {
+    if (
+      definition.segment === "operations" &&
+      operationsSubpages.has(segments[1]!)
+    ) {
+      return { definition, action: "subpage", subpage: segments[1] }
+    }
     if (segments[1] === "create") {
       return capability.create ? { definition, action: "create" } : null
     }
@@ -242,7 +300,36 @@ export function resolvePortalRoute(
       : null
   }
 
-  if (segments[2] === "edit" && segments[1] !== "create" && segments[1] !== "edit") {
+  if (
+    definition.segment === "operations" &&
+    segments[1] === "attendance" &&
+    ["check-in", "exceptions"].includes(segments[2]!)
+  ) {
+    return {
+      definition,
+      action: "subpage",
+      subpage: `attendance/${segments[2]}`,
+    }
+  }
+
+  if (
+    definition.segment === "projects" &&
+    segments[1] !== "create" &&
+    projectOperationSubpages.has(segments[2]!)
+  ) {
+    return {
+      definition,
+      action: "subpage",
+      recordId: segments[1],
+      subpage: segments[2],
+    }
+  }
+
+  if (
+    segments[2] === "edit" &&
+    segments[1] !== "create" &&
+    segments[1] !== "edit"
+  ) {
     return capability.edit
       ? { definition, action: "edit", recordId: segments[1] }
       : null

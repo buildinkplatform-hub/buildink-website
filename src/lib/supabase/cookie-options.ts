@@ -1,3 +1,5 @@
+export const websiteLogoutGuardCookie = "buildink-logout-in-progress"
+
 export function supabaseAuthCookieOptions(maxAgeSeconds?: number) {
   return {
     name: "sb-buildink-website-auth",

@@ -1,0 +1,44 @@
+{
+  "privacy": {
+    "sections": [
+      {
+        "id": "collection",
+        "title": "Informațiile pe care le colectăm",
+        "body": "Buildink poate prelucra date de cont, informații de onboarding, conținut public din marketplace, mesaje de suport și activitate tehnică necesară funcționării serviciului."
+      },
+      {
+        "id": "use",
+        "title": "Cum sunt utilizate informațiile",
+        "body": "Folosim datele pentru autentificarea utilizatorilor, operarea marketplace-ului, susținerea fluxurilor de verificare, răspunsul la solicitările de suport și îmbunătățirea fiabilității platformei."
+      }
+    ]
+  },
+  "terms": {
+    "sections": [
+      {
+        "id": "usage",
+        "title": "Utilizarea responsabilă a platformei",
+        "body": "Utilizatorii trebuie să furnizeze informații corecte, să respecte regulile de publicare și să evite folosirea abuzivă a fluxurilor de marketplace, comunicare sau verificare."
+      },
+      {
+        "id": "availability",
+        "title": "Disponibilitatea serviciului",
+        "body": "Buildink urmărește să mențină serviciul disponibil și sigur, însă funcțiile, fluxurile de lucru și disponibilitatea conținutului pot evolua în timp."
+      }
+    ]
+  },
+  "cookies": {
+    "sections": [
+      {
+        "id": "essential",
+        "title": "Cookie-uri esențiale",
+        "body": "Unele cookie-uri susțin selectarea limbii, continuitatea sesiunii, protecțiile de securitate și funcționalitatea de bază a site-ului public."
+      },
+      {
+        "id": "preferences",
+        "title": "Opțiuni de preferințe",
+        "body": "Vizitatorii pot accepta configurarea recomandată sau pot revizui opțiunile legate de cookie-uri folosind controalele de preferințe de mai jos."
+      }
+    ]
+  }
+}

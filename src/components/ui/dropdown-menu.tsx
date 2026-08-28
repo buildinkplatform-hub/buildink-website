@@ -20,8 +20,9 @@ function DropdownMenuContent({
     <DropdownMenuPortal>
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
+        collisionPadding={12}
         className={cn(
-          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-48 overflow-hidden rounded-xl border border-line/80 p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.08)] outline-none",
+          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border/80 z-[80] max-h-[min(var(--radix-dropdown-menu-content-available-height),28rem)] min-w-52 overflow-y-auto rounded-2xl border p-1.5 shadow-[var(--shadow-floating)] duration-150 outline-none motion-reduce:animate-none",
           className,
         )}
         {...props}
@@ -40,8 +41,8 @@ function DropdownMenuItem({
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
-        "relative flex cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent data-[highlighted]:text-brand-navy [&_svg]:size-4",
-        inset && "ps-8",
+        "text-foreground focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/8 relative flex min-h-10 cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0",
+        inset && "ps-9",
         className,
       )}
       {...props}
@@ -59,8 +60,8 @@ function DropdownMenuLabel({
   return (
     <DropdownMenuPrimitive.Label
       className={cn(
-        "text-muted-foreground px-2.5 py-2 text-xs font-semibold tracking-wide uppercase",
-        inset && "ps-8",
+        "text-muted-foreground px-3 py-2 text-[11px] font-semibold tracking-[0.08em] uppercase",
+        inset && "ps-9",
         className,
       )}
       {...props}
@@ -74,7 +75,7 @@ function DropdownMenuSeparator({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
   return (
     <DropdownMenuPrimitive.Separator
-      className={cn("bg-border -mx-1.5 my-1.5 h-px", className)}
+      className={cn("bg-border/80 -mx-0.5 my-1.5 h-px", className)}
       {...props}
     />
   )
@@ -89,15 +90,17 @@ function DropdownMenuCheckboxItem({
   return (
     <DropdownMenuPrimitive.CheckboxItem
       className={cn(
-        "relative flex cursor-default items-center rounded-lg py-2 ps-8 pe-2 text-sm outline-none select-none data-[highlighted]:bg-accent data-[highlighted]:text-brand-navy",
+        "focus:bg-accent focus:text-accent-foreground relative flex min-h-10 cursor-default items-center rounded-xl py-2 ps-9 pe-3 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
         className,
       )}
       checked={checked}
       {...props}
     >
-      <span className="absolute start-2 flex size-4 items-center justify-center">
+      <span className="absolute start-2.5 flex size-5 items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <Check className="size-4" />
+          <span className="bg-primary text-primary-foreground grid size-5 place-items-center rounded-full">
+            <Check className="size-3" />
+          </span>
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -116,14 +119,14 @@ function DropdownMenuSubTrigger({
   return (
     <DropdownMenuPrimitive.SubTrigger
       className={cn(
-        "flex cursor-default items-center rounded-lg px-2 py-1.5 text-sm outline-none select-none data-[highlighted]:bg-accent data-[highlighted]:text-brand-navy data-[state=open]:bg-accent",
-        inset && "ps-8",
+        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex min-h-10 cursor-default items-center rounded-xl px-3 py-2 text-sm outline-none select-none",
+        inset && "ps-9",
         className,
       )}
       {...props}
     >
       {children}
-      <ChevronRight className="ms-auto size-4 rtl:scale-x-[-1]" />
+      <ChevronRight className="text-muted-foreground ms-auto size-4 rtl:scale-x-[-1]" />
     </DropdownMenuPrimitive.SubTrigger>
   )
 }
@@ -151,36 +154,53 @@ function MultiSelect({
         <button
           id={id}
           type="button"
-          className="border-line text-ink focus:border-primary focus:ring-primary/20 flex min-h-12 w-full items-center justify-between gap-2 rounded-xl border bg-white px-4 text-start text-base transition-[border-color,box-shadow,background-color] outline-none hover:border-line/90 focus:ring-3"
+          aria-haspopup="menu"
+          className="border-input bg-card text-foreground hover:border-primary/25 focus-visible:border-primary/60 focus-visible:ring-primary/12 flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl border px-4 text-start text-sm shadow-[0_1px_2px_rgb(7_26_51/0.03)] transition-[border-color,box-shadow,background-color] outline-none focus-visible:ring-3"
         >
           <span
-            className={cn("truncate", !selectedLabels.length && "text-muted")}
+            className={cn(
+              "min-w-0 flex-1 truncate",
+              !selectedLabels.length && "text-muted-foreground",
+            )}
           >
             {selectedLabels.length ? selectedLabels.join(", ") : placeholder}
           </span>
-          <ChevronDown className="text-muted size-4 shrink-0" />
+          {values.length ? (
+            <span className="bg-primary/8 text-primary rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums">
+              {values.length}
+            </span>
+          ) : null}
+          <span className="bg-muted/55 text-muted-foreground grid size-7 shrink-0 place-items-center rounded-lg">
+            <ChevronDown className="size-3.5" />
+          </span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="max-h-72 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto"
+        className="w-[var(--radix-dropdown-menu-trigger-width)]"
       >
-        {options.map((option) => (
-          <DropdownMenuCheckboxItem
-            key={option.value}
-            checked={values.includes(option.value)}
-            onCheckedChange={(checked) =>
-              onChange(
-                checked
-                  ? [...values, option.value]
-                  : values.filter((value) => value !== option.value),
-              )
-            }
-            onSelect={(event) => event.preventDefault()}
-          >
-            {option.label}
-          </DropdownMenuCheckboxItem>
-        ))}
+        {options.length ? (
+          options.map((option) => (
+            <DropdownMenuCheckboxItem
+              key={option.value}
+              checked={values.includes(option.value)}
+              onCheckedChange={(checked) =>
+                onChange(
+                  checked
+                    ? [...values, option.value]
+                    : values.filter((value) => value !== option.value),
+                )
+              }
+              onSelect={(event) => event.preventDefault()}
+            >
+              {option.label}
+            </DropdownMenuCheckboxItem>
+          ))
+        ) : (
+          <div className="text-muted-foreground px-3 py-4 text-center text-sm">
+            No options available
+          </div>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

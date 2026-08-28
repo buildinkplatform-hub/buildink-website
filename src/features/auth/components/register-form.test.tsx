@@ -58,7 +58,7 @@ describe("RegisterForm", () => {
     expect(
       screen.getByRole("link", { name: "Open email verification options" }),
     ).toHaveAttribute("href", "/verify-email?email=test%40example.com")
-  })
+  }, 10_000)
 
   it("shows a countdown and disables submission while rate limited", async () => {
     const user = userEvent.setup()

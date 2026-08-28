@@ -1,9 +1,7 @@
 import type { DirectoryQuery } from "@/features/public/types/public.types"
 
 export function parseDirectoryQuery(
-  searchParams:
-    | Record<string, string | string[] | undefined>
-    | undefined,
+  searchParams: Record<string, string | string[] | undefined> | undefined,
 ): DirectoryQuery {
   const pageParam = searchParams?.page
   const pageValue = Array.isArray(pageParam) ? pageParam[0] : pageParam
@@ -21,7 +19,19 @@ export function parseDirectoryQuery(
     city: value("city"),
     category: value("category"),
     verification: value("verification"),
+    companyType: value("companyType"),
     accountType: value("accountType"),
+    services: value("services"),
+    projectStage: value("projectStage"),
+    procurementStage: value("procurementStage"),
+    tenderStatus: value("tenderStatus"),
+    sourceType: value("sourceType"),
+    submissionChannel: value("submissionChannel"),
+    deadlineBucket: value("deadlineBucket"),
+    listingType: value("listingType"),
+    availabilityStatus: value("availabilityStatus"),
+    opportunityType: value("opportunityType"),
+    opportunityStatus: value("opportunityStatus"),
     page: Number.isFinite(page) && page > 0 ? page : 1,
   }
 }

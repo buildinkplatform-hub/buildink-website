@@ -39,13 +39,16 @@ import {
   getPortalUploadDownload,
   invitePortalMember,
   inviteTenderBidder,
+  cancelPortalMemberInvite,
   publishPortalEquipment,
   publishPortalOpportunity,
   publishPortalProject,
   publishPortalTender,
+  transitionPortalTender,
   publishWorkspaceProfile,
   createPortalCompanyClaim,
   removePortalMember,
+  resendPortalMemberInvite,
   replyPortalSupportTicket,
   requestWorkspaceCapability,
   requestWorkspaceOfferChanges,
@@ -76,6 +79,7 @@ import {
   updatePortalVisibility,
   updateWorkspaceProfile,
   withdrawPortalApplication,
+  withdrawPortalOpportunity,
   withdrawPortalOffer,
 } from "@/features/dashboard/data/portal-client"
 import {
@@ -422,9 +426,23 @@ export async function createOpportunityAction(
 }
 
 export async function publishOpportunityAction(id: string, version: number) {
-  return mutate(async () => {
+  const result = await mutate(async () => {
     return publishPortalOpportunity(id, version, crypto.randomUUID())
   }, "OPPORTUNITY_PUBLISH_FAILED")
+  if (result.ok) revalidatePath("/dashboard/opportunities")
+  return result
+}
+
+export async function withdrawOpportunityAction(
+  id: string,
+  version: number,
+  reason?: string,
+) {
+  const result = await mutate(async () => {
+    return withdrawPortalOpportunity(id, version, reason)
+  }, "OPPORTUNITY_WITHDRAW_FAILED")
+  if (result.ok) revalidatePath("/dashboard/opportunities")
+  return result
 }
 
 export async function createTenderAction(
@@ -441,6 +459,21 @@ export async function publishTenderAction(id: string, version: number) {
   return mutate(async () => {
     return publishPortalTender(id, version, crypto.randomUUID())
   }, "TENDER_PUBLISH_FAILED")
+}
+
+export async function transitionTenderAction(
+  id: string,
+  input: {
+    status:
+      "OPEN" | "CLOSED" | "EVALUATION" | "AWARDED" | "CANCELLED" | "ARCHIVED"
+    reason?: string
+    version: number
+  },
+) {
+  return mutate(
+    async () => transitionPortalTender(id, input),
+    "TENDER_TRANSITION_FAILED",
+  )
 }
 
 export async function createCatalogueAction(
@@ -490,6 +523,7 @@ export async function createPortalUploadIntentAction(input: {
   kind?: "image" | "document"
   purpose?: "attachment" | "document" | "image"
   documentType?: string
+  issuedAt?: string
   expiresAt?: string
 }) {
   try {
@@ -501,8 +535,8 @@ export async function createPortalUploadIntentAction(input: {
 
 export async function completePortalUploadAction(assetId: string) {
   try {
-    await completePortalUpload(assetId)
-    return { ok: true as const }
+    const upload = await completePortalUpload(assetId)
+    return { ok: true as const, upload }
   } catch (error) {
     return fail(error, "UPLOAD_COMPLETE_FAILED")
   }
@@ -835,6 +869,32 @@ export async function removeWorkspaceMemberAction(
   }
 }
 
+export async function resendWorkspaceMemberInviteAction(
+  companyId: string,
+  membershipId: string,
+) {
+  try {
+    await resendPortalMemberInvite(companyId, membershipId)
+    revalidatePath("/dashboard/members")
+    return { ok: true as const }
+  } catch (error) {
+    return fail(error, "MEMBER_INVITE_RESEND_FAILED")
+  }
+}
+
+export async function cancelWorkspaceMemberInviteAction(
+  companyId: string,
+  membershipId: string,
+) {
+  try {
+    await cancelPortalMemberInvite(companyId, membershipId)
+    revalidatePath("/dashboard/members")
+    return { ok: true as const }
+  } catch (error) {
+    return fail(error, "MEMBER_INVITE_CANCEL_FAILED")
+  }
+}
+
 export async function createEquipmentEnquiryAction(
   body: Record<string, unknown>,
 ) {
@@ -1007,11 +1067,11 @@ export async function updateEntityAction(
       tender: updatePortalTender,
       equipment: updatePortalEquipment,
     } as const
-    await map[entity](id, body, version)
+    const data = await map[entity](id, body, version)
     revalidatePath(
       `/dashboard/${entity === "equipment" ? "equipment" : entity + "s"}`,
     )
-    return { ok: true as const }
+    return { ok: true as const, data }
   } catch (error) {
     return fail(error, "ENTITY_UPDATE_FAILED")
   }
@@ -1064,6 +1124,8 @@ export async function submitVerificationAction(input: {
 }) {
   try {
     await submitPortalVerification(input)
+    revalidatePath("/dashboard")
+    revalidatePath("/dashboard/profile")
     revalidatePath("/dashboard/verification")
     return { ok: true as const }
   } catch (error) {

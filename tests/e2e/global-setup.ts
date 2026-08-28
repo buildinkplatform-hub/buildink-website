@@ -1,22 +1,37 @@
 import { createClient } from "@supabase/supabase-js"
 
+import { ensureE2EEnvironment } from "./e2e-env"
+
 export default async function globalSetup() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const secret = process.env.E2E_SUPABASE_SECRET_KEY
-  const email = process.env.E2E_USER_EMAIL
-  const password = process.env.E2E_USER_PASSWORD
-  if (!url || !secret || !email || !password) {
+  if (process.env.E2E_SKIP_AUTH === "true") return
+
+  const environment = ensureE2EEnvironment()
+  const required = {
+    NEXT_PUBLIC_SUPABASE_URL: environment.supabaseUrl,
+    E2E_SUPABASE_SECRET_KEY: environment.supabaseSecret,
+    E2E_USER_EMAIL: environment.email,
+    E2E_USER_PASSWORD: environment.password,
+  }
+  const missing = Object.entries(required)
+    .filter(([, value]) => !value)
+    .map(([key]) => key)
+
+  if (missing.length) {
     throw new Error(
-      "E2E Supabase configuration is missing; provide the project URL, secret key, email, and password",
+      `E2E Supabase configuration is missing: ${missing.join(", ")}. Configure NEXT_PUBLIC_SUPABASE_URL plus E2E_SUPABASE_SECRET_KEY (or SUPABASE_SECRET_KEY) in website/.env. E2E_USER_EMAIL and E2E_USER_PASSWORD are generated automatically when omitted.`,
     )
   }
 
-  const admin = createClient(url, secret, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  })
+  const admin = createClient(
+    required.NEXT_PUBLIC_SUPABASE_URL!,
+    required.E2E_SUPABASE_SECRET_KEY!,
+    {
+      auth: { persistSession: false, autoRefreshToken: false },
+    },
+  )
   const { data, error } = await admin.auth.admin.createUser({
-    email,
-    password,
+    email: required.E2E_USER_EMAIL!,
+    password: required.E2E_USER_PASSWORD!,
     email_confirm: true,
     user_metadata: {
       name: "Buildink E2E User",

@@ -11,7 +11,9 @@ export type SavedEntityType =
   | "OPPORTUNITY"
   | "OFFER"
 
-export function entityTypeForModule(module: PublicModule): SavedEntityType | null {
+export function entityTypeForModule(
+  module: PublicModule,
+): SavedEntityType | null {
   switch (module) {
     case "companies":
       return "COMPANY"

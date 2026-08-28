@@ -7,9 +7,6 @@ export function Skeleton({
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      className={cn("skeleton-shimmer rounded-xl", className)}
-      {...props}
-    />
+    <div className={cn("skeleton-shimmer rounded-xl", className)} {...props} />
   )
 }

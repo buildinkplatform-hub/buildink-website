@@ -25,9 +25,7 @@ import {
   PublicEntityVisual,
   selectPrimaryVisual,
 } from "@/features/public/components/public-visuals"
-import {
-  SaveItemButton,
-} from "@/features/public/components/save-item-button"
+import { SaveItemButton } from "@/features/public/components/save-item-button"
 import { entityTypeForModule } from "@/features/saved/saved-items.utils"
 import { EntityDetailShell } from "@/features/public/components/public-shells"
 import {
@@ -101,12 +99,8 @@ export async function PublicEntityDetailPage({
     module === "companies" && companySection
       ? getCompanySubpageFromEntity(item, companySection)
       : null,
-    showReviews || entityTypeForModule(module)
-      ? getPublicViewer(locale)
-      : null,
-    showReviews && reviewTarget
-      ? getPublicReviews(reviewTarget, locale)
-      : null,
+    showReviews || entityTypeForModule(module) ? getPublicViewer(locale) : null,
+    showReviews && reviewTarget ? getPublicReviews(reviewTarget, locale) : null,
   ])
   const saveEntityType = entityTypeForModule(module)
   const title = isReviewsTab
@@ -131,33 +125,41 @@ export async function PublicEntityDetailPage({
   const primaryVisual = selectPrimaryVisual(item)
 
   const tabs =
-    module === "companies"
-      ? (
-          <TabsNav
-            items={[
-              {
-                value: "overview",
-                label: t("tabs.overview"),
-                href: `${moduleRouteMap.companies}/${slug}`,
-                active: !companySection,
-              },
-              ...(["services", "projects", "catalogue", "equipment", "reviews", "certifications", "contact"] as const)
-                .filter((tab) => {
-                  if (tab === "catalogue" || tab === "equipment") {
-                    return Boolean(item.subpages?.some((page) => page.slug === tab))
-                  }
-                  return true
-                })
-                .map((tab) => ({
-                  value: tab,
-                  label: t(`tabs.${tab}`),
-                  href: `${moduleRouteMap.companies}/${slug}/${tab}`,
-                  active: companySection === tab,
-                })),
-            ]}
-          />
-        )
-      : undefined
+    module === "companies" ? (
+      <TabsNav
+        items={[
+          {
+            value: "overview",
+            label: t("tabs.overview"),
+            href: `${moduleRouteMap.companies}/${slug}`,
+            active: !companySection,
+          },
+          ...(
+            [
+              "services",
+              "projects",
+              "catalogue",
+              "equipment",
+              "reviews",
+              "certifications",
+              "contact",
+            ] as const
+          )
+            .filter((tab) => {
+              if (tab === "catalogue" || tab === "equipment") {
+                return Boolean(item.subpages?.some((page) => page.slug === tab))
+              }
+              return true
+            })
+            .map((tab) => ({
+              value: tab,
+              label: t(`tabs.${tab}`),
+              href: `${moduleRouteMap.companies}/${slug}/${tab}`,
+              active: companySection === tab,
+            })),
+        ]}
+      />
+    ) : undefined
 
   return (
     <EntityDetailShell
@@ -200,11 +202,15 @@ export async function PublicEntityDetailPage({
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild variant="secondary">
-                <Link href={moduleRouteMap[module]}>{t("actions.viewDetails")}</Link>
+                <Link href={moduleRouteMap[module]}>
+                  {t("actions.viewDetails")}
+                </Link>
               </Button>
               {item.contact?.email ? (
                 <Button asChild>
-                  <a href={`mailto:${item.contact.email}`}>{t("actions.primaryContact")}</a>
+                  <a href={`mailto:${item.contact.email}`}>
+                    {t("actions.primaryContact")}
+                  </a>
                 </Button>
               ) : null}
             </div>
@@ -213,7 +219,7 @@ export async function PublicEntityDetailPage({
             {item.categories.map((category) => (
               <span
                 key={category}
-                className="rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-xs font-semibold text-brand-navy"
+                className="border-primary/10 bg-primary/5 text-brand-navy rounded-full border px-3 py-1 text-xs font-semibold"
               >
                 {category}
               </span>
@@ -229,31 +235,31 @@ export async function PublicEntityDetailPage({
               {t("detail.aboutTitle", { name: item.title })}
             </h2>
             <p className="text-muted mt-3 text-sm leading-7">{item.summary}</p>
-            <div className="mt-5 space-y-3 text-sm text-muted">
+            <div className="text-muted mt-5 space-y-3 text-sm">
               <div className="flex items-start gap-3">
-                <MapPin className="mt-0.5 size-4 text-primary" />
+                <MapPin className="text-primary mt-0.5 size-4" />
                 <span>{item.location}</span>
               </div>
               {item.contact.website ? (
                 <div className="flex items-start gap-3">
-                  <Globe className="mt-0.5 size-4 text-primary" />
+                  <Globe className="text-primary mt-0.5 size-4" />
                   <span className="ltr-content">{item.contact.website}</span>
                 </div>
               ) : null}
               {item.contact.email ? (
                 <div className="flex items-start gap-3">
-                  <Mail className="mt-0.5 size-4 text-primary" />
+                  <Mail className="text-primary mt-0.5 size-4" />
                   <span className="ltr-content">{item.contact.email}</span>
                 </div>
               ) : null}
               {item.contact.phone ? (
                 <div className="flex items-start gap-3">
-                  <Phone className="mt-0.5 size-4 text-primary" />
+                  <Phone className="text-primary mt-0.5 size-4" />
                   <span className="ltr-content">{item.contact.phone}</span>
                 </div>
               ) : null}
               <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 size-4 text-primary" />
+                <ShieldCheck className="text-primary mt-0.5 size-4" />
                 <span>{item.verification}</span>
               </div>
             </div>
@@ -286,8 +292,12 @@ export async function PublicEntityDetailPage({
                   key={metric.label}
                   className="rounded-2xl border border-slate-100 bg-[linear-gradient(180deg,#fff_0%,#f6f9ff_100%)] p-4"
                 >
-                  <p className="text-brand-navy text-lg font-bold">{metric.value}</p>
-                  <p className="text-muted mt-1 text-xs leading-5">{metric.label}</p>
+                  <p className="text-brand-navy text-lg font-bold">
+                    {metric.value}
+                  </p>
+                  <p className="text-muted mt-1 text-xs leading-5">
+                    {metric.label}
+                  </p>
                 </div>
               ))}
             </div>
@@ -347,8 +357,12 @@ export async function PublicEntityDetailPage({
                   key={metric.label}
                   className="rounded-2xl border border-slate-100 bg-[linear-gradient(180deg,#fff_0%,#f6f9ff_100%)] p-4"
                 >
-                  <p className="text-brand-navy text-xl font-bold">{metric.value}</p>
-                  <p className="text-muted mt-1 text-xs leading-5">{metric.label}</p>
+                  <p className="text-brand-navy text-xl font-bold">
+                    {metric.value}
+                  </p>
+                  <p className="text-muted mt-1 text-xs leading-5">
+                    {metric.label}
+                  </p>
                 </div>
               ))}
             </div>
@@ -377,24 +391,31 @@ export async function PublicEntityDetailPage({
         >
           <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
             <div>
-              <h2 className="text-brand-navy text-2xl font-bold">{section.title}</h2>
-              <p className="text-muted mt-4 text-base leading-8">{section.body}</p>
+              <h2 className="text-brand-navy text-2xl font-bold">
+                {section.title}
+              </h2>
+              <p className="text-muted mt-4 text-base leading-8">
+                {section.body}
+              </p>
               {section.itemLinks?.length ? (
-                <ul className="mt-5 space-y-2 text-sm leading-7 text-muted">
+                <ul className="text-muted mt-5 space-y-2 text-sm leading-7">
                   {section.itemLinks.map((entry) => (
                     <li key={entry.href} className="flex gap-3">
-                      <span className="mt-2 size-1.5 rounded-full bg-primary" />
-                      <Link href={entry.href} className="text-primary font-semibold">
+                      <span className="bg-primary mt-2 size-1.5 rounded-full" />
+                      <Link
+                        href={entry.href}
+                        className="text-primary font-semibold"
+                      >
                         {entry.label}
                       </Link>
                     </li>
                   ))}
                 </ul>
               ) : section.items?.length ? (
-                <ul className="mt-5 space-y-2 text-sm leading-7 text-muted">
+                <ul className="text-muted mt-5 space-y-2 text-sm leading-7">
                   {section.items.map((entry) => (
                     <li key={entry} className="flex gap-3">
-                      <span className="mt-2 size-1.5 rounded-full bg-primary" />
+                      <span className="bg-primary mt-2 size-1.5 rounded-full" />
                       <span>{entry}</span>
                     </li>
                   ))}

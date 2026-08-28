@@ -1,0 +1,44 @@
+{
+  "privacy": {
+    "sections": [
+      {
+        "id": "collection",
+        "title": "Informacioni që mbledhim",
+        "body": "Buildink mund të përpunojë të dhënat e llogarisë, informacionin e onboarding-ut, përmbajtjen publike të marketplace-it, mesazhet e mbështetjes dhe aktivitetin teknik të nevojshëm për funksionimin e shërbimit."
+      },
+      {
+        "id": "use",
+        "title": "Si përdoret informacioni",
+        "body": "Ne i përdorim të dhënat për autentikimin e përdoruesve, funksionimin e marketplace-it, mbështetjen e rrjedhave të verifikimit, përgjigjen ndaj kërkesave të mbështetjes dhe përmirësimin e besueshmërisë së platformës."
+      }
+    ]
+  },
+  "terms": {
+    "sections": [
+      {
+        "id": "usage",
+        "title": "Përdorimi i përgjegjshëm i platformës",
+        "body": "Përdoruesit duhet të japin informacion të saktë, të respektojnë rregullat e publikimit dhe të shmangin keqpërdorimin e rrjedhave të marketplace-it, komunikimit ose verifikimit."
+      },
+      {
+        "id": "availability",
+        "title": "Disponueshmëria e shërbimit",
+        "body": "Buildink punon për ta mbajtur shërbimin të disponueshëm dhe të sigurt, por funksionet, rrjedhat e punës dhe disponueshmëria e përmbajtjes mund të evoluojnë me kalimin e kohës."
+      }
+    ]
+  },
+  "cookies": {
+    "sections": [
+      {
+        "id": "essential",
+        "title": "Cookies thelbësore",
+        "body": "Disa cookies mbështesin zgjedhjen e gjuhës, vazhdimësinë e sesionit, mbrojtjet e sigurisë dhe funksionalitetin bazë të faqes publike."
+      },
+      {
+        "id": "preferences",
+        "title": "Zgjedhjet e preferencave",
+        "body": "Vizitorët mund të pranojnë konfigurimin e rekomanduar ose të rishikojnë zgjedhjet për cookies përmes kontrolleve të preferencave më poshtë."
+      }
+    ]
+  }
+}

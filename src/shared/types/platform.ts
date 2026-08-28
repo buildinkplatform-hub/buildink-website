@@ -33,6 +33,7 @@ export const portalModules = [
   "applications",
   "tenders",
   "workforce",
+  "operations",
   "catalogue",
   "equipment",
   "engagements",
@@ -174,6 +175,7 @@ export interface PortalRouteDefinition {
   labelKey: string
   descriptionKey: string
   state: PortalRouteState
+  section?: "people" | "operations"
 }
 
 export interface ApiResponse<T> {

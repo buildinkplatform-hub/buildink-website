@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ArrowRight, LoaderCircle } from "lucide-react"
+import { ArrowRight, LoaderCircle, UserPlus } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -92,11 +92,16 @@ export function RegisterForm() {
     serverError === "email_rate_limited"
 
   return (
-    <div className="border-line rounded-2xl border bg-white p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <h1 className="text-brand-navy text-3xl font-bold">
+    <div className="auth-panel rounded-[30px] p-6 sm:p-9">
+      <div className="border-primary/10 bg-primary/6 text-primary flex size-12 items-center justify-center rounded-2xl border">
+        <UserPlus className="size-5" aria-hidden="true" />
+      </div>
+      <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
         {t("auth.registerTitle")}
       </h1>
-      <p className="text-muted mt-3">{t("auth.registerBody")}</p>
+      <p className="text-muted mt-3 max-w-xl leading-7">
+        {t("auth.registerBody")}
+      </p>
       <form
         className="mt-8 space-y-5"
         onSubmit={handleSubmit(submit)}
@@ -105,7 +110,7 @@ export function RegisterForm() {
         {serverError ? (
           <div
             role="alert"
-            className="border-danger/20 bg-danger/5 text-danger rounded-xl border p-4 text-sm leading-6"
+            className="border-danger/20 bg-danger/5 text-danger rounded-xl border p-4 text-sm leading-6 shadow-[var(--shadow-xs)]"
           >
             <p>{t(`auth.registerErrors.${serverError}`)}</p>
             {serverError === "rate_limited" && cooldownSeconds > 0 ? (
@@ -172,25 +177,39 @@ export function RegisterForm() {
             />
           </Field>
         </div>
-        <label className="text-muted flex cursor-pointer items-start gap-3 text-sm leading-6">
+        <label className="text-muted hover:text-brand-navy flex cursor-pointer items-start gap-3 text-sm leading-6 transition-colors">
           <Checkbox
             aria-invalid={Boolean(errors.terms)}
             {...register("terms")}
           />
           <span>
-            {t("auth.terms")} <span className="text-danger">*</span>{" "}
+            <Link
+              href="/terms"
+              className="font-semibold underline underline-offset-2"
+              onClick={(event) => event.stopPropagation()}
+            >
+              {t("auth.terms")}
+            </Link>{" "}
+            <span className="text-danger">*</span>
             {errors.terms ? (
               <span className="text-danger block">{errors.terms.message}</span>
             ) : null}
           </span>
         </label>
-        <label className="text-muted flex cursor-pointer items-start gap-3 text-sm leading-6">
+        <label className="text-muted hover:text-brand-navy flex cursor-pointer items-start gap-3 text-sm leading-6 transition-colors">
           <Checkbox
             aria-invalid={Boolean(errors.privacy)}
             {...register("privacy")}
           />
           <span>
-            {t("auth.privacy")} <span className="text-danger">*</span>
+            <Link
+              href="/privacy"
+              className="font-semibold underline underline-offset-2"
+              onClick={(event) => event.stopPropagation()}
+            >
+              {t("auth.privacy")}
+            </Link>{" "}
+            <span className="text-danger">*</span>
             {errors.privacy ? (
               <span className="text-danger block">
                 {errors.privacy.message}
@@ -198,7 +217,7 @@ export function RegisterForm() {
             ) : null}
           </span>
         </label>
-        <label className="text-muted flex cursor-pointer items-start gap-3 text-sm leading-6">
+        <label className="text-muted hover:text-brand-navy flex cursor-pointer items-start gap-3 text-sm leading-6 transition-colors">
           <Checkbox {...register("marketing")} />
           {t("auth.marketing")}
         </label>
@@ -215,7 +234,7 @@ export function RegisterForm() {
           <ArrowRight className="size-4 rtl:rotate-180" />
         </Button>
       </form>
-      <div className="text-muted my-5 flex items-center gap-3 text-xs">
+      <div className="text-muted my-6 flex items-center gap-3 text-xs">
         <span className="bg-line h-px flex-1" />
         <span>{t("auth.separator")}</span>
         <span className="bg-line h-px flex-1" />
@@ -235,7 +254,7 @@ export function RegisterForm() {
         ) : null}
         {t("auth.continueWithGoogle")}
       </Button>
-      <p className="text-muted mt-6 text-center text-sm">
+      <p className="text-muted mt-7 text-center text-sm">
         {t("auth.hasAccount")}{" "}
         <Link
           href="/login"

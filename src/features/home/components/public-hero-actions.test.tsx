@@ -21,10 +21,9 @@ describe("PublicHeroActions", () => {
   it("shows auth calls to action when signed out", () => {
     render(<PublicHeroActions viewer={null} labels={labels} />)
 
-    expect(screen.getByRole("link", { name: /Create account/ })).toHaveAttribute(
-      "href",
-      "/register",
-    )
+    expect(
+      screen.getByRole("link", { name: /Create account/ }),
+    ).toHaveAttribute("href", "/register")
     expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute(
       "href",
       "/login",
@@ -48,7 +47,9 @@ describe("PublicHeroActions", () => {
     expect(
       screen.queryByRole("link", { name: /Create account/ }),
     ).not.toBeInTheDocument()
-    expect(screen.queryByRole("link", { name: "Log in" })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole("link", { name: "Log in" }),
+    ).not.toBeInTheDocument()
     expect(screen.getByRole("link", { name: /Profile/ })).toHaveAttribute(
       "href",
       "/onboarding/profile-type",

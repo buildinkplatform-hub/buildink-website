@@ -1,36 +1,38 @@
 "use client"
 
+import { useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-import { startTransition, useOptimistic, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
-import { deleteSavedItemAction } from "@/features/dashboard/actions/portal.actions"
+import { deleteSavedItemCachedAction } from "@/features/dashboard/actions/portal-saved.actions"
 import type { PortalSavedItem } from "@/features/dashboard/data/portal-client"
+import { portalQueryKeys } from "@/features/dashboard/query/portal-query-keys"
+import { useSavedItemsQuery } from "@/features/dashboard/query/portal-saved-query"
 import {
   savedEntityLabelKey,
   savedItemHref,
 } from "@/features/saved/saved-items.utils"
-import { Link, useRouter } from "@/i18n/navigation"
+import { Link } from "@/i18n/navigation"
 
 export function SavedItemList({ items }: { items: PortalSavedItem[] }) {
   const t = useTranslations()
-  const router = useRouter()
+  const queryClient = useQueryClient()
+  const query = useSavedItemsQuery({ items })
+  const visibleItems = query.data?.items ?? items
   const [pendingId, setPendingId] = useState<string>()
   const [selected, setSelected] = useState<PortalSavedItem>()
   const [message, setMessage] = useState<string>()
-  const [optimisticItems, removeOptimistic] = useOptimistic(
-    items,
-    (current, id: string) => current.filter((item) => item.id !== id),
-  )
 
-  if (!optimisticItems.length && !selected)
-    return <p className="text-muted">{t("dashboard.savedEmpty")}</p>
+  if (!visibleItems.length && !selected) {
+    return <p className="text-muted-foreground">{t("dashboard.savedEmpty")}</p>
+  }
 
   return (
-    <div className="space-y-3">
-      {optimisticItems.map((item) => {
+    <div className="space-y-3" aria-busy={Boolean(pendingId)}>
+      {visibleItems.map((item) => {
         const href = savedItemHref(item)
         const typeLabel = t(savedEntityLabelKey(item.entityType))
         return (
@@ -42,21 +44,21 @@ export function SavedItemList({ items }: { items: PortalSavedItem[] }) {
               {href ? (
                 <Link
                   href={href}
-                  className="text-brand-navy font-semibold hover:text-primary"
+                  prefetch
+                  className="text-foreground hover:text-primary font-semibold"
                 >
                   {item.label || typeLabel}
                 </Link>
               ) : (
-                <p className="text-brand-navy font-semibold">
+                <p className="text-foreground font-semibold">
                   {item.label || typeLabel}
                 </p>
               )}
-              <p className="text-muted mt-1 text-sm">{typeLabel}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{typeLabel}</p>
             </div>
             <Button
               type="button"
               variant="ghost"
-              disabled={pendingId === item.id}
               onClick={() => setSelected(item)}
             >
               {t("dashboard.savedSearch.delete")}
@@ -65,7 +67,7 @@ export function SavedItemList({ items }: { items: PortalSavedItem[] }) {
         )
       })}
       {message ? (
-        <p role="alert" className="text-danger text-sm">
+        <p role="alert" className="text-destructive text-sm">
           {message}
         </p>
       ) : null}
@@ -81,17 +83,29 @@ export function SavedItemList({ items }: { items: PortalSavedItem[] }) {
         destructive
         pending={Boolean(pendingId)}
         onConfirm={() => {
-          if (!selected) return
+          if (!selected || pendingId) return
           const item = selected
+          const key = portalQueryKeys.resource("saved-items")
+          const previous = queryClient.getQueryData<{
+            items: PortalSavedItem[]
+          }>(key)
+          queryClient.setQueryData<{ items: PortalSavedItem[] }>(
+            key,
+            (current) => ({
+              items: (current?.items ?? visibleItems).filter(
+                (entry) => entry.id !== item.id,
+              ),
+            }),
+          )
           setPendingId(item.id)
           setMessage(undefined)
-          startTransition(async () => {
-            removeOptimistic(item.id)
-            const result = await deleteSavedItemAction(item.id)
+          void deleteSavedItemCachedAction(item.id).then((result) => {
             setPendingId(undefined)
             setSelected(undefined)
-            if (result.ok) router.refresh()
-            else setMessage(result.message)
+            if (!result.ok) {
+              if (previous) queryClient.setQueryData(key, previous)
+              setMessage(result.message)
+            }
           })
         }}
       />

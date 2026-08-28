@@ -16,7 +16,10 @@ import { PublicEntityCard } from "@/features/public/components/public-cards"
 import { DirectoryShell } from "@/features/public/components/public-shells"
 import { moduleRouteMap } from "@/features/public/config/public-site.config"
 import { getDirectoryFacets } from "@/features/public/data/public-repository"
-import { buildQueryString, parseDirectoryQuery } from "@/features/public/lib/public-query"
+import {
+  buildQueryString,
+  parseDirectoryQuery,
+} from "@/features/public/lib/public-query"
 import { Link } from "@/i18n/navigation"
 import type { Locale } from "@/shared/types/platform"
 import { searchAll } from "@/features/public/data/public-repository"
@@ -33,15 +36,15 @@ export async function PublicSearchPage({
       ? {
           country: "Paese",
           allCountries: "Tutti i paesi",
-          city: "CittÃ ",
-          allCities: "Tutte le cittÃ ",
+          city: "Città",
+          allCities: "Tutte le città",
         }
       : locale === "ar"
         ? {
-            country: "Ø§Ù„Ø¯ÙˆÙ„Ø©",
-            allCountries: "ÙƒÙ„ Ø§Ù„Ø¯ÙˆÙ„",
-            city: "Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©",
-            allCities: "ÙƒÙ„ Ø§Ù„Ù…Ø¯Ù†",
+            country: "الدولة",
+            allCountries: "كل الدول",
+            city: "المدينة",
+            allCities: "كل المدن",
           }
         : locale === "ro"
           ? {
@@ -53,9 +56,9 @@ export async function PublicSearchPage({
           : locale === "sq"
             ? {
                 country: "Shteti",
-                allCountries: "TÃ« gjitha shtetet",
+                allCountries: "Të gjitha shtetet",
                 city: "Qyteti",
-                allCities: "TÃ« gjitha qytetet",
+                allCities: "Të gjitha qytetet",
               }
             : {
                 country: "Country",
@@ -105,10 +108,12 @@ export async function PublicSearchPage({
                   <SelectValue placeholder={geographyText.allCountries} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__all__">{geographyText.allCountries}</SelectItem>
+                  <SelectItem value="__all__">
+                    {geographyText.allCountries}
+                  </SelectItem>
                   {companyFacets.countries.map((country) => (
-                    <SelectItem key={country} value={country}>
-                      {country}
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label} ({country.count})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -123,10 +128,12 @@ export async function PublicSearchPage({
                   <SelectValue placeholder={t("filters.allRegions")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__all__">{t("filters.allRegions")}</SelectItem>
+                  <SelectItem value="__all__">
+                    {t("filters.allRegions")}
+                  </SelectItem>
                   {companyFacets.regions.map((region) => (
-                    <SelectItem key={region} value={region}>
-                      {region}
+                    <SelectItem key={region.value} value={region.value}>
+                      {region.label} ({region.count})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -141,10 +148,12 @@ export async function PublicSearchPage({
                   <SelectValue placeholder={geographyText.allCities} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__all__">{geographyText.allCities}</SelectItem>
+                  <SelectItem value="__all__">
+                    {geographyText.allCities}
+                  </SelectItem>
                   {companyFacets.cities.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
+                    <SelectItem key={city.value} value={city.value}>
+                      {city.label} ({city.count})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -154,15 +163,20 @@ export async function PublicSearchPage({
               <label className="text-brand-navy mb-2 block text-sm font-semibold">
                 {t("filters.category")}
               </label>
-              <Select name="category" defaultValue={query.category ?? "__all__"}>
+              <Select
+                name="category"
+                defaultValue={query.category ?? "__all__"}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder={t("filters.allCategories")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__all__">{t("filters.allCategories")}</SelectItem>
+                  <SelectItem value="__all__">
+                    {t("filters.allCategories")}
+                  </SelectItem>
                   {companyFacets.categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.label} ({category.count})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -180,24 +194,26 @@ export async function PublicSearchPage({
     >
       <div>
         <div className="mb-5 flex items-center gap-3">
-          <Badge>{t("search.resultCount", { count: String(results.length) })}</Badge>
+          <Badge>
+            {t("search.resultCount", { count: String(results.length) })}
+          </Badge>
           {query.q ? (
-            <Badge className="bg-white text-brand-navy">
+            <Badge className="text-brand-navy bg-white">
               <Search className="size-3.5" />
               {query.q}
             </Badge>
           ) : null}
           {query.category ? (
-            <Badge className="bg-white text-brand-navy">{query.category}</Badge>
+            <Badge className="text-brand-navy bg-white">{query.category}</Badge>
           ) : null}
           {query.country ? (
-            <Badge className="bg-white text-brand-navy">{query.country}</Badge>
+            <Badge className="text-brand-navy bg-white">{query.country}</Badge>
           ) : null}
           {query.region ? (
-            <Badge className="bg-white text-brand-navy">{query.region}</Badge>
+            <Badge className="text-brand-navy bg-white">{query.region}</Badge>
           ) : null}
           {query.city ? (
-            <Badge className="bg-white text-brand-navy">{query.city}</Badge>
+            <Badge className="text-brand-navy bg-white">{query.city}</Badge>
           ) : null}
         </div>
         {results.length ? (
@@ -225,11 +241,11 @@ export async function PublicSearchPage({
           <div className="mt-6 flex flex-wrap gap-2">
             {companyFacets.categories.slice(0, 8).map((category) => (
               <a
-                key={category}
-                href={`/search?${buildQueryString({ ...query, category, page: 1 })}`}
-                className="rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-xs font-semibold text-brand-navy transition hover:bg-primary/10"
+                key={category.value}
+                href={`/search?${buildQueryString({ ...query, category: category.value, page: 1 })}`}
+                className="border-primary/10 bg-primary/5 text-brand-navy hover:bg-primary/10 rounded-full border px-3 py-1 text-xs font-semibold transition"
               >
-                {category}
+                {category.label} ({category.count})
               </a>
             ))}
           </div>

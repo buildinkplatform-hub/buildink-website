@@ -70,7 +70,10 @@ function requiredDocumentGroups(input: {
   }
   if (input.profileType === "supplier_contact") {
     groups.push(["company_authorization"])
-    if (input.associationMode === "create" || input.associationMode === "claim") {
+    if (
+      input.associationMode === "create" ||
+      input.associationMode === "claim"
+    ) {
       groups.push(["registration", "vat_proof"])
     }
   }

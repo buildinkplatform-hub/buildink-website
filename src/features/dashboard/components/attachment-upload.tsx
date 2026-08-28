@@ -1,5 +1,6 @@
 "use client"
 
+import { Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslations } from "next-intl"
 
@@ -47,7 +48,14 @@ export function AttachmentUpload({
                 usage?: "IMAGE" | "DOCUMENT" | "LOGO" | "COVER"
               }> = []
               for (const file of Array.from(files)) {
-                uploaded.push(await uploadPortalFile(file))
+                const asset = await uploadPortalFile(file, {
+                  documentType: "other",
+                })
+                uploaded.push({
+                  id: asset.id,
+                  name: asset.originalName ?? file.name,
+                  usage: "DOCUMENT",
+                })
               }
               onChange([...assets, ...uploaded])
             } catch (caught) {
@@ -63,9 +71,23 @@ export function AttachmentUpload({
         }}
       />
       {assets.map((asset) => (
-        <p key={asset.id} className="text-muted text-xs">
-          {asset.name}
-        </p>
+        <div
+          key={asset.id}
+          className="flex items-center justify-between gap-2 text-xs"
+        >
+          <p className="text-muted truncate">{asset.name}</p>
+          <button
+            type="button"
+            className="text-danger inline-flex shrink-0 items-center gap-1 font-medium hover:underline"
+            onClick={() =>
+              onChange(assets.filter((item) => item.id !== asset.id))
+            }
+            aria-label={`${t("common.remove")} ${asset.name}`}
+          >
+            <Trash2 className="size-3.5" aria-hidden="true" />
+            {t("common.remove")}
+          </button>
+        </div>
       ))}
       {error ? <p className="text-danger text-sm">{error}</p> : null}
     </div>

@@ -75,7 +75,7 @@ export function PortalRouteSearch({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="border-line text-muted hover:border-line focus-visible:ring-primary/12 flex size-11 shrink-0 items-center justify-center rounded-[10px] border bg-[#F8FAFC] text-start text-sm transition hover:bg-accent focus-visible:ring-2 focus-visible:outline-none sm:h-10 sm:w-full sm:max-w-[460px] sm:justify-start sm:gap-2.5 sm:px-3.5"
+        className="border-line text-muted hover:border-line focus-visible:ring-primary/12 hover:bg-accent flex size-11 shrink-0 items-center justify-center rounded-[10px] border bg-[#F8FAFC] text-start text-sm transition focus-visible:ring-2 focus-visible:outline-none sm:h-10 sm:w-full sm:max-w-[460px] sm:justify-start sm:gap-2.5 sm:px-3.5"
         aria-label="Search dashboard pages"
       >
         <Search className="size-4" />
@@ -95,7 +95,7 @@ export function PortalRouteSearch({
               Navigate quickly between dashboard pages.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex items-center gap-2 border-b px-4 focus-within:border-primary/30 focus-within:bg-accent/45">
+          <div className="focus-within:border-primary/30 focus-within:bg-accent/45 flex items-center gap-2 border-b px-4">
             <Search className="text-muted size-5" />
             <Input
               aria-label="Search dashboard pages"
@@ -110,7 +110,8 @@ export function PortalRouteSearch({
             {items.length ? (
               items.map((item) => {
                 const Icon =
-                  portalIcons[item.segment || "dashboard"] ?? portalIcons.dashboard
+                  portalIcons[item.segment || "dashboard"] ??
+                  portalIcons.dashboard
                 return (
                   <button
                     key={item.href}

@@ -1,11 +1,23 @@
 import { defineConfig, devices } from "@playwright/test"
 
+import { ensureE2EEnvironment } from "./tests/e2e/e2e-env"
+
+ensureE2EEnvironment()
+
 const externalBaseUrl = process.env.PLAYWRIGHT_BASE_URL
+const liveSharedAccountRun = Boolean(externalBaseUrl)
+const localWebCommand =
+  process.env.E2E_PREBUILT === "true"
+    ? "npm run start -- --hostname 127.0.0.1 --port 3100"
+    : "npm run build && npm run start -- --hostname 127.0.0.1 --port 3100"
 
 export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
-  fullyParallel: true,
+  // Local mock tests do not share mutable remote identity state. Live runs do,
+  // so keep the single provisioned Supabase account serialized across projects.
+  fullyParallel: !liveSharedAccountRun,
+  workers: liveSharedAccountRun ? 1 : undefined,
   retries: process.env.CI ? 2 : 0,
   reporter: "html",
   use: {
@@ -22,10 +34,10 @@ export default defineConfig({
           timeout: 30_000,
         },
         {
-          command: "npm run start -- --hostname 127.0.0.1 --port 3100",
+          command: localWebCommand,
           url: "http://127.0.0.1:3100/it",
           reuseExistingServer: !process.env.CI,
-          timeout: 120_000,
+          timeout: 240_000,
         },
       ],
   projects: [

@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { cn } from "@/lib/utils/cn"
 
 export function ConfirmationDialog({
   open,
@@ -35,18 +36,31 @@ export function ConfirmationDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={(next) => !pending && onOpenChange(next)}>
-      <DialogContent showClose={!pending}>
-        <DialogHeader>
-          <span className="bg-warning/10 text-warning mb-2 flex size-11 items-center justify-center rounded-2xl">
+      <DialogContent
+        showClose={!pending}
+        className="max-w-md overflow-hidden rounded-[22px] p-0 sm:rounded-[24px]"
+      >
+        <DialogHeader className="gap-0 p-5 pe-14 sm:p-6 sm:pe-16">
+          <span
+            className={cn(
+              "mb-4 flex size-11 items-center justify-center rounded-xl border",
+              destructive
+                ? "border-destructive/20 bg-destructive/10 text-destructive"
+                : "border-warning/20 bg-warning/10 text-warning",
+            )}
+          >
             <TriangleAlert className="size-5" aria-hidden="true" />
           </span>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogTitle className="text-xl sm:text-[22px]">{title}</DialogTitle>
+          <DialogDescription className="mt-2 max-w-sm text-sm leading-6">
+            {description}
+          </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="bg-muted/25 mt-0 border-t px-5 py-4 sm:px-6 sm:py-4">
           <Button
             type="button"
             variant="secondary"
+            size="md"
             disabled={pending}
             onClick={() => onOpenChange(false)}
           >
@@ -54,12 +68,16 @@ export function ConfirmationDialog({
           </Button>
           <Button
             type="button"
-            className={destructive ? "bg-danger hover:bg-danger/90" : undefined}
+            variant={destructive ? "destructive" : "primary"}
+            size="md"
             disabled={pending}
+            aria-busy={pending}
             onClick={onConfirm}
           >
-            {pending ? <LoaderCircle className="size-4 animate-spin" /> : null}
-            {confirmLabel}
+            {pending ? (
+              <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" />
+            ) : null}
+            <span>{pending ? `${confirmLabel}…` : confirmLabel}</span>
           </Button>
         </DialogFooter>
       </DialogContent>

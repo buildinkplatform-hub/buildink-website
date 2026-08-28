@@ -1,0 +1,135 @@
+{
+  "trustPages": {
+    "common": {
+      "onThisPage": "În această pagină",
+      "exploreMarketplace": "Explorează marketplace-ul",
+      "createAccount": "Creează cont",
+      "signIn": "Autentificare",
+      "learnMore": "Află mai multe"
+    },
+    "howItWorks": {
+      "journeyTitle": "Alege fluxul de lucru potrivit rolului tău",
+      "journeyBody": "Buildink adaptează instrumentele de descoperire, publicare, colaborare și operațiuni la tipul de cont pe care îl folosești.",
+      "roles": {
+        "projectOwner": {
+          "label": "Dezvoltator / beneficiar",
+          "summary": "Publică proiecte și licitații, analizează ofertele, gestionează lucrările atribuite și urmărește livrarea.",
+          "cta": "Vezi proiectele"
+        },
+        "company": {
+          "label": "Companie",
+          "summary": "Construiește un profil de companie de încredere, gestionează echipa, răspunde oportunităților și coordonează lucrările active.",
+          "cta": "Vezi companiile"
+        },
+        "subcontractor": {
+          "label": "Subcontractor",
+          "summary": "Găsește pachete relevante, trimite oferte, schimbă documente și mută lucrările acceptate în execuție.",
+          "cta": "Găsește oportunități"
+        },
+        "serviceProvider": {
+          "label": "Furnizor de servicii",
+          "summary": "Prezintă servicii specializate, primește cereri calificate și gestionează conversațiile dintr-un singur spațiu de lucru.",
+          "cta": "Vezi serviciile"
+        },
+        "worker": {
+          "label": "Lucrător",
+          "summary": "Creează un profil profesional, aplică la oportunități și accesează fluxurile de lucru alocate forței de muncă.",
+          "cta": "Vezi oportunități pentru lucrători"
+        }
+      },
+      "stepsTitle": "Fluxul principal Buildink",
+      "stepsBody": "Fiecare etapă este conectată, astfel încât utilizatorii trec de la descoperirea publică la un flux privat bazat pe permisiuni fără să piardă contextul.",
+      "steps": {
+        "step1Title": "Creează identitatea potrivită",
+        "step1Body": "Înregistrează-te cu tipul corect de cont și completează profilul sau spațiul companiei care te reprezintă.",
+        "step2Title": "Construiește încredere și verificare",
+        "step2Body": "Adaugă datele și dovezile necesare înainte ca insignele de încredere sau starea publicării să fie considerate valide.",
+        "step3Title": "Descoperă sau publică cererea",
+        "step3Body": "Caută companii, lucrători, proiecte, licitații și cereri sau publică oportunități atunci când permisiunile îți permit.",
+        "step4Title": "Trimite și evaluează",
+        "step4Body": "Trimite oferte sau aplicații, compară răspunsurile, verifică dovezile și aplică fluxul corect de aprobare.",
+        "step5Title": "Colaborează în siguranță",
+        "step5Body": "Folosește mesaje protejate, notificări, documente și acces bazat pe rol pe toată durata colaborării.",
+        "step6Title": "Execută și urmărește livrarea",
+        "step6Body": "Mută lucrările acceptate în fluxuri de proiect, forță de muncă, prezență, sarcini, conformitate și monitorizare operațională."
+      },
+      "featuresTitle": "Capabilitățile principale ale platformei",
+      "featuresBody": "Acestea sunt funcțiile de bază ale produsului conectate prin experiența Website și portal.",
+      "features": {
+        "feature1Title": "Descoperire în marketplace",
+        "feature1Body": "Caută și filtrează companii, profiluri, echipamente, proiecte, licitații și oportunități publice.",
+        "feature2Title": "Spații de lucru bazate pe rol",
+        "feature2Body": "Navigarea și acțiunile se schimbă în funcție de tipul contului, apartenență, capabilități și permisiuni.",
+        "feature3Title": "Oferte și aplicații",
+        "feature3Body": "Trimite, analizează, selectează, revizuiește, acceptă sau respinge răspunsuri comerciale și de recrutare.",
+        "feature4Title": "Verificare și dovezi",
+        "feature4Body": "Păstrează statutul de încredere legat de dovezile trimise și cerințele de verificare aprobate.",
+        "feature5Title": "Mesaje și notificări",
+        "feature5Body": "Menține vizibilă activitatea importantă fără a expune prea devreme datele private de contact.",
+        "feature6Title": "Operațiuni și conformitate",
+        "feature6Body": "Urmărește livrarea proiectelor, activitatea personalului, sarcini, prezență, costuri, alerte și evidențe de conformitate."
+      }
+    },
+    "verification": {
+      "statusTitle": "Stările de verificare trebuie să aibă o semnificație reală",
+      "statusBody": "O insignă de încredere este utilă doar când dovezile și starea revizuirii o susțin.",
+      "statuses": {
+        "pendingTitle": "În așteptare",
+        "pendingBody": "Dovezile nu au finalizat încă revizuirea, iar afirmațiile publice trebuie să rămână limitate.",
+        "reviewTitle": "În verificare",
+        "reviewBody": "Documentele sau verificările obligatorii sunt evaluate în fluxul de verificare.",
+        "verifiedTitle": "Verificat",
+        "verifiedBody": "Domeniul de verificare publicat a fost îndeplinit și aprobat."
+      },
+      "processTitle": "Ce verifică fluxul de verificare",
+      "processBody": "Identitatea, compania și documentele suport trebuie să rămână aliniate cu contul și starea publicării."
+    },
+    "about": {
+      "principlesTitle": "Principiile după care este proiectat Buildink",
+      "principlesBody": "Un marketplace de construcții are nevoie de mai mult decât listări: identitate, permisiuni, semnale de încredere și o cale clară către lucrări reale.",
+      "principles": {
+        "oneTitle": "Încredere înaintea afirmațiilor",
+        "oneBody": "Stările de verificare și publicare trebuie să reflecte dovezi reale, nu etichete optimiste.",
+        "twoTitle": "Claritatea rolurilor",
+        "twoBody": "Beneficiarii, companiile, subcontractorii, furnizorii de servicii și lucrătorii trebuie să vadă fluxurile potrivite lor.",
+        "threeTitle": "Continuitatea fluxului",
+        "threeBody": "Descoperirea, ofertele, mesajele, documentele și operațiunile trebuie să fie conectate fără blocaje."
+      }
+    },
+    "contact": {
+      "optionsTitle": "Alege canalul potrivit",
+      "optionsBody": "Folosește formularul de contact pentru întrebări despre produs, cont, marketplace sau lansare și oferă suficient context pentru direcționarea corectă a solicitării.",
+      "supportTitle": "Suport cont și produs",
+      "supportBody": "Pentru acces, spațiu de lucru, verificare sau marketplace, descrie fluxul afectat și pagina pe care o foloseai.",
+      "businessTitle": "Solicitări comerciale",
+      "businessBody": "Pentru parteneriate, participare în marketplace și onboarding de companii, spune-ne de ce are nevoie organizația ta.",
+      "safetyTitle": "Siguranță și încredere",
+      "safetyBody": "Pentru informații publice incorecte, probleme de verificare sau conținut nesigur, folosește canalul relevant de raportare sau verificare."
+    },
+    "cookies": {
+      "preferencesTitle": "Preferințe cookie",
+      "preferencesBody": "Cookie-urile esențiale mențin funcționale autentificarea, securitatea și navigarea de bază. Categoriile opționale pot fi modificate oricând.",
+      "essentialTitle": "Esențiale",
+      "essentialBody": "Necesare pentru securitate, autentificare și comportamentul de bază al produsului.",
+      "preferencesCategoryTitle": "Preferințe",
+      "preferencesCategoryBody": "Memorează alegerile de interfață și experiență acolo unde sunt disponibile.",
+      "analyticsTitle": "Analiză",
+      "analyticsBody": "Ajută la măsurarea utilizării și performanței produsului când este activată.",
+      "marketingTitle": "Marketing",
+      "marketingBody": "Permite măsurare opțională de marketing acolo unde este configurată.",
+      "alwaysOn": "Mereu activ",
+      "save": "Salvează preferințele",
+      "saved": "Preferințe salvate"
+    },
+    "footer": {
+      "eyebrow": "Construit pentru fluxuri din construcții",
+      "title": "Descoperă oameni, companii și oportunități de încredere — apoi menține lucrările în mișcare.",
+      "body": "Buildink conectează descoperirea publică cu verificarea, colaborarea protejată și spațiile de lucru bazate pe rol.",
+      "trustOne": "Acces bazat pe rol",
+      "trustTwo": "Încredere bazată pe verificare",
+      "trustThree": "Marketplace multilingv",
+      "newsletterTitle": "Primește noutăți Buildink",
+      "systemLabel": "Marketplace și portal"
+    }
+  }
+}

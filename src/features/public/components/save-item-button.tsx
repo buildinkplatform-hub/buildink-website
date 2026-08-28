@@ -90,7 +90,9 @@ export function SaveItemButton({
       {saved ? (
         <p className="text-muted text-center text-xs">
           <Link href="/dashboard/saved" className="text-primary font-semibold">
-            {variant === "public" ? t("actions.viewSaved") : t("savedItem.viewAll")}
+            {variant === "public"
+              ? t("actions.viewSaved")
+              : t("savedItem.viewAll")}
           </Link>
         </p>
       ) : null}

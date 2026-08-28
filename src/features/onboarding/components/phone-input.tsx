@@ -22,18 +22,16 @@ import {
 import { cn } from "@/lib/utils/cn"
 import type { CountryOption } from "@/shared/types/platform"
 
-function FlagIcon({
-  country,
-  label,
-}: {
-  country?: Country
-  label: string
-}) {
+function FlagIcon({ country, label }: { country?: Country; label: string }) {
   const Flag = country ? flags[country] : undefined
 
   return (
     <span className="bg-muted flex h-4 w-6 shrink-0 overflow-hidden rounded-[3px] [&_svg]:h-full [&_svg]:w-full">
-      {Flag ? <Flag title={label} /> : <span className="text-[10px] leading-4">--</span>}
+      {Flag ? (
+        <Flag title={label} />
+      ) : (
+        <span className="text-[10px] leading-4">--</span>
+      )}
     </span>
   )
 }
@@ -118,7 +116,10 @@ function PhoneCountrySelect({
                   setQuery("")
                 }}
               >
-                <FlagIcon country={option.code as Country} label={option.name} />
+                <FlagIcon
+                  country={option.code as Country}
+                  label={option.name}
+                />
                 <span className="min-w-0 flex-1 truncate">{option.name}</span>
                 <span
                   className={cn(

@@ -5,10 +5,12 @@ import authRegister from "./pages/auth/register.json"
 import authResetPassword from "./pages/auth/reset-password.json"
 import authShared from "./pages/auth/shared.json"
 import dashboard from "./pages/dashboard.json"
+import operations from "./pages/operations.json"
 import home from "./pages/home.json"
 import notFound from "./pages/not-found.json"
 import offline from "./pages/offline.json"
 import publicSite from "./pages/public-site.json"
+import trustPages from "./pages/trust-pages.json"
 import portalAlignment from "./pages/portal-alignment.json"
 import onboardingDocuments from "./pages/onboarding/documents.json"
 import onboardingProfile from "./pages/onboarding/profile.json"
@@ -23,6 +25,7 @@ export default mergeMessages(
   common,
   home,
   publicSite,
+  trustPages,
   authShared,
   authLogin,
   authRegister,
@@ -34,6 +37,7 @@ export default mergeMessages(
   onboardingDocuments,
   onboardingReview,
   dashboard,
+  operations,
   portalAlignment,
   offline,
   notFound,

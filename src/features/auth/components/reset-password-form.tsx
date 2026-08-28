@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CheckCircle2, Link2Off, LoaderCircle } from "lucide-react"
+import { CheckCircle2, KeyRound, Link2Off, LoaderCircle } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -9,8 +9,8 @@ import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
-import { PasswordInput } from "@/features/auth/components/password-input"
 import { resetPasswordAction } from "@/features/auth/actions/auth.actions"
+import { PasswordInput } from "@/features/auth/components/password-input"
 import { Link } from "@/i18n/navigation"
 
 export function ResetPasswordForm({
@@ -49,12 +49,16 @@ export function ResetPasswordForm({
 
   if (!validSession)
     return (
-      <div className="border-line rounded-2xl border bg-white p-8 text-center shadow-[var(--shadow-card)]">
-        <Link2Off className="text-warning mx-auto size-12" />
-        <h1 className="text-brand-navy mt-5 text-3xl font-bold">
+      <div className="auth-panel rounded-[30px] p-8 text-center sm:p-10">
+        <div className="bg-warning/8 border-warning/15 mx-auto flex size-14 items-center justify-center rounded-2xl border">
+          <Link2Off className="text-warning size-7" />
+        </div>
+        <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
           {t("auth.resetInvalidTitle")}
         </h1>
-        <p className="text-muted mt-3">{t("auth.resetInvalid")}</p>
+        <p className="text-muted mx-auto mt-3 max-w-md leading-7">
+          {t("auth.resetInvalid")}
+        </p>
         <Button asChild className="mt-7">
           <Link href="/forgot-password">{t("auth.forgotTitle")}</Link>
         </Button>
@@ -63,12 +67,16 @@ export function ResetPasswordForm({
 
   if (complete)
     return (
-      <div className="border-line rounded-2xl border bg-white p-8 text-center shadow-[var(--shadow-card)]">
-        <CheckCircle2 className="text-success mx-auto size-12" />
-        <h1 className="text-brand-navy mt-5 text-3xl font-bold">
+      <div className="auth-panel rounded-[30px] p-8 text-center sm:p-10">
+        <div className="bg-success/8 border-success/15 mx-auto flex size-14 items-center justify-center rounded-2xl border">
+          <CheckCircle2 className="text-success size-7" />
+        </div>
+        <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
           {t("auth.resetSuccessTitle")}
         </h1>
-        <p className="text-muted mt-3">{t("auth.resetSuccess")}</p>
+        <p className="text-muted mx-auto mt-3 max-w-md leading-7">
+          {t("auth.resetSuccess")}
+        </p>
         <Button asChild className="mt-7">
           <Link href={{ pathname: "/login", query: { next: safeNext } }}>
             {t("common.login")}
@@ -78,11 +86,16 @@ export function ResetPasswordForm({
     )
 
   return (
-    <div className="border-line rounded-2xl border bg-white p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <h1 className="text-brand-navy text-3xl font-bold">
+    <div className="auth-panel rounded-[30px] p-6 sm:p-9">
+      <div className="border-primary/10 bg-primary/6 text-primary flex size-12 items-center justify-center rounded-2xl border">
+        <KeyRound className="size-5" />
+      </div>
+      <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
         {t("auth.resetTitle")}
       </h1>
-      <p className="text-muted mt-3">{t("auth.resetBody")}</p>
+      <p className="text-muted mt-3 max-w-md leading-7">
+        {t("auth.resetBody")}
+      </p>
       <form
         className="mt-8 space-y-5"
         onSubmit={handleSubmit(async (values) => {

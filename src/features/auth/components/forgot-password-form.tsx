@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckCircle2, LoaderCircle, Mail } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -32,15 +31,16 @@ export function ForgotPasswordForm() {
 
   if (sent) {
     return (
-      <div className="border-line rounded-2xl border bg-white p-8 text-center shadow-[var(--shadow-card)]">
-        <CheckCircle2
-          className="text-success mx-auto size-12"
-          aria-hidden="true"
-        />
-        <h1 className="text-brand-navy mt-5 text-3xl font-bold">
+      <div className="auth-panel rounded-[30px] p-8 text-center sm:p-10">
+        <div className="bg-success/8 border-success/15 mx-auto flex size-14 items-center justify-center rounded-2xl border">
+          <CheckCircle2 className="text-success size-7" aria-hidden="true" />
+        </div>
+        <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
           {t("auth.forgotSuccessTitle")}
         </h1>
-        <p className="text-muted mt-3 leading-7">{t("auth.forgotSuccess")}</p>
+        <p className="text-muted mx-auto mt-3 max-w-md leading-7">
+          {t("auth.forgotSuccess")}
+        </p>
         <Button asChild variant="secondary" className="mt-7">
           <Link href="/login">{t("common.login")}</Link>
         </Button>
@@ -49,14 +49,16 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <div className="border-line rounded-2xl border bg-white p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <div className="bg-light-blue text-primary flex size-12 items-center justify-center rounded-xl">
-        <Mail className="size-6" />
+    <div className="auth-panel rounded-[30px] p-6 sm:p-9">
+      <div className="border-primary/10 bg-primary/6 text-primary flex size-12 items-center justify-center rounded-2xl border">
+        <Mail className="size-5" />
       </div>
-      <h1 className="text-brand-navy mt-6 text-3xl font-bold">
+      <h1 className="text-brand-navy mt-6 text-3xl font-bold tracking-[-0.035em]">
         {t("auth.forgotTitle")}
       </h1>
-      <p className="text-muted mt-3">{t("auth.forgotBody")}</p>
+      <p className="text-muted mt-3 max-w-md leading-7">
+        {t("auth.forgotBody")}
+      </p>
       <form
         className="mt-8 space-y-5"
         onSubmit={handleSubmit(async ({ email }) => {
@@ -85,7 +87,7 @@ export function ForgotPasswordForm() {
           {t("auth.sendReset")}
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm">
+      <p className="mt-7 text-center text-sm">
         <Link
           href="/login"
           className="text-primary font-semibold hover:underline"

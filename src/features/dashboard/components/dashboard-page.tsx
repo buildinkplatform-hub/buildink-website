@@ -84,7 +84,9 @@ export async function DashboardPage({ session }: { session: SessionClaims }) {
                   size="sm"
                   className={index ? "bg-white/90" : ""}
                 >
-                  <Link href={`/dashboard/${actionRoutes[action] ?? "profile"}`}>
+                  <Link
+                    href={`/dashboard/${actionRoutes[action] ?? "profile"}`}
+                  >
                     {t(`dashboard.actions.${action}`)}
                     <ArrowRight className="size-4 rtl:rotate-180" />
                   </Link>
@@ -149,7 +151,11 @@ export async function DashboardPage({ session }: { session: SessionClaims }) {
             <p className="text-muted leading-7">
               {t("dashboard.completionBody")}
             </p>
-            <Button asChild variant="secondary" className="mt-5 w-full bg-white">
+            <Button
+              asChild
+              variant="secondary"
+              className="mt-5 w-full bg-white"
+            >
               <Link href="/dashboard/profile">
                 {t("dashboard.completeProfile")}
               </Link>

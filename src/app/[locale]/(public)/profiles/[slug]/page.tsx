@@ -8,4 +8,3 @@ export default async function ProfileDetailPage({
   const { slug } = await params
   return <PublicEntityDetailPage module="workers" slug={slug} />
 }
-

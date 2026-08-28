@@ -8,7 +8,7 @@ import {
 } from "@/lib/auth/destination"
 import { backendApi } from "@/lib/backend/api"
 import { stripLocalePrefix } from "@/i18n/route-utils"
-import { createClient } from "@/lib/supabase/server"
+import { createClient, clearSupabaseAuthCookies } from "@/lib/supabase/server"
 import { getPortalBootstrap } from "@/features/dashboard/data/portal-client"
 import { isProfileType } from "@/shared/constants/platform"
 import { resolveCanonicalAccountType } from "@/shared/lib/account-type-mapping"
@@ -159,7 +159,8 @@ export async function getRequiredPortalSession(): Promise<SessionClaims | null> 
 
 export async function clearAuthCookies(): Promise<void> {
   const supabase = await createClient()
-  await supabase.auth.signOut()
+  await supabase.auth.signOut({ scope: "global" }).catch(() => undefined)
+  await clearSupabaseAuthCookies()
 }
 
 export type { PortalModule, PrimaryAccountType }

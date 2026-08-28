@@ -3,19 +3,23 @@
 import { useState, useSyncExternalStore } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/navigation"
 
-const KEY = "buildink_cookie_banner_dismissed"
+const BANNER_KEY = "buildink_cookie_banner_dismissed"
+const PREFERENCES_KEY = "buildink_cookie_preferences"
 const subscribe = () => () => undefined
 
 export function PublicCookieBanner({
   title,
   body,
   acceptLabel,
+  rejectLabel,
   manageLabel,
 }: {
   title: string
   body: string
   acceptLabel: string
+  rejectLabel: string
   manageLabel: string
 }) {
   const [dismissed, setDismissed] = useState(false)
@@ -25,9 +29,28 @@ export function PublicCookieBanner({
     () => false,
   )
 
-  const open = hydrated && !dismissed && !window.localStorage.getItem(KEY)
+  const open =
+    hydrated && !dismissed && !window.localStorage.getItem(BANNER_KEY)
 
   if (!open) return null
+
+  const saveConsent = (value: "accepted" | "rejected", enabled: boolean) => {
+    window.localStorage.setItem(
+      PREFERENCES_KEY,
+      JSON.stringify({
+        preferences: enabled,
+        analytics: enabled,
+        marketing: enabled,
+      }),
+    )
+    window.localStorage.setItem(BANNER_KEY, value)
+    setDismissed(true)
+  }
+
+  const dismissAsManaged = () => {
+    window.localStorage.setItem(BANNER_KEY, "managed")
+    setDismissed(true)
+  }
 
   return (
     <div
@@ -40,23 +63,23 @@ export function PublicCookieBanner({
           <p className="text-brand-navy text-sm font-bold">{title}</p>
           <p className="text-muted mt-1 text-sm leading-6">{body}</p>
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <Button
             variant="secondary"
-            onClick={() => {
-              window.localStorage.setItem(KEY, "managed")
-              setDismissed(true)
-            }}
+            onClick={() => saveConsent("rejected", false)}
           >
-            {manageLabel}
+            {rejectLabel}
           </Button>
           <Button
-            onClick={() => {
-              window.localStorage.setItem(KEY, "accepted")
-              setDismissed(true)
-            }}
+            variant="secondary"
+            onClick={() => saveConsent("accepted", true)}
           >
             {acceptLabel}
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/cookies#cookie-preferences" onClick={dismissAsManaged}>
+              {manageLabel}
+            </Link>
           </Button>
         </div>
       </div>

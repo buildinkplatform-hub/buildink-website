@@ -14,16 +14,12 @@ function visualConfig(module: PublicModule) {
     case "workers":
     case "equipment":
       return {
-        src: "/branding/company-visual.png",
-        objectPosition: "56% 42%",
         overlay: "from-brand-navy/70 via-brand-navy/20 to-transparent",
       }
     case "projects":
     case "tenders":
     case "opportunities":
       return {
-        src: "/branding/hero-construction-marketplace.png",
-        objectPosition: "72% 48%",
         overlay: "from-brand-navy/65 via-brand-navy/15 to-transparent",
       }
   }
@@ -52,33 +48,43 @@ export function PublicEntityVisual({
         className,
       )}
     >
-      <Image
-        src={imageUrl ?? visual.src}
-        alt={title}
-        fill
-        className="object-cover"
-        style={{ objectPosition: imageUrl ? "50% 50%" : visual.objectPosition }}
-        unoptimized
-      />
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={title}
+          fill
+          sizes={compact ? "64px" : "(max-width: 768px) 100vw, 50vw"}
+          className="object-cover"
+          unoptimized
+        />
+      ) : (
+        <div
+          className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_25%_20%,rgba(23,107,255,.24),transparent_38%),linear-gradient(145deg,#eef4ff,#dbe7f8)]"
+          role="img"
+          aria-label={title}
+        >
+          <span
+            className="border-brand-blue/20 text-brand-navy grid size-16 place-items-center rounded-2xl border bg-white/70 text-2xl font-bold shadow-sm"
+            aria-hidden="true"
+          >
+            {title.trim().charAt(0).toUpperCase() || "B"}
+          </span>
+        </div>
+      )}
       <div
-        className={cn(
-          "absolute inset-0 bg-gradient-to-tr",
-          visual.overlay,
-        )}
+        className={cn("absolute inset-0 bg-gradient-to-tr", visual.overlay)}
       />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/50 to-transparent" />
     </div>
   )
 }
 
-export function selectPrimaryVisual(
-  item: {
-    coverUrl?: string | null
-    logoUrl?: string | null
-    avatarUrl?: string | null
-    gallery?: PublicMediaAsset[]
-  },
-) {
+export function selectPrimaryVisual(item: {
+  coverUrl?: string | null
+  logoUrl?: string | null
+  avatarUrl?: string | null
+  gallery?: PublicMediaAsset[]
+}) {
   return (
     item.coverUrl ??
     item.gallery?.[0]?.url ??
@@ -108,7 +114,7 @@ export function PublicMetricStrip({
           className="rounded-2xl border border-slate-100 bg-[linear-gradient(180deg,#fff_0%,#f6f9ff_100%)] px-4 py-3"
         >
           <p className="text-brand-navy text-2xl font-bold">{item.value}</p>
-          <p className="text-muted mt-1 text-xs font-medium leading-5">
+          <p className="text-muted mt-1 text-xs leading-5 font-medium">
             {item.label}
           </p>
         </div>

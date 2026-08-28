@@ -1,19 +1,19 @@
 import type { Metadata } from "next"
-import { getLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { PublicEntityDetailPage } from "@/features/public/components/public-entity-detail-page"
 import { getPublicCatalogueItem } from "@/features/public/data/public-repository"
 import type { Locale } from "@/shared/types/platform"
 
+type PageProps = {
+  params: Promise<{ locale: string; slug: string; id: string }>
+}
+
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ id: string }>
-}): Promise<Metadata> {
-  const { id } = await params
-  const locale = (await getLocale()) as Locale
-  const item = await getPublicCatalogueItem(id, locale)
+}: PageProps): Promise<Metadata> {
+  const { locale, id } = await params
+  const item = await getPublicCatalogueItem(id, locale as Locale)
   if (!item) return {}
   return {
     title: item.title,
@@ -21,14 +21,9 @@ export async function generateMetadata({
   }
 }
 
-export default async function CatalogueItemPage({
-  params,
-}: {
-  params: Promise<{ slug: string; id: string }>
-}) {
-  const { id } = await params
-  const locale = (await getLocale()) as Locale
-  const item = await getPublicCatalogueItem(id, locale)
+export default async function CatalogueItemPage({ params }: PageProps) {
+  const { locale, id } = await params
+  const item = await getPublicCatalogueItem(id, locale as Locale)
   if (!item) notFound()
   return (
     <PublicEntityDetailPage module="companies" slug={item.slug} record={item} />

@@ -24,6 +24,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 }
 
+export const instant = false
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -98,6 +100,19 @@ export default async function LocaleLayout({
           <Toaster
             position={direction === "rtl" ? "bottom-left" : "bottom-right"}
             richColors
+            closeButton
+            toastOptions={{
+              classNames: {
+                toast:
+                  "!rounded-2xl !border-border/80 !bg-card !text-card-foreground !shadow-[var(--shadow-floating)]",
+                title: "!text-foreground !font-semibold",
+                description: "!text-muted-foreground !leading-5",
+                actionButton:
+                  "!rounded-xl !bg-primary !text-primary-foreground !font-semibold",
+                cancelButton:
+                  "!rounded-xl !bg-muted !text-foreground !font-semibold",
+              },
+            }}
           />
         </NextIntlClientProvider>
       </body>

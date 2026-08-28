@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useRouter } from "@/i18n/navigation"
 
 import { PromptDialog } from "@/components/feedback/prompt-dialog"
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,7 @@ import {
   stageWorkspaceApplicationAction,
   sendPortalMessageAction,
 } from "@/features/dashboard/actions/portal.actions"
+import { usePortalMutationRunner } from "@/features/dashboard/query/use-portal-mutation"
 
 export function OfferDecisionActions({
   companyId,
@@ -41,54 +42,100 @@ export function OfferDecisionActions({
   requestChangesLabel: string
   shortlistLabel?: string
 }) {
-  const router = useRouter()
+  const runMutation = usePortalMutationRunner()
   const common = useTranslations("common")
-  const [pending, setPending] = useState(false)
+  const [pendingAction, setPendingAction] = useState<string>()
   const [requestOpen, setRequestOpen] = useState(false)
   const [changeReason, setChangeReason] = useState("")
+
   async function decide(decision: "accept" | "reject") {
-    setPending(true)
-    await decideWorkspaceOfferAction(companyId, id, decision, version)
-    router.refresh()
-    setPending(false)
+    setPendingAction(decision)
+    try {
+      await runMutation(
+        () => decideWorkspaceOfferAction(companyId, id, decision, version),
+        {
+          optimistic: {
+            id,
+            patch: {
+              status: decision === "accept" ? "ACCEPTED" : "REJECTED",
+              version: version + 1,
+            },
+          },
+        },
+      )
+    } finally {
+      setPendingAction(undefined)
+    }
   }
+
   async function shortlist() {
-    setPending(true)
-    await shortlistWorkspaceOfferAction(companyId, id, version)
-    router.refresh()
-    setPending(false)
+    setPendingAction("shortlist")
+    try {
+      await runMutation(
+        () => shortlistWorkspaceOfferAction(companyId, id, version),
+        {
+          optimistic: {
+            id,
+            patch: { status: "SHORTLISTED", version: version + 1 },
+          },
+        },
+      )
+    } finally {
+      setPendingAction(undefined)
+    }
   }
+
   async function requestChanges() {
     const reason = changeReason.trim()
     if (!reason) return
-    setPending(true)
-    await requestWorkspaceOfferChangesAction(companyId, id, reason, version)
-    setRequestOpen(false)
-    setChangeReason("")
-    router.refresh()
-    setPending(false)
+    setPendingAction("changes")
+    try {
+      const result = await runMutation(
+        () =>
+          requestWorkspaceOfferChangesAction(companyId, id, reason, version),
+        {
+          optimistic: {
+            id,
+            patch: { status: "CHANGES_REQUESTED", version: version + 1 },
+          },
+        },
+      )
+      if (result.ok) {
+        setRequestOpen(false)
+        setChangeReason("")
+      }
+    } finally {
+      setPendingAction(undefined)
+    }
   }
+
   return (
-    <div className="mt-3 flex gap-2">
+    <div className="mt-3 flex flex-wrap gap-2">
       <Button
         size="sm"
-        disabled={pending}
+        disabled={Boolean(pendingAction)}
         onClick={() => void decide("accept")}
       >
+        {pendingAction === "accept" ? (
+          <Loader2 className="animate-spin" />
+        ) : null}
         {acceptLabel}
       </Button>
       <Button
         size="sm"
         variant="secondary"
-        disabled={pending}
+        disabled={Boolean(pendingAction)}
         onClick={() => void decide("reject")}
       >
+        {pendingAction === "reject" ? (
+          <Loader2 className="animate-spin" />
+        ) : null}
         {rejectLabel}
       </Button>
       <Button
         size="sm"
         variant="secondary"
-        disabled={pending}
+        disabled={Boolean(pendingAction)}
         onClick={() => setRequestOpen(true)}
       >
         {requestChangesLabel}
@@ -97,9 +144,12 @@ export function OfferDecisionActions({
         <Button
           size="sm"
           variant="secondary"
-          disabled={pending}
+          disabled={Boolean(pendingAction)}
           onClick={() => void shortlist()}
         >
+          {pendingAction === "shortlist" ? (
+            <Loader2 className="animate-spin" />
+          ) : null}
           {shortlistLabel}
         </Button>
       ) : null}
@@ -112,7 +162,7 @@ export function OfferDecisionActions({
         onValueChange={setChangeReason}
         confirmLabel={requestChangesLabel}
         cancelLabel={common("cancel")}
-        pending={pending}
+        pending={pendingAction === "changes"}
         minLength={3}
         onConfirm={() => void requestChanges()}
       />
@@ -129,7 +179,7 @@ export function OfferWithdrawAction({
   version: number
   label: string
 }) {
-  const router = useRouter()
+  const runMutation = usePortalMutationRunner()
   const [pending, setPending] = useState(false)
   return (
     <Button
@@ -138,9 +188,15 @@ export function OfferWithdrawAction({
       disabled={pending}
       onClick={() => {
         setPending(true)
-        void withdrawPortalOfferAction(id, version).then(() => router.refresh())
+        void runMutation(() => withdrawPortalOfferAction(id, version), {
+          optimistic: {
+            id,
+            patch: { status: "WITHDRAWN", version: version + 1 },
+          },
+        }).finally(() => setPending(false))
       }}
     >
+      {pending ? <Loader2 className="animate-spin" /> : null}
       {label}
     </Button>
   )
@@ -155,7 +211,7 @@ export function ApplicationWithdrawAction({
   version: number
   label: string
 }) {
-  const router = useRouter()
+  const runMutation = usePortalMutationRunner()
   const [pending, setPending] = useState(false)
   return (
     <Button
@@ -164,11 +220,15 @@ export function ApplicationWithdrawAction({
       disabled={pending}
       onClick={() => {
         setPending(true)
-        void withdrawPortalApplicationAction(id, version).then(() =>
-          router.refresh(),
-        )
+        void runMutation(() => withdrawPortalApplicationAction(id, version), {
+          optimistic: {
+            id,
+            patch: { status: "WITHDRAWN", version: version + 1 },
+          },
+        }).finally(() => setPending(false))
       }}
     >
+      {pending ? <Loader2 className="animate-spin" /> : null}
       {label}
     </Button>
   )
@@ -187,29 +247,51 @@ export function ApplicationDecisionActions({
   acceptLabel: string
   rejectLabel: string
 }) {
-  const router = useRouter()
-  const [pending, setPending] = useState(false)
+  const runMutation = usePortalMutationRunner()
+  const [pendingAction, setPendingAction] = useState<string>()
+
   async function decide(decision: "accept" | "reject") {
-    setPending(true)
-    await decideWorkspaceApplicationAction(companyId, id, decision, version)
-    router.refresh()
-    setPending(false)
+    setPendingAction(decision)
+    try {
+      await runMutation(
+        () =>
+          decideWorkspaceApplicationAction(companyId, id, decision, version),
+        {
+          optimistic: {
+            id,
+            patch: {
+              status: decision === "accept" ? "ACCEPTED" : "REJECTED",
+              version: version + 1,
+            },
+          },
+        },
+      )
+    } finally {
+      setPendingAction(undefined)
+    }
   }
+
   return (
     <div className="mt-3 flex gap-2">
       <Button
         size="sm"
-        disabled={pending}
+        disabled={Boolean(pendingAction)}
         onClick={() => void decide("accept")}
       >
+        {pendingAction === "accept" ? (
+          <Loader2 className="animate-spin" />
+        ) : null}
         {acceptLabel}
       </Button>
       <Button
         size="sm"
         variant="secondary"
-        disabled={pending}
+        disabled={Boolean(pendingAction)}
         onClick={() => void decide("reject")}
       >
+        {pendingAction === "reject" ? (
+          <Loader2 className="animate-spin" />
+        ) : null}
         {rejectLabel}
       </Button>
     </div>
@@ -237,7 +319,7 @@ export function ApplicationStageActions({
   version: number
   label: string
 }) {
-  const router = useRouter()
+  const runMutation = usePortalMutationRunner()
   const [stage, setStage] =
     useState<(typeof hiringStages)[number]>("UNDER_REVIEW")
   const [pending, setPending] = useState(false)
@@ -245,6 +327,7 @@ export function ApplicationStageActions({
     <div className="mt-3 flex flex-wrap gap-2">
       <Select
         value={stage}
+        disabled={pending}
         onValueChange={(value) => setStage(value as typeof stage)}
       >
         <SelectTrigger className="min-h-9 w-auto min-w-44">
@@ -264,12 +347,29 @@ export function ApplicationStageActions({
         onClick={() =>
           void (async () => {
             setPending(true)
-            await stageWorkspaceApplicationAction(companyId, id, stage, version)
-            router.refresh()
-            setPending(false)
+            try {
+              await runMutation(
+                () =>
+                  stageWorkspaceApplicationAction(
+                    companyId,
+                    id,
+                    stage,
+                    version,
+                  ),
+                {
+                  optimistic: {
+                    id,
+                    patch: { status: stage, version: version + 1 },
+                  },
+                },
+              )
+            } finally {
+              setPending(false)
+            }
           })()
         }
       >
+        {pending ? <Loader2 className="animate-spin" /> : null}
         {label}
       </Button>
     </div>
@@ -289,10 +389,10 @@ export function ConversationComposer({
   const [pending, setPending] = useState(false)
   async function send() {
     const next = body.trim()
-    if (!next) return
+    if (!next || pending) return
     setPending(true)
-    await sendPortalMessageAction(conversationId, next)
-    setBody("")
+    const result = await sendPortalMessageAction(conversationId, next)
+    if (result.ok) setBody("")
     setPending(false)
   }
   return (
@@ -305,11 +405,13 @@ export function ConversationComposer({
     >
       <input
         value={body}
+        disabled={pending}
         onChange={(event) => setBody(event.target.value)}
         placeholder={placeholder}
         className="border-input bg-background min-h-11 flex-1 rounded-xl border px-3 text-sm"
       />
       <Button type="submit" disabled={pending || !body.trim()}>
+        {pending ? <Loader2 className="animate-spin" /> : null}
         {sendLabel}
       </Button>
     </form>

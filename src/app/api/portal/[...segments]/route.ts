@@ -1,6 +1,6 @@
 import { getAccessToken } from "@/lib/supabase/server"
 
-export const dynamic = "force-dynamic"
+export const instant = false
 
 const MAX_BODY_BYTES = 2 * 1024 * 1024
 const METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"])

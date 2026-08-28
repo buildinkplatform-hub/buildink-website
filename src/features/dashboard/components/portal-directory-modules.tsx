@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { ComponentProps, ReactNode } from "react"
 import { Plus } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 
@@ -15,14 +15,19 @@ import { EquipmentEnquiries } from "@/features/dashboard/components/equipment-en
 import { EntityEditForm } from "@/features/dashboard/components/portal-entity-editors"
 import { EquipmentForm } from "@/features/dashboard/components/equipment-form"
 import { OpportunityForm } from "@/features/dashboard/components/opportunity-form"
+import { OpportunityLifecycleActions } from "@/features/dashboard/components/opportunity-lifecycle-actions"
+import { OpportunityListFilters } from "@/features/dashboard/components/opportunity-list-filters"
 import { ProjectForm } from "@/features/dashboard/components/project-form"
 import { TenderForm } from "@/features/dashboard/components/tender-form"
+import { TenderLifecycleActions } from "@/features/dashboard/components/tender-lifecycle-actions"
 import { ProjectLifecycleActions } from "@/features/dashboard/components/project-lifecycle-actions"
-import { ProjectAdvancedFilters } from "@/features/dashboard/components/project-advanced-filters"
+import { PortalProjectsList } from "@/features/dashboard/components/portal-projects-list"
 import { EntityDetailFields } from "@/features/dashboard/components/entity-detail-fields"
 import { VerificationSubmitClient } from "@/features/dashboard/components/verification-submit-client"
-import { PortalDataTable } from "@/features/dashboard/components/portal-data-table"
+import { VerificationDocumentsTable } from "@/features/dashboard/components/verification-documents-table"
 import type { PortalTableColumn } from "@/features/dashboard/components/portal-data-table"
+import { PortalServerTable } from "@/features/dashboard/components/portal-server-table"
+import type { PortalServerTableLabels } from "@/features/dashboard/components/portal-server-table"
 import { PortalFormDialog } from "@/features/dashboard/components/portal-form-dialog"
 import { PermissionDeniedState } from "@/features/dashboard/components/permission-guard"
 import { PortalPageHeader } from "@/features/dashboard/components/portal-page-header"
@@ -30,7 +35,6 @@ import { StatusBadge } from "@/features/dashboard/components/status-badge"
 import {
   hasAnyPortalPermission,
   opportunityCreatePermissions,
-  opportunityKinds,
   permittedOpportunityKinds,
   resolveEffectivePermissions,
   type CompanyPermission,
@@ -56,6 +60,7 @@ import {
   listPortalTenders,
   listPortalTaxonomy,
   getWorkspacePermissions,
+  type PortalMember,
   type PortalVerificationOverview,
 } from "@/features/dashboard/data/portal-client"
 import { getActiveCompanyId } from "@/features/dashboard/lib/active-workspace"
@@ -114,7 +119,13 @@ function formatPortalMoney(
 }
 
 function taxonomyName(
-  items: Array<{ id: string; name?: string; label?: string; slug?: string; translations?: unknown }>,
+  items: Array<{
+    id: string
+    name?: string
+    label?: string
+    slug?: string
+    translations?: unknown
+  }>,
   id: string | null | undefined,
   locale = "en",
 ) {
@@ -134,9 +145,7 @@ function taxonomyName(
   return item.slug ?? id
 }
 
-function portalActionsColumn(
-  detailLabel: string,
-): PortalTableColumn {
+function portalActionsColumn(detailLabel: string): PortalTableColumn {
   return {
     id: "actions",
     header: "Actions",
@@ -160,6 +169,22 @@ function scopePillClass(active: boolean) {
     : "border border-line bg-white text-brand-navy hover:bg-accent"
 }
 
+function isOpportunityOwned(
+  opportunity: { companyId?: string | null; ownerProfileId?: string | null },
+  bootstrap: Awaited<ReturnType<typeof getPortalBootstrap>>,
+) {
+  if (!bootstrap) return false
+  return (
+    opportunity.ownerProfileId === bootstrap.profile.id ||
+    Boolean(
+      opportunity.companyId &&
+      bootstrap.workspaces.some(
+        (workspace) => workspace.companyId === opportunity.companyId,
+      ),
+    )
+  )
+}
+
 function tableLabels(t: Translator) {
   return {
     search: t("dashboard.table.search"),
@@ -176,16 +201,6 @@ function tableLabels(t: Translator) {
   }
 }
 
-const projectStatuses = [
-  "DRAFT",
-  "PENDING_REVIEW",
-  "PUBLISHED",
-  "IN_PROGRESS",
-  "COMPLETED",
-  "ON_HOLD",
-  "CANCELLED",
-  "ARCHIVED",
-]
 const opportunityStatuses = [
   "DRAFT",
   "PENDING_REVIEW",
@@ -338,88 +353,81 @@ async function ProjectsListPage({ query }: { query: PortalQuery }) {
       }
     >
       {result ? (
-        <PortalDataTable
+        <PortalProjectsList
+          categories={categories.items}
+          cities={cities.items}
           empty={t("dashboard.projectsEmpty")}
-          labels={tableLabels(t)}
-          server={serverTableState(query, result.pageInfo, projectStatuses)}
-          filters={
-            <ProjectAdvancedFilters
-              categories={categories.items}
-              cities={cities.items}
-              tags={tags.items}
-              categoryId={query.categoryId}
-              cityId={query.cityId}
-              tagId={query.tagId}
-              deadlineFrom={query.deadlineFrom}
-              deadlineTo={query.deadlineTo}
-              locale={locale}
-              labels={{
-                category: t("dashboard.publish.category"),
-                tag: t("dashboard.publish.tags"),
-                allCategories: t("dashboard.projects.allCategories"),
-                allLocations: t("dashboard.projects.allLocations"),
-                allTags: t("dashboard.projects.allTags"),
-                deadlineFrom: t("dashboard.projects.deadlineFrom"),
-                deadlineTo: t("dashboard.projects.deadlineTo"),
-              }}
-            />
-          }
-          columns={[
-            {
-              id: "project",
-              header: "Project",
-              className: "min-w-[280px]",
-              render: (row) => (
-                <div className="space-y-1">
-                  <p className="font-semibold text-brand-navy">{row.title}</p>
-                  <p className="text-xs text-muted">
-                    {(row.reference as string | null) || "-"}
-                  </p>
-                </div>
+          labels={{
+            stats: {
+              active: t("dashboard.projects.stats.active"),
+              published: t("dashboard.projects.stats.published"),
+              inProgress: t("dashboard.projects.stats.inProgress"),
+              portfolioValue: t("dashboard.projects.stats.portfolioValue"),
+            },
+            toolbar: {
+              search: t("dashboard.table.search"),
+              allStatuses: t("dashboard.table.allStatuses"),
+              allCategories: t("dashboard.projects.allCategories"),
+              allLocations: t("dashboard.projects.allLocations"),
+              allTags: t("dashboard.projects.allTags"),
+              deadlineFrom: t("dashboard.projects.deadlineFrom"),
+              deadlineTo: t("dashboard.projects.deadlineTo"),
+              sortNewest: t("dashboard.table.newest"),
+              sortTitle: t("dashboard.table.titleAsc"),
+              clearAll: t("dashboard.projects.toolbar.clearAll"),
+              export: t("dashboard.projects.toolbar.export"),
+            },
+            table: {
+              project: t("dashboard.projects.table.project"),
+              owner: t("dashboard.projects.table.owner"),
+              status: t("dashboard.table.status"),
+              location: t("dashboard.fields.city"),
+              budget: t("dashboard.fields.budget"),
+              deadline: t("dashboard.fields.deadline"),
+              packages: t("dashboard.fields.packages"),
+              actions: t("dashboard.table.actions"),
+              details: t("dashboard.table.details"),
+              edit: t("dashboard.edit.open"),
+              actionsFor: t("dashboard.projects.table.actionsFor", {
+                title: "{title}",
+              }),
+              confirmTitle: t("dashboard.projects.table.confirmTitle", {
+                action: "{action}",
+              }),
+              confirmDescription: t(
+                "dashboard.projects.table.confirmDescription",
+                { title: "{title}", from: "{from}", to: "{to}" },
               ),
-            },
-            {
-              id: "status",
-              header: "Status",
-              render: (row) => <StatusBadge status={String(row.statusLabel ?? "DRAFT")} label={String(row.statusLabelText ?? row.statusLabel ?? "-")} />,
-            },
-            {
-              id: "location",
-              header: "Location",
-              render: (row) => String(row.location ?? "-"),
-            },
-            {
-              id: "budget",
-              header: "Budget",
-              render: (row) => String(row.budget ?? "-"),
-            },
-            {
-              id: "deadline",
-              header: "Proposal deadline",
-              render: (row) => String(row.deadline ?? "-"),
-            },
-            {
-              id: "packages",
-              header: "Packages",
-              render: (row) => (
-                <span className="tabular-nums">{String(row.packages ?? "0")}</span>
+              reasonLabel: t("dashboard.projects.table.reasonLabel"),
+              reasonPlaceholder: t(
+                "dashboard.projects.table.reasonPlaceholder",
               ),
+              cancel: t("common.cancel"),
+              processing: t("dashboard.projects.table.processing"),
+              statuses: {
+                DRAFT: t("dashboard.projects.lifecycle.DRAFT"),
+                PENDING_REVIEW: t(
+                  "dashboard.projects.lifecycle.PENDING_REVIEW",
+                ),
+                PUBLISHED: t("dashboard.projects.lifecycle.PUBLISHED"),
+                IN_PROGRESS: t("dashboard.projects.lifecycle.IN_PROGRESS"),
+                COMPLETED: t("dashboard.projects.lifecycle.COMPLETED"),
+                ON_HOLD: t("dashboard.projects.lifecycle.ON_HOLD"),
+                CANCELLED: t("dashboard.projects.lifecycle.CANCELLED"),
+                ARCHIVED: t("dashboard.projects.lifecycle.ARCHIVED"),
+              },
+              previous: t("dashboard.table.previous"),
+              next: t("dashboard.table.next"),
+              totalRecords: t("dashboard.projects.table.totalRecords", {
+                count: result.pageInfo.total,
+              }),
             },
-            portalActionsColumn(tableLabels(t).details),
-          ]}
-          rows={result.items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            reference: item.reference,
-            statusLabel: item.status,
-            statusLabelText: item.status.replaceAll("_", " "),
-            location: taxonomyName(cities.items, item.cityId, locale),
-            budget: formatPortalMoney(item.budgetMinor, item.currency, locale),
-            deadline: formatPortalDate(item.deadlineAt, locale),
-            packages: item.packageCount,
-            statuses: [item.status, item.publicationStatus],
-            detailHref: portalDetailPath("projects", item.id),
-          }))}
+          }}
+          locale={locale}
+          pageInfo={result.pageInfo}
+          permissions={effectivePermissions(bootstrap, projectPermissions)}
+          projects={result.items}
+          tags={tags.items}
         />
       ) : null}
     </DirectoryFrame>
@@ -459,7 +467,9 @@ async function ProjectsCreatePage() {
         tags={tags.items}
         companyId={getActiveCompanyId(bootstrap.workspaces)}
         profileId={bootstrap.profile.id}
-        isProjectOwner={bootstrap.profile.primaryAccountType === "PROJECT_OWNER"}
+        isProjectOwner={
+          bootstrap.profile.primaryAccountType === "PROJECT_OWNER"
+        }
       />
     </DirectoryFrame>
   )
@@ -519,7 +529,9 @@ async function ProjectsEditPage({ id }: { id: string }) {
         tags={tags.items}
         companyId={getActiveCompanyId(bootstrap.workspaces)}
         profileId={bootstrap.profile.id}
-        isProjectOwner={bootstrap.profile.primaryAccountType === "PROJECT_OWNER"}
+        isProjectOwner={
+          bootstrap.profile.primaryAccountType === "PROJECT_OWNER"
+        }
       />
     </DirectoryFrame>
   )
@@ -674,7 +686,6 @@ async function OpportunitiesListPage({ query }: { query: PortalQuery }) {
   }).catch(() => null)
   const granted = effectivePermissions(bootstrap, opportunityCreatePermissions)
   const canCreate = permittedOpportunityKinds(granted).length > 0
-  const kindQuery = query.kind ? `&kind=${query.kind}` : ""
   return (
     <DirectoryFrame
       title={t("dashboard.nav.opportunities")}
@@ -697,52 +708,48 @@ async function OpportunitiesListPage({ query }: { query: PortalQuery }) {
       }
     >
       {result ? (
-        <PortalDataTable
+        <PortalServerTable
           empty={t("dashboard.opportunitiesEmpty")}
-          labels={tableLabels(t)}
+          labels={serverTableLabels(t, result.pageInfo.total)}
+          basePath="/dashboard/opportunities"
+          queryParams={{
+            scope: query.scope === "discover" ? query.scope : undefined,
+            kind: query.kind,
+          }}
           server={serverTableState(query, result.pageInfo, opportunityStatuses)}
           filters={
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href={`/dashboard/opportunities?scope=owned${kindQuery}`}
-                  className={`rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${scopePillClass(query.scope !== "discover")}`}
-                >
-                  {t("dashboard.scope.owned")}
-                </Link>
-                <Link
-                  href={`/dashboard/opportunities?scope=discover${kindQuery}`}
-                  className={`rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${scopePillClass(query.scope === "discover")}`}
-                >
-                  {t("dashboard.scope.discover")}
-                </Link>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {opportunityKinds.map((kind) => (
-                  <Link
-                    key={kind}
-                    href={`/dashboard/opportunities?kind=${kind}`}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                      query.kind === kind
-                        ? "bg-primary text-white shadow-sm"
-                        : "border border-line bg-white text-brand-navy hover:bg-light-blue/70"
-                    }`}
-                  >
-                    {t(`dashboard.kinds.${kind}`)}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <OpportunityListFilters
+              allTypesLabel={t("dashboard.opportunity.allTypes")}
+              kind={query.kind}
+              kinds={[
+                "SUBCONTRACT_WORK",
+                "PROFESSIONAL_SERVICE",
+                "MATERIAL_SUPPLY",
+                "EQUIPMENT_REQUEST",
+                "WORKFORCE_REQUEST",
+              ].map((value) => ({
+                value,
+                label: t(`dashboard.kinds.${value}`),
+              }))}
+              ownedLabel={t("dashboard.scope.owned")}
+              scope={query.scope}
+              discoverLabel={t("dashboard.scope.discover")}
+            />
           }
           columns={[
             {
               id: "opportunity",
-              header: "Opportunity",
+              header: t("dashboard.fields.title"),
               className: "min-w-[280px]",
               render: (row) => (
                 <div className="space-y-1">
-                  <p className="font-semibold text-brand-navy">{row.title}</p>
-                  <p className="text-xs text-muted">
+                  <Link
+                    href={String(row.detailHref)}
+                    className="text-brand-navy font-semibold hover:underline"
+                  >
+                    {row.title}
+                  </Link>
+                  <p className="text-muted text-xs">
                     {(row.reference as string | null) || "-"}
                   </p>
                 </div>
@@ -750,37 +757,57 @@ async function OpportunitiesListPage({ query }: { query: PortalQuery }) {
             },
             {
               id: "status",
-              header: "Status",
-              render: (row) => <StatusBadge status={String(row.statusLabel ?? "DRAFT")} label={String(row.statusLabelText ?? row.statusLabel ?? "-")} />,
+              header: t("dashboard.table.status"),
+              render: (row) => (
+                <StatusBadge
+                  status={String(row.statusLabel ?? "DRAFT")}
+                  label={String(row.statusLabelText ?? row.statusLabel ?? "-")}
+                />
+              ),
             },
             {
               id: "kind",
-              header: "Type",
+              header: t("dashboard.publish.kind"),
               render: (row) => String(row.kindLabel ?? "-"),
             },
             {
               id: "budget",
-              header: "Budget",
+              header: t("dashboard.fields.budget"),
               render: (row) => String(row.budget ?? "-"),
             },
             {
               id: "deadline",
-              header: "Deadline",
+              header: t("dashboard.publish.deadline"),
               render: (row) => String(row.deadline ?? "-"),
             },
             {
               id: "responses",
-              header: "Responses",
+              header: t("dashboard.nav.offers"),
               render: (row) => String(row.responses ?? "0"),
             },
-            portalActionsColumn(tableLabels(t).details),
+            {
+              id: "actions",
+              header: t("dashboard.table.actions"),
+              cellClassName: "w-[1%] whitespace-nowrap",
+              render: (row) => (
+                <OpportunityLifecycleActions
+                  {...(row.lifecycle as ComponentProps<
+                    typeof OpportunityLifecycleActions
+                  >)}
+                />
+              ),
+            },
           ]}
           rows={result.items.map((item) => ({
             id: item.id,
             title: item.title,
             reference: item.reference,
             statusLabel: item.statusV1 ?? item.publicationStatus,
-            statusLabelText: (item.statusV1 ?? item.publicationStatus ?? "-").replaceAll("_", " "),
+            statusLabelText: (
+              item.statusV1 ??
+              item.publicationStatus ??
+              "-"
+            ).replaceAll("_", " "),
             kindLabel: item.kind ? t(`dashboard.kinds.${item.kind}`) : "-",
             budget:
               item.budgetMinMinor || item.budgetMaxMinor
@@ -790,7 +817,70 @@ async function OpportunitiesListPage({ query }: { query: PortalQuery }) {
             responses: item.offerCount + item.applicationCount,
             statuses: [item.kind, item.statusV1 ?? item.publicationStatus],
             detailHref: portalDetailPath("opportunities", item.id),
+            lifecycle: {
+              id: item.id,
+              status: item.statusV1 ?? item.publicationStatus,
+              title: item.title,
+              version: item.version,
+              canEdit:
+                query.scope === "owned" &&
+                permittedOpportunityKinds(granted).includes(item.kind as never),
+            },
           }))}
+          mobileCard={(row) => (
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <Link
+                    href={String(row.detailHref)}
+                    className="text-brand-navy block truncate font-semibold hover:underline"
+                  >
+                    {row.title}
+                  </Link>
+                  <p className="text-muted mt-1 text-xs">
+                    {String(row.reference ?? "-")}
+                  </p>
+                </div>
+                <StatusBadge
+                  status={String(row.statusLabel ?? "DRAFT")}
+                  label={String(row.statusLabelText ?? "-")}
+                />
+              </div>
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                <div>
+                  <dt className="text-muted">{t("dashboard.publish.kind")}</dt>
+                  <dd className="text-brand-navy mt-0.5 font-medium">
+                    {String(row.kindLabel ?? "-")}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("dashboard.fields.budget")}</dt>
+                  <dd className="text-brand-navy mt-0.5 font-medium">
+                    {String(row.budget ?? "-")}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted">
+                    {t("dashboard.publish.deadline")}
+                  </dt>
+                  <dd className="text-brand-navy mt-0.5 font-medium">
+                    {String(row.deadline ?? "-")}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("dashboard.nav.offers")}</dt>
+                  <dd className="text-brand-navy mt-0.5 font-medium">
+                    {String(row.responses ?? "0")}
+                  </dd>
+                </div>
+              </dl>
+              <OpportunityLifecycleActions
+                {...(row.lifecycle as ComponentProps<
+                  typeof OpportunityLifecycleActions
+                >)}
+              />
+            </div>
+          )}
         />
       ) : null}
     </DirectoryFrame>
@@ -828,7 +918,9 @@ async function OpportunitiesCreatePage() {
         categories={categories.items}
         professions={professions.items}
         companyId={getActiveCompanyId(bootstrap.workspaces)}
-        isProjectOwner={bootstrap.profile.primaryAccountType === "PROJECT_OWNER"}
+        isProjectOwner={
+          bootstrap.profile.primaryAccountType === "PROJECT_OWNER"
+        }
         allowedKinds={allowedKinds}
       />
     </DirectoryFrame>
@@ -890,7 +982,9 @@ async function OpportunitiesEditPage({ id }: { id: string }) {
         categories={categories.items}
         professions={professions.items}
         companyId={getActiveCompanyId(bootstrap.workspaces)}
-        isProjectOwner={bootstrap.profile.primaryAccountType === "PROJECT_OWNER"}
+        isProjectOwner={
+          bootstrap.profile.primaryAccountType === "PROJECT_OWNER"
+        }
         allowedKinds={allowedKinds}
       />
     </DirectoryFrame>
@@ -906,6 +1000,7 @@ async function OpportunitiesDetailPage({ query }: { query: PortalQuery }) {
   const granted = effectivePermissions(bootstrap, opportunityCreatePermissions)
   const canEdit =
     Boolean(detail?.version) &&
+    Boolean(detail && isOpportunityOwned(detail, bootstrap)) &&
     permittedOpportunityKinds(granted).some(
       (kind) => !detail?.kind || kind === detail.kind,
     )
@@ -934,25 +1029,134 @@ async function OpportunitiesDetailPage({ query }: { query: PortalQuery }) {
             ]}
             backHref={portalListPath("opportunities")}
             backLabel={t("common.back")}
-            actions={
-              canEdit ? (
-                <Button asChild variant="secondary">
-                  <Link href={portalEditPath("opportunities", detail.id)}>
-                    {t("dashboard.edit.open")}
-                  </Link>
-                </Button>
-              ) : null
-            }
           />
-          <EntityDetailFields
-            entity="opportunity"
-            data={detail as unknown as Record<string, unknown>}
-            labels={(key) => t(`dashboard.${key}` as "dashboard.fields.title")}
+          <OpportunityDetailSections
+            detail={detail}
+            locale={await getLocale()}
+            t={t}
+          />
+          <OpportunityLifecycleActions
+            id={detail.id}
+            title={detail.title}
+            status={detail.statusV1 ?? detail.publicationStatus}
+            version={detail.version}
+            canEdit={canEdit}
           />
         </div>
       ) : null}
     </DirectoryFrame>
   )
+}
+
+function OpportunityDetailSections({
+  detail,
+  locale,
+  t,
+}: {
+  detail: Awaited<ReturnType<typeof getPortalOpportunity>>
+  locale: string
+  t: Translator
+}) {
+  const rows: Array<[string, string]> = [
+    [t("dashboard.fields.description"), detail.description ?? "-"],
+    [
+      t("dashboard.publish.deadline"),
+      formatPortalDate(detail.deadlineAt, locale),
+    ],
+  ]
+  if (detail.kind !== "WORKFORCE_REQUEST") {
+    rows.push([
+      t("dashboard.fields.budget"),
+      detail.budgetMinMinor || detail.budgetMaxMinor
+        ? `${formatPortalMoney(detail.budgetMinMinor, detail.currency, locale)}${detail.budgetMaxMinor ? ` - ${formatPortalMoney(detail.budgetMaxMinor, detail.currency, locale)}` : ""}`
+        : "-",
+    ])
+  }
+  if (detail.kind === "WORKFORCE_REQUEST") {
+    rows.push(
+      [
+        t("dashboard.publish.workersNeeded"),
+        String(detail.workersNeeded ?? "-"),
+      ],
+      [
+        t("dashboard.fields.employmentType"),
+        String(detail.employmentType ?? "-").replaceAll("_", " "),
+      ],
+      [
+        t("dashboard.fields.workArrangement"),
+        String(detail.workArrangement ?? "-").replaceAll("_", " "),
+      ],
+    )
+  }
+  if (detail.kind === "MATERIAL_SUPPLY") {
+    rows.push(
+      [
+        t("dashboard.publish.quantity"),
+        `${detail.quantity ?? "-"} ${detail.unit ?? ""}`.trim(),
+      ],
+      [
+        t("dashboard.publish.specifications"),
+        specDetail(detail.materialSpecifications),
+      ],
+    )
+  }
+  if (detail.kind === "EQUIPMENT_REQUEST") {
+    rows.push(
+      [
+        t("dashboard.create.duration"),
+        detail.durationDays ? `${detail.durationDays}` : "-",
+      ],
+      [
+        t("dashboard.publish.specifications"),
+        specDetail(detail.equipmentSpecifications),
+      ],
+    )
+  }
+  if (
+    ["SUBCONTRACT_WORK", "PROFESSIONAL_SERVICE"].includes(detail.kind ?? "")
+  ) {
+    rows.push([
+      t("dashboard.create.duration"),
+      detail.durationDays ? `${detail.durationDays}` : "-",
+    ])
+  }
+  return (
+    <Card className="rounded-[28px] p-5 sm:p-6">
+      <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+        {rows.map(([label, value]) => (
+          <div key={label} className="min-w-0">
+            <dt className="text-muted text-xs font-semibold tracking-wide uppercase">
+              {label}
+            </dt>
+            <dd className="text-brand-navy mt-1 text-sm whitespace-pre-wrap">
+              {value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {detail.attachments?.length ? (
+        <div className="border-line mt-6 border-t pt-5">
+          <p className="text-muted text-xs font-semibold tracking-wide uppercase">
+            {t("dashboard.create.uploadAttachments")}
+          </p>
+          <ul className="text-brand-navy mt-2 space-y-1 text-sm">
+            {detail.attachments.map((attachment) => (
+              <li key={attachment.id}>{attachment.name}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </Card>
+  )
+}
+
+function specDetail(value: unknown) {
+  if (typeof value === "string") return value || "-"
+  if (value && typeof value === "object" && "notes" in value) {
+    const notes = (value as { notes?: unknown }).notes
+    return typeof notes === "string" && notes ? notes : "-"
+  }
+  return "-"
 }
 
 export async function TendersModulePage({ query }: { query: PortalQuery }) {
@@ -1003,9 +1207,10 @@ async function TendersListPage({ query }: { query: PortalQuery }) {
       }
     >
       {result ? (
-        <PortalDataTable
+        <PortalServerTable
           empty={t("dashboard.tendersEmpty")}
-          labels={tableLabels(t)}
+          labels={serverTableLabels(t, result.pageInfo.total)}
+          basePath="/dashboard/tenders"
           server={serverTableState(query, result.pageInfo, tenderStatuses)}
           filters={
             <div className="flex flex-wrap gap-2">
@@ -1030,8 +1235,8 @@ async function TendersListPage({ query }: { query: PortalQuery }) {
               className: "min-w-[280px]",
               render: (row) => (
                 <div className="space-y-1">
-                  <p className="font-semibold text-brand-navy">{row.title}</p>
-                  <p className="text-xs text-muted">
+                  <p className="text-brand-navy font-semibold">{row.title}</p>
+                  <p className="text-muted text-xs">
                     {(row.reference as string | null) || "-"}
                   </p>
                 </div>
@@ -1040,7 +1245,12 @@ async function TendersListPage({ query }: { query: PortalQuery }) {
             {
               id: "status",
               header: "Status",
-              render: (row) => <StatusBadge status={String(row.statusLabel ?? "DRAFT")} label={String(row.statusLabelText ?? row.statusLabel ?? "-")} />,
+              render: (row) => (
+                <StatusBadge
+                  status={String(row.statusLabel ?? "DRAFT")}
+                  label={String(row.statusLabelText ?? row.statusLabel ?? "-")}
+                />
+              ),
             },
             {
               id: "method",
@@ -1060,7 +1270,9 @@ async function TendersListPage({ query }: { query: PortalQuery }) {
             {
               id: "lots",
               header: "Lots",
-              render: (row) => <span className="tabular-nums">{String(row.lots ?? "0")}</span>,
+              render: (row) => (
+                <span className="tabular-nums">{String(row.lots ?? "0")}</span>
+              ),
             },
             portalActionsColumn(tableLabels(t).details),
           ]}
@@ -1121,7 +1333,9 @@ async function TendersCreatePage() {
         mode="create"
         categories={categories.items}
         companyId={getActiveCompanyId(bootstrap.workspaces)}
-        isProjectOwner={bootstrap.profile.primaryAccountType === "PROJECT_OWNER"}
+        isProjectOwner={
+          bootstrap.profile.primaryAccountType === "PROJECT_OWNER"
+        }
       />
     </DirectoryFrame>
   )
@@ -1178,7 +1392,9 @@ async function TendersEditPage({ id }: { id: string }) {
         tender={detail}
         categories={categories.items}
         companyId={getActiveCompanyId(bootstrap.workspaces)}
-        isProjectOwner={bootstrap.profile.primaryAccountType === "PROJECT_OWNER"}
+        isProjectOwner={
+          bootstrap.profile.primaryAccountType === "PROJECT_OWNER"
+        }
       />
     </DirectoryFrame>
   )
@@ -1195,20 +1411,18 @@ async function TendersDetailPage({ query }: { query: PortalQuery }) {
     : null
   const canManage = Boolean(
     detail &&
-      bootstrap &&
-      (detail.createdById === bootstrap.profile.id ||
-        (detail.organizationCompanyId != null &&
-          bootstrap.workspaces.some(
-            (workspace) =>
-              workspace.companyId === detail.organizationCompanyId,
-          ))),
+    bootstrap &&
+    (detail.createdById === bootstrap.profile.id ||
+      (detail.organizationCompanyId != null &&
+        bootstrap.workspaces.some(
+          (workspace) => workspace.companyId === detail.organizationCompanyId,
+        ))),
   )
   const canEdit =
     Boolean(detail?.version) &&
-    hasAnyPortalPermission(
-      effectivePermissions(bootstrap, tenderPermissions),
-      ["tenders.edit"],
-    )
+    hasAnyPortalPermission(effectivePermissions(bootstrap, tenderPermissions), [
+      "tenders.edit",
+    ])
   const levelingRows =
     detail && canManage ? await listPortalBidLeveling(detail.id) : { items: [] }
   const activeCompanyId = getActiveCompanyId(bootstrap?.workspaces)
@@ -1253,6 +1467,13 @@ async function TendersDetailPage({ query }: { query: PortalQuery }) {
             data={detail as unknown as Record<string, unknown>}
             labels={(key) => t(`dashboard.${key}` as "dashboard.fields.title")}
           />
+          {canManage && detail.version ? (
+            <TenderLifecycleActions
+              id={detail.id}
+              version={detail.version}
+              status={detail.status}
+            />
+          ) : null}
           {detail.eligibleForOffer ? (
             <Link
               href="/dashboard/offers"
@@ -1313,6 +1534,18 @@ async function TendersDetailPage({ query }: { query: PortalQuery }) {
             </section>
           ) : null}
           {canManage ? <BidLevelingTable rows={levelingRows.items} /> : null}
+          {detail.media?.length ? (
+            <section className="space-y-2">
+              <h2 className="text-brand-navy font-semibold">Documents</h2>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {detail.media.map((item) => (
+                  <Card key={item.assetId} className="p-3">
+                    <DocumentLink assetId={item.assetId} label={item.name} />
+                  </Card>
+                ))}
+              </div>
+            </section>
+          ) : null}
           {collaboration ? (
             <TenderCollaboration
               collaboration={collaboration}
@@ -1327,137 +1560,449 @@ async function TendersDetailPage({ query }: { query: PortalQuery }) {
 
 export async function MembersModulePage({ query }: { query: PortalQuery }) {
   const t = await getTranslations()
+  const locale = await getLocale()
   const bootstrap = await getPortalBootstrap()
   const companyId = getActiveCompanyId(bootstrap?.workspaces)
-  const result = companyId
-    ? await listPortalMembers(companyId, {
-        page: query.page,
-        q: query.q,
-        status: query.status,
-        sort: query.sort,
-      }).catch(() => null)
-    : {
-        items: [],
-        pageInfo: { page: 1, pageSize: 10, total: 0, hasNextPage: false },
-      }
+  const [result, permissions] = await Promise.all([
+    companyId
+      ? listPortalMembers(companyId, {
+          page: query.page,
+          q: query.q,
+          status: query.status,
+          sort: query.sort,
+        }).catch(() => null)
+      : Promise.resolve(null),
+    companyId
+      ? getWorkspacePermissions(companyId).catch(() => null)
+      : Promise.resolve(null),
+  ])
+  const canInvite = Boolean(permissions?.permissions.includes("team.invite"))
+  const canEdit = Boolean(permissions?.permissions.includes("team.role.manage"))
+  const canRemove = Boolean(permissions?.permissions.includes("team.remove"))
+  const emptyResult = {
+    items: [] as PortalMember[],
+    pageInfo: { page: 1, pageSize: 10, total: 0, hasNextPage: false },
+  }
+  const resolved = companyId ? (result ?? null) : emptyResult
   const detail = query.id
-    ? result?.items.find((item) => item.id === query.id)
+    ? resolved?.items.find((item) => item.id === query.id)
     : undefined
-  const permissions = companyId
-    ? await getWorkspacePermissions(companyId)
-    : null
+  const items = resolved?.items ?? []
+  const counts = {
+    ACTIVE: items.filter((item) => item.status === "ACTIVE").length,
+    INVITED: items.filter((item) => item.status === "INVITED").length,
+    PENDING: items.filter((item) => item.status === "PENDING").length,
+    SUSPENDED: items.filter((item) => item.status === "SUSPENDED").length,
+  }
   return (
     <DirectoryFrame
       title={t("dashboard.nav.members")}
       description={t("dashboard.descriptions.members")}
       error={companyId ? !result : false}
       retry={t("dashboard.retry")}
-      empty={!result?.items.length ? t("dashboard.membersEmpty") : undefined}
+      empty={!companyId ? t("dashboard.noWorkspace") : undefined}
+      actions={
+        companyId && !query.id && canInvite ? (
+          <PortalFormDialog
+            triggerLabel={t("dashboard.inviteMemberSend")}
+            title={t("dashboard.inviteMember")}
+            description={t("dashboard.descriptions.members")}
+          >
+            <MemberInviteForm companyId={companyId} />
+          </PortalFormDialog>
+        ) : null
+      }
     >
-      {companyId &&
-      !query.id &&
-      permissions?.permissions.includes("team.invite") ? (
-        <PortalFormDialog
-          triggerLabel={t("dashboard.inviteMemberSend")}
-          title={t("dashboard.inviteMemberSend")}
-          description={t("dashboard.descriptions.members")}
-        >
-          <MemberInviteForm companyId={companyId} />
-        </PortalFormDialog>
-      ) : null}
-      {permissions?.permissions.length ? (
-        <p className="text-muted mb-4 text-sm">
-          {t("dashboard.members.permissions", {
-            count: permissions.permissions.length,
-          })}
-        </p>
-      ) : null}
       {detail ? (
-        <DetailPanel
-          title={detail.displayName ?? detail.invitationEmail ?? detail.role}
-          statuses={[
-            detail.role,
-            detail.status,
-            detail.title,
-            detail.department,
-          ].filter((value): value is string => Boolean(value))}
-          backHref="/dashboard/members"
+        <MemberDetailPanel
+          member={detail}
+          permissions={permissions?.permissions ?? []}
+          locale={locale}
+          companyId={companyId ?? null}
+          canEdit={canEdit}
+          canRemove={canRemove}
           backLabel={t("common.back")}
+          labels={{
+            membershipDetails: t("dashboard.members.membershipDetails"),
+            rolePermissions: t("dashboard.members.rolePermissions"),
+            noPermissions: t("dashboard.members.noPermissions"),
+            externalInvitation: t("dashboard.members.externalInvitation"),
+            primaryWorkspaceMember: t(
+              "dashboard.members.primaryWorkspaceMember",
+            ),
+            workspaceMember: t("dashboard.members.workspaceMember"),
+            role: t("dashboard.members.role"),
+            status: t("dashboard.members.status"),
+            email: t("dashboard.members.email"),
+            jobTitle: t("dashboard.members.jobTitle"),
+            department: t("dashboard.members.department"),
+            invited: t("dashboard.members.invitedOn"),
+            joined: t("dashboard.members.joined"),
+            lastActive: t("dashboard.members.lastActive"),
+            updated: t("dashboard.members.updated"),
+            invitedBy: t("dashboard.members.invitedBy"),
+          }}
         />
-      ) : result ? (
-        <PortalDataTable
-          empty={t("dashboard.membersEmpty")}
-          labels={tableLabels(t)}
-          server={serverTableState(query, result.pageInfo, memberStatuses)}
-          columns={[
-            {
-              id: "member",
-              header: "Member",
-              className: "min-w-[240px]",
-              render: (row) => (
-                <div className="space-y-1">
-                  <p className="font-semibold text-brand-navy">{row.title}</p>
-                  <p className="text-xs text-muted">{String(row.email ?? "-")}</p>
+      ) : resolved ? (
+        <div className="space-y-5">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {(
+              [
+                ["ACTIVE", t("dashboard.members.active")],
+                ["INVITED", t("dashboard.members.invited")],
+                ["PENDING", t("dashboard.members.pending")],
+                ["SUSPENDED", t("dashboard.members.suspended")],
+              ] as const
+            ).map(([status, label]) => (
+              <div
+                key={status}
+                className="border-line/70 rounded-2xl border bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.05)]"
+              >
+                <p className="text-muted-foreground text-xs font-semibold uppercase">
+                  {label}
+                </p>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <p className="text-brand-navy text-2xl font-bold tabular-nums">
+                    {counts[status]}
+                  </p>
+                  <StatusBadge
+                    status={status}
+                    label={status.replaceAll("_", " ")}
+                  />
                 </div>
-              ),
-            },
-            {
-              id: "role",
-              header: "Role",
-              render: (row) => String(row.roleLabel ?? "-"),
-            },
-            {
-              id: "jobTitle",
-              header: "Job title",
-              render: (row) => String(row.jobTitle ?? "-"),
-            },
-            {
-              id: "status",
-              header: "Status",
-              render: (row) => <StatusBadge status={String(row.statusLabel ?? "PENDING")} label={String(row.statusLabelText ?? row.statusLabel ?? "-")} />,
-            },
-            {
-              id: "joined",
-              header: "Joined",
-              render: (row) => String(row.joined ?? "-"),
-            },
-            portalActionsColumn(tableLabels(t).details),
-          ]}
-          rows={result.items.map((item) => ({
-            id: item.id,
-            title: item.displayName ?? item.invitationEmail ?? item.role,
-            email: item.invitationEmail,
-            roleLabel: item.role.replaceAll("_", " "),
-            jobTitle: [item.title, item.department].filter(Boolean).join(" - ") || "-",
-            statusLabel: item.status,
-            statusLabelText: item.status.replaceAll("_", " "),
-            joined: item.joinedAt ? formatPortalDate(item.joinedAt) : "-",
-            statuses: [item.role, item.status],
-            detailHref: `/dashboard/members/${item.id}`,
-            actions:
-              companyId &&
-              (permissions?.permissions.includes("team.role.manage") ||
-                permissions?.permissions.includes("team.remove")) ? (
-                <MemberActions
-                  companyId={companyId}
-                  membershipId={item.id}
-                  name={item.displayName ?? item.invitationEmail ?? item.role}
-                  role={item.role}
-                  title={item.title}
-                  department={item.department}
-                  version={item.version}
-                  canEdit={Boolean(
-                    permissions?.permissions.includes("team.role.manage"),
-                  )}
-                  canRemove={Boolean(
-                    permissions?.permissions.includes("team.remove"),
-                  )}
-                />
-              ) : undefined,
-          }))}
-        />
+              </div>
+            ))}
+          </div>
+          <PortalServerTable
+            empty={t("dashboard.membersEmpty")}
+            emptyDescription={t("dashboard.members.emptyDescription")}
+            labels={serverTableLabels(t, resolved.pageInfo.total)}
+            basePath="/dashboard/members"
+            server={serverTableState(query, resolved.pageInfo, memberStatuses)}
+            columns={[
+              {
+                id: "member",
+                header: t("dashboard.members.member"),
+                className: "min-w-[260px]",
+                render: (row) => (
+                  <div className="flex min-w-0 items-start gap-3">
+                    <MemberAvatar name={String(row.title ?? "")} />
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <p className="text-brand-navy truncate font-semibold">
+                        {row.title}
+                      </p>
+                      <p className="text-muted truncate text-xs">
+                        {String(row.email ?? "-")}
+                      </p>
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                id: "emailStatus",
+                header: t("dashboard.members.email"),
+                className: "min-w-[170px]",
+                render: (row) => (
+                  <div className="min-w-0">
+                    <p className="text-brand-navy truncate text-sm">
+                      {String(row.email ?? "-")}
+                    </p>
+                    <p className="text-muted mt-1 text-xs">
+                      {String(row.emailState ?? "-")}
+                    </p>
+                  </div>
+                ),
+              },
+              {
+                id: "role",
+                header: t("dashboard.members.companyRole"),
+                render: (row) => String(row.roleLabel ?? "-"),
+              },
+              {
+                id: "jobTitle",
+                header: t("dashboard.members.jobTitle"),
+                render: (row) => String(row.jobTitle ?? "-"),
+              },
+              {
+                id: "status",
+                header: t("dashboard.members.status"),
+                render: (row) => (
+                  <StatusBadge
+                    status={String(row.statusLabel ?? "PENDING")}
+                    label={String(
+                      row.statusLabelText ?? row.statusLabel ?? "-",
+                    )}
+                  />
+                ),
+              },
+              {
+                id: "joined",
+                header: t("dashboard.members.joinedInvited"),
+                render: (row) => String(row.joined ?? "-"),
+              },
+              {
+                id: "actions",
+                header: t("dashboard.table.actions"),
+                cellClassName: "w-[1%] whitespace-nowrap",
+                render: (row) => row.actions,
+              },
+            ]}
+            mobileCard={(row) => (
+              <div className="flex items-start gap-3">
+                <MemberAvatar name={String(row.title ?? "")} />
+                <div className="min-w-0 flex-1 space-y-1">
+                  <p className="text-brand-navy truncate font-semibold">
+                    {row.title}
+                  </p>
+                  <p className="text-muted truncate text-xs">
+                    {String(row.email ?? "-")}
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <StatusBadge
+                      status={String(row.statusLabel)}
+                      label={String(row.statusLabelText)}
+                    />
+                    <span className="text-muted border-line rounded-full border px-2 py-0.5 text-xs">
+                      {String(row.roleLabel)}
+                    </span>
+                  </div>
+                </div>
+                {row.actions}
+              </div>
+            )}
+            rows={items.map((item) => {
+              const displayName =
+                item.displayName ??
+                item.invitationEmail ??
+                item.email ??
+                item.role
+              return {
+                id: item.id,
+                title: displayName,
+                email: item.email ?? item.invitationEmail,
+                emailState:
+                  item.status === "INVITED"
+                    ? t("dashboard.members.invited")
+                    : t("dashboard.members.joined"),
+                roleLabel: item.role.replaceAll("_", " "),
+                jobTitle:
+                  [item.title, item.department].filter(Boolean).join(" - ") ||
+                  "-",
+                statusLabel: item.status,
+                statusLabelText: item.status.replaceAll("_", " "),
+                joined: item.joinedAt
+                  ? formatPortalDate(item.joinedAt, locale)
+                  : item.invitedAt
+                    ? formatPortalDate(item.invitedAt, locale)
+                    : "-",
+                statuses: [item.role, item.status],
+                detailHref: `/dashboard/members/${item.id}`,
+                actions:
+                  companyId && (canInvite || canEdit || canRemove) ? (
+                    <MemberActions
+                      companyId={companyId}
+                      membershipId={item.id}
+                      detailHref={`/dashboard/members/${item.id}`}
+                      name={displayName}
+                      role={item.role}
+                      status={item.status}
+                      title={item.title}
+                      department={item.department}
+                      version={item.version}
+                      canEdit={canEdit}
+                      canResend={canInvite}
+                      canRemove={canRemove}
+                    />
+                  ) : undefined,
+              }
+            })}
+          />
+        </div>
       ) : null}
     </DirectoryFrame>
+  )
+}
+
+function initialsOf(name: string) {
+  const parts = name
+    .split(/\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+  if (!parts.length) return "?"
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("")
+}
+
+function MemberAvatar({ name }: { name: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="bg-primary/10 text-primary inline-flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+    >
+      {initialsOf(name)}
+    </span>
+  )
+}
+
+function serverTableLabels(
+  t: Translator,
+  total?: number,
+): PortalServerTableLabels {
+  return {
+    search: t("dashboard.table.search"),
+    status: t("dashboard.table.status"),
+    allStatuses: t("dashboard.table.allStatuses"),
+    sort: t("dashboard.table.sort"),
+    newest: t("dashboard.table.newest"),
+    titleAsc: t("dashboard.table.titleAsc"),
+    previous: t("dashboard.table.previous"),
+    next: t("dashboard.table.next"),
+    totalRecords:
+      total === undefined
+        ? undefined
+        : t("dashboard.projects.table.totalRecords", { count: total }),
+    rows: t("dashboard.table.showing"),
+  }
+}
+
+function MemberDetailPanel({
+  member,
+  permissions,
+  locale,
+  companyId,
+  canEdit,
+  canRemove,
+  backLabel,
+  labels,
+}: {
+  member: PortalMember
+  permissions: string[]
+  locale: string
+  companyId: string | null
+  canEdit: boolean
+  canRemove: boolean
+  backLabel: string
+  labels: {
+    membershipDetails: string
+    rolePermissions: string
+    noPermissions: string
+    externalInvitation: string
+    primaryWorkspaceMember: string
+    workspaceMember: string
+    role: string
+    status: string
+    email: string
+    jobTitle: string
+    department: string
+    invited: string
+    joined: string
+    lastActive: string
+    updated: string
+    invitedBy: string
+  }
+}) {
+  const name =
+    member.displayName ?? member.invitationEmail ?? member.email ?? member.role
+  const facts = [
+    [labels.role, member.role.replaceAll("_", " ")],
+    [labels.status, member.status.replaceAll("_", " ")],
+    [labels.email, member.email ?? member.invitationEmail ?? "-"],
+    [labels.jobTitle, member.title ?? "-"],
+    [labels.department, member.department ?? "-"],
+    [labels.invited, formatPortalDate(member.invitedAt, locale)],
+    [labels.joined, formatPortalDate(member.joinedAt, locale)],
+    [labels.lastActive, formatPortalDate(member.lastAccessedAt, locale)],
+    [labels.updated, formatPortalDate(member.updatedAt, locale)],
+    [labels.invitedBy, member.invitedByName ?? "-"],
+  ]
+  return (
+    <div className="space-y-5">
+      <div className="border-line/70 flex flex-wrap items-start justify-between gap-3 rounded-xl border bg-white p-5 shadow-sm">
+        <div className="flex min-w-0 items-start gap-4">
+          <MemberAvatar name={name} />
+          <div className="min-w-0 space-y-2">
+            <Button asChild size="sm" variant="secondary">
+              <Link href="/dashboard/members">{backLabel}</Link>
+            </Button>
+            <div>
+              <h2 className="text-brand-navy truncate text-xl font-bold">
+                {name}
+              </h2>
+              <p className="text-muted text-sm">
+                {member.externalInvite
+                  ? labels.externalInvitation
+                  : member.isPrimary
+                    ? labels.primaryWorkspaceMember
+                    : labels.workspaceMember}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <StatusBadge
+                status={member.status}
+                label={member.status.replaceAll("_", " ")}
+              />
+              <span className="text-muted border-line rounded-full border px-2.5 py-1 text-xs font-semibold">
+                {member.role.replaceAll("_", " ")}
+              </span>
+            </div>
+          </div>
+        </div>
+        {companyId ? (
+          <MemberActions
+            companyId={companyId}
+            membershipId={member.id}
+            name={name}
+            role={member.role}
+            status={member.status}
+            title={member.title}
+            department={member.department}
+            version={member.version}
+            canEdit={canEdit}
+            canRemove={canRemove}
+          />
+        ) : null}
+      </div>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.45fr)]">
+        <div className="border-line/70 rounded-xl border bg-white p-5 shadow-sm">
+          <h3 className="text-brand-navy text-sm font-bold">
+            {labels.membershipDetails}
+          </h3>
+          <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+            {facts.map(([label, value]) => (
+              <div key={label} className="rounded-lg bg-slate-50 px-3 py-2">
+                <dt className="text-muted text-xs font-semibold uppercase">
+                  {label}
+                </dt>
+                <dd className="text-brand-navy mt-1 text-sm font-medium">
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <div className="border-line/70 rounded-xl border bg-white p-5 shadow-sm">
+          <h3 className="text-brand-navy text-sm font-bold">
+            {labels.rolePermissions}
+          </h3>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {permissions.length ? (
+              permissions.map((permission) => (
+                <span
+                  key={permission}
+                  className="text-muted border-line rounded-full border px-2.5 py-1 text-xs"
+                >
+                  {permission}
+                </span>
+              ))
+            ) : (
+              <p className="text-muted text-sm">{labels.noPermissions}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -1513,9 +2058,10 @@ async function CatalogueListPage({ query }: { query: PortalQuery }) {
       }
     >
       {result ? (
-        <PortalDataTable
+        <PortalServerTable
           empty={t("dashboard.catalogueEmpty")}
-          labels={tableLabels(t)}
+          labels={serverTableLabels(t, result.pageInfo.total)}
+          basePath="/dashboard/catalogue"
           server={serverTableState(query, result.pageInfo, undefined, [
             "title",
           ])}
@@ -1526,8 +2072,8 @@ async function CatalogueListPage({ query }: { query: PortalQuery }) {
               className: "min-w-[260px]",
               render: (row) => (
                 <div className="space-y-1">
-                  <p className="font-semibold text-brand-navy">{row.title}</p>
-                  <p className="line-clamp-2 text-xs text-muted">
+                  <p className="text-brand-navy font-semibold">{row.title}</p>
+                  <p className="text-muted line-clamp-2 text-xs">
                     {String(row.description ?? "-")}
                   </p>
                 </div>
@@ -1550,7 +2096,11 @@ async function CatalogueListPage({ query }: { query: PortalQuery }) {
             title: item.name,
             description: item.description,
             offeringTypeLabel: item.offeringType.replaceAll("_", " "),
-            categoryLabel: taxonomyName(categories.items, item.categoryId, locale),
+            categoryLabel: taxonomyName(
+              categories.items,
+              item.categoryId,
+              locale,
+            ),
             statuses: [item.offeringType],
             detailHref: portalDetailPath("catalogue", item.id),
           }))}
@@ -1596,7 +2146,9 @@ async function CatalogueEditPage({ id }: { id: string }) {
   const t = await getTranslations()
   const bootstrap = await getPortalBootstrap()
   const companyId = getActiveCompanyId(bootstrap?.workspaces)
-  const detail = companyId ? await getPortalCatalogue(companyId, id).catch(() => null) : null
+  const detail = companyId
+    ? await getPortalCatalogue(companyId, id).catch(() => null)
+    : null
   if (!companyId) {
     return (
       <DirectoryFrame
@@ -1774,9 +2326,10 @@ async function EquipmentListPage({ query }: { query: PortalQuery }) {
         companyId={companyId}
       />
       {result ? (
-        <PortalDataTable
+        <PortalServerTable
           empty={t("dashboard.equipmentEmpty")}
-          labels={tableLabels(t)}
+          labels={serverTableLabels(t, result.pageInfo.total)}
+          basePath="/dashboard/equipment"
           server={serverTableState(query, result.pageInfo, equipmentStatuses)}
           columns={[
             {
@@ -1785,8 +2338,10 @@ async function EquipmentListPage({ query }: { query: PortalQuery }) {
               className: "min-w-[260px]",
               render: (row) => (
                 <div className="space-y-1">
-                  <p className="font-semibold text-brand-navy">{row.title}</p>
-                  <p className="text-xs text-muted">{String(row.modelLabel ?? "-")}</p>
+                  <p className="text-brand-navy font-semibold">{row.title}</p>
+                  <p className="text-muted text-xs">
+                    {String(row.modelLabel ?? "-")}
+                  </p>
                 </div>
               ),
             },
@@ -1798,7 +2353,12 @@ async function EquipmentListPage({ query }: { query: PortalQuery }) {
             {
               id: "status",
               header: "Status",
-              render: (row) => <StatusBadge status={String(row.statusLabel ?? "DRAFT")} label={String(row.statusLabelText ?? row.statusLabel ?? "-")} />,
+              render: (row) => (
+                <StatusBadge
+                  status={String(row.statusLabel ?? "DRAFT")}
+                  label={String(row.statusLabelText ?? row.statusLabel ?? "-")}
+                />
+              ),
             },
             {
               id: "condition",
@@ -1815,17 +2375,19 @@ async function EquipmentListPage({ query }: { query: PortalQuery }) {
           rows={result.items.map((item) => ({
             id: item.id,
             title: item.name,
-            modelLabel: [item.brand, item.model].filter(Boolean).join(" - ") || item.serialNumber || "-",
+            modelLabel:
+              [item.brand, item.model].filter(Boolean).join(" - ") ||
+              item.serialNumber ||
+              "-",
             listingTypeLabel: item.listingType.replaceAll("_", " "),
             statusLabel: item.status,
             statusLabelText: item.status.replaceAll("_", " "),
             conditionLabel: item.condition?.replaceAll("_", " ") ?? "-",
-            pricing:
-              item.dailyRateMinor
-                ? formatPortalMoney(item.dailyRateMinor, item.currency, locale)
-                : item.salePriceMinor
-                  ? formatPortalMoney(item.salePriceMinor, item.currency, locale)
-                  : "-",
+            pricing: item.dailyRateMinor
+              ? formatPortalMoney(item.dailyRateMinor, item.currency, locale)
+              : item.salePriceMinor
+                ? formatPortalMoney(item.salePriceMinor, item.currency, locale)
+                : "-",
             statuses: [item.listingType, item.status, item.publicationStatus],
             detailHref: portalDetailPath("equipment", item.id),
           }))}
@@ -1988,10 +2550,34 @@ async function EquipmentDetailPage({ query }: { query: PortalQuery }) {
 
 export async function VerificationModulePage() {
   const t = await getTranslations()
+  const locale = await getLocale()
   const [overview, status] = await Promise.all([
-    getPortalVerification(),
-    getPortalVerificationStatus(),
+    getPortalVerification().catch(() => null),
+    getPortalVerificationStatus().catch(() => null),
   ])
+  const latestDecision = status?.submission?.decisions[0]
+  const statusValue =
+    status?.submission?.status ??
+    status?.verificationStatus ??
+    overview?.submission?.status ??
+    overview?.verificationStatus ??
+    "NOT_SUBMITTED"
+  const requiredCount =
+    overview?.requirements.filter((item) => item.required).length ?? 0
+  const fulfilledRequiredCount =
+    overview?.requirements.filter((item) => item.required && item.uploaded)
+      .length ?? 0
+  const blockedReasons = verificationBlockedReasons({
+    documentCount: status?.documents.length ?? 0,
+    hasPolicy: Boolean(overview?.requirements.length || overview?.submission),
+    inReview: ["SUBMITTED", "UNDER_REVIEW", "PENDING"].includes(statusValue),
+    missingRequired: overview?.missingRequired.length ?? 0,
+    statusValue,
+    t,
+    terminal: ["VERIFIED", "APPROVED", "REJECTED", "EXPIRED"].includes(
+      statusValue,
+    ),
+  })
   return (
     <DirectoryFrame
       title={t("dashboard.nav.verification")}
@@ -1999,10 +2585,34 @@ export async function VerificationModulePage() {
       error={!overview && !status}
       retry={t("dashboard.retry")}
     >
-      {overview ? <VerificationOverview overview={overview} /> : null}
       {status ? (
         <div className="space-y-6">
-          <Card className="p-5">
+          <VerificationStatusHero
+            accountType={overview?.primaryAccountType}
+            body={verificationStatusBody(statusValue, blockedReasons, t)}
+            latestDecision={latestDecision?.decision}
+            status={statusValue}
+            submittedAt={
+              status.submission?.submittedAt ??
+              overview?.submission?.submittedAt
+            }
+            title={verificationStatusTitle(statusValue, t)}
+          />
+          <VerificationProgressGrid
+            fulfilledRequiredCount={fulfilledRequiredCount}
+            latestDecision={latestDecision}
+            locale={locale}
+            overview={overview}
+            requiredCount={requiredCount}
+            status={status}
+          />
+          <VerificationNextAction
+            blockedReasons={blockedReasons}
+            issueCount={status.openIssues.length}
+            status={statusValue}
+          />
+          {overview ? <VerificationOverview overview={overview} /> : null}
+          <Card className="hidden p-5">
             <p className="text-brand-navy text-lg font-semibold">
               {t("dashboard.verification.status")}: {status.verificationStatus}
             </p>
@@ -2013,12 +2623,12 @@ export async function VerificationModulePage() {
               </p>
             ) : null}
           </Card>
-          {status.submission?.checklist.length ? (
+          {false && status?.submission?.checklist.length ? (
             <Card className="space-y-3 p-5">
               <h2 className="text-brand-navy font-semibold">
                 {t("dashboard.verification.checklist")}
               </h2>
-              {status.submission.checklist.map((item) => (
+              {status?.submission?.checklist.map((item) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between text-sm"
@@ -2076,26 +2686,272 @@ export async function VerificationModulePage() {
             </Card>
           ) : null}
           <VerificationSubmitPanel
+            disabledReasons={blockedReasons}
             documentIds={status.documents.map((item) => item.id)}
+            fulfilledRequiredCount={fulfilledRequiredCount}
+            issueCount={status.openIssues.length}
+            requiredCount={requiredCount}
           />
-          <PortalDataTable
+          <VerificationDocumentsTable
+            documents={status.documents}
             empty={t("dashboard.documentsEmpty")}
             labels={tableLabels(t)}
-            rows={status.documents.map((item) => ({
-              id: item.id,
-              title: item.originalName,
-              secondary: item.expiresAt
-                ? `${t("dashboard.documents.expires")} ${item.expiresAt}`
-                : undefined,
-              statuses: [item.documentType ?? "", item.status],
-              actions: (
-                <DocumentLink assetId={item.id} label={item.originalName} />
-              ),
-            }))}
+            locale={locale}
           />
         </div>
       ) : null}
     </DirectoryFrame>
+  )
+}
+
+type PortalVerificationStatusResult = Awaited<
+  ReturnType<typeof getPortalVerificationStatus>
+>
+
+function verificationBlockedReasons({
+  documentCount,
+  hasPolicy,
+  inReview,
+  missingRequired,
+  statusValue,
+  t,
+  terminal,
+}: {
+  documentCount: number
+  hasPolicy: boolean
+  inReview: boolean
+  missingRequired: number
+  statusValue: string
+  t: Translator
+  terminal: boolean
+}) {
+  const reasons: string[] = []
+  if (!hasPolicy) reasons.push(t("dashboard.verification.blocked.noPolicy"))
+  if (!documentCount) {
+    reasons.push(t("dashboard.verification.blocked.noDocuments"))
+  }
+  if (missingRequired) {
+    reasons.push(
+      t("dashboard.verification.blocked.missingRequired", {
+        count: missingRequired,
+      }),
+    )
+  }
+  if (inReview) reasons.push(t("dashboard.verification.blocked.inReview"))
+  if (terminal && statusValue !== "REJECTED" && statusValue !== "EXPIRED") {
+    reasons.push(t("dashboard.verification.blocked.terminal"))
+  }
+  return reasons
+}
+
+function verificationStatusTitle(status: string, t: Translator) {
+  const key = status.toUpperCase()
+  if (["SUBMITTED", "PENDING", "UNDER_REVIEW"].includes(key)) {
+    return t("dashboard.verification.statusTitles.PENDING")
+  }
+  if (key === "CHANGES_REQUESTED") {
+    return t("dashboard.verification.statusTitles.CHANGES_REQUESTED")
+  }
+  if (["VERIFIED", "APPROVED"].includes(key)) {
+    return t("dashboard.verification.statusTitles.VERIFIED")
+  }
+  if (key === "REJECTED") {
+    return t("dashboard.verification.statusTitles.REJECTED")
+  }
+  if (key === "EXPIRED") return t("dashboard.verification.statusTitles.EXPIRED")
+  return t("dashboard.verification.statusTitles.NOT_SUBMITTED")
+}
+
+function verificationStatusBody(
+  status: string,
+  blockedReasons: string[],
+  t: Translator,
+) {
+  const key = status.toUpperCase()
+  if (["SUBMITTED", "PENDING", "UNDER_REVIEW"].includes(key)) {
+    return t("dashboard.verification.statusBodies.PENDING")
+  }
+  if (key === "CHANGES_REQUESTED") {
+    return t("dashboard.verification.statusBodies.CHANGES_REQUESTED")
+  }
+  if (["VERIFIED", "APPROVED"].includes(key)) {
+    return t("dashboard.verification.statusBodies.VERIFIED")
+  }
+  if (key === "REJECTED")
+    return t("dashboard.verification.statusBodies.REJECTED")
+  if (key === "EXPIRED") return t("dashboard.verification.statusBodies.EXPIRED")
+  return blockedReasons.length
+    ? t("dashboard.verification.statusBodies.BLOCKED")
+    : t("dashboard.verification.statusBodies.READY")
+}
+
+function VerificationStatusHero({
+  accountType,
+  body,
+  latestDecision,
+  status,
+  submittedAt,
+  title,
+}: {
+  accountType?: string | null
+  body: string
+  latestDecision?: string
+  status: string
+  submittedAt?: string | null
+  title: string
+}) {
+  return (
+    <Card className="overflow-hidden rounded-[28px] border-slate-200/80 bg-[linear-gradient(135deg,#071A33,#0D4E66)] p-5 text-white shadow-sm sm:p-7">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-3xl">
+          <div className="flex flex-wrap gap-2">
+            <StatusBadge status={status} label={status.replaceAll("_", " ")} />
+            {accountType ? (
+              <StatusBadge
+                status="ACTIVE"
+                label={accountType.replaceAll("_", " ")}
+              />
+            ) : null}
+          </div>
+          <h2 className="mt-4 text-2xl font-bold sm:text-3xl">{title}</h2>
+          <p className="mt-3 text-sm leading-6 text-white/80 sm:text-base">
+            {body}
+          </p>
+        </div>
+        <div className="min-w-[180px] rounded-2xl border border-white/15 bg-white/10 p-4 text-sm">
+          <p className="text-white/65">Latest activity</p>
+          <p className="mt-1 font-semibold">
+            {(latestDecision ?? status).replaceAll("_", " ")}
+          </p>
+          {submittedAt ? (
+            <p className="mt-2 text-xs text-white/65">
+              {formatPortalDate(submittedAt)}
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+async function VerificationProgressGrid({
+  fulfilledRequiredCount,
+  latestDecision,
+  locale,
+  overview,
+  requiredCount,
+  status,
+}: {
+  fulfilledRequiredCount: number
+  latestDecision?: NonNullable<
+    PortalVerificationStatusResult["submission"]
+  >["decisions"][number]
+  locale: string
+  overview: PortalVerificationOverview | null
+  requiredCount: number
+  status: PortalVerificationStatusResult
+}) {
+  const t = await getTranslations()
+  const openRequest = overview?.requests[0]
+  const cards = [
+    {
+      label: t("dashboard.trust.accountType"),
+      value: (overview?.primaryAccountType ?? "-").replaceAll("_", " "),
+    },
+    {
+      label: t("dashboard.verification.progress.policy"),
+      value:
+        overview?.submission?.policyName ??
+        (overview?.requirements.length
+          ? t("dashboard.verification.progress.activePolicy")
+          : "-"),
+    },
+    {
+      label: t("dashboard.verification.progress.required"),
+      value: `${fulfilledRequiredCount}/${requiredCount}`,
+    },
+    {
+      detail: openRequest?.dueAt
+        ? `${t("dashboard.trust.due")} ${formatPortalDate(
+            openRequest.dueAt,
+            locale,
+          )}`
+        : undefined,
+      label: t("dashboard.verification.progress.review"),
+      value: openRequest
+        ? slaLabel(openRequest.slaState, t)
+        : (status.submission?.status ?? status.verificationStatus).replaceAll(
+            "_",
+            " ",
+          ),
+    },
+    {
+      label: t("dashboard.verification.progress.cycle"),
+      value: status.submission ? String(status.submission.cycle) : "-",
+    },
+    {
+      label: t("dashboard.verification.progress.latestDecision"),
+      value: latestDecision?.decision.replaceAll("_", " ") ?? "-",
+    },
+  ]
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {cards.map((item) => (
+        <Card key={item.label} className="rounded-[22px] p-4">
+          <p className="text-muted text-xs font-semibold tracking-wide uppercase">
+            {item.label}
+          </p>
+          <p className="text-brand-navy mt-2 text-xl font-bold">{item.value}</p>
+          {item.detail ? (
+            <p className="text-muted mt-1 text-xs">{item.detail}</p>
+          ) : null}
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+async function VerificationNextAction({
+  blockedReasons,
+  issueCount,
+  status,
+}: {
+  blockedReasons: string[]
+  issueCount: number
+  status: string
+}) {
+  const t = await getTranslations()
+  const key = status.toUpperCase()
+  const action = ["SUBMITTED", "PENDING", "UNDER_REVIEW"].includes(key)
+    ? t("dashboard.verification.next.wait")
+    : issueCount
+      ? t("dashboard.verification.next.resolveIssues")
+      : blockedReasons.length
+        ? t("dashboard.verification.next.upload")
+        : ["VERIFIED", "APPROVED"].includes(key)
+          ? t("dashboard.verification.next.verified")
+          : t("dashboard.verification.next.submit")
+  return (
+    <Card className="border-primary/15 bg-light-blue/70 rounded-[24px] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="text-primary text-xs font-bold tracking-wide uppercase">
+            {t("dashboard.verification.next.title")}
+          </p>
+          <p className="text-brand-navy mt-2 text-lg font-semibold">{action}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="secondary" size="sm">
+            <Link href="/dashboard/profile?tab=documents">
+              {t("dashboard.verification.manageDocuments")}
+            </Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/dashboard/support">{t("dashboard.nav.support")}</Link>
+          </Button>
+        </div>
+      </div>
+    </Card>
   )
 }
 
@@ -2106,15 +2962,15 @@ async function VerificationOverview({
 }) {
   const t = await getTranslations()
   return (
-    <div className="space-y-5">
+    <div className="border-line/70 space-y-5 rounded-[26px] border bg-white/85 p-5 shadow-[0_16px_42px_rgba(15,23,42,0.06)]">
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border p-3">
+        <div className="border-line/70 rounded-2xl border bg-slate-50/70 p-4">
           <p className="text-muted text-xs">{t("dashboard.trust.status")}</p>
           <p className="text-brand-navy mt-1 font-semibold">
             {overview.verificationStatus.replaceAll("_", " ")}
           </p>
         </div>
-        <div className="rounded-xl border p-3">
+        <div className="border-line/70 rounded-2xl border bg-slate-50/70 p-4">
           <p className="text-muted text-xs">
             {t("dashboard.trust.accountType")}
           </p>
@@ -2130,16 +2986,30 @@ async function VerificationOverview({
           {overview.submission.status.replaceAll("_", " ")}
         </p>
       ) : null}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <p className="text-brand-navy text-sm font-semibold">
           {t("dashboard.trust.requirements")}
         </p>
         {overview.requirements.map((item) => (
           <div
             key={item.documentType}
-            className="flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3"
+            className="border-line/70 hover:border-primary/25 flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white px-4 py-3 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-colors hover:bg-slate-50/60"
           >
-            <DirectoryStatus value={item.documentType} />
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-xl text-xs font-bold">
+                {item.documentType.slice(0, 2)}
+              </span>
+              <div className="min-w-0">
+                <p className="text-brand-navy truncate text-sm font-semibold">
+                  {item.documentType.replaceAll("_", " ")}
+                </p>
+                <p className="text-muted mt-0.5 text-xs">
+                  {item.expiryRequired
+                    ? t("dashboard.trust.expiryRequired")
+                    : t("dashboard.verification.optional")}
+                </p>
+              </div>
+            </div>
             <div className="flex flex-wrap gap-2">
               <DirectoryStatus
                 value={
@@ -2148,14 +3018,11 @@ async function VerificationOverview({
                     : t("dashboard.trust.missing")
                 }
               />
-              {item.expiryRequired ? (
-                <DirectoryStatus value={t("dashboard.trust.expiryRequired")} />
-              ) : null}
             </div>
           </div>
         ))}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         <p className="text-brand-navy text-sm font-semibold">
           {t("dashboard.trust.openReviews")}
         </p>
@@ -2163,10 +3030,12 @@ async function VerificationOverview({
           overview.requests.map((item) => (
             <div
               key={item.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3"
+              className="border-line/70 hover:border-success/25 flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white px-4 py-3 shadow-[0_10px_28px_rgba(15,23,42,0.04)] transition-colors hover:bg-slate-50/60"
             >
-              <div>
-                <DirectoryStatus value={item.subjectType} />
+              <div className="min-w-0">
+                <p className="text-brand-navy truncate text-sm font-semibold">
+                  {item.subjectType.replaceAll("_", " ")}
+                </p>
                 <p className="text-muted mt-1 text-xs">
                   {t("dashboard.trust.due")} {item.dueAt ?? "—"} ·{" "}
                   {item.priority}
@@ -2214,10 +3083,28 @@ function DirectoryStatus({ value }: { value: string | null | undefined }) {
   )
 }
 
-function VerificationSubmitPanel({ documentIds }: { documentIds: string[] }) {
+function VerificationSubmitPanel({
+  disabledReasons = [],
+  documentIds,
+  fulfilledRequiredCount = 0,
+  issueCount = 0,
+  requiredCount = 0,
+}: {
+  disabledReasons?: string[]
+  documentIds: string[]
+  fulfilledRequiredCount?: number
+  issueCount?: number
+  requiredCount?: number
+}) {
   return (
-    <Card className="p-5">
-      <VerificationSubmitClient documentIds={documentIds} />
+    <Card className="rounded-[24px] p-5">
+      <VerificationSubmitClient
+        disabledReasons={disabledReasons}
+        documentIds={documentIds}
+        fulfilledRequiredCount={fulfilledRequiredCount}
+        issueCount={issueCount}
+        requiredCount={requiredCount}
+      />
     </Card>
   )
 }
@@ -2304,13 +3191,7 @@ function DirectoryFrame({
         breadcrumbs={breadcrumbs}
         actions={actions}
       />
-        {framed ? (
-          <Card className="space-y-4 p-6 sm:p-7">
-            {body}
-          </Card>
-        ) : (
-        body
-      )}
+      {framed ? <Card className="space-y-4 p-6 sm:p-7">{body}</Card> : body}
     </div>
   )
 }

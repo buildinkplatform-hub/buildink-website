@@ -96,6 +96,36 @@
       }
     },
     "offersEmpty": "لا توجد عروض لهذا الحساب بعد.",
+    "offers": {
+      "board": {
+        "offer": "العرض",
+        "amount": "المبلغ",
+        "receivedTitle": "العروض المستلمة",
+        "receivedDescription": "راجع العروض المستلمة لمساحة العمل وقارنها واتخذ قرارًا بشأنها.",
+        "decisionWorkflow": "سير القرار",
+        "submissionHistory": "سجل التقديم",
+        "revisions": "المراجعات",
+        "noRevisions": "لا توجد مراجعات بعد.",
+        "reference": "المرجع",
+        "direction": "الاتجاه",
+        "submitted": "تم الإرسال",
+        "notSubmitted": "لم يتم الإرسال",
+        "inbox": { "submitted": "مرسل", "received": "مستلم" },
+        "totalRecords": "إجمالي السجلات",
+        "rows": "صفوف"
+      },
+      "statuses": {
+        "DRAFT": "مسودة",
+        "SUBMITTED": "مرسل",
+        "UNDER_REVIEW": "قيد المراجعة",
+        "CHANGES_REQUESTED": "تعديلات مطلوبة",
+        "SHORTLISTED": "القائمة المختصرة",
+        "ACCEPTED": "مقبول",
+        "REJECTED": "مرفوض",
+        "WITHDRAWN": "مسحوب",
+        "EXPIRED": "منتهي"
+      }
+    },
     "applicationsEmpty": "لا توجد طلبات توظيف لهذا الحساب بعد.",
     "engagementsEmpty": "لا توجد تعاونات لهذا الحساب بعد.",
     "messagesEmpty": "تظهر المحادثات بعد تقديم عرض أو طلب.",
@@ -124,7 +154,8 @@
       "workspace": "مساحة العمل",
       "members": "الأعضاء",
       "catalogue": "الكتالوج",
-      "workforce": "القوى العاملة",
+      "workforce": "التوظيف والأفراد",
+      "operations": "العمليات",
       "subscription": "الاشتراك",
       "notifications": "الإشعارات",
       "settings": "الإعدادات",
@@ -133,6 +164,7 @@
       "enquiries": "الاستفسارات",
       "availability": "التوفر"
     },
+    "navGroups": { "people": "التوظيف والأفراد", "operations": "العمليات" },
     "descriptions": {
       "profile": "أدر هويتك العامة وبيانات التواصل ومعلومات السوق.",
       "documents": "ارفع الشهادات وسجلات التحقق وتابعها.",
@@ -155,6 +187,7 @@
       "members": "عضوية فريق الشركة الأساسية.",
       "catalogue": "قوائم كتالوج المورد للاكتشاف.",
       "workforce": "طلبات القوى العاملة والتقديمات وسجلات العاملين.",
+      "operations": "الحضور والمهام والإنتاج وتكاليف المشاريع والتوقعات والرواتب والتنبيهات.",
       "workforceCompany": "إدارة طلبات القوى العاملة ومراجعة طلبات التقديم لشركتك.",
       "subscription": "راجع الخطة والاستخدام والتجديد.",
       "notifications": "اطلع على أحداث المشاريع والعروض والمنصة.",
@@ -203,12 +236,49 @@
     "profile": {
       "displayName": "الاسم الظاهر",
       "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
       "timezone": "المنطقة الزمنية",
       "contactPreference": "تفضيل التواصل",
       "platformOnly": "رسائل المنصة فقط",
       "publicContact": "تواصل عام بعد القبول",
       "save": "حفظ الملف",
-      "saved": "تم حفظ الملف"
+      "saved": "تم حفظ الملف",
+      "updatedAt": "آخر تحديث",
+      "accountSummaryDescription": "جميع البيانات التي أدخلتها أثناء التسجيل كما هي محفوظة في حسابك.",
+      "personaDescription": "تفاصيل الدور التي تم التقاطها أثناء التسجيل لنوع حسابك.",
+      "collectionsDescription": "المهارات واللغات والفئات ومناطق الخدمة في ملفك العام."
+    },
+    "profileTabs": {
+      "overview": "نظرة عامة",
+      "documents": "المستندات",
+      "visibility": "الظهور",
+      "persona": "ملف الدور",
+      "collections": "المهارات واللغات"
+    },
+    "profileDocuments": {
+      "description": "مستندات التحقق التي تم تحميلها أثناء التسجيل. يمكنك معاينتها أو استبدالها أو إزالتها في أي وقت.",
+      "add": "إضافة مستند",
+      "addTitle": "تحميل مستند",
+      "addHint": "اختر نوع المستند والتواريخ والملف المراد تحميله.",
+      "replaceTitle": "استبدال المستند",
+      "replaceHint": "تحميل بديل يؤدي إلى إزالة الملف السابق وبياناته.",
+      "replace": "استبدال",
+      "cancel": "إلغاء",
+      "documentType": "نوع المستند",
+      "issuedAt": "تاريخ الإصدار",
+      "expiresAt": "تاريخ الانتهاء",
+      "issuedAtLabel": "صدر في {date}",
+      "expiresAtLabel": "ينتهي في {date}",
+      "view": "عرض",
+      "delete": "حذف",
+      "uploading": "جارٍ التحميل…",
+      "chooseFile": "اختر ملفًا",
+      "fileRequirements": "PDF أو JPG أو PNG أو DOCX أو XLSX أو CSV بحد أقصى 25 ميغابايت.",
+      "fileType": "نوع الملف غير مدعوم.",
+      "fileSize": "الملف يتجاوز الحد الأقصى المسموح به.",
+      "fileRequired": "اختر ملفًا أولاً.",
+      "expiryRequired": "تاريخ الانتهاء مطلوب لهذا النوع من المستندات.",
+      "uploadFailed": "تعذر تحميل المستند. حاول مرة أخرى."
     },
     "marketplace": {
       "accept": "قبول",
@@ -237,15 +307,78 @@
         "confirmTitle": "تغيير حالة المشروع؟",
         "confirmDescription": "سينتقل المشروع إلى {status}.",
         "DRAFT": "العودة إلى المسودة",
+        "PENDING_REVIEW": "إرسال للمراجعة",
         "PUBLISHED": "نشر",
         "IN_PROGRESS": "بدء المشروع",
         "COMPLETED": "تحديد كمكتمل",
         "ON_HOLD": "وضع قيد الانتظار",
         "CANCELLED": "إلغاء المشروع",
         "ARCHIVED": "أرشفة المشروع"
+      },
+      "stats": {
+        "active": "Active",
+        "published": "Published",
+        "inProgress": "In progress",
+        "portfolioValue": "Portfolio value"
+      },
+      "toolbar": {
+        "clearAll": "Clear all",
+        "export": "Export"
+      },
+      "table": {
+        "project": "Project",
+        "owner": "Owner",
+        "totalRecords": "إجمالي السجلات: {count}",
+        "actionsFor": "إجراءات {title}",
+        "confirmTitle": "{action} المشروع؟",
+        "confirmDescription": "سينتقل {title} من {from} إلى {to}.",
+        "reasonLabel": "السبب",
+        "reasonPlaceholder": "أضف سببًا مختصرًا لتغيير الحالة.",
+        "processing": "جار المعالجة..."
+      },
+      "form": {
+        "details": "تفاصيل المشروع",
+        "detailsDescription": "الهوية والنطاق ومعلومات التنفيذ الأساسية.",
+        "location": "الموقع والجدول",
+        "locationDescription": "العنوان والإحداثيات والجدول المستخدم للمطابقة والمراجعة.",
+        "packagesDescription": "قسّم المشروع إلى حزم عمل واضحة للتسعير.",
+        "criteriaDescription": "حدد المعايير المستخدمة لمقارنة العروض.",
+        "publishing": "إعدادات النشر",
+        "publishingDescription": "الفئة والظهور والميزانية والموعد النهائي.",
+        "mediaDescription": "أرفق ملفات المشروع والصور والشعارات والمستندات الداعمة.",
+        "requestFailed": "تعذر إكمال الطلب",
+        "validationFailed": "راجع هذه الحقول قبل المتابعة",
+        "back": "رجوع",
+        "next": "التالي",
+        "confirmCreate": "إنشاء {title}؟",
+        "confirmCreateDescription": "سيتم حفظ المشروع كمسودة في مساحة عمل البوابة.",
+        "confirmEdit": "حفظ التغييرات على {title}؟",
+        "confirmEditDescription": "سيتم تحديث المشروع مع الاحتفاظ بالحالة الحالية.",
+        "confirmPublish": "نشر {title}؟",
+        "steps": {
+          "information": "المعلومات",
+          "packages": "الحزم",
+          "publishing": "النشر",
+          "media": "الوسائط"
+        },
+        "stepDescriptions": {
+          "information": "النطاق والموقع الأساسيان.",
+          "packages": "حزم العمل ومعايير التقييم.",
+          "publishing": "الفئة والوسوم والميزانية والموعد.",
+          "media": "ملفات المشروع وأصوله العامة."
+        }
       }
     },
     "opportunitiesEmpty": "لا توجد فرص لهذا الحساب بعد.",
+    "opportunity": {
+      "actionsFor": "إجراءات {title}",
+      "allTypes": "كل أنواع الفرص",
+      "processing": "جارٍ المعالجة...",
+      "reasonLabel": "سبب السحب",
+      "reasonPlaceholder": "اشرح بإيجاز سبب سحب هذه الفرصة.",
+      "withdraw": "سحب الفرصة",
+      "withdrawDescription": "لن تقبل {title} أي ردود أخرى."
+    },
     "tendersEmpty": "لا توجد مناقصات لهذا الحساب بعد.",
     "membersEmpty": "لا يوجد أعضاء شركة للعرض.",
     "inviteMember": "دعوة عضو",
@@ -361,7 +494,21 @@
     "documents": {
       "expires": "تنتهي",
       "expiryMissing": "تاريخ الانتهاء مطلوب",
-      "opening": "جاري الفتح…"
+      "opening": "جاري الفتح…",
+      "document": "المستند",
+      "uploaded": "تم الرفع",
+      "view": "عرض",
+      "viewDocument": "عرض {name}",
+      "preview": "معاينة المستند",
+      "loading": "جاري تحميل المستند…",
+      "failed": "تعذر تحميل معاينة المستند.",
+      "openNewTab": "فتح في تبويب جديد",
+      "close": "إغلاق",
+      "total": "الإجمالي",
+      "types": "الأنواع",
+      "inReview": "قيد المراجعة",
+      "expiringSoon": "تنتهي قريبًا",
+      "expired": "منتهية"
     },
     "persona": {
       "worker": "ملف العامل",
@@ -586,8 +733,66 @@
       "checklist": "المستندات المطلوبة",
       "submitTitle": "إرسال للمراجعة",
       "submit": "إرسال التحقق",
+      "submitting": "جاري الإرسال…",
       "submitted": "تم إرسال التحقق.",
-      "notesPlaceholder": "ملاحظات اختيارية للمراجع"
+      "notesPlaceholder": "ملاحظات اختيارية للمراجع",
+      "manageDocuments": "إدارة المستندات",
+      "requirementsHint": "طابق كل مستند مطلوب مع سياسة التحقق النشطة قبل الإرسال.",
+      "required": "مطلوب",
+      "optional": "اختياري",
+      "submitSummary": "تم اختيار {documents} مستندات. اكتمل {fulfilled}/{required} من المطلوب. توجد {issues} مشكلات مفتوحة.",
+      "blockedTitle": "لا يمكن إرسال التحقق بعد",
+      "blocked": {
+        "noPolicy": "لا توجد سياسة تحقق نشطة تنطبق على هذا الحساب.",
+        "noDocuments": "ارفع مستند تحقق واحدًا على الأقل.",
+        "missingRequired": "ما زال {count} مستند مطلوب مفقودًا.",
+        "inReview": "يوجد إرسال تحقق قيد مراجعة الإدارة بالفعل.",
+        "terminal": "اكتملت دورة التحقق هذه بالفعل."
+      },
+      "statusTitles": {
+        "NOT_SUBMITTED": "ابدأ التحقق",
+        "PENDING": "التحقق قيد المراجعة",
+        "CHANGES_REQUESTED": "طلب المسؤول تعديلات",
+        "VERIFIED": "تمت الموافقة على التحقق",
+        "REJECTED": "تم رفض التحقق",
+        "EXPIRED": "انتهت صلاحية التحقق"
+      },
+      "statusBodies": {
+        "READY": "مستنداتك جاهزة للإرسال إلى قائمة مراجعة الإدارة.",
+        "BLOCKED": "أكمل العناصر أدناه قبل إرسال طلب التحقق.",
+        "PENDING": "يقوم فريق الإدارة بفحص المستندات والقائمة وسياق الحساب.",
+        "CHANGES_REQUESTED": "راجع المشكلات الظاهرة، وحدّث المستندات، ثم أعد الإرسال.",
+        "VERIFIED": "تم التحقق من حسابك. حافظ على تحديث المستندات التي تقترب من الانتهاء.",
+        "REJECTED": "تم رفض آخر مراجعة. اقرأ سبب القرار أو تواصل مع الدعم.",
+        "EXPIRED": "انتهت صلاحية التحقق السابق. حدّث المستندات قبل إعادة الإرسال."
+      },
+      "progress": {
+        "policy": "السياسة",
+        "activePolicy": "سياسة نشطة",
+        "required": "المستندات المطلوبة",
+        "review": "مراجعة الإدارة",
+        "cycle": "الدورة",
+        "latestDecision": "آخر قرار"
+      },
+      "next": {
+        "title": "الإجراء التالي",
+        "wait": "انتظر قرار مراجعة الإدارة.",
+        "resolveIssues": "حل التعديلات المطلوبة ثم أعد الإرسال.",
+        "upload": "ارفع أو استبدل مستندات التحقق المفقودة.",
+        "verified": "راقب تواريخ انتهاء المستندات وحافظ على تحديث ملفك.",
+        "submit": "أرسل المستندات المختارة لمراجعة الإدارة."
+      }
+    },
+    "fields": {
+      "title": "العنوان",
+      "summary": "الملخص",
+      "description": "الوصف",
+      "budget": "الميزانية",
+      "budgetMin": "الميزانية الدنيا",
+      "budgetMax": "الميزانية القصوى",
+      "deadline": "الموعد النهائي",
+      "employmentType": "نوع التوظيف",
+      "workArrangement": "نمط العمل"
     },
     "chrome": {
       "create": "إنشاء",

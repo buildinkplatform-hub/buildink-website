@@ -1,40 +1,44 @@
 "use client"
 
-import { startTransition, useOptimistic, useState } from "react"
-import { useRouter } from "@/i18n/navigation"
+import { useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
-import { deleteSavedSearchAction } from "@/features/dashboard/actions/portal.actions"
+import { deleteSavedSearchCachedAction } from "@/features/dashboard/actions/portal-saved.actions"
 import type { PortalSavedSearch } from "@/features/dashboard/data/portal-client"
+import { portalQueryKeys } from "@/features/dashboard/query/portal-query-keys"
+import { useSavedSearchesQuery } from "@/features/dashboard/query/portal-saved-query"
 
 export function SavedSearchList({ items }: { items: PortalSavedSearch[] }) {
   const t = useTranslations()
-  const router = useRouter()
+  const queryClient = useQueryClient()
+  const query = useSavedSearchesQuery({ items })
+  const visibleItems = query.data?.items ?? items
   const [pendingId, setPendingId] = useState<string>()
   const [selected, setSelected] = useState<PortalSavedSearch>()
   const [message, setMessage] = useState<string>()
-  const [optimisticItems, removeOptimistic] = useOptimistic(
-    items,
-    (current, id: string) => current.filter((item) => item.id !== id),
-  )
 
-  if (!optimisticItems.length && !selected) {
-    return <p className="text-muted">{t("dashboard.savedSearch.empty")}</p>
+  if (!visibleItems.length && !selected) {
+    return (
+      <p className="text-muted-foreground">
+        {t("dashboard.savedSearch.empty")}
+      </p>
+    )
   }
 
   return (
-    <div className="space-y-3">
-      {optimisticItems.map((item) => (
+    <div className="space-y-3" aria-busy={Boolean(pendingId)}>
+      {visibleItems.map((item) => (
         <Card
           key={item.id}
           className="flex items-start justify-between gap-4 p-4"
         >
           <div>
-            <p className="text-brand-navy font-semibold">{item.name}</p>
-            <p className="text-muted mt-1 text-sm">
+            <p className="text-foreground font-semibold">{item.name}</p>
+            <p className="text-muted-foreground mt-1 text-sm">
               {t(`dashboard.savedSearch.kinds.${item.kind}`)}
               {item.query ? ` · ${item.query}` : ""}
             </p>
@@ -51,7 +55,6 @@ export function SavedSearchList({ items }: { items: PortalSavedSearch[] }) {
           <Button
             type="button"
             variant="ghost"
-            disabled={pendingId === item.id}
             onClick={() => setSelected(item)}
           >
             {t("dashboard.savedSearch.delete")}
@@ -59,7 +62,7 @@ export function SavedSearchList({ items }: { items: PortalSavedSearch[] }) {
         </Card>
       ))}
       {message ? (
-        <p role="alert" className="text-danger text-sm">
+        <p role="alert" className="text-destructive text-sm">
           {message}
         </p>
       ) : null}
@@ -75,17 +78,29 @@ export function SavedSearchList({ items }: { items: PortalSavedSearch[] }) {
         destructive
         pending={Boolean(pendingId)}
         onConfirm={() => {
-          if (!selected) return
+          if (!selected || pendingId) return
           const item = selected
+          const key = portalQueryKeys.resource("saved-searches")
+          const previous = queryClient.getQueryData<{
+            items: PortalSavedSearch[]
+          }>(key)
+          queryClient.setQueryData<{ items: PortalSavedSearch[] }>(
+            key,
+            (current) => ({
+              items: (current?.items ?? visibleItems).filter(
+                (entry) => entry.id !== item.id,
+              ),
+            }),
+          )
           setPendingId(item.id)
           setMessage(undefined)
-          startTransition(async () => {
-            removeOptimistic(item.id)
-            const result = await deleteSavedSearchAction(item.id)
+          void deleteSavedSearchCachedAction(item.id).then((result) => {
             setPendingId(undefined)
             setSelected(undefined)
-            if (result.ok) router.refresh()
-            else setMessage(result.message)
+            if (!result.ok) {
+              if (previous) queryClient.setQueryData(key, previous)
+              setMessage(result.message)
+            }
           })
         }}
       />

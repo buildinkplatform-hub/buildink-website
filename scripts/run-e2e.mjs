@@ -15,7 +15,6 @@ function loadEnvFile(relativePath) {
 }
 
 const websiteEnv = loadEnvFile("../.env")
-const backendEnv = loadEnvFile("../../backend/.env")
 
 const environment = {
   ...websiteEnv,
@@ -24,8 +23,11 @@ const environment = {
   NEXT_PUBLIC_SITE_URL: "http://127.0.0.1:3100",
   BACKEND_API_URL: "http://127.0.0.1:4100",
   AUTH_RATE_LIMIT_ALLOW_MEMORY: "true",
+  E2E_PREBUILT: "true",
   E2E_SUPABASE_SECRET_KEY:
-    process.env.E2E_SUPABASE_SECRET_KEY ?? backendEnv.SUPABASE_SECRET_KEY,
+    process.env.E2E_SUPABASE_SECRET_KEY ??
+    websiteEnv.E2E_SUPABASE_SECRET_KEY ??
+    websiteEnv.SUPABASE_SECRET_KEY,
   E2E_USER_EMAIL:
     process.env.E2E_USER_EMAIL ?? `buildink-e2e-${Date.now()}@example.com`,
   E2E_USER_PASSWORD: process.env.E2E_USER_PASSWORD ?? "Buildink-E2E-Only@2026",

@@ -30,7 +30,6 @@
         "verification": "Verificare și siguranță",
         "help": "Centru de ajutor",
         "faq": "Întrebări frecvente",
-        "blog": "Blog și analize",
         "about": "Despre Buildink",
         "contact": "Contact",
         "privacy": "Politica de confidențialitate",
@@ -73,7 +72,22 @@
       "category": "Categorie",
       "allCategories": "Toate categoriile",
       "verification": "Verificare",
-      "allStatuses": "Toate stările"
+      "allStatuses": "Toate stările",
+      "additional": {
+        "companyType": "Tip companie",
+        "services": "Servicii",
+        "accountType": "Tip cont",
+        "projectStage": "Etapa proiectului",
+        "procurementStage": "Etapa achiziției",
+        "tenderStatus": "Starea licitației",
+        "sourceType": "Tip sursă",
+        "submissionChannel": "Canal de depunere",
+        "deadlineBucket": "Termen limită",
+        "listingType": "Tip listare",
+        "availabilityStatus": "Disponibilitate",
+        "opportunityType": "Tip oportunitate",
+        "opportunityStatus": "Starea oportunității"
+      }
     },
     "actions": {
       "clearFilters": "Șterge filtrele",
@@ -339,11 +353,6 @@
         "eyebrow": "Întrebări frecvente",
         "title": "Întrebări frecvente Buildink",
         "description": "Păstrează întrebările comune despre piață concise, ușor de scanat și de navigat în toate limbile."
-      },
-      "blog": {
-        "eyebrow": "Editorial și SEO",
-        "title": "Blog și analize",
-        "description": "Publică conținut lung de încredere care susține descoperirea, încrederea și vizibilitatea în căutarea multilingvă."
       },
       "privacy": {
         "eyebrow": "Legal",

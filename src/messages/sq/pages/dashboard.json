@@ -96,6 +96,36 @@
       }
     },
     "offersEmpty": "Nuk ka oferta ende për këtë llogari.",
+    "offers": {
+      "board": {
+        "offer": "Ofertë",
+        "amount": "Shuma",
+        "receivedTitle": "Ofertat e pranuara",
+        "receivedDescription": "Shqyrtoni, krahasoni dhe vendosni për ofertat e pranuara nga hapësira juaj e punës.",
+        "decisionWorkflow": "Rrjedha e vendimit",
+        "submissionHistory": "Historia e dorëzimit",
+        "revisions": "Rishikimet",
+        "noRevisions": "Nuk ka rishikime ende.",
+        "reference": "Referenca",
+        "direction": "Drejtimi",
+        "submitted": "Dërguar",
+        "notSubmitted": "Nuk është dërguar",
+        "inbox": { "submitted": "Dërguar", "received": "Pranuar" },
+        "totalRecords": "regjistra gjithsej",
+        "rows": "rreshta"
+      },
+      "statuses": {
+        "DRAFT": "Draft",
+        "SUBMITTED": "Dërguar",
+        "UNDER_REVIEW": "Në shqyrtim",
+        "CHANGES_REQUESTED": "Kërkohen ndryshime",
+        "SHORTLISTED": "Lista e shkurtër",
+        "ACCEPTED": "Pranuar",
+        "REJECTED": "Refuzuar",
+        "WITHDRAWN": "Tërhequr",
+        "EXPIRED": "Skaduar"
+      }
+    },
     "applicationsEmpty": "Nuk ka aplikime të fuqisë punëtore ende për këtë llogari.",
     "engagementsEmpty": "Nuk ka angazhime ende për këtë llogari.",
     "messagesEmpty": "Bisedat shfaqen pas një oferte ose aplikimi të dërguar.",
@@ -124,7 +154,8 @@
       "workspace": "Hapësira e punës",
       "members": "Anëtarët",
       "catalogue": "Katalogu",
-      "workforce": "Fuqia punëtore",
+      "workforce": "Punësimi dhe njerëzit",
+      "operations": "Operacionet",
       "subscription": "Abonimi",
       "notifications": "Njoftimet",
       "settings": "Cilësimet",
@@ -132,6 +163,10 @@
       "bidBoard": "Paneli i ofertave",
       "enquiries": "Pyetjet",
       "availability": "Disponueshmëria"
+    },
+    "navGroups": {
+      "people": "Punësimi dhe njerëzit",
+      "operations": "Operacionet"
     },
     "descriptions": {
       "profile": "Menaxho identitetin publik, të dhënat e kontaktit dhe informacionin e tregut.",
@@ -155,6 +190,7 @@
       "members": "Anëtarësia bazë e ekipit të kompanisë.",
       "catalogue": "Listimet e katalogut të furnizuesit për zbulim.",
       "workforce": "Kërkesat, aplikimet dhe të dhënat e fuqisë punëtore.",
+      "operations": "Prezenca, detyrat, prodhimi, kostot e projektit, parashikimet, pagat dhe alarmet.",
       "workforceCompany": "Menaxho kërkesat e fuqisë punëtore dhe shqyrto aplikimet për kompaninë.",
       "subscription": "Shqyrto planin, përdorimin dhe rinovimin.",
       "notifications": "Shiko ngjarjet e projektit, propozimeve dhe platformës.",
@@ -203,12 +239,49 @@
     "profile": {
       "displayName": "Emri i shfaqur",
       "phone": "Telefoni",
+      "email": "Email",
       "timezone": "Zona kohore",
       "contactPreference": "Preferenca e kontaktit",
       "platformOnly": "Vetëm mesazhe të platformës",
       "publicContact": "Kontakt publik pas pranimit",
       "save": "Ruaj profilin",
-      "saved": "Profili u ruajt"
+      "saved": "Profili u ruajt",
+      "updatedAt": "Përditësuar së fundmi",
+      "accountSummaryDescription": "Të gjitha të dhënat e dhëna gjatë regjistrimit, siç ruhen në llogarinë tuaj.",
+      "personaDescription": "Detajet e rolit të regjistruara gjatë onboarding-ut për llojin e llogarisë suaj.",
+      "collectionsDescription": "Aftësitë, gjuhët, kategoritë dhe rajonet e shërbimit në profilin tuaj publik."
+    },
+    "profileTabs": {
+      "overview": "Përmbledhje",
+      "documents": "Dokumentet",
+      "visibility": "Dukshmëria",
+      "persona": "Profili i rolit",
+      "collections": "Aftësitë dhe gjuhët"
+    },
+    "profileDocuments": {
+      "description": "Dokumentet e verifikimit të ngarkuara gjatë regjistrimit. Mund t'i shikoni, zëvendësoni ose hiqni në çdo kohë.",
+      "add": "Shto dokument",
+      "addTitle": "Ngarko një dokument",
+      "addHint": "Zgjidhni llojin e dokumentit, datat dhe skedarin për ngarkim.",
+      "replaceTitle": "Zëvendëso dokumentin",
+      "replaceHint": "Ngarkimi i një zëvendësimi heq skedarin e mëparshëm dhe të dhënat e tij.",
+      "replace": "Zëvendëso",
+      "cancel": "Anulo",
+      "documentType": "Lloji i dokumentit",
+      "issuedAt": "Data e lëshimit",
+      "expiresAt": "Data e skadencës",
+      "issuedAtLabel": "Lëshuar më {date}",
+      "expiresAtLabel": "Skadon më {date}",
+      "view": "Shiko",
+      "delete": "Fshi",
+      "uploading": "Duke ngarkuar…",
+      "chooseFile": "Zgjidh skedar",
+      "fileRequirements": "PDF, JPG, PNG, DOCX, XLSX ose CSV deri në 25 MB.",
+      "fileType": "Ky lloj skedari nuk mbështetet.",
+      "fileSize": "Skedari tejkalon madhësinë maksimale të lejuar.",
+      "fileRequired": "Zgjidh së pari një skedar.",
+      "expiryRequired": "Kërkon datë skadence për këtë lloj dokumenti.",
+      "uploadFailed": "Dokumenti nuk u ngarkua. Provo përsëri."
     },
     "marketplace": {
       "accept": "Prano",
@@ -237,15 +310,78 @@
         "confirmTitle": "Të ndryshohet statusi i projektit?",
         "confirmDescription": "Projekti do të kalojë në {status}.",
         "DRAFT": "Ktheje në draft",
+        "PENDING_REVIEW": "Dërgo për shqyrtim",
         "PUBLISHED": "Publiko",
         "IN_PROGRESS": "Fillo projektin",
         "COMPLETED": "Shëno të përfunduar",
         "ON_HOLD": "Vendos në pritje",
         "CANCELLED": "Anulo projektin",
         "ARCHIVED": "Arkivo projektin"
+      },
+      "stats": {
+        "active": "Aktive",
+        "published": "Publikuar",
+        "inProgress": "Ne progres",
+        "portfolioValue": "Vlera e portofolit"
+      },
+      "toolbar": {
+        "clearAll": "Pastro te gjitha",
+        "export": "Eksporto"
+      },
+      "table": {
+        "project": "Projekt",
+        "owner": "Pronar",
+        "totalRecords": "{count} rekorde gjithsej",
+        "actionsFor": "Veprime për {title}",
+        "confirmTitle": "{action} projektin?",
+        "confirmDescription": "{title} do të kalojë nga {from} në {to}.",
+        "reasonLabel": "Arsye",
+        "reasonPlaceholder": "Shto një arsye të shkurtër për këtë ndryshim statusi.",
+        "processing": "Duke u përpunuar..."
+      },
+      "form": {
+        "details": "Detajet e projektit",
+        "detailsDescription": "Identiteti, fusha dhe informacioni kryesor i dorëzimit.",
+        "location": "Vendndodhja dhe orari",
+        "locationDescription": "Adresa, koordinatat dhe afatet e përdorura për përputhje dhe shqyrtim.",
+        "packagesDescription": "Ndaje projektin në paketa pune të qarta për ofertuesit.",
+        "criteriaDescription": "Përcakto kriteret për krahasimin e ofertave.",
+        "publishing": "Kontrollet e publikimit",
+        "publishingDescription": "Kategoria, dukshmëria, buxheti dhe afati.",
+        "mediaDescription": "Bashkëngjit skedarë, kopertina, logo dhe dokumente mbështetëse.",
+        "requestFailed": "Kërkesa nuk mund të përfundonte",
+        "validationFailed": "Kontrollo këto fusha para se të vazhdosh",
+        "back": "Prapa",
+        "next": "Tjetër",
+        "confirmCreate": "Të krijohet {title}?",
+        "confirmCreateDescription": "E ruan projektin si draft në hapësirën e portalit.",
+        "confirmEdit": "Të ruhen ndryshimet për {title}?",
+        "confirmEditDescription": "Përditëson projektin dhe ruan statusin aktual.",
+        "confirmPublish": "Të publikohet {title}?",
+        "steps": {
+          "information": "Informacion",
+          "packages": "Paketat",
+          "publishing": "Publikimi",
+          "media": "Media"
+        },
+        "stepDescriptions": {
+          "information": "Fusha dhe vendndodhja kryesore.",
+          "packages": "Paketat e punës dhe kriteret.",
+          "publishing": "Kategoria, etiketat, buxheti dhe afati.",
+          "media": "Skedarët dhe asetet publike të projektit."
+        }
       }
     },
     "opportunitiesEmpty": "Nuk ka mundësi ende për këtë llogari.",
+    "opportunity": {
+      "actionsFor": "Veprimet për {title}",
+      "allTypes": "Të gjitha llojet e mundësive",
+      "processing": "Duke u përpunuar...",
+      "reasonLabel": "Arsyeja e tërheqjes",
+      "reasonPlaceholder": "Shpjegoni shkurt pse po e tërhiqni këtë mundësi.",
+      "withdraw": "Tërhiq mundësinë",
+      "withdrawDescription": "{title} nuk do të pranojë më përgjigje."
+    },
     "tendersEmpty": "Nuk ka tenderë ende për këtë llogari.",
     "membersEmpty": "Nuk ka anëtarë të kompanisë për t’u shfaqur.",
     "inviteMember": "Fto anëtar",
@@ -361,7 +497,21 @@
     "documents": {
       "expires": "Skadon",
       "expiryMissing": "Data e skadimit kërkohet",
-      "opening": "Po hapet…"
+      "opening": "Po hapet…",
+      "document": "Dokumenti",
+      "uploaded": "Ngarkuar",
+      "view": "Shiko",
+      "viewDocument": "Shiko {name}",
+      "preview": "Parapamje dokumenti",
+      "loading": "Dokumenti po ngarkohet…",
+      "failed": "Parapamja e dokumentit nuk mund të ngarkohej.",
+      "openNewTab": "Hap në skedë të re",
+      "close": "Mbyll",
+      "total": "Gjithsej",
+      "types": "Llojet",
+      "inReview": "Në shqyrtim",
+      "expiringSoon": "Skadon së shpejti",
+      "expired": "Të skaduara"
     },
     "persona": {
       "worker": "Profili i punëtorit",
@@ -586,8 +736,66 @@
       "checklist": "Dokumentet e kërkuara",
       "submitTitle": "Dërgo për shqyrtim",
       "submit": "Dërgo verifikimin",
+      "submitting": "Po dërgohet…",
       "submitted": "Verifikimi u dërgua.",
-      "notesPlaceholder": "Shënime opsionale për shqyrtuesin"
+      "notesPlaceholder": "Shënime opsionale për shqyrtuesin",
+      "manageDocuments": "Menaxho dokumentet",
+      "requirementsHint": "Lidhe çdo dokument të kërkuar me politikën aktive të verifikimit para dërgimit.",
+      "required": "I kërkuar",
+      "optional": "Opsional",
+      "submitSummary": "{documents} dokumente të zgjedhura. {fulfilled}/{required} kërkesa të plotësuara. {issues} çështje të hapura.",
+      "blockedTitle": "Verifikimi nuk mund të dërgohet ende",
+      "blocked": {
+        "noPolicy": "Nuk ka politikë aktive verifikimi për këtë llogari.",
+        "noDocuments": "Ngarko të paktën një dokument verifikimi.",
+        "missingRequired": "{count} dokument i kërkuar ende mungon.",
+        "inReview": "Një verifikim është tashmë në shqyrtim administrativ.",
+        "terminal": "Ky cikël verifikimi është përfunduar."
+      },
+      "statusTitles": {
+        "NOT_SUBMITTED": "Fillo verifikimin",
+        "PENDING": "Verifikimi është në shqyrtim",
+        "CHANGES_REQUESTED": "Administratori kërkoi ndryshime",
+        "VERIFIED": "Verifikimi u miratua",
+        "REJECTED": "Verifikimi u refuzua",
+        "EXPIRED": "Verifikimi skadoi"
+      },
+      "statusBodies": {
+        "READY": "Dokumentet janë gati për radhën e verifikimit administrativ.",
+        "BLOCKED": "Plotëso elementet më poshtë para se ta dërgosh kërkesën.",
+        "PENDING": "Ekipi administrativ po kontrollon dokumentet, listën dhe kontekstin e llogarisë.",
+        "CHANGES_REQUESTED": "Shiko çështjet e dukshme, përditëso dokumentet dhe ridërgo.",
+        "VERIFIED": "Llogaria jote është verifikuar. Mbaji dokumentet në skadim të përditësuara.",
+        "REJECTED": "Shqyrtimi i fundit u refuzua. Lexo arsyen ose kontakto mbështetjen.",
+        "EXPIRED": "Verifikimi i mëparshëm ka skaduar. Rifresko dokumentet para ridërgimit."
+      },
+      "progress": {
+        "policy": "Politika",
+        "activePolicy": "Politikë aktive",
+        "required": "Dokumente të kërkuara",
+        "review": "Shqyrtim admin",
+        "cycle": "Cikli",
+        "latestDecision": "Vendimi i fundit"
+      },
+      "next": {
+        "title": "Veprimi tjetër",
+        "wait": "Prit vendimin e administratorit.",
+        "resolveIssues": "Zgjidh ndryshimet e kërkuara dhe ridërgo.",
+        "upload": "Ngarko ose zëvendëso dokumentet që mungojnë.",
+        "verified": "Monitoro skadimet dhe mbaje profilin të përditësuar.",
+        "submit": "Dërgo dokumentet e zgjedhura për shqyrtim."
+      }
+    },
+    "fields": {
+      "title": "Titulli",
+      "summary": "Përmbledhje",
+      "description": "Përshkrimi",
+      "budget": "Buxheti",
+      "budgetMin": "Buxheti minimal",
+      "budgetMax": "Buxheti maksimal",
+      "deadline": "Afati",
+      "employmentType": "Lloji i punësimit",
+      "workArrangement": "Mënyra e punës"
     },
     "chrome": {
       "create": "Krijo",

@@ -7,19 +7,20 @@ import { BrandLogo } from "@/components/shared/brand-logo"
 import { LocaleSwitcher } from "@/components/shared/locale-switcher"
 import { HeaderAuthSkeleton } from "@/components/shared/page-skeletons"
 import { Link } from "@/i18n/navigation"
-import {
-  getPrivateAssetDownloadUrl,
-  getPublicViewer,
-} from "@/lib/auth/session"
+import { getPrivateAssetDownloadUrl, getPublicViewer } from "@/lib/auth/session"
 import type { Locale } from "@/shared/types/platform"
 
 export async function PublicHeader() {
   const common = await getTranslations("common")
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur">
-      <div className="page-container flex min-h-[76px] items-center justify-between gap-3">
-        <Link href="/" aria-label={common("home")} className="shrink-0">
+    <header className="border-line/70 sticky top-0 z-40 border-b bg-white/78 shadow-[0_1px_0_rgba(7,26,51,0.02)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/72">
+      <div className="page-container flex min-h-[72px] items-center justify-between gap-3">
+        <Link
+          href="/"
+          aria-label={common("home")}
+          className="focus-visible:ring-primary/15 shrink-0 rounded-xl transition-transform duration-200 hover:scale-[1.015] focus-visible:ring-4"
+        >
           <BrandLogo />
         </Link>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2 xl:justify-between xl:gap-4">

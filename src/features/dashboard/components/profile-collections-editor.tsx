@@ -127,7 +127,7 @@ export function ProfileCollectionsEditor({
   }
 
   return (
-    <div className="space-y-5 rounded-[24px] border border-line/70 bg-canvas/55 p-5">
+    <div className="border-line/70 bg-canvas/55 space-y-5 rounded-[24px] border p-5">
       <div>
         <h2 className="text-brand-navy text-lg font-semibold">
           {t("dashboard.collections.title")}

@@ -18,16 +18,36 @@ export interface DirectoryQuery {
   city?: string
   category?: string
   verification?: string
+  companyType?: string
   accountType?: string
+  services?: string
+  projectStage?: string
+  procurementStage?: string
+  tenderStatus?: string
+  sourceType?: string
+  submissionChannel?: string
+  deadlineBucket?: string
+  listingType?: string
+  availabilityStatus?: string
+  opportunityType?: string
+  opportunityStatus?: string
   page?: number
 }
 
 export interface PublicDirectoryFacets {
-  countries: string[]
-  regions: string[]
-  cities: string[]
-  categories: string[]
-  verifications: string[]
+  countries: PublicFacetOption[]
+  regions: PublicFacetOption[]
+  cities: PublicFacetOption[]
+  categories: PublicFacetOption[]
+  verifications: PublicFacetOption[]
+  additional: Record<string, PublicFacetOption[]>
+}
+
+export interface PublicFacetOption {
+  value: string
+  label: string
+  count: number
+  selected: boolean
 }
 
 export interface DirectoryResult<T> {
@@ -140,17 +160,6 @@ export interface ReviewEligibility {
   reason: ReviewEligibilityReason
 }
 
-export interface PublicArticle {
-  slug: string
-  title: string
-  excerpt: string
-  category: string
-  author: string
-  updatedAt: string
-  readingTime: string
-  sections: PublicSection[]
-}
-
 export interface PublicHelpArticle {
   slug: string
   title: string
@@ -173,6 +182,10 @@ export interface PublicHomeView {
     "companies" | "profiles" | "tenders" | "projects",
     PublicEntityRecord[]
   >
+  featuredEvidence: {
+    companies: PublicEntityRecord[]
+    projects: PublicEntityRecord[]
+  }
   testimonials: Array<{
     name: string
     role: string

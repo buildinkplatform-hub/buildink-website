@@ -1,0 +1,135 @@
+{
+  "trustPages": {
+    "common": {
+      "onThisPage": "On this page",
+      "exploreMarketplace": "Explore marketplace",
+      "createAccount": "Create account",
+      "signIn": "Sign in",
+      "learnMore": "Learn more"
+    },
+    "howItWorks": {
+      "journeyTitle": "Choose the workflow that matches your role",
+      "journeyBody": "Buildink adapts discovery, publishing, collaboration and operations tools to the account type you use.",
+      "roles": {
+        "projectOwner": {
+          "label": "Project owner",
+          "summary": "Publish projects and tenders, review bids, manage awarded work and keep delivery visible.",
+          "cta": "Browse projects"
+        },
+        "company": {
+          "label": "Company",
+          "summary": "Build a trusted company profile, manage your team, respond to opportunities and coordinate active work.",
+          "cta": "Browse companies"
+        },
+        "subcontractor": {
+          "label": "Subcontractor",
+          "summary": "Find relevant packages, submit offers, exchange documents and move accepted work into delivery.",
+          "cta": "Find opportunities"
+        },
+        "serviceProvider": {
+          "label": "Service provider",
+          "summary": "Show specialist services, receive qualified requests and manage conversations from one workspace.",
+          "cta": "Browse services"
+        },
+        "worker": {
+          "label": "Worker",
+          "summary": "Create a professional profile, apply to opportunities and access assigned workforce workflows.",
+          "cta": "Browse worker opportunities"
+        }
+      },
+      "stepsTitle": "The core Buildink flow",
+      "stepsBody": "Each stage is connected, so users can move from public discovery into a permission-aware private workflow without losing context.",
+      "steps": {
+        "step1Title": "Create the right identity",
+        "step1Body": "Register with the correct account type and complete the profile or company workspace that represents you.",
+        "step2Title": "Build trust and verification",
+        "step2Body": "Add the required profile, company and verification evidence before relying on trust badges or publication status.",
+        "step3Title": "Discover or publish demand",
+        "step3Body": "Search companies, workers, projects, tenders and requests, or publish opportunities when your permissions allow it.",
+        "step4Title": "Submit and evaluate",
+        "step4Body": "Send offers or applications, compare responses, review evidence and apply the correct approval workflow.",
+        "step5Title": "Collaborate securely",
+        "step5Body": "Use protected messages, notifications, documents and role-aware workspace access throughout the engagement.",
+        "step6Title": "Operate and track delivery",
+        "step6Body": "Move accepted work into project, workforce, attendance, task, compliance and operational tracking flows."
+      },
+      "featuresTitle": "Core platform capabilities",
+      "featuresBody": "These are the primary product capabilities connected by the Website and portal experience.",
+      "features": {
+        "feature1Title": "Marketplace discovery",
+        "feature1Body": "Search and filter public companies, profiles, equipment, projects, tenders and opportunities.",
+        "feature2Title": "Role-aware workspaces",
+        "feature2Body": "Navigation and actions change according to account type, membership, capability and permission.",
+        "feature3Title": "Offers and applications",
+        "feature3Body": "Submit, review, shortlist, revise, accept or reject commercial and workforce responses.",
+        "feature4Title": "Verification and evidence",
+        "feature4Body": "Keep trust status tied to submitted evidence and reviewed verification requirements.",
+        "feature5Title": "Messaging and notifications",
+        "feature5Body": "Keep important marketplace and workspace activity visible without exposing private contact details too early.",
+        "feature6Title": "Operations and compliance",
+        "feature6Body": "Track project delivery, workforce activity, tasks, attendance, costs, alerts and compliance records."
+      }
+    },
+    "verification": {
+      "statusTitle": "Verification states should mean something",
+      "statusBody": "A trust badge is only useful when the underlying evidence and review state support it.",
+      "statuses": {
+        "pendingTitle": "Pending",
+        "pendingBody": "Evidence has not completed review yet. Public claims should remain limited.",
+        "reviewTitle": "Under review",
+        "reviewBody": "Required documents or checks are being assessed by the verification workflow.",
+        "verifiedTitle": "Verified",
+        "verifiedBody": "The published verification scope has been satisfied and approved."
+      },
+      "processTitle": "What the verification flow checks",
+      "processBody": "Identity, company and supporting documents should stay aligned with the account and publication state."
+    },
+    "about": {
+      "principlesTitle": "What Buildink is designed around",
+      "principlesBody": "A construction marketplace needs more than listings. It needs identity, permissions, trust signals and a clear path into real work.",
+      "principles": {
+        "oneTitle": "Trust before claims",
+        "oneBody": "Verification and publication states should reflect evidence rather than optimistic labels.",
+        "twoTitle": "Role clarity",
+        "twoBody": "Project owners, companies, subcontractors, service providers and workers should see the workflows that fit them.",
+        "threeTitle": "Workflow continuity",
+        "threeBody": "Discovery, offers, messaging, documents and operations should connect without dead ends."
+      }
+    },
+    "contact": {
+      "optionsTitle": "Reach the right channel",
+      "optionsBody": "Use the contact form for product, account, marketplace or launch questions. Include enough context for the team to route the request correctly.",
+      "supportTitle": "Account and product support",
+      "supportBody": "For account access, workspace behavior, verification or marketplace issues, describe the affected flow and the page you were using.",
+      "businessTitle": "Business enquiries",
+      "businessBody": "For partnerships, marketplace participation and company onboarding, tell us what your organization needs from Buildink.",
+      "safetyTitle": "Safety and trust",
+      "safetyBody": "For incorrect public information, verification concerns or unsafe content, use the relevant reporting or verification channel."
+    },
+    "cookies": {
+      "preferencesTitle": "Cookie preferences",
+      "preferencesBody": "Essential cookies keep authentication, security and core navigation working. Optional categories can be changed here at any time.",
+      "essentialTitle": "Essential",
+      "essentialBody": "Required for security, authentication and core product behavior.",
+      "preferencesCategoryTitle": "Preferences",
+      "preferencesCategoryBody": "Remembers interface and experience choices where available.",
+      "analyticsTitle": "Analytics",
+      "analyticsBody": "Helps measure product usage and performance when enabled.",
+      "marketingTitle": "Marketing",
+      "marketingBody": "Allows optional marketing measurement where it is configured.",
+      "alwaysOn": "Always on",
+      "save": "Save preferences",
+      "saved": "Preferences saved"
+    },
+    "footer": {
+      "eyebrow": "Built for construction workflows",
+      "title": "Discover trusted people, companies and opportunities — then keep the work moving.",
+      "body": "Buildink connects public discovery with verification, protected collaboration and role-aware workspaces.",
+      "trustOne": "Role-aware access",
+      "trustTwo": "Verification-led trust",
+      "trustThree": "Multilingual marketplace",
+      "newsletterTitle": "Get Buildink updates",
+      "systemLabel": "Marketplace & portal"
+    }
+  }
+}

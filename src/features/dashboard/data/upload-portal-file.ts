@@ -7,21 +7,28 @@ import {
 } from "@/features/dashboard/actions/portal.actions"
 import { createClient } from "@/lib/supabase/client"
 
-export async function uploadPortalFile(file: File) {
-  const intentResult = await createPortalUploadIntentAction({
+export interface PortalUploadMetadata {
+  documentType: string
+  expiresAt?: string
+  issuedAt?: string
+}
+
+export async function uploadPortalFile(
+  file: File,
+  metadata: PortalUploadMetadata = { documentType: "other" },
+) {
+  const result = await createPortalUploadIntentAction({
     fileName: file.name,
-    mimeType: file.type || "application/octet-stream",
+    mimeType: file.type,
     sizeBytes: file.size,
-    kind: file.type.startsWith("image/") ? "image" : "document",
-    purpose: "attachment",
-    documentType: "other",
+    kind: "document",
+    purpose: "document",
+    documentType: metadata.documentType,
+    expiresAt: metadata.expiresAt || undefined,
+    issuedAt: metadata.issuedAt || undefined,
   })
-  if (!intentResult.ok || !("intent" in intentResult) || !intentResult.intent) {
-    throw new Error(
-      intentResult.ok ? "UPLOAD_INTENT_FAILED" : intentResult.message,
-    )
-  }
-  const intent = intentResult.intent
+  if (!result.ok) throw new Error(result.message)
+  const intent = result.intent
   const supabase = createClient()
   const { error } = await supabase.storage
     .from(intent.bucket)
@@ -32,16 +39,7 @@ export async function uploadPortalFile(file: File) {
     await deletePortalUploadAction(intent.assetId).catch(() => undefined)
     throw error
   }
-  const completed = await completePortalUploadAction(intent.assetId)
-  if (!completed.ok) {
-    await deletePortalUploadAction(intent.assetId).catch(() => undefined)
-    throw new Error(completed.message)
-  }
-  return {
-    id: intent.assetId,
-    name: file.name,
-    usage: file.type.startsWith("image/")
-      ? ("IMAGE" as const)
-      : ("DOCUMENT" as const),
-  }
+  const complete = await completePortalUploadAction(intent.assetId)
+  if (!complete.ok) throw new Error(complete.message)
+  return complete.upload
 }

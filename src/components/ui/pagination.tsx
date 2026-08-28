@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-import { Link } from "@/i18n/navigation"
+import { IntentPrefetchLink } from "@/components/shared/intent-prefetch-link"
 import { Button } from "@/components/ui/button"
 
 export interface PaginationItem {
@@ -13,44 +13,52 @@ export function Pagination({
   items,
   previousHref,
   nextHref,
+  previousLabel = "Previous",
+  nextLabel = "Next",
+  ariaLabel = "Pagination",
 }: {
   items: PaginationItem[]
   previousHref?: string
   nextHref?: string
+  previousLabel?: string
+  nextLabel?: string
+  ariaLabel?: string
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <nav aria-label={ariaLabel} className="flex flex-wrap items-center gap-2">
       <Button asChild variant="secondary" size="sm" disabled={!previousHref}>
         {previousHref ? (
-          <Link href={previousHref}>
+          <IntentPrefetchLink href={previousHref} prefetchOnRender>
             <ChevronLeft className="size-4 rtl:rotate-180" />
-            Previous
-          </Link>
+            {previousLabel}
+          </IntentPrefetchLink>
         ) : (
           <span>
             <ChevronLeft className="size-4 rtl:rotate-180" />
-            Previous
+            {previousLabel}
           </span>
         )}
       </Button>
       <div className="flex flex-wrap items-center gap-2">
-        {items.map((item) =>
+        {items.map((item, index) =>
           item.href ? (
-            <Link
-              key={item.label}
+            <IntentPrefetchLink
+              key={`${item.label}-${index}`}
               href={item.href}
+              aria-current={item.active ? "page" : undefined}
               className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border px-4 text-sm font-semibold ${
                 item.active
                   ? "border-primary bg-primary text-white"
-                  : "border-line bg-white text-brand-navy hover:bg-accent"
+                  : "border-line text-brand-navy hover:bg-accent bg-white"
               }`}
             >
               {item.label}
-            </Link>
+            </IntentPrefetchLink>
           ) : (
             <span
-              key={item.label}
-              className="border-line inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-semibold text-brand-navy"
+              key={`${item.label}-${index}`}
+              aria-hidden={item.label === "…" ? true : undefined}
+              className="border-line text-brand-navy inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-semibold"
             >
               {item.label}
             </span>
@@ -59,17 +67,17 @@ export function Pagination({
       </div>
       <Button asChild variant="secondary" size="sm" disabled={!nextHref}>
         {nextHref ? (
-          <Link href={nextHref}>
-            Next
+          <IntentPrefetchLink href={nextHref} prefetchOnRender>
+            {nextLabel}
             <ChevronRight className="size-4 rtl:rotate-180" />
-          </Link>
+          </IntentPrefetchLink>
         ) : (
           <span>
-            Next
+            {nextLabel}
             <ChevronRight className="size-4 rtl:rotate-180" />
           </span>
         )}
       </Button>
-    </div>
+    </nav>
   )
 }

@@ -32,7 +32,8 @@ describe("shared marketplace field surface", () => {
     const leaked = entities.flatMap((entity) =>
       marketplaceEntityFields[entity]
         .filter(
-          (field) => field.portal.read || field.portal.create || field.portal.edit,
+          (field) =>
+            field.portal.read || field.portal.create || field.portal.edit,
         )
         .filter((field) =>
           adminOrSystemOnly.some((pattern) => pattern.test(field.key)),

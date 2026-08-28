@@ -33,7 +33,9 @@ export function NotificationInbox({
   const unreadCount = usePortalNotificationStore((state) => state.unreadCount)
   const replace = usePortalNotificationStore((state) => state.replace)
   const setRead = usePortalNotificationStore((state) => state.setRead)
-  const markAllReadStore = usePortalNotificationStore((state) => state.markAllRead)
+  const markAllReadStore = usePortalNotificationStore(
+    (state) => state.markAllRead,
+  )
 
   useEffect(() => {
     if (items.length) return

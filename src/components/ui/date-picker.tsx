@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarIcon } from "lucide-react"
+import { CalendarDays, CalendarIcon, Check, RotateCcw, X } from "lucide-react"
 import { useLocale } from "next-intl"
 import { useMemo, useState } from "react"
 
@@ -49,6 +49,7 @@ export function DatePicker({
   const locale = useLocale()
   const [open, setOpen] = useState(false)
   const selected = useMemo(() => parseIsoDate(value), [value])
+  const today = new Date()
   const label = selected
     ? new Intl.DateTimeFormat(locale, {
         day: "2-digit",
@@ -56,6 +57,8 @@ export function DatePicker({
         year: "numeric",
       }).format(selected)
     : placeholder
+  const todayAllowed =
+    (!fromDate || today >= fromDate) && (!toDate || today <= toDate)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -66,16 +69,55 @@ export function DatePicker({
           variant="secondary"
           disabled={disabled}
           onBlur={onBlur}
+          aria-haspopup="dialog"
+          aria-expanded={open}
           className={cn(
-            "border-input data-[placeholder]:text-muted-foreground h-10 w-full justify-start rounded-lg border bg-white px-3 text-sm font-normal shadow-none",
+            "border-input bg-card text-foreground hover:border-primary/25 h-12 w-full justify-start rounded-2xl border px-3.5 text-sm font-normal shadow-[0_1px_2px_rgb(7_26_51/0.03)]",
             !selected && "text-muted-foreground",
           )}
         >
-          <CalendarIcon className="text-muted-foreground size-4" aria-hidden="true" />
-          {label}
+          <span className="bg-primary/8 text-primary grid size-8 shrink-0 place-items-center rounded-xl">
+            <CalendarIcon className="size-4" aria-hidden="true" />
+          </span>
+          <span className="min-w-0 flex-1 truncate text-start">{label}</span>
+          {selected ? (
+            <span
+              role="button"
+              tabIndex={disabled ? -1 : 0}
+              aria-label="Clear date"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground grid size-7 place-items-center rounded-lg transition-colors"
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                if (!disabled) onChange("")
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  if (!disabled) onChange("")
+                }
+              }}
+            >
+              <X className="size-3.5" />
+            </span>
+          ) : null}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto rounded-xl p-0">
+      <PopoverContent
+        align="start"
+        sideOffset={8}
+        className="border-border/80 w-auto overflow-hidden rounded-[1.4rem] p-0 shadow-[var(--shadow-floating)]"
+      >
+        <div className="bg-muted/25 border-b px-4 py-3">
+          <div className="text-foreground flex items-center gap-2 text-sm font-semibold">
+            <CalendarDays className="text-primary size-4" />
+            Choose a date
+          </div>
+          <p className="text-muted-foreground mt-0.5 text-xs">
+            Select from the calendar or use a quick action.
+          </p>
+        </div>
         <Calendar
           dir={locale === "ar" ? "rtl" : "ltr"}
           mode="single"
@@ -95,6 +137,38 @@ export function DatePicker({
             setOpen(false)
           }}
         />
+        <div className="bg-muted/20 flex items-center justify-between gap-2 border-t px-3 py-2.5">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={!todayAllowed}
+            onClick={() => {
+              onChange(toIsoDate(today))
+              setOpen(false)
+            }}
+          >
+            <CalendarDays className="size-4" />
+            Today
+          </Button>
+          <div className="flex items-center gap-1.5">
+            {selected ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => onChange("")}
+              >
+                <RotateCcw className="size-4" />
+                Clear
+              </Button>
+            ) : null}
+            <Button type="button" size="sm" onClick={() => setOpen(false)}>
+              <Check className="size-4" />
+              Done
+            </Button>
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   )

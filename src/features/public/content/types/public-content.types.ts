@@ -8,7 +8,7 @@ export type StaticContentType =
   | "terms"
   | "cookies"
 
-export type ContentCollectionType = "blog" | "help"
+export type ContentCollectionType = "help"
 
 export interface PublicContentSection {
   id: string

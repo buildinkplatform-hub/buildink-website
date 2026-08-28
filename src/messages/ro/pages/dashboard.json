@@ -96,6 +96,36 @@
       }
     },
     "offersEmpty": "Nicio ofertă încă pentru acest cont.",
+    "offers": {
+      "board": {
+        "offer": "Ofertă",
+        "amount": "Valoare",
+        "receivedTitle": "Oferte primite",
+        "receivedDescription": "Examinează, compară și decide asupra ofertelor primite de spațiul tău de lucru.",
+        "decisionWorkflow": "Flux de decizie",
+        "submissionHistory": "Istoric depunere",
+        "revisions": "Revizii",
+        "noRevisions": "Nu există revizii încă.",
+        "reference": "Referință",
+        "direction": "Direcție",
+        "submitted": "Trimisă",
+        "notSubmitted": "Nu a fost trimisă",
+        "inbox": { "submitted": "Trimisă", "received": "Primită" },
+        "totalRecords": "înregistrări totale",
+        "rows": "rânduri"
+      },
+      "statuses": {
+        "DRAFT": "Ciornă",
+        "SUBMITTED": "Trimisă",
+        "UNDER_REVIEW": "În revizuire",
+        "CHANGES_REQUESTED": "Modificări solicitate",
+        "SHORTLISTED": "Pe lista scurtă",
+        "ACCEPTED": "Acceptată",
+        "REJECTED": "Respinsă",
+        "WITHDRAWN": "Retrasă",
+        "EXPIRED": "Expirată"
+      }
+    },
     "applicationsEmpty": "Nicio candidatură de forță de muncă încă pentru acest cont.",
     "engagementsEmpty": "Nicio colaborare încă pentru acest cont.",
     "messagesEmpty": "Conversațiile apar după o ofertă sau o candidatură trimisă.",
@@ -124,7 +154,8 @@
       "workspace": "Spațiu de lucru",
       "members": "Membri",
       "catalogue": "Catalog",
-      "workforce": "Forță de muncă",
+      "workforce": "Recrutare și personal",
+      "operations": "Operațiuni",
       "subscription": "Abonament",
       "notifications": "Notificări",
       "settings": "Setări",
@@ -132,6 +163,10 @@
       "bidBoard": "Panou de oferte",
       "enquiries": "Solicitări",
       "availability": "Disponibilitate"
+    },
+    "navGroups": {
+      "people": "Recrutare și personal",
+      "operations": "Operațiuni"
     },
     "descriptions": {
       "profile": "Gestionează identitatea publică, datele de contact și informațiile de piață.",
@@ -155,6 +190,7 @@
       "members": "Membrii de bază ai echipei companiei.",
       "catalogue": "Listări de catalog ale furnizorului pentru descoperire.",
       "workforce": "Cereri, candidaturi și evidențe ale forței de muncă.",
+      "operations": "Prezență, sarcini, producție, costuri de proiect, prognoze, salarizare și alerte.",
       "workforceCompany": "Gestionează cererile de personal și analizează candidaturile companiei.",
       "subscription": "Consultă planul, utilizarea și reînnoirea.",
       "notifications": "Vezi evenimentele de proiect, propuneri și platformă.",
@@ -203,12 +239,49 @@
     "profile": {
       "displayName": "Nume afișat",
       "phone": "Telefon",
+      "email": "Email",
       "timezone": "Fus orar",
       "contactPreference": "Preferință de contact",
       "platformOnly": "Doar mesaje pe platformă",
       "publicContact": "Contact public după acceptare",
       "save": "Salvează profilul",
-      "saved": "Profil salvat"
+      "saved": "Profil salvat",
+      "updatedAt": "Ultima actualizare",
+      "accountSummaryDescription": "Toate datele introduse în timpul înregistrării, așa cum sunt stocate în contul tău.",
+      "personaDescription": "Detaliile rolului colectate în timpul înregistrării pentru tipul tău de cont.",
+      "collectionsDescription": "Abilitățile, limbile, categoriile și regiunile de serviciu din profilul tău public."
+    },
+    "profileTabs": {
+      "overview": "Prezentare generală",
+      "documents": "Documente",
+      "visibility": "Vizibilitate",
+      "persona": "Profil de rol",
+      "collections": "Abilități și limbi"
+    },
+    "profileDocuments": {
+      "description": "Documentele de verificare încărcate în timpul înregistrării. Le poți previzualiza, înlocui sau elimina oricând.",
+      "add": "Adaugă document",
+      "addTitle": "Încarcă un document",
+      "addHint": "Alege tipul documentului, datele și fișierul de încărcat.",
+      "replaceTitle": "Înlocuiește documentul",
+      "replaceHint": "Încărcarea unui înlocuitor elimină fișierul anterior și metadatele acestuia.",
+      "replace": "Înlocuiește",
+      "cancel": "Anulează",
+      "documentType": "Tip de document",
+      "issuedAt": "Data emiterii",
+      "expiresAt": "Data expirării",
+      "issuedAtLabel": "Emis la {date}",
+      "expiresAtLabel": "Expiră la {date}",
+      "view": "Vezi",
+      "delete": "Șterge",
+      "uploading": "Se încarcă…",
+      "chooseFile": "Alege fișier",
+      "fileRequirements": "PDF, JPG, PNG, DOCX, XLSX sau CSV de până la 25 MB.",
+      "fileType": "Acest tip de fișier nu este acceptat.",
+      "fileSize": "Fișierul depășește dimensiunea maximă permisă.",
+      "fileRequired": "Alege mai întâi un fișier.",
+      "expiryRequired": "Data expirării este obligatorie pentru acest tip de document.",
+      "uploadFailed": "Documentul nu a putut fi încărcat. Încearcă din nou."
     },
     "marketplace": {
       "accept": "Acceptă",
@@ -237,15 +310,78 @@
         "confirmTitle": "Schimbi starea proiectului?",
         "confirmDescription": "Proiectul va trece la {status}.",
         "DRAFT": "Revino la ciornă",
+        "PENDING_REVIEW": "Trimite la verificare",
         "PUBLISHED": "Publică",
         "IN_PROGRESS": "Începe proiectul",
         "COMPLETED": "Marchează finalizat",
         "ON_HOLD": "Pune în așteptare",
         "CANCELLED": "Anulează proiectul",
         "ARCHIVED": "Arhivează proiectul"
+      },
+      "stats": {
+        "active": "Active",
+        "published": "Publicate",
+        "inProgress": "In progres",
+        "portfolioValue": "Valoare portofoliu"
+      },
+      "toolbar": {
+        "clearAll": "Sterge tot",
+        "export": "Exporta"
+      },
+      "table": {
+        "project": "Proiect",
+        "owner": "Proprietar",
+        "totalRecords": "{count} inregistrari totale",
+        "actionsFor": "Acțiuni pentru {title}",
+        "confirmTitle": "{action} proiectul?",
+        "confirmDescription": "{title} va trece de la {from} la {to}.",
+        "reasonLabel": "Motiv",
+        "reasonPlaceholder": "Adaugă un motiv scurt pentru această schimbare de stare.",
+        "processing": "Se procesează..."
+      },
+      "form": {
+        "details": "Detalii proiect",
+        "detailsDescription": "Identitatea, domeniul și informațiile principale de livrare.",
+        "location": "Locație și calendar",
+        "locationDescription": "Adresă, coordonate și calendar folosite pentru potrivire și revizuire.",
+        "packagesDescription": "Împarte proiectul în pachete de lucrări clare pentru ofertare.",
+        "criteriaDescription": "Definește criteriile folosite pentru compararea ofertelor.",
+        "publishing": "Controale de publicare",
+        "publishingDescription": "Categorie, vizibilitate, buget și termen limită.",
+        "mediaDescription": "Atașează fișiere, imagini, logo-uri și documente suport.",
+        "requestFailed": "Cererea nu a putut fi finalizată",
+        "validationFailed": "Verifică aceste câmpuri înainte de a continua",
+        "back": "Înapoi",
+        "next": "Următorul",
+        "confirmCreate": "Creezi {title}?",
+        "confirmCreateDescription": "Salvează proiectul ca ciornă în spațiul portalului.",
+        "confirmEdit": "Salvezi modificările pentru {title}?",
+        "confirmEditDescription": "Actualizează proiectul și păstrează starea curentă.",
+        "confirmPublish": "Publici {title}?",
+        "steps": {
+          "information": "Informații",
+          "packages": "Pachete",
+          "publishing": "Publicare",
+          "media": "Media"
+        },
+        "stepDescriptions": {
+          "information": "Domeniu și locație principale.",
+          "packages": "Pachete de lucrări și criterii.",
+          "publishing": "Categorie, etichete, buget și termen.",
+          "media": "Fișiere și resurse publice ale proiectului."
+        }
       }
     },
     "opportunitiesEmpty": "Nicio oportunitate încă pentru acest cont.",
+    "opportunity": {
+      "actionsFor": "Acțiuni pentru {title}",
+      "allTypes": "Toate tipurile de oportunități",
+      "processing": "Se procesează...",
+      "reasonLabel": "Motivul retragerii",
+      "reasonPlaceholder": "Explică pe scurt de ce retragi această oportunitate.",
+      "withdraw": "Retrage oportunitatea",
+      "withdrawDescription": "{title} nu va mai accepta răspunsuri."
+    },
     "tendersEmpty": "Nicio licitație încă pentru acest cont.",
     "membersEmpty": "Niciun membru al companiei de afișat.",
     "inviteMember": "Invită membru",
@@ -361,7 +497,21 @@
     "documents": {
       "expires": "Expiră",
       "expiryMissing": "Data de expirare este obligatorie",
-      "opening": "Se deschide…"
+      "opening": "Se deschide…",
+      "document": "Document",
+      "uploaded": "Încărcat",
+      "view": "Vezi",
+      "viewDocument": "Vezi {name}",
+      "preview": "Previzualizare document",
+      "loading": "Se încarcă documentul…",
+      "failed": "Previzualizarea documentului nu a putut fi încărcată.",
+      "openNewTab": "Deschide într-o filă nouă",
+      "close": "Închide",
+      "total": "Total",
+      "types": "Tipuri",
+      "inReview": "În analiză",
+      "expiringSoon": "Expiră curând",
+      "expired": "Expirate"
     },
     "persona": {
       "worker": "Profil lucrător",
@@ -586,8 +736,66 @@
       "checklist": "Documente obligatorii",
       "submitTitle": "Trimite spre analiză",
       "submit": "Trimite verificarea",
+      "submitting": "Se trimite…",
       "submitted": "Verificarea a fost trimisă.",
-      "notesPlaceholder": "Note opționale pentru evaluator"
+      "notesPlaceholder": "Note opționale pentru evaluator",
+      "manageDocuments": "Gestionează documentele",
+      "requirementsHint": "Potrivește fiecare document obligatoriu cu politica activă de verificare înainte de trimitere.",
+      "required": "Obligatoriu",
+      "optional": "Opțional",
+      "submitSummary": "{documents} documente selectate. {fulfilled}/{required} cerințe obligatorii îndeplinite. {issues} probleme deschise.",
+      "blockedTitle": "Verificarea nu poate fi trimisă încă",
+      "blocked": {
+        "noPolicy": "Nu există o politică activă de verificare pentru acest cont.",
+        "noDocuments": "Încarcă cel puțin un document de verificare.",
+        "missingRequired": "{count} document obligatoriu lipsește încă.",
+        "inReview": "O trimitere de verificare este deja în analiză administrativă.",
+        "terminal": "Acest ciclu de verificare este deja finalizat."
+      },
+      "statusTitles": {
+        "NOT_SUBMITTED": "Începe verificarea",
+        "PENDING": "Verificarea este în analiză",
+        "CHANGES_REQUESTED": "Administratorul a cerut modificări",
+        "VERIFIED": "Verificare aprobată",
+        "REJECTED": "Verificare respinsă",
+        "EXPIRED": "Verificare expirată"
+      },
+      "statusBodies": {
+        "READY": "Documentele tale sunt gata pentru coada de verificare administrativă.",
+        "BLOCKED": "Completează elementele de mai jos înainte de trimitere.",
+        "PENDING": "Echipa administrativă verifică documentele, lista și contextul contului.",
+        "CHANGES_REQUESTED": "Analizează problemele vizibile, actualizează documentele și retrimite.",
+        "VERIFIED": "Contul tău a fost verificat. Menține documentele care expiră actualizate.",
+        "REJECTED": "Ultima analiză a fost respinsă. Citește motivul sau contactează suportul.",
+        "EXPIRED": "Verificarea anterioară a expirat. Actualizează documentele înainte de retrimitere."
+      },
+      "progress": {
+        "policy": "Politică",
+        "activePolicy": "Politică activă",
+        "required": "Documente obligatorii",
+        "review": "Analiză admin",
+        "cycle": "Ciclu",
+        "latestDecision": "Ultima decizie"
+      },
+      "next": {
+        "title": "Următoarea acțiune",
+        "wait": "Așteaptă decizia administratorului.",
+        "resolveIssues": "Rezolvă modificările cerute și retrimite.",
+        "upload": "Încarcă sau înlocuiește documentele lipsă.",
+        "verified": "Monitorizează expirările și menține profilul actualizat.",
+        "submit": "Trimite documentele selectate spre analiză."
+      }
+    },
+    "fields": {
+      "title": "Titlu",
+      "summary": "Rezumat",
+      "description": "Descriere",
+      "budget": "Buget",
+      "budgetMin": "Buget minim",
+      "budgetMax": "Buget maxim",
+      "deadline": "Termen limită",
+      "employmentType": "Tip de angajare",
+      "workArrangement": "Modalitate de lucru"
     },
     "chrome": {
       "create": "Creează",

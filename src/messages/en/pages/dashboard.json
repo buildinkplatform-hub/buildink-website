@@ -120,6 +120,36 @@
       }
     },
     "offersEmpty": "No offers yet for this account.",
+    "offers": {
+      "board": {
+        "offer": "Bid / offer",
+        "amount": "Amount",
+        "receivedTitle": "Received bids",
+        "receivedDescription": "Review, compare and decide on offers received by your workspace.",
+        "decisionWorkflow": "Decision workflow",
+        "submissionHistory": "Submission history",
+        "revisions": "Revisions",
+        "noRevisions": "No revisions yet.",
+        "reference": "Reference",
+        "direction": "Direction",
+        "submitted": "Submitted",
+        "notSubmitted": "Not submitted",
+        "inbox": { "submitted": "Sent", "received": "Received" },
+        "totalRecords": "total records",
+        "rows": "rows"
+      },
+      "statuses": {
+        "DRAFT": "Draft",
+        "SUBMITTED": "Submitted",
+        "UNDER_REVIEW": "Under review",
+        "CHANGES_REQUESTED": "Changes requested",
+        "SHORTLISTED": "Shortlisted",
+        "ACCEPTED": "Accepted",
+        "REJECTED": "Rejected",
+        "WITHDRAWN": "Withdrawn",
+        "EXPIRED": "Expired"
+      }
+    },
     "applicationsEmpty": "No workforce applications yet for this account.",
     "engagementsEmpty": "No engagements yet for this account.",
     "messagesEmpty": "Conversations appear after a submitted offer or application.",
@@ -148,7 +178,8 @@
       "workspace": "Workspace",
       "members": "Members",
       "catalogue": "Catalogue",
-      "workforce": "Workforce",
+      "workforce": "Hiring & People",
+      "operations": "Operations",
       "subscription": "Subscription",
       "notifications": "Notifications",
       "settings": "Settings",
@@ -157,6 +188,7 @@
       "enquiries": "Enquiries",
       "availability": "Availability"
     },
+    "navGroups": { "people": "Hiring & People", "operations": "Operations" },
     "descriptions": {
       "profile": "Manage your public identity, contact details and marketplace information.",
       "documents": "Upload and track certificates and verification records.",
@@ -179,6 +211,7 @@
       "members": "Basic company team membership.",
       "catalogue": "Supplier catalogue listings for discovery.",
       "workforce": "Workforce requests, applications, and worker records.",
+      "operations": "Attendance, assignments, production, project costs, forecasts, payroll, and alerts.",
       "workforceCompany": "Manage workforce requests and review applications for your company.",
       "subscription": "Review your plan, usage and renewal.",
       "notifications": "See project, proposal and platform events.",
@@ -254,6 +287,7 @@
     "profile": {
       "displayName": "Display name",
       "phone": "Phone",
+      "email": "Email",
       "timezone": "Timezone",
       "preferredLocale": "Preferred language",
       "preferredLocaleHint": "Used for emails, notifications and documents sent to you.",
@@ -265,7 +299,43 @@
       "accountType": "Account type",
       "onboardingStatus": "Onboarding status",
       "verificationStatus": "Verification status",
-      "publicationStatus": "Publication status"
+      "publicationStatus": "Publication status",
+      "updatedAt": "Last updated",
+      "accountSummaryDescription": "Everything you submitted during onboarding, as stored on your account.",
+      "personaDescription": "The role details captured during onboarding for your account type.",
+      "collectionsDescription": "Skills, languages, categories and service regions on your public profile."
+    },
+    "profileTabs": {
+      "overview": "Overview",
+      "documents": "Documents",
+      "visibility": "Visibility",
+      "persona": "Role profile",
+      "collections": "Skills and languages"
+    },
+    "profileDocuments": {
+      "description": "Verification documents uploaded during onboarding. You can preview, replace or remove them at any time.",
+      "add": "Add document",
+      "addTitle": "Upload a document",
+      "addHint": "Choose the document type, dates and the file to upload.",
+      "replaceTitle": "Replace document",
+      "replaceHint": "Uploading a replacement removes the previous file and its metadata.",
+      "replace": "Replace",
+      "cancel": "Cancel",
+      "documentType": "Document type",
+      "issuedAt": "Issue date",
+      "expiresAt": "Expiry date",
+      "issuedAtLabel": "Issued {date}",
+      "expiresAtLabel": "Expires {date}",
+      "view": "View",
+      "delete": "Delete",
+      "uploading": "Uploading…",
+      "chooseFile": "Choose file",
+      "fileRequirements": "PDF, JPG, PNG, DOCX, XLSX or CSV up to 25 MB.",
+      "fileType": "This file type is not supported.",
+      "fileSize": "The file exceeds the maximum allowed size.",
+      "fileRequired": "Choose a file first.",
+      "expiryRequired": "An expiry date is required for this document type.",
+      "uploadFailed": "The document could not be uploaded. Try again."
     },
     "marketplace": {
       "accept": "Accept",
@@ -295,15 +365,78 @@
         "confirmTitle": "Change project status?",
         "confirmDescription": "This project will move to {status}.",
         "DRAFT": "Return to draft",
+        "PENDING_REVIEW": "Send to review",
         "PUBLISHED": "Publish",
         "IN_PROGRESS": "Start project",
         "COMPLETED": "Mark completed",
         "ON_HOLD": "Put on hold",
         "CANCELLED": "Cancel project",
         "ARCHIVED": "Archive project"
+      },
+      "stats": {
+        "active": "Active",
+        "published": "Published",
+        "inProgress": "In progress",
+        "portfolioValue": "Portfolio value"
+      },
+      "toolbar": {
+        "clearAll": "Clear all",
+        "export": "Export"
+      },
+      "table": {
+        "project": "Project",
+        "owner": "Owner",
+        "totalRecords": "{count} total records",
+        "actionsFor": "Actions for {title}",
+        "confirmTitle": "{action} project?",
+        "confirmDescription": "{title} will move from {from} to {to}.",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Add a short reason for this status change.",
+        "processing": "Processing..."
+      },
+      "form": {
+        "details": "Project details",
+        "detailsDescription": "Core identity, scope and delivery information.",
+        "location": "Location and schedule",
+        "locationDescription": "Address, coordinates and timeline used for matching and review.",
+        "packagesDescription": "Break the project into work packages bidders can price clearly.",
+        "criteriaDescription": "Define the criteria used to compare submitted offers.",
+        "publishing": "Publishing controls",
+        "publishingDescription": "Category, visibility, budget and deadline settings.",
+        "mediaDescription": "Attach project files, covers, logos and supporting documents.",
+        "requestFailed": "The request could not be completed",
+        "validationFailed": "Review these fields before continuing",
+        "back": "Back",
+        "next": "Next",
+        "confirmCreate": "Create {title}?",
+        "confirmCreateDescription": "This saves the project as a draft in your portal workspace.",
+        "confirmEdit": "Save changes to {title}?",
+        "confirmEditDescription": "This updates the project and keeps the current lifecycle status.",
+        "confirmPublish": "Publish {title}?",
+        "steps": {
+          "information": "Information",
+          "packages": "Packages",
+          "publishing": "Publishing",
+          "media": "Media"
+        },
+        "stepDescriptions": {
+          "information": "Core scope and location details.",
+          "packages": "Work packages and evaluation criteria.",
+          "publishing": "Category, tags, budget and deadline.",
+          "media": "Project files and public assets."
+        }
       }
     },
     "opportunitiesEmpty": "No opportunities yet for this account.",
+    "opportunity": {
+      "actionsFor": "Actions for {title}",
+      "allTypes": "All opportunity types",
+      "processing": "Processing...",
+      "reasonLabel": "Reason for withdrawal",
+      "reasonPlaceholder": "Briefly explain why you are withdrawing this opportunity.",
+      "withdraw": "Withdraw opportunity",
+      "withdrawDescription": "{title} will no longer accept responses."
+    },
     "tendersEmpty": "No tenders yet for this account.",
     "membersEmpty": "No company members to show.",
     "inviteMember": "Invite member",
@@ -424,7 +557,21 @@
     "documents": {
       "expires": "Expires",
       "expiryMissing": "Expiry date required",
-      "opening": "Opening…"
+      "opening": "Opening…",
+      "document": "Document",
+      "uploaded": "Uploaded",
+      "view": "View",
+      "viewDocument": "View {name}",
+      "preview": "Document preview",
+      "loading": "Loading document…",
+      "failed": "The document preview could not be loaded.",
+      "openNewTab": "Open in new tab",
+      "close": "Close",
+      "total": "Total",
+      "types": "Types",
+      "inReview": "In review",
+      "expiringSoon": "Expiring soon",
+      "expired": "Expired"
     },
     "persona": {
       "worker": "Worker profile",
@@ -804,11 +951,58 @@
       "checklist": "Required documents",
       "submitTitle": "Submit for review",
       "submit": "Submit verification",
+      "submitting": "Submitting...",
       "submitted": "Verification submitted.",
       "notesPlaceholder": "Optional notes for the reviewer",
       "openIssues": "Requested changes",
       "decisions": "Review history",
-      "reviewer": "Reviewer"
+      "reviewer": "Reviewer",
+      "manageDocuments": "Manage documents",
+      "requirementsHint": "Match each required document to the active verification policy before submitting.",
+      "required": "Required",
+      "optional": "Optional",
+      "submitSummary": "{documents} documents selected. {fulfilled}/{required} required items fulfilled. {issues} open issues.",
+      "blockedTitle": "Verification cannot be submitted yet",
+      "blocked": {
+        "noPolicy": "No active verification policy applies to this account yet.",
+        "noDocuments": "Upload at least one verification document.",
+        "missingRequired": "{count} required document is still missing.",
+        "inReview": "A verification submission is already under admin review.",
+        "terminal": "This verification cycle is already complete."
+      },
+      "statusTitles": {
+        "NOT_SUBMITTED": "Start verification",
+        "PENDING": "Verification is under review",
+        "CHANGES_REQUESTED": "Admin requested changes",
+        "VERIFIED": "Verification approved",
+        "REJECTED": "Verification rejected",
+        "EXPIRED": "Verification expired"
+      },
+      "statusBodies": {
+        "READY": "Your documents are ready to send to the admin verification queue.",
+        "BLOCKED": "Complete the items below before sending this verification request.",
+        "PENDING": "The admin team is checking your documents, checklist and account context.",
+        "CHANGES_REQUESTED": "Review the visible admin issues, update your documents, then resubmit.",
+        "VERIFIED": "Your account has been verified. Keep expiring documents up to date.",
+        "REJECTED": "The latest review was rejected. Read the decision reason and contact support if needed.",
+        "EXPIRED": "Your previous verification expired. Refresh your documents before resubmitting."
+      },
+      "progress": {
+        "policy": "Policy",
+        "activePolicy": "Active policy",
+        "required": "Required documents",
+        "review": "Admin review",
+        "cycle": "Cycle",
+        "latestDecision": "Latest decision"
+      },
+      "next": {
+        "title": "Next action",
+        "wait": "Wait for the admin review decision.",
+        "resolveIssues": "Resolve requested changes and resubmit.",
+        "upload": "Upload or replace missing verification documents.",
+        "verified": "Monitor document expiry and keep your profile current.",
+        "submit": "Submit the selected documents for admin review."
+      }
     },
     "fields": {
       "title": "Title",
@@ -927,7 +1121,41 @@
     "members": {
       "permissions": "You have {count} workspace permissions in this company.",
       "title": "Job title",
-      "department": "Department"
+      "department": "Department",
+      "member": "Member",
+      "role": "Role",
+      "companyRole": "Company role",
+      "jobTitle": "Job title",
+      "status": "Status",
+      "email": "Email",
+      "joinedInvited": "Joined / invited",
+      "active": "Active",
+      "invited": "Invited",
+      "pending": "Pending joins",
+      "suspended": "Suspended",
+      "actions": "Member actions",
+      "edit": "Edit member",
+      "editTitle": "Edit {name}",
+      "editDescription": "Update this member's workspace role and team metadata.",
+      "approveJoin": "Approve join",
+      "rejectJoin": "Reject join",
+      "resendInvite": "Resend invite",
+      "inviteSuccess": "Invitation sent successfully.",
+      "rows": "rows",
+      "cancelInvite": "Cancel invite",
+      "remove": "Remove member",
+      "emptyDescription": "Invite teammates to collaborate in this workspace.",
+      "membershipDetails": "Membership details",
+      "rolePermissions": "Role permissions",
+      "noPermissions": "No permissions visible.",
+      "externalInvitation": "External invitation",
+      "primaryWorkspaceMember": "Primary workspace member",
+      "workspaceMember": "Workspace member",
+      "invitedOn": "Invited",
+      "joined": "Joined",
+      "lastActive": "Last active",
+      "updated": "Updated",
+      "invitedBy": "Invited by"
     },
     "table": {
       "search": "Search records",

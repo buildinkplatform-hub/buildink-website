@@ -8,4 +8,3 @@ export default async function TenderDetailPage({
   const { slug } = await params
   return <PublicEntityDetailPage module="tenders" slug={slug} />
 }
-

@@ -17,7 +17,8 @@ export function ReviewFeedbackBanner() {
         <div>
           <p className="font-semibold">{t("title")}</p>
           <p className="mt-1 text-amber-900">
-            Update your profile details and documents, then submit again for review.
+            Update your profile details and documents, then submit again for
+            review.
           </p>
         </div>
         <Link

@@ -45,21 +45,51 @@ export async function readBackendEnvelope<T>(
   }
 }
 
-export async function backendApi<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function backendApi<T>(
+  path: string,
+  init: RequestInit = {},
+): Promise<T> {
   const token = await getAccessToken()
-  if (!token) throw new BackendApiError(401, "AUTH_REQUIRED", "Authentication is required")
+  if (!token)
+    throw new BackendApiError(
+      401,
+      "AUTH_REQUIRED",
+      "Authentication is required",
+    )
   const useDataCache = Boolean(init.next)
-  const response = await fetch(`${process.env.BACKEND_API_URL ?? "http://localhost:4000"}${path}`, {
-    ...init,
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${token}`,
-      ...init.headers,
-    },
-    // Only force no-store when the caller has not opted into the Next.js data cache.
-    ...(useDataCache ? {} : { cache: init.cache ?? ("no-store" as const) }),
-    signal: init.signal ?? AbortSignal.timeout(Number(process.env.BACKEND_API_TIMEOUT_MS ?? 25_000)),
-  })
+  const method = (init.method ?? "GET").toUpperCase()
+  const attempts = method === "GET" || method === "HEAD" ? 2 : 1
+  const timeout = AbortSignal.timeout(
+    Number(process.env.BACKEND_API_TIMEOUT_MS ?? 10_000),
+  )
+  const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout
+  let response: Response | undefined
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    response = await fetch(
+      `${process.env.BACKEND_API_URL ?? "http://localhost:4000"}${path}`,
+      {
+        ...init,
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+          ...init.headers,
+        },
+        // Only force no-store when the caller has not opted into the Next.js data cache.
+        ...(useDataCache ? {} : { cache: init.cache ?? ("no-store" as const) }),
+        signal,
+      },
+    )
+    if (response.status < 500 || attempt === attempts - 1) break
+    await response.body?.cancel().catch(() => undefined)
+    await new Promise((resolve) => setTimeout(resolve, 150))
+  }
+  if (!response) {
+    throw new BackendApiError(
+      503,
+      "BACKEND_UNAVAILABLE",
+      "The backend is unavailable",
+    )
+  }
   const payload = await readBackendEnvelope<T>(response)
   if (!response.ok || !payload.success) {
     throw new BackendApiError(

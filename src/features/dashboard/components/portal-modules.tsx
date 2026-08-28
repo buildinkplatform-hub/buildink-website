@@ -11,22 +11,14 @@ import { PortalFormDialog } from "@/features/dashboard/components/portal-form-di
 import {
   ApplicationStageActions,
   ApplicationDecisionActions,
-  OfferDecisionActions,
-  OfferWithdrawAction,
   ApplicationWithdrawAction,
 } from "@/features/dashboard/components/marketplace-actions"
 import { MessagesModuleClient } from "@/features/dashboard/components/messages-module-client"
 import {
   ApplicationCreateForm,
-  OfferCreateForm,
   RetryButton,
 } from "@/features/dashboard/components/marketplace-create"
-import { ProfileEditor } from "@/features/dashboard/components/profile-editor"
-import { ProfileCollectionsEditor } from "@/features/dashboard/components/profile-collections-editor"
-import {
-  PersonaEditor,
-  VisibilityEditor,
-} from "@/features/dashboard/components/profile-protected"
+import { ProfilePageClient } from "@/features/dashboard/components/profile-page-client"
 import { WorkspaceProfileEditor } from "@/features/dashboard/components/workspace-profile-editor"
 import { SavedSearchForm } from "@/features/dashboard/components/saved-search-form"
 import { SavedSearchList } from "@/features/dashboard/components/saved-search-list"
@@ -34,10 +26,10 @@ import { SavedItemList } from "@/features/dashboard/components/saved-item-list"
 import { CompanyCreateForm } from "@/features/dashboard/components/company-create-form"
 import { CompanyClaimList } from "@/features/dashboard/components/company-claim-list"
 import { PortalPageHeader } from "@/features/dashboard/components/portal-page-header"
-import { SaveItemButton } from "@/features/public/components/save-item-button"
 import { WorkerProfileRecords } from "@/features/dashboard/components/worker-profile-records"
 import {
   getPortalBootstrap,
+  getPortalApplication,
   getPortalDashboardMetrics,
   listPortalCompanyClaims,
   getPortalProfile,
@@ -47,19 +39,17 @@ import {
   getPortalProfileCollections,
   getPortalVisibility,
   getWorkspaceOverview,
+  getWorkspaceApplication,
   getWorkspaceProfile,
   getPortalWorkforceOverview,
   listApplicationTargets,
-  listOfferTargets,
   listPortalApplications,
   listPortalConversations,
+  listPortalDocuments,
   listPortalEngagements,
-  listPortalOffers,
-  listPortalOfferRevisions,
   listPortalSavedItems,
   listPortalSavedSearches,
   listWorkspaceApplications,
-  listWorkspaceOffers,
   listPortalTaxonomy,
 } from "@/features/dashboard/data/portal-client"
 import {
@@ -68,11 +58,10 @@ import {
 } from "@/features/dashboard/lib/active-workspace"
 import { EntityDetailFields } from "@/features/dashboard/components/entity-detail-fields"
 import type { PortalQuery } from "@/features/dashboard/components/portal-directory-modules"
-import {
-  portalListPath,
-} from "@/features/dashboard/config/portal-routes"
+import { portalListPath } from "@/features/dashboard/config/portal-routes"
 import { PortalNotificationsPage } from "@/features/dashboard/notifications/notifications-page"
 import { Link } from "@/i18n/navigation"
+import { OffersBoard } from "@/features/dashboard/components/offers-board"
 
 type Translator = Awaited<ReturnType<typeof getTranslations>>
 
@@ -119,20 +108,24 @@ async function ProfileStatusSummary({
   return (
     <Card className="overflow-hidden rounded-[28px] border-slate-200/80 bg-[linear-gradient(135deg,#071A33,#0B2450)] p-6 text-white shadow-sm">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {items.map((item) => (
-        <div key={item.label}>
-            <p className="text-white/70 text-xs uppercase tracking-[0.18em]">
+        {items.map((item) => (
+          <div key={item.label}>
+            <p className="text-xs tracking-[0.18em] text-white/70 uppercase">
               {item.label}
             </p>
             <p className="mt-2 text-lg font-semibold">{item.value}</p>
-        </div>
-      ))}
+          </div>
+        ))}
       </div>
     </Card>
   )
 }
 
-export async function ProfileModulePage() {
+export async function ProfileModulePage({
+  initialTab,
+}: {
+  initialTab?: string
+} = {}) {
   const t = await getTranslations()
   const bootstrap = await getPortalBootstrap()
   const profile = bootstrap?.profile ?? (await getPortalProfile())
@@ -145,7 +138,9 @@ export async function ProfileModulePage() {
         actions={
           <>
             <Button asChild variant="secondary" size="sm">
-              <Link href="/dashboard/settings">{t("dashboard.nav.settings")}</Link>
+              <Link href="/dashboard/settings">
+                {t("dashboard.nav.settings")}
+              </Link>
             </Button>
             <Button asChild size="sm">
               <Link href="/dashboard/verification">
@@ -158,24 +153,7 @@ export async function ProfileModulePage() {
       {profile ? (
         <>
           <ProfileStatusSummary profile={profile} />
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-            <div className="space-y-6">
-              <SectionCard
-                title={t("dashboard.nav.profile")}
-                description={t("dashboard.descriptions.profile")}
-              >
-                <ProfileEditor profile={profile} />
-              </SectionCard>
-            </div>
-            <div className="space-y-6">
-              <SectionCard
-                title={t("dashboard.profile.accountType")}
-                description={t("dashboard.profile.verificationStatus")}
-              >
-                <PersonaAndVisibility version={profile.version} />
-              </SectionCard>
-            </div>
-          </div>
+          <ProfileTabPanels profile={profile} initialTab={initialTab} />
         </>
       ) : (
         <EmptyStateCard
@@ -187,22 +165,28 @@ export async function ProfileModulePage() {
   )
 }
 
-async function PersonaAndVisibility({ version }: { version: number }) {
-  const [persona, visibility, collections] = await Promise.all([
-    getPortalPersona(),
-    getPortalVisibility(),
+async function ProfileTabPanels({
+  profile,
+  initialTab,
+}: {
+  profile: PortalBootstrapProfile
+  initialTab?: string
+}) {
+  const [persona, visibility, collections, documents] = await Promise.all([
+    getPortalPersona().catch(() => null),
+    getPortalVisibility().catch(() => null),
     getPortalProfileCollections().catch(() => null),
+    listPortalDocuments().catch(() => null),
   ])
   return (
-    <>
-      {persona ? (
-        <PersonaEditor persona={persona} profileVersion={version} />
-      ) : null}
-      {collections ? (
-        <ProfileCollectionsEditor collections={collections} />
-      ) : null}
-      {visibility ? <VisibilityEditor visibility={visibility} /> : null}
-    </>
+    <ProfilePageClient
+      profile={profile}
+      persona={persona}
+      visibility={visibility}
+      collections={collections}
+      documents={documents?.items ?? []}
+      initialTab={initialTab}
+    />
   )
 }
 
@@ -261,27 +245,20 @@ export async function WorkspaceModulePage() {
   const t = await getTranslations()
   const bootstrap = await getPortalBootstrap()
   const workspace = getActiveWorkspace(bootstrap?.workspaces)
-  const [
-    overview,
-    profile,
-    dashboard,
-    claims,
-    categories,
-    tags,
-    regions,
-  ] = await Promise.all([
-    workspace
-      ? getWorkspaceOverview(workspace.companyId)
-      : Promise.resolve(null),
-    workspace
-      ? getWorkspaceProfile(workspace.companyId)
-      : Promise.resolve(null),
-    workspace ? getPortalDashboardMetrics() : Promise.resolve(null),
-    listPortalCompanyClaims(),
-    listPortalTaxonomy("categories"),
-    listPortalTaxonomy("tags"),
-    listPortalTaxonomy("regions"),
-  ])
+  const [overview, profile, dashboard, claims, categories, tags, regions] =
+    await Promise.all([
+      workspace
+        ? getWorkspaceOverview(workspace.companyId)
+        : Promise.resolve(null),
+      workspace
+        ? getWorkspaceProfile(workspace.companyId)
+        : Promise.resolve(null),
+      workspace ? getPortalDashboardMetrics() : Promise.resolve(null),
+      listPortalCompanyClaims(),
+      listPortalTaxonomy("categories"),
+      listPortalTaxonomy("tags"),
+      listPortalTaxonomy("regions"),
+    ])
   const permissions = bootstrap?.entitlements.permissions ?? []
   const workspaceMetricKeys = [
     "activeProjects",
@@ -404,6 +381,12 @@ export async function OffersModulePage({
   query,
   detailId,
 }: { detailId?: string; query?: PortalQuery } = {}) {
+  return (
+    <OffersBoard
+      query={query ?? (detailId ? { action: "detail", id: detailId } : {})}
+    />
+  )
+  /*
   const t = await getTranslations()
   const resolvedId = query?.id ?? detailId
   const bootstrap = await getPortalBootstrap()
@@ -552,6 +535,7 @@ export async function OffersModulePage({
       />
     </ModuleFrame>
   )
+  */
 }
 
 export async function ApplicationsModulePage({
@@ -561,21 +545,27 @@ export async function ApplicationsModulePage({
   const t = await getTranslations()
   const resolvedId = query?.id ?? detailId
   const bootstrap = await getPortalBootstrap()
-  const submitted = await listPortalApplications("submitted")
-  const targets = await listApplicationTargets()
   const companyId = getActiveCompanyId(bootstrap?.workspaces)
-  const received = companyId
-    ? await listWorkspaceApplications(companyId)
-    : await listPortalApplications("received")
-  const workforce =
-    bootstrap?.profile.primaryAccountType === "WORKER"
-      ? await getPortalWorkforceOverview()
-      : null
+  const isWorker = bootstrap?.profile.primaryAccountType === "WORKER"
   const selectedApplication = resolvedId
-    ? [...received.items, ...submitted.items].find(
-        (item) => item.id === resolvedId,
-      )
+    ? isWorker || !companyId
+      ? await getPortalApplication(resolvedId)
+      : await getWorkspaceApplication(companyId, resolvedId)
     : undefined
+  const [submitted, received, targets] = resolvedId
+    ? [{ items: [] }, { items: [] }, { items: [] }]
+    : await Promise.all([
+        listPortalApplications("submitted"),
+        companyId
+          ? listWorkspaceApplications(companyId)
+          : listPortalApplications("received"),
+        listApplicationTargets(),
+      ])
+  const workforce =
+    isWorker && !resolvedId ? await getPortalWorkforceOverview() : null
+  const applicationItems = selectedApplication
+    ? [selectedApplication]
+    : [...received.items, ...submitted.items]
   if (query?.action === "create") {
     return (
       <div className="w-full space-y-6">
@@ -626,7 +616,7 @@ export async function ApplicationsModulePage({
         selectedId={resolvedId}
         labels={tableLabels(t)}
         empty={t("dashboard.applicationsEmpty")}
-        items={[...received.items, ...submitted.items].map((item) => ({
+        items={applicationItems.map((item) => ({
           id: item.id,
           title: item.opportunityTitle || item.reference,
           meta: `${item.status} · ${item.inbox}`,

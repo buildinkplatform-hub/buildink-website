@@ -8,4 +8,3 @@ export default async function EquipmentDetailPage({
   const { slug } = await params
   return <PublicEntityDetailPage module="equipment" slug={slug} />
 }
-

@@ -1,0 +1,135 @@
+{
+  "trustPages": {
+    "common": {
+      "onThisPage": "In questa pagina",
+      "exploreMarketplace": "Esplora il marketplace",
+      "createAccount": "Crea un account",
+      "signIn": "Accedi",
+      "learnMore": "Scopri di più"
+    },
+    "howItWorks": {
+      "journeyTitle": "Scegli il flusso di lavoro adatto al tuo ruolo",
+      "journeyBody": "Buildink adatta gli strumenti di scoperta, pubblicazione, collaborazione e operazioni al tipo di account che utilizzi.",
+      "roles": {
+        "projectOwner": {
+          "label": "Committente",
+          "summary": "Pubblica progetti e gare, valuta le offerte, gestisci i lavori assegnati e mantieni visibile l'avanzamento.",
+          "cta": "Esplora i progetti"
+        },
+        "company": {
+          "label": "Azienda",
+          "summary": "Crea un profilo aziendale affidabile, gestisci il team, rispondi alle opportunità e coordina i lavori attivi.",
+          "cta": "Esplora le aziende"
+        },
+        "subcontractor": {
+          "label": "Subappaltatore",
+          "summary": "Trova pacchetti pertinenti, invia offerte, scambia documenti e porta i lavori accettati nella fase operativa.",
+          "cta": "Trova opportunità"
+        },
+        "serviceProvider": {
+          "label": "Fornitore di servizi",
+          "summary": "Presenta servizi specialistici, ricevi richieste qualificate e gestisci le conversazioni da un unico spazio di lavoro.",
+          "cta": "Esplora i servizi"
+        },
+        "worker": {
+          "label": "Lavoratore",
+          "summary": "Crea un profilo professionale, candidati alle opportunità e accedi ai flussi di lavoro assegnati.",
+          "cta": "Opportunità per lavoratori"
+        }
+      },
+      "stepsTitle": "Il flusso principale di Buildink",
+      "stepsBody": "Ogni fase è collegata, così gli utenti passano dalla scoperta pubblica a un flusso privato basato sui permessi senza perdere il contesto.",
+      "steps": {
+        "step1Title": "Crea l'identità corretta",
+        "step1Body": "Registrati con il tipo di account corretto e completa il profilo o lo spazio aziendale che ti rappresenta.",
+        "step2Title": "Costruisci fiducia e verifica",
+        "step2Body": "Aggiungi le informazioni e le prove richieste prima di fare affidamento su badge di fiducia o stato di pubblicazione.",
+        "step3Title": "Scopri o pubblica la domanda",
+        "step3Body": "Cerca aziende, lavoratori, progetti, gare e richieste oppure pubblica opportunità quando i tuoi permessi lo consentono.",
+        "step4Title": "Invia e valuta",
+        "step4Body": "Invia offerte o candidature, confronta le risposte, verifica le prove e applica il corretto processo di approvazione.",
+        "step5Title": "Collabora in sicurezza",
+        "step5Body": "Usa messaggi protetti, notifiche, documenti e accesso allo spazio di lavoro basato sul ruolo durante l'intero incarico.",
+        "step6Title": "Gestisci e monitora l'esecuzione",
+        "step6Body": "Porta i lavori accettati nei flussi di progetto, forza lavoro, presenze, attività, conformità e monitoraggio operativo."
+      },
+      "featuresTitle": "Funzionalità principali della piattaforma",
+      "featuresBody": "Queste sono le principali capacità del prodotto collegate dall'esperienza Website e portale.",
+      "features": {
+        "feature1Title": "Scoperta nel marketplace",
+        "feature1Body": "Cerca e filtra aziende, profili, attrezzature, progetti, gare e opportunità pubbliche.",
+        "feature2Title": "Spazi di lavoro basati sul ruolo",
+        "feature2Body": "Navigazione e azioni cambiano in base al tipo di account, appartenenza, capacità e permessi.",
+        "feature3Title": "Offerte e candidature",
+        "feature3Body": "Invia, valuta, seleziona, revisiona, accetta o rifiuta risposte commerciali e di lavoro.",
+        "feature4Title": "Verifica e prove",
+        "feature4Body": "Mantieni lo stato di fiducia collegato alle prove inviate e ai requisiti di verifica approvati.",
+        "feature5Title": "Messaggi e notifiche",
+        "feature5Body": "Mantieni visibile l'attività importante senza esporre troppo presto i dati di contatto privati.",
+        "feature6Title": "Operazioni e conformità",
+        "feature6Body": "Monitora consegna dei progetti, forza lavoro, attività, presenze, costi, avvisi e registri di conformità."
+      }
+    },
+    "verification": {
+      "statusTitle": "Gli stati di verifica devono avere un significato reale",
+      "statusBody": "Un badge di fiducia è utile solo quando le prove e lo stato della revisione lo supportano.",
+      "statuses": {
+        "pendingTitle": "In attesa",
+        "pendingBody": "La revisione delle prove non è ancora completata. Le dichiarazioni pubbliche devono restare limitate.",
+        "reviewTitle": "In revisione",
+        "reviewBody": "I documenti o i controlli richiesti sono in fase di valutazione.",
+        "verifiedTitle": "Verificato",
+        "verifiedBody": "L'ambito di verifica pubblicato è stato soddisfatto e approvato."
+      },
+      "processTitle": "Cosa controlla il processo di verifica",
+      "processBody": "Identità, azienda e documenti di supporto devono rimanere coerenti con l'account e lo stato di pubblicazione."
+    },
+    "about": {
+      "principlesTitle": "I principi su cui è progettato Buildink",
+      "principlesBody": "Un marketplace per l'edilizia richiede più di semplici annunci: identità, permessi, segnali di fiducia e un percorso chiaro verso il lavoro reale.",
+      "principles": {
+        "oneTitle": "Fiducia prima delle dichiarazioni",
+        "oneBody": "Gli stati di verifica e pubblicazione devono riflettere prove reali, non etichette ottimistiche.",
+        "twoTitle": "Chiarezza dei ruoli",
+        "twoBody": "Committenti, aziende, subappaltatori, fornitori di servizi e lavoratori devono vedere i flussi pertinenti al proprio ruolo.",
+        "threeTitle": "Continuità del flusso",
+        "threeBody": "Scoperta, offerte, messaggi, documenti e operazioni devono collegarsi senza vicoli ciechi."
+      }
+    },
+    "contact": {
+      "optionsTitle": "Contatta il canale giusto",
+      "optionsBody": "Usa il modulo di contatto per domande su prodotto, account, marketplace o lancio. Inserisci il contesto necessario per indirizzare correttamente la richiesta.",
+      "supportTitle": "Supporto account e prodotto",
+      "supportBody": "Per accesso account, comportamento dello spazio di lavoro, verifica o marketplace, descrivi il flusso interessato e la pagina utilizzata.",
+      "businessTitle": "Richieste commerciali",
+      "businessBody": "Per partnership, partecipazione al marketplace e onboarding aziendale, spiegaci cosa serve alla tua organizzazione.",
+      "safetyTitle": "Sicurezza e fiducia",
+      "safetyBody": "Per informazioni pubbliche errate, problemi di verifica o contenuti non sicuri, usa il canale di segnalazione o verifica appropriato."
+    },
+    "cookies": {
+      "preferencesTitle": "Preferenze cookie",
+      "preferencesBody": "I cookie essenziali mantengono attivi autenticazione, sicurezza e navigazione principale. Le categorie opzionali possono essere modificate in qualsiasi momento.",
+      "essentialTitle": "Essenziali",
+      "essentialBody": "Necessari per sicurezza, autenticazione e comportamento fondamentale del prodotto.",
+      "preferencesCategoryTitle": "Preferenze",
+      "preferencesCategoryBody": "Ricorda le scelte dell'interfaccia e dell'esperienza quando disponibile.",
+      "analyticsTitle": "Analitici",
+      "analyticsBody": "Aiuta a misurare utilizzo e prestazioni del prodotto quando abilitato.",
+      "marketingTitle": "Marketing",
+      "marketingBody": "Consente misurazioni marketing opzionali dove configurate.",
+      "alwaysOn": "Sempre attivi",
+      "save": "Salva preferenze",
+      "saved": "Preferenze salvate"
+    },
+    "footer": {
+      "eyebrow": "Progettato per i flussi di lavoro nell'edilizia",
+      "title": "Scopri persone, aziende e opportunità affidabili — poi continua a far avanzare il lavoro.",
+      "body": "Buildink collega la scoperta pubblica con verifica, collaborazione protetta e spazi di lavoro basati sul ruolo.",
+      "trustOne": "Accesso basato sul ruolo",
+      "trustTwo": "Fiducia guidata dalla verifica",
+      "trustThree": "Marketplace multilingue",
+      "newsletterTitle": "Ricevi aggiornamenti Buildink",
+      "systemLabel": "Marketplace e portale"
+    }
+  }
+}

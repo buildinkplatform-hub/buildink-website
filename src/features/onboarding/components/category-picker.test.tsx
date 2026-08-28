@@ -32,7 +32,11 @@ const categories: CategoryOption[] = [
   },
 ]
 
-function CategoryPickerHarness({ initialValue = "" }: { initialValue?: string }) {
+function CategoryPickerHarness({
+  initialValue = "",
+}: {
+  initialValue?: string
+}) {
   const [value, setValue] = useState(initialValue)
   return (
     <NextIntlClientProvider

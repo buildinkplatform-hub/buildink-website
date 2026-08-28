@@ -141,7 +141,9 @@
         "NATIVE": "Amtare"
       }
     },
-    "marketplace": { "withdraw": "Tërhiq" },
+    "marketplace": {
+      "withdraw": "Tërhiq"
+    },
     "workforce": {
       "legendAvailable": "I disponueshëm",
       "legendPreferred": "I preferuar",
@@ -234,26 +236,17 @@
       "reviewer": "Shqyrtuesi"
     },
     "fields": {
-      "title": "Titulli",
       "reference": "Referenca",
-      "description": "Përshkrimi",
       "category": "Kategoria",
       "city": "Qyteti",
       "country": "Shteti",
-      "budget": "Buxheti",
-      "budgetMin": "Buxheti minimal",
-      "budgetMax": "Buxheti maksimal",
       "currency": "Monedha",
-      "deadline": "Afati",
       "startsAt": "Data e fillimit",
       "publicationStatus": "Publikimi",
       "status": "Statusi",
       "kind": "Lloji",
-      "summary": "Përmbledhja",
       "profession": "Profesioni",
       "durationDays": "Kohëzgjatja (ditë)",
-      "employmentType": "Lloji i punësimit",
-      "workArrangement": "Mënyra e punës",
       "workersNeeded": "Punëtorët e nevojshëm",
       "sourceKind": "Burimi",
       "submissionChannel": "Kanali i dorëzimit",
@@ -331,7 +324,41 @@
     "members": {
       "permissions": "Ke {count} leje për hapësirën e punës të kësaj kompanie.",
       "title": "Titulli i punës",
-      "department": "Departamenti"
+      "department": "Departamenti",
+      "member": "Anëtar",
+      "role": "Roli",
+      "jobTitle": "Titulli i punës",
+      "status": "Statusi",
+      "joinedInvited": "U bashkua / u ftua",
+      "active": "Aktiv",
+      "invited": "I ftuar",
+      "pending": "Bashkime në pritje",
+      "suspended": "Pezulluar",
+      "actions": "Veprimet e anëtarit",
+      "edit": "Ndrysho anëtarin",
+      "editTitle": "Edit {name}",
+      "editDescription": "Përditëso rolin dhe të dhënat e ekipit të këtij anëtari.",
+      "approveJoin": "Prano bashkimin",
+      "rejectJoin": "Refuzo bashkimin",
+      "resendInvite": "Ridërgo ftesën",
+      "inviteSuccess": "Ftesa u dërgua me sukses.",
+      "rows": "rreshta",
+      "cancelInvite": "Anulo ftesën",
+      "remove": "Hiq anëtarin",
+      "emptyDescription": "Fto kolegët për të bashkëpunuar në këtë hapësirë pune.",
+      "membershipDetails": "Detajet e anëtarësimit",
+      "rolePermissions": "Lejet e rolit",
+      "noPermissions": "Nuk ka leje të dukshme.",
+      "externalInvitation": "Ftesë e jashtme",
+      "primaryWorkspaceMember": "Anëtar kryesor i hapësirës së punës",
+      "workspaceMember": "Anëtar i hapësirës së punës",
+      "invitedOn": "Fto",
+      "joined": "U bashkua",
+      "lastActive": "Aktiviteti i fundit",
+      "updated": "Përditësuar",
+      "invitedBy": "Fto nga",
+      "companyRole": "Roli në kompani",
+      "email": "Email"
     }
   },
   "locations": {
@@ -346,9 +373,15 @@
     }
   },
   "onboarding": {
-    "fields": { "location": "Vendndodhja" },
-    "hints": { "location": "Zgjidh shtetin, rajonin dhe qytetin nga listat." },
-    "reviewFeedback": { "title": "Kërkohen përditësime para ridorëzimit" }
+    "fields": {
+      "location": "Vendndodhja"
+    },
+    "hints": {
+      "location": "Zgjidh shtetin, rajonin dhe qytetin nga listat."
+    },
+    "reviewFeedback": {
+      "title": "Kërkohen përditësime para ridorëzimit"
+    }
   },
   "publicSite": {
     "actions": {

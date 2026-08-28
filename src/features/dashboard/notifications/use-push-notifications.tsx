@@ -164,7 +164,8 @@ export function usePortalPushNotifications(enabled: boolean) {
     if (!isPushSupported()) return false
     setLoading(true)
     try {
-      const registration = await navigator.serviceWorker.getRegistration("/sw.js")
+      const registration =
+        await navigator.serviceWorker.getRegistration("/sw.js")
       const pushHandle = await registration?.pushManager.getSubscription()
       if (!pushHandle) {
         setSubscribed(false)

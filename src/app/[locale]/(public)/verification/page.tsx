@@ -1,16 +1,21 @@
 import type { Metadata } from "next"
 
-import { getLocale } from "next-intl/server"
-
-import { PublicContentPage } from "@/features/public/content/components/public-content-pages"
+import { ReviewedPublicContentPage } from "@/features/public/content/components/reviewed-public-content-page"
 import { publicContentPageMetadata } from "@/features/public/content/lib/public-content-metadata"
 import type { Locale } from "@/shared/types/platform"
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = (await getLocale()) as Locale
-  return publicContentPageMetadata("verification", locale)
+type PageProps = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params
+  return publicContentPageMetadata("verification", locale as Locale)
 }
 
-export default function VerificationPage() {
-  return <PublicContentPage type="verification" />
+export default async function VerificationPage({ params }: PageProps) {
+  const { locale } = await params
+  return (
+    <ReviewedPublicContentPage type="verification" locale={locale as Locale} />
+  )
 }

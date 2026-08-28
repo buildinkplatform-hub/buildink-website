@@ -58,22 +58,33 @@ export function BidInviteForm({ tenderId }: { tenderId: string }) {
       <p className="text-brand-navy text-sm font-semibold">
         {t("dashboard.bidding.inviteTitle")}
       </p>
-      <Field label={t("dashboard.bidding.inviteeProfile")} htmlFor="invite-profile">
+      <Field
+        label={t("dashboard.bidding.inviteeProfile")}
+        htmlFor="invite-profile"
+      >
         <Input
           id="invite-profile"
           value={inviteeProfileId}
           onChange={(event) => setInviteeProfileId(event.target.value)}
         />
       </Field>
-      <Field label={t("dashboard.bidding.inviteeCompany")} htmlFor="invite-company">
+      <Field
+        label={t("dashboard.bidding.inviteeCompany")}
+        htmlFor="invite-company"
+      >
         <Input
           id="invite-company"
           value={inviteeCompanyId}
           onChange={(event) => setInviteeCompanyId(event.target.value)}
         />
       </Field>
-      <p className="text-muted text-xs">{t("dashboard.bidding.inviteXorHint")}</p>
-      <Field label={t("dashboard.bidding.inviteMessage")} htmlFor="invite-message">
+      <p className="text-muted text-xs">
+        {t("dashboard.bidding.inviteXorHint")}
+      </p>
+      <Field
+        label={t("dashboard.bidding.inviteMessage")}
+        htmlFor="invite-message"
+      >
         <Textarea
           id="invite-message"
           value={message}
@@ -81,7 +92,10 @@ export function BidInviteForm({ tenderId }: { tenderId: string }) {
         />
       </Field>
       {error ? <p className="text-danger text-sm">{error}</p> : null}
-      <Button type="submit" disabled={pending || (!inviteeProfileId && !inviteeCompanyId)}>
+      <Button
+        type="submit"
+        disabled={pending || (!inviteeProfileId && !inviteeCompanyId)}
+      >
         {t("dashboard.bidding.sendInvite")}
       </Button>
     </form>
@@ -93,7 +107,11 @@ export function BidInviteInbox({ invites }: { invites: PortalBidInvite[] }) {
   const router = useRouter()
   const [pendingId, setPendingId] = useState<string>()
   if (!invites.length) {
-    return <p className="text-muted text-sm">{t("dashboard.bidding.invitesEmpty")}</p>
+    return (
+      <p className="text-muted text-sm">
+        {t("dashboard.bidding.invitesEmpty")}
+      </p>
+    )
   }
   return (
     <div className="space-y-3">
@@ -184,19 +202,22 @@ export function BidQuestionThread({
                 disabled={pending || !(answers[item.id] ?? "").trim()}
                 onClick={() => {
                   setPending(true)
-                  void answerBidQuestionAction(item.id, answers[item.id] ?? "").then(
-                    () => {
-                      setPending(false)
-                      router.refresh()
-                    },
-                  )
+                  void answerBidQuestionAction(
+                    item.id,
+                    answers[item.id] ?? "",
+                  ).then(() => {
+                    setPending(false)
+                    router.refresh()
+                  })
                 }}
               >
                 {t("dashboard.bidding.answer")}
               </Button>
             </div>
           ) : (
-            <p className="text-muted mt-2 text-xs">{t("dashboard.bidding.awaitingAnswer")}</p>
+            <p className="text-muted mt-2 text-xs">
+              {t("dashboard.bidding.awaitingAnswer")}
+            </p>
           )}
         </div>
       ))}
@@ -220,7 +241,10 @@ export function BidQuestionThread({
               onChange={(event) => setQuestion(event.target.value)}
             />
           </Field>
-          <Button type="submit" disabled={pending || question.trim().length < 8}>
+          <Button
+            type="submit"
+            disabled={pending || question.trim().length < 8}
+          >
             {t("dashboard.bidding.sendQuestion")}
           </Button>
         </form>
@@ -273,21 +297,32 @@ export function BidAddendumForm({
           })
         }}
       >
-        <Field label={t("dashboard.bidding.addendumTitle")} htmlFor="addendum-title">
+        <Field
+          label={t("dashboard.bidding.addendumTitle")}
+          htmlFor="addendum-title"
+        >
           <Input
             id="addendum-title"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />
         </Field>
-        <Field label={t("dashboard.bidding.addendumBody")} htmlFor="addendum-body">
+        <Field
+          label={t("dashboard.bidding.addendumBody")}
+          htmlFor="addendum-body"
+        >
           <Textarea
             id="addendum-body"
             value={body}
             onChange={(event) => setBody(event.target.value)}
           />
         </Field>
-        <Button type="submit" disabled={pending || title.trim().length < 3 || body.trim().length < 10}>
+        <Button
+          type="submit"
+          disabled={
+            pending || title.trim().length < 3 || body.trim().length < 10
+          }
+        >
           {t("dashboard.bidding.publishAddendum")}
         </Button>
       </form>
@@ -306,27 +341,36 @@ export function BidLevelingTable({ rows }: { rows: PortalLevelingRow[] }) {
         {t("dashboard.bidding.levelingTitle")}
       </p>
       {!rows.length ? (
-        <p className="text-muted text-sm">{t("dashboard.bidding.levelingEmpty")}</p>
+        <p className="text-muted text-sm">
+          {t("dashboard.bidding.levelingEmpty")}
+        </p>
       ) : (
         rows.map((row) => (
           <div key={row.offerId} className="rounded-xl border p-3">
             <p className="font-semibold">{row.submitterLabel}</p>
             <p className="text-muted text-xs">
-              {row.status} · {t("dashboard.bidding.priceRank")} {row.rankByPrice} ·{" "}
-              {t("dashboard.bidding.durationRank")} {row.rankByDuration}
+              {row.status} · {t("dashboard.bidding.priceRank")}{" "}
+              {row.rankByPrice} · {t("dashboard.bidding.durationRank")}{" "}
+              {row.rankByDuration}
             </p>
             <p className="mt-1 text-sm">
               {row.proposedPriceMinor ?? "—"} {row.currency ?? ""} ·{" "}
               {row.proposedDurationDays ?? "—"} {t("dashboard.bidding.days")}
             </p>
             <div className="mt-2 flex flex-wrap items-end gap-2">
-              <Field label={t("dashboard.bidding.score")} htmlFor={`score-${row.offerId}`}>
+              <Field
+                label={t("dashboard.bidding.score")}
+                htmlFor={`score-${row.offerId}`}
+              >
                 <Input
                   id={`score-${row.offerId}`}
                   type="number"
                   min={0}
                   max={100}
-                  value={scores[row.offerId] ?? (row.score == null ? "" : String(row.score))}
+                  value={
+                    scores[row.offerId] ??
+                    (row.score == null ? "" : String(row.score))
+                  }
                   onChange={(event) =>
                     setScores((current) => ({
                       ...current,

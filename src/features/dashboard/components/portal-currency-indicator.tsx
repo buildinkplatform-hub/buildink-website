@@ -9,7 +9,7 @@ export function PortalCurrencyIndicator() {
     <Link
       href="/dashboard/settings"
       aria-label="Currency: EUR"
-      className="border-line hover:border-line hover:bg-accent hidden h-10 items-center gap-2 rounded-[10px] border bg-white px-4 text-sm font-semibold text-brand-navy transition sm:inline-flex"
+      className="border-line hover:border-line hover:bg-accent text-brand-navy hidden h-10 items-center gap-2 rounded-[10px] border bg-white px-4 text-sm font-semibold transition sm:inline-flex"
     >
       <Coins className="size-4" />
       EUR

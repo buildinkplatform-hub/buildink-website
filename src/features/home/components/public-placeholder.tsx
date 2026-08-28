@@ -1,12 +1,14 @@
+import { Suspense } from "react"
 import Image from "next/image"
 import {
   BadgeCheck,
   ChevronRight,
+  FileText,
   HardHat,
   Search,
   ShieldCheck,
 } from "lucide-react"
-import { getLocale, getTranslations } from "next-intl/server"
+import { getTranslations } from "next-intl/server"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,10 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  PublicHomeDashboardAction,
+  PublicHomePostAction,
+} from "@/features/home/components/public-home-viewer-actions"
 import { PublicNewsletterCard } from "@/features/public/components/public-newsletter-card"
 import {
   PublicEntityVisual,
   PublicMetricStrip,
+  selectPrimaryVisual,
 } from "@/features/public/components/public-visuals"
 import {
   PublicLandingShell,
@@ -34,7 +41,6 @@ import {
 } from "@/features/public/data/public-repository"
 import { Link } from "@/i18n/navigation"
 import { Reveal } from "@/components/motion/reveal"
-import { getPublicViewer } from "@/lib/auth/session"
 import type { PublicEntityRecord } from "@/features/public/types/public.types"
 import type { Locale } from "@/shared/types/platform"
 
@@ -55,6 +61,7 @@ function CompactRecord({
       <PublicEntityVisual
         module={item.module}
         title={item.title}
+        imageUrl={selectPrimaryVisual(item)}
         compact
         className="h-16 w-16 shrink-0 rounded-2xl"
       />
@@ -109,15 +116,77 @@ function ExploreColumn({
   )
 }
 
-export async function PublicPlaceholder() {
-  const locale = (await getLocale()) as Locale
+function EvidenceCard({
+  item,
+  href,
+}: {
+  item: PublicEntityRecord
+  href: string
+}) {
+  const primaryVisual = selectPrimaryVisual(item)
+  const documentTypes = [
+    ...new Set(
+      (item.documents ?? [])
+        .map((document) => document.mimeType.split("/").at(-1)?.toUpperCase())
+        .filter(Boolean),
+    ),
+  ]
+  return (
+    <Link href={`${href}/${item.slug}`} className="group block">
+      <Card className="h-full overflow-hidden rounded-[28px] border-white/70 p-0 shadow-[var(--shadow-card)] transition group-hover:-translate-y-1">
+        <PublicEntityVisual
+          module={item.module}
+          title={item.title}
+          imageUrl={primaryVisual}
+          className="h-48 rounded-none border-0"
+        />
+        <div className="p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-brand-navy text-lg font-bold">
+                {item.title}
+              </h3>
+              <p className="text-muted mt-1 text-sm">{item.location}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {item.avatarUrl && item.avatarUrl !== primaryVisual ? (
+                <span className="relative block size-9 overflow-hidden rounded-full border-2 border-white shadow-sm">
+                  <Image
+                    src={item.avatarUrl}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </span>
+              ) : null}
+              <BadgeCheck
+                className="text-primary size-5 shrink-0"
+                aria-label={item.verification}
+              />
+            </div>
+          </div>
+          <p className="text-muted mt-3 line-clamp-2 text-sm leading-6">
+            {item.summary}
+          </p>
+          <div className="text-brand-navy mt-4 flex items-center gap-2 border-t border-slate-100 pt-4 text-xs font-semibold">
+            <FileText className="text-primary size-4" />
+            <span>{item.documents?.length ?? 0}</span>
+            {documentTypes.length ? (
+              <span className="text-muted">{documentTypes.join(" · ")}</span>
+            ) : null}
+          </div>
+        </div>
+      </Card>
+    </Link>
+  )
+}
+
+export async function PublicPlaceholder({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "public" })
   const common = await getTranslations({ locale, namespace: "common" })
   const site = await getTranslations({ locale, namespace: "publicSite" })
-  // The viewer (personalized CTA), home view and facets are independent —
-  // fetch them in parallel so the landing page pays one round-trip, not three.
-  const [viewer, home, companyFacets] = await Promise.all([
-    getPublicViewer(locale),
+  const [home, companyFacets] = await Promise.all([
     getHomeView(locale),
     getDirectoryFacets("companies", locale),
   ])
@@ -206,8 +275,11 @@ export async function PublicPlaceholder() {
                             {site("filters.allCategories")}
                           </SelectItem>
                           {heroCategories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
+                            <SelectItem
+                              key={category.value}
+                              value={category.value}
+                            >
+                              {category.label} ({category.count})
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -227,12 +299,6 @@ export async function PublicPlaceholder() {
                       { href: "/tenders", label: t("ctaBrowseTenders") },
                       { href: "/projects", label: t("ctaDiscoverProjects") },
                       { href: "/workers", label: t("ctaFindWorkers") },
-                      viewer?.nextAction === "enter_portal"
-                        ? {
-                            href: "/dashboard/opportunities",
-                            label: t("ctaPostOpportunity"),
-                          }
-                        : { href: "/register", label: t("ctaJoin") },
                     ].map((item) => (
                       <Button
                         key={item.href + item.label}
@@ -243,6 +309,19 @@ export async function PublicPlaceholder() {
                         <Link href={item.href}>{item.label}</Link>
                       </Button>
                     ))}
+                    <Suspense
+                      fallback={
+                        <Button asChild variant="secondary" size="sm">
+                          <Link href="/register">{t("ctaJoin")}</Link>
+                        </Button>
+                      }
+                    >
+                      <PublicHomePostAction
+                        locale={locale}
+                        signedInLabel={t("ctaPostOpportunity")}
+                        signedOutLabel={t("ctaJoin")}
+                      />
+                    </Suspense>
                   </div>
                 </div>
                 <div className="relative">
@@ -254,9 +333,8 @@ export async function PublicPlaceholder() {
                         fill
                         className="object-cover"
                         style={{ objectPosition: "72% 48%" }}
+                        sizes="(min-width: 1024px) 46vw, 100vw"
                         priority
-                        loading="eager"
-                        unoptimized
                       />
                       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,31,68,0.06)_0%,rgba(10,31,68,0)_45%,rgba(10,31,68,0.05)_100%)]" />
                       <div className="absolute start-5 top-5 rounded-2xl bg-white/92 px-4 py-3 shadow-md backdrop-blur">
@@ -354,6 +432,32 @@ export async function PublicPlaceholder() {
           ))}
         </div>
       </PublicPageSection>
+
+      {home.featuredEvidence.companies.length > 0 ||
+      home.featuredEvidence.projects.length > 0 ? (
+        <PublicPageSection
+          eyebrow={site("home.proofEyebrow")}
+          title={`${t("featuredCompanies")} · ${t("latestProjects")}`}
+          description={t("exploreBody")}
+        >
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {home.featuredEvidence.companies.map((item) => (
+              <EvidenceCard
+                key={`company-${item.slug}`}
+                item={item}
+                href="/companies"
+              />
+            ))}
+            {home.featuredEvidence.projects.map((item) => (
+              <EvidenceCard
+                key={`project-${item.slug}`}
+                item={item}
+                href="/projects"
+              />
+            ))}
+          </div>
+        </PublicPageSection>
+      ) : null}
 
       <PublicPageSection
         title={t("exploreTitle")}
@@ -458,11 +562,19 @@ export async function PublicPlaceholder() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-              <Button asChild variant="secondary">
-                <Link href={viewer?.profileHref ?? "/register"}>
-                  {viewer ? common("visitDashboard") : t("primary")}
-                </Link>
-              </Button>
+              <Suspense
+                fallback={
+                  <Button asChild variant="secondary">
+                    <Link href="/register">{t("primary")}</Link>
+                  </Button>
+                }
+              >
+                <PublicHomeDashboardAction
+                  locale={locale}
+                  signedInLabel={common("visitDashboard")}
+                  signedOutLabel={t("primary")}
+                />
+              </Suspense>
               <Button
                 asChild
                 className="text-brand-navy bg-white hover:bg-white/90"

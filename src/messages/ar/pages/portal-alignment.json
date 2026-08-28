@@ -141,7 +141,9 @@
         "NATIVE": "لغة أم"
       }
     },
-    "marketplace": { "withdraw": "سحب" },
+    "marketplace": {
+      "withdraw": "سحب"
+    },
     "workforce": {
       "legendAvailable": "متاح",
       "legendPreferred": "مفضّل",
@@ -234,26 +236,17 @@
       "reviewer": "المراجع"
     },
     "fields": {
-      "title": "العنوان",
       "reference": "المرجع",
-      "description": "الوصف",
       "category": "الفئة",
       "city": "المدينة",
       "country": "الدولة",
-      "budget": "الميزانية",
-      "budgetMin": "الحد الأدنى للميزانية",
-      "budgetMax": "الحد الأقصى للميزانية",
       "currency": "العملة",
-      "deadline": "الموعد النهائي",
       "startsAt": "تاريخ البدء",
       "publicationStatus": "النشر",
       "status": "الحالة",
       "kind": "النوع",
-      "summary": "الملخص",
       "profession": "المهنة",
       "durationDays": "المدة (بالأيام)",
-      "employmentType": "نوع التوظيف",
-      "workArrangement": "نظام العمل",
       "workersNeeded": "العمال المطلوبون",
       "sourceKind": "المصدر",
       "submissionChannel": "قناة التقديم",
@@ -331,7 +324,41 @@
     "members": {
       "permissions": "لديك {count} من صلاحيات مساحة العمل في هذه الشركة.",
       "title": "المسمى الوظيفي",
-      "department": "القسم"
+      "department": "القسم",
+      "member": "عضو",
+      "role": "الدور",
+      "jobTitle": "المسمى الوظيفي",
+      "status": "الحالة",
+      "joinedInvited": "تاريخ الانضمام / الدعوة",
+      "active": "نشط",
+      "invited": "مدعو",
+      "pending": "طلبات انضمام معلقة",
+      "suspended": "موقوف",
+      "actions": "إجراءات العضو",
+      "edit": "تعديل العضو",
+      "editTitle": "Edit {name}",
+      "editDescription": "حدّث دور العضو وبيانات الفريق في مساحة العمل.",
+      "approveJoin": "الموافقة على الانضمام",
+      "rejectJoin": "رفض الانضمام",
+      "resendInvite": "إعادة إرسال الدعوة",
+      "inviteSuccess": "تم إرسال الدعوة بنجاح.",
+      "rows": "صفوف",
+      "cancelInvite": "إلغاء الدعوة",
+      "remove": "إزالة العضو",
+      "emptyDescription": "ادعُ زملاءك للتعاون في مساحة العمل هذه.",
+      "membershipDetails": "تفاصيل العضوية",
+      "rolePermissions": "أذونات الدور",
+      "noPermissions": "لا توجد أذونات ظاهرة.",
+      "externalInvitation": "دعوة خارجية",
+      "primaryWorkspaceMember": "عضو مساحة العمل الرئيسي",
+      "workspaceMember": "عضو مساحة العمل",
+      "invitedOn": "مدعو",
+      "joined": "انضم",
+      "lastActive": "آخر نشاط",
+      "updated": "محدّث",
+      "invitedBy": "مدعو من",
+      "companyRole": "دور الشركة",
+      "email": "البريد الإلكتروني"
     }
   },
   "locations": {
@@ -341,12 +368,20 @@
       "cityName": "المدينة",
       "none": "اختر…"
     },
-    "errors": { "optionsFailed": "تعذر تحميل خيارات الموقع. حاول مرة أخرى." }
+    "errors": {
+      "optionsFailed": "تعذر تحميل خيارات الموقع. حاول مرة أخرى."
+    }
   },
   "onboarding": {
-    "fields": { "location": "الموقع" },
-    "hints": { "location": "اختر الدولة والمنطقة والمدينة من القوائم." },
-    "reviewFeedback": { "title": "تحديثات مطلوبة قبل إعادة التقديم" }
+    "fields": {
+      "location": "الموقع"
+    },
+    "hints": {
+      "location": "اختر الدولة والمنطقة والمدينة من القوائم."
+    },
+    "reviewFeedback": {
+      "title": "تحديثات مطلوبة قبل إعادة التقديم"
+    }
   },
   "publicSite": {
     "actions": {

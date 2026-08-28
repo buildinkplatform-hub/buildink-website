@@ -1,9 +1,10 @@
+import { cacheLife, cacheTag } from "next/cache"
+
 import type { Locale } from "@/shared/types/platform"
 import type {
   DirectoryQuery,
   PublicDirectoryFacets,
   DirectoryResult,
-  PublicArticle,
   PublicEntityRecord,
   PublicHelpArticle,
   PublicHomeView,
@@ -14,7 +15,6 @@ import type {
 import {
   helpArticles,
   legalDocuments,
-  publicArticles,
   publicEntities,
 } from "@/features/public/data/public-fixtures"
 import {
@@ -39,9 +39,11 @@ const CANONICAL_PROFILE_MODULES = new Set([
 
 function isCanonicalProfileModule(
   module: PublicModule,
-): module is "project-owners" | "subcontractors" | "service-providers" | "workers" {
+): module is
+  "project-owners" | "subcontractors" | "service-providers" | "workers" {
   return CANONICAL_PROFILE_MODULES.has(
-    module as "project-owners" | "subcontractors" | "service-providers" | "workers",
+    module as
+      "project-owners" | "subcontractors" | "service-providers" | "workers",
   )
 }
 
@@ -122,10 +124,7 @@ function matchesQuery(item: PublicEntityRecord, query: DirectoryQuery) {
     return false
 
   const verification = normalize(query.verification)
-  if (
-    verification &&
-    !item.verification.toLowerCase().includes(verification)
-  )
+  if (verification && !item.verification.toLowerCase().includes(verification))
     return false
 
   return true
@@ -151,7 +150,10 @@ function listPublicEntitiesFromFixtures(
   }
 }
 
-function getDirectoryFacetsFromFixtures(module: PublicModule) {
+function getDirectoryFacetsFromFixtures(
+  module: PublicModule,
+  query: DirectoryQuery,
+) {
   const fixtureModule = fixtureModuleFor(module)
   const items = publicEntities[fixtureModule]
   const locationParts = items.map((item) => {
@@ -161,8 +163,8 @@ function getDirectoryFacetsFromFixtures(module: PublicModule) {
       .filter(Boolean)
     return {
       city: parts[0] ?? null,
-      region: parts.length >= 3 ? parts[1] ?? null : null,
-      country: parts.length >= 2 ? parts[parts.length - 1] ?? null : null,
+      region: parts.length >= 3 ? (parts[1] ?? null) : null,
+      country: parts.length >= 2 ? (parts[parts.length - 1] ?? null) : null,
     }
   })
   const countries = [
@@ -179,67 +181,147 @@ function getDirectoryFacetsFromFixtures(module: PublicModule) {
         .filter((item): item is string => Boolean(item)),
     ),
   ].sort()
-  const cities = [...new Set(locationParts.map((item) => item.city).filter(Boolean))].sort()
+  const cities = [
+    ...new Set(locationParts.map((item) => item.city).filter(Boolean)),
+  ].sort()
   const categories = [
     ...new Set(items.flatMap((item) => [...item.categories, ...item.tags])),
   ].sort()
-  const verifications = [...new Set(items.map((item) => item.verification))].sort()
-  return { countries, regions, cities, categories, verifications }
+  const verifications = [
+    ...new Set(items.map((item) => item.verification)),
+  ].sort()
+  const option = (value: string, selectedValue?: string) => ({
+    value,
+    label: value,
+    count: items.filter((item) =>
+      [item.location, item.verification, ...item.categories, ...item.tags].some(
+        (entry) => entry.toLowerCase().includes(value.toLowerCase()),
+      ),
+    ).length,
+    selected: value.toLowerCase() === normalize(selectedValue),
+  })
+  return {
+    countries: countries.map((value) => option(value, query.country)),
+    regions: regions.map((value) => option(value, query.region)),
+    cities: cities.map((value) => option(value, query.city)),
+    categories: categories.map((value) => option(value, query.category)),
+    verifications: verifications.map((value) =>
+      option(value, query.verification),
+    ),
+    additional: {},
+  }
+}
+
+const homeMetricLabels: Record<Locale, string[]> = {
+  en: [
+    "Companies",
+    "Active tenders",
+    "Workers",
+    "Projects",
+    "Publishers with public media",
+    "Public evidence documents",
+  ],
+  it: [
+    "Imprese",
+    "Gare attive",
+    "Lavoratori",
+    "Progetti",
+    "Editori con media pubblici",
+    "Documenti pubblici di evidenza",
+  ],
+  ar: [
+    "الشركات",
+    "المناقصات النشطة",
+    "العمال",
+    "المشاريع",
+    "ناشرون بوسائط عامة",
+    "وثائق إثبات عامة",
+  ],
+  ro: [
+    "Companii",
+    "Licitații active",
+    "Lucrători",
+    "Proiecte",
+    "Publicatori cu materiale publice",
+    "Documente publice justificative",
+  ],
+  sq: [
+    "Kompanitë",
+    "Tenderë aktivë",
+    "Punëtorët",
+    "Projektet",
+    "Publikues me media publike",
+    "Dokumente provuese publike",
+  ],
 }
 
 export async function getHomeView(locale: Locale): Promise<PublicHomeView> {
-  const metricLabels =
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", `public-marketplace:home:${locale}`)
+  const legacyMetricLabels =
     locale === "it"
       ? ["Imprese", "Gare attive", "Lavoratori", "Progetti"]
       : locale === "ar"
         ? ["الشركات", "المناقصات النشطة", "العمال", "المشاريع"]
         : ["Companies", "Active tenders", "Workers", "Projects"]
 
+  const metricLabels = homeMetricLabels[locale] ?? legacyMetricLabels
   const apiHome = await fetchPublicHome(locale).catch(() => null)
-  const featured = apiHome?.featured ?? (allowFixtures
-    ? {
-        companies: publicEntities.companies.slice(0, 2),
-        profiles: publicEntities.profiles.slice(0, 2),
-        projects: publicEntities.projects.slice(0, 1),
-        tenders: publicEntities.tenders.slice(0, 1),
-      }
-    : { companies: [], profiles: [], projects: [], tenders: [] })
+  const featured =
+    apiHome?.featured ??
+    (allowFixtures
+      ? {
+          companies: publicEntities.companies.slice(0, 2),
+          profiles: publicEntities.profiles.slice(0, 2),
+          projects: publicEntities.projects.slice(0, 1),
+          tenders: publicEntities.tenders.slice(0, 1),
+        }
+      : { companies: [], profiles: [], projects: [], tenders: [] })
+  const featuredEvidence = apiHome?.featuredEvidence ?? {
+    companies: [],
+    projects: [],
+  }
   const aggregates = apiHome?.aggregates ?? {
     companies: 0,
     tenders: 0,
     workers: 0,
     projects: 0,
+    publicMediaPublishers: 0,
+    publicEvidenceDocuments: 0,
   }
 
   return {
     locale,
     metrics: [
-      { label: metricLabels[0], value: formatCount(aggregates.companies, locale) },
-      { label: metricLabels[1], value: formatCount(aggregates.tenders, locale) },
-      { label: metricLabels[2], value: formatCount(aggregates.workers, locale) },
-      { label: metricLabels[3], value: formatCount(aggregates.projects, locale) },
+      {
+        label: metricLabels[0],
+        value: formatCount(aggregates.companies, locale),
+      },
+      {
+        label: metricLabels[1],
+        value: formatCount(aggregates.tenders, locale),
+      },
+      {
+        label: metricLabels[2],
+        value: formatCount(aggregates.workers, locale),
+      },
+      {
+        label: metricLabels[3],
+        value: formatCount(aggregates.projects, locale),
+      },
+      {
+        label: metricLabels[4],
+        value: formatCount(aggregates.publicMediaPublishers, locale),
+      },
+      {
+        label: metricLabels[5],
+        value: formatCount(aggregates.publicEvidenceDocuments, locale),
+      },
     ],
     featured,
-    testimonials: [
-      {
-        name: "Giulia Romano",
-        role: "Project coordinator",
-        quote:
-          "The clearer the public profile, the faster we can decide whether to open a conversation.",
-      },
-      {
-        name: "Hasan Khalid",
-        role: "Supplier representative",
-        quote:
-          "A strong public directory experience makes the private workflow feel much more credible.",
-      },
-      {
-        name: "Anna Bianchi",
-        role: "Restoration contractor",
-        quote:
-          "Buildink makes it much easier to discover serious opportunities without wasting time on unclear listings.",
-      },
-    ],
+    featuredEvidence,
+    testimonials: [],
   }
 }
 
@@ -248,6 +330,9 @@ export async function listPublicEntities(
   query: DirectoryQuery,
   locale: Locale = "en",
 ): Promise<DirectoryResult<PublicEntityRecord>> {
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", `public-marketplace:${module}`)
   const api = await fetchPublicDirectory(module, locale, query)
   if (api) return api
   if (!allowFixtures) return emptyDirectory(module, query)
@@ -257,8 +342,12 @@ export async function listPublicEntities(
 export async function getDirectoryFacets(
   module: PublicModule,
   locale: Locale = "en",
+  query: DirectoryQuery = {},
 ): Promise<PublicDirectoryFacets> {
-  const api = await fetchPublicFacets(module, locale)
+  "use cache"
+  cacheLife("publicFacets")
+  cacheTag(`public-facets:${module}:${locale}`)
+  const api = await fetchPublicFacets(module, locale, query)
   if (api) return api
   if (!allowFixtures) {
     return {
@@ -267,9 +356,10 @@ export async function getDirectoryFacets(
       cities: [],
       categories: [],
       verifications: [],
+      additional: {},
     }
   }
-  return getDirectoryFacetsFromFixtures(module)
+  return getDirectoryFacetsFromFixtures(module, query)
 }
 
 export async function getPublicEntity(
@@ -277,21 +367,30 @@ export async function getPublicEntity(
   slug: string,
   locale: Locale = "en",
 ): Promise<PublicEntityRecord | null> {
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", `public-marketplace:${module}`)
   const api = await fetchPublicEntity(module, slug, locale)
   if (api) return api
   if (!allowFixtures) return null
   const fixtureModule = fixtureModuleFor(module)
-  return publicEntities[fixtureModule].find((item) => item.slug === slug) ?? null
+  return (
+    publicEntities[fixtureModule].find((item) => item.slug === slug) ?? null
+  )
 }
 
 export async function getPublicCatalogueItem(
   id: string,
   locale: Locale = "en",
 ): Promise<PublicEntityRecord | null> {
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", "public-marketplace:catalogue")
   return fetchPublicCatalogueItem(id, locale)
 }
 
 export function getCompanySubpage(slug: string, section: string) {
+  if (!allowFixtures) return null
   const company = publicEntities.companies.find((item) => item.slug === slug)
   return company?.subpages?.find((item) => item.slug === section) ?? null
 }
@@ -300,6 +399,9 @@ export async function getCompanySubpageFromEntity(
   item: PublicEntityRecord,
   section: string,
 ) {
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", "public-marketplace:companies")
   return item.subpages?.find((entry) => entry.slug === section) ?? null
 }
 
@@ -308,6 +410,9 @@ export async function getRelatedEntities(
   item: PublicEntityRecord,
   locale: Locale = "en",
 ): Promise<PublicEntityRecord[]> {
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", `public-marketplace:${module}`)
   const related = item.relatedSlugs ?? []
   const targetModule =
     module === "projects" || module === "tenders" || module === "equipment"
@@ -325,20 +430,13 @@ export async function searchAll(query: DirectoryQuery, locale: Locale = "en") {
   const api = await fetchPublicSearch(locale, query)
   if (api.items.length) return api.items
   if (!allowFixtures) return []
-  return (Object.keys(publicEntities) as Array<keyof typeof publicEntities>).flatMap((module) =>
+  return (
+    Object.keys(publicEntities) as Array<keyof typeof publicEntities>
+  ).flatMap((module) =>
     publicEntities[module]
       .filter((item) => matchesQuery(item, query))
       .slice(0, 2),
   )
-}
-
-export function listArticles() {
-  return allowFixtures ? publicArticles : []
-}
-
-export function getArticle(slug: string): PublicArticle | null {
-  if (!allowFixtures) return null
-  return publicArticles.find((article) => article.slug === slug) ?? null
 }
 
 export function listHelpArticles() {
@@ -359,6 +457,9 @@ export async function getPublicReviews(
   target: PublicReviewTarget,
   locale: Locale,
 ) {
+  "use cache"
+  cacheLife("publicMarketplace")
+  cacheTag("public-marketplace", "public-marketplace:reviews")
   const result = await fetchPublicReviews(target, locale)
   if (result) {
     return { items: result.items, summary: result.summary }

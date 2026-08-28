@@ -30,7 +30,6 @@
         "verification": "التحقق والسلامة",
         "help": "مركز المساعدة",
         "faq": "الأسئلة الشائعة",
-        "blog": "المدونة والرؤى",
         "about": "عن Buildink",
         "contact": "اتصل بنا",
         "privacy": "سياسة الخصوصية",
@@ -73,7 +72,22 @@
       "category": "الفئة",
       "allCategories": "كل الفئات",
       "verification": "التحقق",
-      "allStatuses": "كل الحالات"
+      "allStatuses": "كل الحالات",
+      "additional": {
+        "companyType": "نوع الشركة",
+        "services": "الخدمات",
+        "accountType": "نوع الحساب",
+        "projectStage": "مرحلة المشروع",
+        "procurementStage": "مرحلة المشتريات",
+        "tenderStatus": "حالة المناقصة",
+        "sourceType": "نوع المصدر",
+        "submissionChannel": "قناة التقديم",
+        "deadlineBucket": "الموعد النهائي",
+        "listingType": "نوع الإدراج",
+        "availabilityStatus": "التوفر",
+        "opportunityType": "نوع الفرصة",
+        "opportunityStatus": "حالة الفرصة"
+      }
     },
     "actions": {
       "clearFilters": "مسح الفلاتر",
@@ -339,11 +353,6 @@
         "eyebrow": "الأسئلة المتكررة",
         "title": "الأسئلة الشائعة لـ Buildink",
         "description": "حافظ على أسئلة السوق الشائعة مختصرة وسهلة التصفح عبر اللغات."
-      },
-      "blog": {
-        "eyebrow": "التحرير وSEO",
-        "title": "المدونة والرؤى",
-        "description": "انشر محتوى طويلًا موثوقًا يدعم الاكتشاف والثقة والظهور في البحث متعدد اللغات."
       },
       "privacy": {
         "eyebrow": "قانوني",

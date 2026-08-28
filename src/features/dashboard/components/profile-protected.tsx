@@ -255,7 +255,7 @@ function WorkerFields({
     worker?.expectedPayInterval ?? "",
   )
   return (
-    <div className="space-y-4 rounded-[24px] border border-line/70 bg-canvas/55 p-5">
+    <div className="border-line/70 bg-canvas/55 space-y-4 rounded-[24px] border p-5">
       <h2 className="text-brand-navy text-lg font-semibold">
         {t("dashboard.persona.worker")}
       </h2>
@@ -519,7 +519,7 @@ function ContractorFields({
     subcontractor?.emergencyCallout ?? false,
   )
   return (
-    <div className="space-y-4 rounded-[24px] border border-line/70 bg-canvas/55 p-5">
+    <div className="border-line/70 bg-canvas/55 space-y-4 rounded-[24px] border p-5">
       <h2 className="text-brand-navy text-lg font-semibold">
         {t("dashboard.persona.contractor")}
       </h2>
@@ -696,7 +696,7 @@ function ServiceFields({
     provider?.remoteServices ?? false,
   )
   return (
-    <div className="space-y-4 rounded-[24px] border border-line/70 bg-canvas/55 p-5">
+    <div className="border-line/70 bg-canvas/55 space-y-4 rounded-[24px] border p-5">
       <h2 className="text-brand-navy text-lg font-semibold">
         {t("dashboard.persona.service")}
       </h2>
@@ -908,7 +908,7 @@ function ProjectOwnerFields({
     owner?.serviceRegionIds ?? [],
   )
   return (
-    <div className="space-y-4 rounded-[24px] border border-line/70 bg-canvas/55 p-5">
+    <div className="border-line/70 bg-canvas/55 space-y-4 rounded-[24px] border p-5">
       <h2 className="text-brand-navy text-lg font-semibold">
         {t("dashboard.persona.projectOwner")}
       </h2>
@@ -1069,7 +1069,7 @@ export function VisibilityEditor({
     "searchEngineIndexable",
   ]
   return (
-    <div className="space-y-4 rounded-[24px] border border-line/70 bg-canvas/55 p-5">
+    <div className="border-line/70 bg-canvas/55 space-y-4 rounded-[24px] border p-5">
       <h2 className="text-brand-navy text-lg font-semibold">
         {t("dashboard.visibility.title")}
       </h2>

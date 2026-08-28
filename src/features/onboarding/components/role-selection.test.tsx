@@ -103,7 +103,11 @@ describe("RoleSelection", () => {
     await user.click(screen.getByRole("button", { name: /^Company/ }))
     await user.click(screen.getByRole("button", { name: /^Continue$/i }))
 
-    expect(saveProfileTypeAction).toHaveBeenCalledWith("COMPANY", undefined, undefined)
+    expect(saveProfileTypeAction).toHaveBeenCalledWith(
+      "COMPANY",
+      undefined,
+      undefined,
+    )
     expect(push).toHaveBeenCalledWith("/onboarding/profile")
   })
 

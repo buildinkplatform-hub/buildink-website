@@ -12,6 +12,15 @@ export class AuthRateLimitExceededError extends Error {
   }
 }
 
+const CONSUME_RATE_LIMIT_SCRIPT = `
+local count = redis.call("INCR", KEYS[1])
+local ttl = redis.call("TTL", KEYS[1])
+if count == 1 or ttl < 0 then
+  redis.call("EXPIRE", KEYS[1], ARGV[1])
+end
+return count
+`
+
 const localCounters = new Map<string, { count: number; expiresAt: number }>()
 let redis: Redis | null | undefined
 
@@ -78,8 +87,11 @@ export async function limitAuthAction(
     return
   }
 
-  const count = await remote.incr(key)
-  if (count === 1) await remote.expire(key, windowSeconds)
+  const count = await remote.eval<string[], number>(
+    CONSUME_RATE_LIMIT_SCRIPT,
+    [key],
+    [String(windowSeconds)],
+  )
   if (count > limit) {
     const ttl = await remote.ttl(key)
     throw new AuthRateLimitExceededError(ttl > 0 ? ttl : windowSeconds)

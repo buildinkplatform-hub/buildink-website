@@ -120,13 +120,41 @@ test("website personas have polished, responsive portal shells and dropdowns", a
     await expectFloatingContentInViewport(page)
     await page.keyboard.press("Escape")
 
-    for (const route of ["/dashboard/settings", "/dashboard/support", "/dashboard/workforce"]) {
+    for (const route of [
+      "/dashboard/settings",
+      "/dashboard/support",
+      "/dashboard/workforce",
+      "/dashboard/operations",
+      "/dashboard/operations/attendance",
+      "/dashboard/operations/alerts",
+    ]) {
       await page.goto(`/en${route}`)
       await expect(page.locator("main#main-content")).toBeVisible()
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible({
         timeout: 30_000,
       })
       await expectNoOverflow(page, `${account.persona} ${route}`)
+      if (
+        route.startsWith("/dashboard/operations") &&
+        !(await page
+          .getByText("Select a company workspace")
+          .isVisible()
+          .catch(() => false))
+      ) {
+        const sectionNavigation = page.getByRole("navigation", {
+          name: "Section navigation",
+        })
+        if (await sectionNavigation.isVisible()) {
+          await expect(
+            sectionNavigation.locator(".overflow-x-auto"),
+          ).toHaveCount(0)
+          const sectionSelect = sectionNavigation.getByRole("combobox")
+          if (await sectionSelect.isVisible()) {
+            await sectionSelect.focus()
+            await expect(sectionSelect).toBeFocused()
+          }
+        }
+      }
     }
 
     if (index === 0) {

@@ -13,7 +13,9 @@ test.describe("portal alignment", () => {
       "Set E2E_CONTRACTOR_EMAIL and E2E_USER_PASSWORD to run persona alignment checks",
     )
     await page.goto("/en/login")
-    await page.getByLabel("Email address").fill(process.env.E2E_CONTRACTOR_EMAIL!)
+    await page
+      .getByLabel("Email address")
+      .fill(process.env.E2E_CONTRACTOR_EMAIL!)
     await page.locator("#password").fill(process.env.E2E_USER_PASSWORD!)
     await page.getByRole("button", { name: /log in/i }).click()
     await expect(page).toHaveURL(/\/en\/dashboard/)

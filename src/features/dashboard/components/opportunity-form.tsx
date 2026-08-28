@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { AttachmentUpload } from "@/features/dashboard/components/attachment-upload"
 import {
   createOpportunityAction,
+  publishOpportunityAction,
   updateEntityAction,
 } from "@/features/dashboard/actions/portal.actions"
 import { portalDetailPath } from "@/features/dashboard/config/portal-routes"
@@ -78,15 +79,15 @@ export function OpportunityForm({
   const router = useRouter()
   const createKey = useMemo(() => crypto.randomUUID(), [])
   const kinds = useMemo(() => {
-    const permitted = allowedKinds.length ? [...allowedKinds] : [...opportunityKinds]
+    const permitted = allowedKinds.length
+      ? [...allowedKinds]
+      : [...opportunityKinds]
     const current = opportunity?.kind as OpportunityKind | undefined
     if (current && !permitted.includes(current)) permitted.unshift(current)
     return permitted
   }, [allowedKinds, opportunity?.kind])
   const [kind, setKind] = useState<OpportunityKind>(
-    (opportunity?.kind as OpportunityKind) ??
-      kinds[0] ??
-      "SUBCONTRACT_WORK",
+    (opportunity?.kind as OpportunityKind) ?? kinds[0] ?? "SUBCONTRACT_WORK",
   )
   const [title, setTitle] = useState(opportunity?.title ?? "")
   const [summary, setSummary] = useState(opportunity?.summary ?? "")
@@ -127,7 +128,7 @@ export function OpportunityForm({
   )
   const [attachments, setAttachments] = useState<
     Array<{ id: string; name: string }>
-  >([])
+  >(opportunity?.attachments ?? [])
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<string>()
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -192,18 +193,65 @@ export function OpportunityForm({
       return
     }
     const created =
-      "data" in result ? (result.data as { id?: string } | undefined) : undefined
+      "data" in result
+        ? (result.data as { id?: string } | undefined)
+        : undefined
     const id = opportunity?.id ?? created?.id
+    if (publish && mode === "edit" && id) {
+      const version = Number(
+        (created as { version?: number } | undefined)?.version,
+      )
+      if (!Number.isFinite(version) || version < 1) {
+        setMessage(t("dashboard.retry"))
+        return
+      }
+      setPending(true)
+      const publishResult = await publishOpportunityAction(id, version)
+      setPending(false)
+      if (!publishResult.ok) {
+        setMessage(publishResult.message)
+        return
+      }
+    }
     if (id) router.push(portalDetailPath("opportunities", id))
   }
 
+  function changeKind(next: OpportunityKind) {
+    setKind(next)
+    setCategoryId("")
+    setProfessionId("")
+    setQuantity("")
+    setUnit("")
+    setWorkersNeeded("1")
+    setEmploymentType("")
+    setWorkArrangement("")
+    setSpec("")
+  }
+
   return (
-    <div className="space-y-5">
-      <Card className="space-y-4 p-5">
+    <div className="mx-auto max-w-4xl space-y-5">
+      <Card className="space-y-5 rounded-[28px] p-5 shadow-[0_16px_42px_rgba(15,23,42,0.06)] sm:p-7">
+        <div className="border-line border-b pb-5">
+          <p className="text-primary text-xs font-bold tracking-[0.14em] uppercase">
+            {mode === "edit"
+              ? t("dashboard.edit.open")
+              : t("dashboard.publish.opportunityTitle")}
+          </p>
+          <h2 className="text-foreground mt-2 text-xl font-bold sm:text-2xl">
+            {mode === "edit"
+              ? opportunity?.title
+              : t("dashboard.publish.opportunityTitle")}
+          </h2>
+          <p className="text-muted-foreground mt-1 text-sm">
+            {mode === "edit"
+              ? t("dashboard.edit.opportunityDescription")
+              : t("dashboard.descriptions.opportunities")}
+          </p>
+        </div>
         <Field label={t("dashboard.publish.kind")} htmlFor="opp-kind" required>
           <Select
             value={kind}
-            onValueChange={(value) => setKind(value as OpportunityKind)}
+            onValueChange={(value) => changeKind(value as OpportunityKind)}
           >
             <SelectTrigger id="opp-kind">
               <SelectValue />
@@ -217,7 +265,11 @@ export function OpportunityForm({
             </SelectContent>
           </Select>
         </Field>
-        <Field label={t("dashboard.publish.title")} htmlFor="opp-title" required>
+        <Field
+          label={t("dashboard.publish.title")}
+          htmlFor="opp-title"
+          required
+        >
           <Input
             id="opp-title"
             value={title}
@@ -439,7 +491,7 @@ export function OpportunityForm({
         <AttachmentUpload assets={attachments} onChange={setAttachments} />
       </Card>
       {message ? <p className="text-danger text-sm">{message}</p> : null}
-      <div className="flex flex-wrap gap-3">
+      <Card className="border-border/80 bg-card/95 sticky bottom-4 z-10 flex flex-wrap items-center gap-3 rounded-2xl p-3 shadow-[0_12px_30px_rgba(15,23,42,0.12)] backdrop-blur sm:p-4">
         <Button
           type="button"
           disabled={pending || !title || !description}
@@ -449,27 +501,25 @@ export function OpportunityForm({
             ? t("dashboard.edit.save")
             : t("dashboard.publish.saveDraft")}
         </Button>
-        {mode === "create" ? (
-          <>
-            <Button
-              type="button"
-              disabled={pending || !title || !description}
-              onClick={() => setConfirmOpen(true)}
-            >
-              {t("dashboard.publish.publish")}
-            </Button>
-            <ConfirmationDialog
-              open={confirmOpen}
-              onOpenChange={setConfirmOpen}
-              title={t("dashboard.publish.publish")}
-              description={t("dashboard.publish.confirmOpportunity")}
-              confirmLabel={t("dashboard.publish.publish")}
-              cancelLabel={t("common.cancel")}
-              pending={pending}
-              onConfirm={() => void save(true)}
-            />
-          </>
-        ) : null}
+        <>
+          <Button
+            type="button"
+            disabled={pending || !title || !description}
+            onClick={() => setConfirmOpen(true)}
+          >
+            {t("dashboard.publish.publish")}
+          </Button>
+          <ConfirmationDialog
+            open={confirmOpen}
+            onOpenChange={setConfirmOpen}
+            title={t("dashboard.publish.publish")}
+            description={t("dashboard.publish.confirmOpportunity")}
+            confirmLabel={t("dashboard.publish.publish")}
+            cancelLabel={t("common.cancel")}
+            pending={pending}
+            onConfirm={() => void save(true)}
+          />
+        </>
         <Button type="button" variant="secondary" asChild>
           <Link
             href={
@@ -481,7 +531,7 @@ export function OpportunityForm({
             {t("common.cancel")}
           </Link>
         </Button>
-      </div>
+      </Card>
     </div>
   )
 }

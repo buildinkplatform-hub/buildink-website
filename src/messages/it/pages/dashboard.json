@@ -96,6 +96,36 @@
       }
     },
     "offersEmpty": "Nessuna offerta per questo account.",
+    "offers": {
+      "board": {
+        "offer": "Offerta",
+        "amount": "Importo",
+        "receivedTitle": "Offerte ricevute",
+        "receivedDescription": "Esamina, confronta e decidi sulle offerte ricevute dal tuo spazio di lavoro.",
+        "decisionWorkflow": "Flusso decisionale",
+        "submissionHistory": "Cronologia della presentazione",
+        "revisions": "Revisioni",
+        "noRevisions": "Nessuna revisione ancora.",
+        "reference": "Riferimento",
+        "direction": "Direzione",
+        "submitted": "Inviata",
+        "notSubmitted": "Non inviata",
+        "inbox": { "submitted": "Inviata", "received": "Ricevuta" },
+        "totalRecords": "record totali",
+        "rows": "righe"
+      },
+      "statuses": {
+        "DRAFT": "Bozza",
+        "SUBMITTED": "Inviata",
+        "UNDER_REVIEW": "In revisione",
+        "CHANGES_REQUESTED": "Modifiche richieste",
+        "SHORTLISTED": "Selezionata",
+        "ACCEPTED": "Accettata",
+        "REJECTED": "Rifiutata",
+        "WITHDRAWN": "Ritirata",
+        "EXPIRED": "Scaduta"
+      }
+    },
     "applicationsEmpty": "Nessuna candidatura per questo account.",
     "engagementsEmpty": "Nessun incarico per questo account.",
     "messagesEmpty": "Le conversazioni compaiono dopo un'offerta o candidatura inviata.",
@@ -124,7 +154,8 @@
       "workspace": "Workspace",
       "members": "Membri",
       "catalogue": "Catalogo",
-      "workforce": "Forza lavoro",
+      "workforce": "Assunzioni e persone",
+      "operations": "Operazioni",
       "subscription": "Abbonamento",
       "notifications": "Notifiche",
       "settings": "Impostazioni",
@@ -132,6 +163,10 @@
       "bidBoard": "Bacheca offerte",
       "enquiries": "Contatti",
       "availability": "Disponibilità"
+    },
+    "navGroups": {
+      "people": "Assunzioni e persone",
+      "operations": "Operazioni"
     },
     "descriptions": {
       "profile": "Gestisci identità pubblica, contatti e dati marketplace.",
@@ -155,6 +190,7 @@
       "members": "Membership di base del team aziendale.",
       "catalogue": "Catalogo fornitore per la discovery.",
       "workforce": "Richieste, candidature e profili della forza lavoro.",
+      "operations": "Presenze, incarichi, produzione, costi di progetto, previsioni, paghe e avvisi.",
       "workforceCompany": "Gestisci le richieste di personale e valuta le candidature per la tua azienda.",
       "subscription": "Controlla piano, utilizzo e rinnovo.",
       "notifications": "Consulta eventi di progetto, proposta e piattaforma.",
@@ -203,12 +239,49 @@
     "profile": {
       "displayName": "Nome visibile",
       "phone": "Telefono",
+      "email": "Email",
       "timezone": "Fuso orario",
       "contactPreference": "Preferenza di contatto",
       "platformOnly": "Solo messaggi sulla piattaforma",
       "publicContact": "Contatto pubblico dopo l'accettazione",
       "save": "Salva profilo",
-      "saved": "Profilo salvato"
+      "saved": "Profilo salvato",
+      "updatedAt": "Ultimo aggiornamento",
+      "accountSummaryDescription": "Tutti i dati inseriti durante l'onboarding, come salvati sul tuo account.",
+      "personaDescription": "I dettagli del ruolo registrati durante l'onboarding per il tuo tipo di account.",
+      "collectionsDescription": "Competenze, lingue, categorie e regioni di servizio sul tuo profilo pubblico."
+    },
+    "profileTabs": {
+      "overview": "Panoramica",
+      "documents": "Documenti",
+      "visibility": "Visibilità",
+      "persona": "Profilo del ruolo",
+      "collections": "Competenze e lingue"
+    },
+    "profileDocuments": {
+      "description": "Documenti di verifica caricati durante l'onboarding. Puoi visualizzarli, sostituirli o rimuoverli in qualsiasi momento.",
+      "add": "Aggiungi documento",
+      "addTitle": "Carica un documento",
+      "addHint": "Scegli il tipo di documento, le date e il file da caricare.",
+      "replaceTitle": "Sostituisci documento",
+      "replaceHint": "Il caricamento di una sostituzione elimina il file precedente e i suoi metadati.",
+      "replace": "Sostituisci",
+      "cancel": "Annulla",
+      "documentType": "Tipo di documento",
+      "issuedAt": "Data di rilascio",
+      "expiresAt": "Data di scadenza",
+      "issuedAtLabel": "Rilasciato il {date}",
+      "expiresAtLabel": "Scade il {date}",
+      "view": "Visualizza",
+      "delete": "Elimina",
+      "uploading": "Caricamento…",
+      "chooseFile": "Scegli file",
+      "fileRequirements": "PDF, JPG, PNG, DOCX, XLSX o CSV fino a 25 MB.",
+      "fileType": "Questo tipo di file non è supportato.",
+      "fileSize": "Il file supera le dimensioni massime consentite.",
+      "fileRequired": "Prima scegli un file.",
+      "expiryRequired": "Per questo tipo di documento è richiesta la data di scadenza.",
+      "uploadFailed": "Impossibile caricare il documento. Riprova."
     },
     "marketplace": {
       "accept": "Accetta",
@@ -237,15 +310,78 @@
         "confirmTitle": "Cambiare lo stato del progetto?",
         "confirmDescription": "Il progetto passerà a {status}.",
         "DRAFT": "Torna in bozza",
+        "PENDING_REVIEW": "Invia in revisione",
         "PUBLISHED": "Pubblica",
         "IN_PROGRESS": "Avvia progetto",
         "COMPLETED": "Segna completato",
         "ON_HOLD": "Metti in pausa",
         "CANCELLED": "Annulla progetto",
         "ARCHIVED": "Archivia progetto"
+      },
+      "stats": {
+        "active": "Attivi",
+        "published": "Pubblicati",
+        "inProgress": "In corso",
+        "portfolioValue": "Valore portfolio"
+      },
+      "toolbar": {
+        "clearAll": "Cancella tutto",
+        "export": "Esporta"
+      },
+      "table": {
+        "project": "Progetto",
+        "owner": "Proprietario",
+        "totalRecords": "{count} record totali",
+        "actionsFor": "Azioni per {title}",
+        "confirmTitle": "{action} progetto?",
+        "confirmDescription": "{title} passerà da {from} a {to}.",
+        "reasonLabel": "Motivo",
+        "reasonPlaceholder": "Aggiungi un breve motivo per questo cambio di stato.",
+        "processing": "Elaborazione..."
+      },
+      "form": {
+        "details": "Dettagli progetto",
+        "detailsDescription": "Identità, ambito e informazioni di consegna principali.",
+        "location": "Luogo e calendario",
+        "locationDescription": "Indirizzo, coordinate e tempistiche usate per matching e revisione.",
+        "packagesDescription": "Suddividi il progetto in pacchetti di lavoro chiari da prezzare.",
+        "criteriaDescription": "Definisci i criteri usati per confrontare le offerte.",
+        "publishing": "Controlli di pubblicazione",
+        "publishingDescription": "Categoria, visibilità, budget e scadenza.",
+        "mediaDescription": "Allega file, copertine, loghi e documenti di supporto.",
+        "requestFailed": "La richiesta non è stata completata",
+        "validationFailed": "Controlla questi campi prima di continuare",
+        "back": "Indietro",
+        "next": "Avanti",
+        "confirmCreate": "Creare {title}?",
+        "confirmCreateDescription": "Salva il progetto come bozza nel workspace del portale.",
+        "confirmEdit": "Salvare le modifiche a {title}?",
+        "confirmEditDescription": "Aggiorna il progetto mantenendo lo stato attuale.",
+        "confirmPublish": "Pubblicare {title}?",
+        "steps": {
+          "information": "Informazioni",
+          "packages": "Pacchetti",
+          "publishing": "Pubblicazione",
+          "media": "Media"
+        },
+        "stepDescriptions": {
+          "information": "Ambito e luogo principali.",
+          "packages": "Pacchetti di lavoro e criteri.",
+          "publishing": "Categoria, tag, budget e scadenza.",
+          "media": "File e asset pubblici del progetto."
+        }
       }
     },
     "opportunitiesEmpty": "Nessuna opportunità per questo account.",
+    "opportunity": {
+      "actionsFor": "Azioni per {title}",
+      "allTypes": "Tutti i tipi di opportunità",
+      "processing": "Elaborazione...",
+      "reasonLabel": "Motivo del ritiro",
+      "reasonPlaceholder": "Spiega brevemente perché stai ritirando questa opportunità.",
+      "withdraw": "Ritira opportunità",
+      "withdrawDescription": "{title} non accetterà più risposte."
+    },
     "tendersEmpty": "Nessuna gara per questo account.",
     "membersEmpty": "Nessun membro aziendale da mostrare.",
     "inviteMember": "Invita membro",
@@ -361,7 +497,21 @@
     "documents": {
       "expires": "Scade",
       "expiryMissing": "Data di scadenza obbligatoria",
-      "opening": "Apertura…"
+      "opening": "Apertura…",
+      "document": "Documento",
+      "uploaded": "Caricato",
+      "view": "Visualizza",
+      "viewDocument": "Visualizza {name}",
+      "preview": "Anteprima documento",
+      "loading": "Caricamento documento…",
+      "failed": "Impossibile caricare l'anteprima del documento.",
+      "openNewTab": "Apri in una nuova scheda",
+      "close": "Chiudi",
+      "total": "Totale",
+      "types": "Tipi",
+      "inReview": "In revisione",
+      "expiringSoon": "In scadenza",
+      "expired": "Scaduti"
     },
     "persona": {
       "worker": "Profilo lavoratore",
@@ -586,8 +736,66 @@
       "checklist": "Documenti richiesti",
       "submitTitle": "Invia per la revisione",
       "submit": "Invia verifica",
+      "submitting": "Invio…",
       "submitted": "Verifica inviata.",
-      "notesPlaceholder": "Note facoltative per il revisore"
+      "notesPlaceholder": "Note facoltative per il revisore",
+      "manageDocuments": "Gestisci documenti",
+      "requirementsHint": "Associa ogni documento richiesto alla policy di verifica attiva prima dell'invio.",
+      "required": "Obbligatorio",
+      "optional": "Facoltativo",
+      "submitSummary": "{documents} documenti selezionati. {fulfilled}/{required} requisiti completati. {issues} problemi aperti.",
+      "blockedTitle": "La verifica non può ancora essere inviata",
+      "blocked": {
+        "noPolicy": "Nessuna policy di verifica attiva si applica a questo account.",
+        "noDocuments": "Carica almeno un documento di verifica.",
+        "missingRequired": "{count} documento obbligatorio è ancora mancante.",
+        "inReview": "Una verifica è già in revisione amministrativa.",
+        "terminal": "Questo ciclo di verifica è già completato."
+      },
+      "statusTitles": {
+        "NOT_SUBMITTED": "Avvia la verifica",
+        "PENDING": "Verifica in revisione",
+        "CHANGES_REQUESTED": "L'amministratore ha richiesto modifiche",
+        "VERIFIED": "Verifica approvata",
+        "REJECTED": "Verifica rifiutata",
+        "EXPIRED": "Verifica scaduta"
+      },
+      "statusBodies": {
+        "READY": "I tuoi documenti sono pronti per la coda di verifica amministrativa.",
+        "BLOCKED": "Completa gli elementi sotto prima di inviare la richiesta.",
+        "PENDING": "Il team amministrativo sta controllando documenti, checklist e contesto account.",
+        "CHANGES_REQUESTED": "Controlla le richieste visibili, aggiorna i documenti e invia di nuovo.",
+        "VERIFIED": "Il tuo account è verificato. Mantieni aggiornati i documenti in scadenza.",
+        "REJECTED": "L'ultima revisione è stata rifiutata. Leggi il motivo o contatta il supporto.",
+        "EXPIRED": "La verifica precedente è scaduta. Aggiorna i documenti prima di inviare."
+      },
+      "progress": {
+        "policy": "Policy",
+        "activePolicy": "Policy attiva",
+        "required": "Documenti obbligatori",
+        "review": "Revisione admin",
+        "cycle": "Ciclo",
+        "latestDecision": "Ultima decisione"
+      },
+      "next": {
+        "title": "Prossima azione",
+        "wait": "Attendi la decisione dell'amministratore.",
+        "resolveIssues": "Risolvi le modifiche richieste e invia di nuovo.",
+        "upload": "Carica o sostituisci i documenti mancanti.",
+        "verified": "Controlla le scadenze e mantieni aggiornato il profilo.",
+        "submit": "Invia i documenti selezionati per la revisione."
+      }
+    },
+    "fields": {
+      "title": "Titolo",
+      "summary": "Riepilogo",
+      "description": "Descrizione",
+      "budget": "Budget",
+      "budgetMin": "Budget minimo",
+      "budgetMax": "Budget massimo",
+      "deadline": "Scadenza",
+      "employmentType": "Tipo di impiego",
+      "workArrangement": "Modalità di lavoro"
     },
     "chrome": {
       "create": "Crea",

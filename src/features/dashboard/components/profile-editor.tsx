@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "@/i18n/navigation"
+import { LoaderCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { parsePhoneNumber } from "react-phone-number-input"
 
@@ -15,9 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { PhoneInput } from "@/features/onboarding/components/phone-input"
 import { updateMeProfileAction } from "@/features/dashboard/actions/portal.actions"
 import type { PortalBootstrapProfile } from "@/features/dashboard/data/portal-client"
+import { usePortalMutationRunner } from "@/features/dashboard/query/use-portal-mutation"
+import { PhoneInput } from "@/features/onboarding/components/phone-input"
 import { isLocale, localeMetadata } from "@/shared/constants/platform"
 import { locales, type Locale } from "@/shared/types/platform"
 
@@ -39,7 +40,7 @@ export function ProfileEditor({
   profile: PortalBootstrapProfile
 }) {
   const t = useTranslations()
-  const router = useRouter()
+  const runMutation = usePortalMutationRunner()
   const [displayName, setDisplayName] = useState(profile.displayName ?? "")
   const [phone, setPhone] = useState(profile.phone ?? "")
   const [timezone, setTimezone] = useState(profile.timezone || "Europe/Rome")
@@ -60,21 +61,25 @@ export function ProfileEditor({
   async function save() {
     setPending(true)
     setMessage(undefined)
-    const result = await updateMeProfileAction({
-      displayName,
-      phone: phone || null,
-      timezone,
-      preferredLocale,
-      contactPreference,
-      version: profile.version,
-    })
-    setPending(false)
-    if (!result.ok) {
-      setMessage(result.message)
-      return
+    try {
+      const result = await runMutation(() =>
+        updateMeProfileAction({
+          displayName,
+          phone: phone || null,
+          timezone,
+          preferredLocale,
+          contactPreference,
+          version: profile.version,
+        }),
+      )
+      if (!result.ok) {
+        setMessage(result.message)
+        return
+      }
+      setMessage(t("dashboard.profile.saved"))
+    } finally {
+      setPending(false)
     }
-    setMessage(t("dashboard.profile.saved"))
-    router.refresh()
   }
 
   return (
@@ -131,7 +136,6 @@ export function ProfileEditor({
       <Field
         label={t("dashboard.profile.contactPreference")}
         htmlFor="contact-preference"
-        
       >
         <Select
           value={contactPreference}
@@ -155,10 +159,20 @@ export function ProfileEditor({
         </Select>
       </Field>
       <div className="flex items-center gap-3 lg:col-span-2">
-        <Button type="button" disabled={pending} onClick={() => void save()}>
+        <Button
+          type="button"
+          disabled={pending}
+          aria-busy={pending}
+          onClick={() => void save()}
+        >
+          {pending ? (
+            <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" />
+          ) : null}
           {t("dashboard.profile.save")}
         </Button>
-        {message ? <p className="text-muted text-sm">{message}</p> : null}
+        {message ? (
+          <p className="text-muted-foreground text-sm">{message}</p>
+        ) : null}
       </div>
     </div>
   )

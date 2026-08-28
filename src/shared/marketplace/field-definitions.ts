@@ -10,7 +10,7 @@ export type FieldInputType =
   | "uuid"
   | "url"
   | "email"
-  | "collection";
+  | "collection"
 
 export type MarketplaceEntity =
   | "project"
@@ -21,20 +21,20 @@ export type MarketplaceEntity =
   | "application"
   | "catalogue"
   | "company"
-  | "engagement";
+  | "engagement"
 
 export interface FieldSurface {
-  create: boolean;
-  edit: boolean;
-  read: boolean;
+  create: boolean
+  edit: boolean
+  read: boolean
 }
 
 export interface EntityFieldDefinition {
-  key: string;
-  labelKey: string;
-  inputType: FieldInputType;
-  portal: FieldSurface;
-  admin: FieldSurface;
+  key: string
+  labelKey: string
+  inputType: FieldInputType
+  portal: FieldSurface
+  admin: FieldSurface
 }
 
 export const marketplaceEntityFields: Record<
@@ -913,7 +913,7 @@ export const marketplaceEntityFields: Record<
       admin: { create: false, edit: false, read: true },
     },
   ],
-};
+}
 
 export function getReadableFields(
   entity: MarketplaceEntity,
@@ -921,7 +921,7 @@ export function getReadableFields(
 ): EntityFieldDefinition[] {
   return marketplaceEntityFields[entity].filter((field) =>
     surface === "portal" ? field.portal.read : field.admin.read,
-  );
+  )
 }
 
 export function getEditableFields(
@@ -930,7 +930,7 @@ export function getEditableFields(
 ): EntityFieldDefinition[] {
   return marketplaceEntityFields[entity].filter((field) =>
     surface === "portal" ? field.portal.edit : field.admin.edit,
-  );
+  )
 }
 
 export function getFormFields(
@@ -940,5 +940,5 @@ export function getFormFields(
 ): EntityFieldDefinition[] {
   return marketplaceEntityFields[entity].filter((field) =>
     surface === "portal" ? field.portal[mode] : field.admin[mode],
-  );
+  )
 }

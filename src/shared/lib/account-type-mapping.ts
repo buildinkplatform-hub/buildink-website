@@ -1,4 +1,7 @@
-import { isPrimaryAccountType, isProfileType } from "@/shared/constants/platform"
+import {
+  isPrimaryAccountType,
+  isProfileType,
+} from "@/shared/constants/platform"
 import type { PrimaryAccountType, ProfileType } from "@/shared/types/platform"
 
 export function needsCompanyAssociation(

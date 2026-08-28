@@ -115,7 +115,7 @@ export function PublicUserMenu({
             >
               <span
                 className={cn(
-                  "block truncate font-semibold text-brand-navy",
+                  "text-brand-navy block truncate font-semibold",
                   chrome === "dashboard" ? "max-w-28 text-xs" : "text-sm",
                 )}
               >
@@ -123,7 +123,7 @@ export function PublicUserMenu({
               </span>
               <span
                 className={cn(
-                  "block truncate text-muted",
+                  "text-muted block truncate",
                   chrome === "dashboard" ? "text-[10px]" : "max-w-40 text-xs",
                 )}
               >

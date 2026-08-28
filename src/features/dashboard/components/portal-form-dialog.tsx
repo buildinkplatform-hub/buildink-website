@@ -32,12 +32,12 @@ export function PortalFormDialog({
           {triggerLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[min(90vh,56rem)] max-w-3xl overflow-y-auto">
+      <DialogContent className="max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),52rem)] max-w-3xl overflow-y-auto p-6 sm:p-8">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="mt-5">{children}</div>
+        <div className="mt-6 min-w-0">{children}</div>
       </DialogContent>
     </Dialog>
   )

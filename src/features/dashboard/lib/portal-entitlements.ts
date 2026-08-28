@@ -14,10 +14,7 @@ const BASE_MODULES: PortalModule[] = [
 
 const ACTIVE_CAPABILITIES = new Set(["ACTIVE", "active"])
 
-function hasCapability(
-  me: MeResponse,
-  capability: string,
-): boolean {
+function hasCapability(me: MeResponse, capability: string): boolean {
   return (me.companyMemberships ?? []).some(
     (membership) =>
       membership.status.toLowerCase() === "active" &&
@@ -36,7 +33,9 @@ function activeWorkspace(me: MeResponse) {
       (membership) =>
         membership.isPrimary && membership.status.toLowerCase() === "active",
     ) ??
-    memberships.find((membership) => membership.status.toLowerCase() === "active") ??
+    memberships.find(
+      (membership) => membership.status.toLowerCase() === "active",
+    ) ??
     null
   )
 }
@@ -46,6 +45,19 @@ function canManageMembers(me: MeResponse): boolean {
   if (!membership) return false
   const role = membership.role.toLowerCase()
   return role === "owner" || role === "company_admin"
+}
+
+function canOperateWorkforce(me: MeResponse): boolean {
+  const membership = activeWorkspace(me)
+  if (!membership) return false
+  return [
+    "owner",
+    "company_admin",
+    "project_manager",
+    "hr_workforce",
+    "finance",
+    "supervisor",
+  ].includes(membership.role.toLowerCase())
 }
 
 /**
@@ -88,8 +100,9 @@ export function resolvePortalModulesFromIdentity(
     modules.add("opportunities")
     modules.add("tenders")
     modules.add("offers")
-    if (canManageMembers(me)) {
+    if (canOperateWorkforce(me)) {
       modules.add("workforce")
+      modules.add("operations")
     }
   }
 
@@ -118,19 +131,26 @@ export function resolvePortalModulesFromIdentity(
 
   switch (accountType) {
     case "COMPANY":
-      if (!isPublisher && !isSubcontractor && !isSupplier && !isEquipmentProvider) {
+      if (
+        !isPublisher &&
+        !isSubcontractor &&
+        !isSupplier &&
+        !isEquipmentProvider
+      ) {
         modules.add("projects")
         modules.add("opportunities")
         modules.add("tenders")
         modules.add("offers")
-        if (canManageMembers(me)) {
+        if (canOperateWorkforce(me)) {
           modules.add("workforce")
+          modules.add("operations")
         }
       }
       break
     case "WORKER":
       modules.add("applications")
       modules.add("workforce")
+      modules.add("operations")
       modules.add("opportunities")
       modules.add("engagements")
       break

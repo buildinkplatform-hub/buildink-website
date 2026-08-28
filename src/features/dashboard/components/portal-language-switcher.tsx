@@ -35,7 +35,7 @@ export function PortalLanguageSwitcher() {
         <button
           type="button"
           aria-label={`${t("language")}: ${localeMetadata[locale].nativeLabel}`}
-          className="border-line hover:border-line hover:bg-accent focus-visible:ring-primary/12 inline-flex size-10 shrink-0 items-center justify-center rounded-[10px] border bg-white text-brand-navy transition outline-none focus-visible:ring-2"
+          className="border-line hover:border-line hover:bg-accent focus-visible:ring-primary/12 text-brand-navy inline-flex size-10 shrink-0 items-center justify-center rounded-[10px] border bg-white transition outline-none focus-visible:ring-2"
         >
           <Languages className="size-[18px]" />
         </button>
@@ -44,7 +44,10 @@ export function PortalLanguageSwitcher() {
         <DropdownMenuLabel>{t("language")}</DropdownMenuLabel>
         {locales.map((item) => (
           <DropdownMenuItem key={item} onSelect={() => changeLocale(item)}>
-            <span className="min-w-0 flex-1" dir={localeMetadata[item].direction}>
+            <span
+              className="min-w-0 flex-1"
+              dir={localeMetadata[item].direction}
+            >
               {localeMetadata[item].nativeLabel}
             </span>
             {item === locale ? <Check className="text-primary" /> : null}

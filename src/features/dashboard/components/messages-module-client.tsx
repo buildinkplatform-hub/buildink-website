@@ -38,8 +38,12 @@ export function MessagesModuleClient({
   detailId?: string
 }) {
   const t = useTranslations("dashboard.messages")
-  const setConversations = usePortalMessageStore((state) => state.setConversations)
-  const conversationSummaries = usePortalMessageStore((state) => state.conversations)
+  const setConversations = usePortalMessageStore(
+    (state) => state.setConversations,
+  )
+  const conversationSummaries = usePortalMessageStore(
+    (state) => state.conversations,
+  )
 
   useEffect(() => {
     setConversations(
@@ -67,8 +71,7 @@ export function MessagesModuleClient({
             return {
               id: item.id,
               title: item.subject || messagesLabel,
-              secondary:
-                item.counterpart?.displayName ?? counterpartLabel,
+              secondary: item.counterpart?.displayName ?? counterpartLabel,
               meta:
                 item.contactUnlocked && item.counterpart?.email
                   ? item.counterpart.email

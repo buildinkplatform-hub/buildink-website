@@ -23,7 +23,11 @@ import { WorkerAvailabilityCalendar } from "@/features/dashboard/components/work
 
 const availabilityKinds = ["AVAILABLE", "UNAVAILABLE", "PREFERRED"] as const
 
-export function WorkerProfileRecords({ data }: { data: PortalWorkforceOverview }) {
+export function WorkerProfileRecords({
+  data,
+}: {
+  data: PortalWorkforceOverview
+}) {
   const t = useTranslations("dashboard.workforce")
   const router = useRouter()
   const [pending, setPending] = useState(false)
@@ -110,42 +114,130 @@ export function WorkerProfileRecords({ data }: { data: PortalWorkforceOverview }
           </Button>
         </div>
         {data.availability.map((item) => (
-          <Record key={item.id} text={`${item.kind} · ${date(item.startsOn)} – ${item.endsOn ? date(item.endsOn) : t("openEnded")}`} onDelete={() => remove("availability", item.id)} disabled={pending} label={t("remove")} />
+          <Record
+            key={item.id}
+            text={`${item.kind} · ${date(item.startsOn)} – ${item.endsOn ? date(item.endsOn) : t("openEnded")}`}
+            onDelete={() => remove("availability", item.id)}
+            disabled={pending}
+            label={t("remove")}
+          />
         ))}
       </div>
       <div className="space-y-2">
         <h3 className="font-semibold">{t("credentials")}</h3>
         <div className="grid gap-2 sm:grid-cols-4">
-          <Input placeholder={t("credentialTitle")} value={credentialTitle} onChange={(event) => setCredentialTitle(event.target.value)} />
-          <Input placeholder={t("issuer")} value={credentialIssuer} onChange={(event) => setCredentialIssuer(event.target.value)} />
-          <Input type="date" aria-label={t("expires")} value={credentialExpiry} onChange={(event) => setCredentialExpiry(event.target.value)} />
-          <Button disabled={pending || !credentialTitle.trim()} onClick={() => void create("credentials", { title: credentialTitle, issuer: credentialIssuer || null, expiresOn: credentialExpiry || null })}>{t("add")}</Button>
+          <Input
+            placeholder={t("credentialTitle")}
+            value={credentialTitle}
+            onChange={(event) => setCredentialTitle(event.target.value)}
+          />
+          <Input
+            placeholder={t("issuer")}
+            value={credentialIssuer}
+            onChange={(event) => setCredentialIssuer(event.target.value)}
+          />
+          <Input
+            type="date"
+            aria-label={t("expires")}
+            value={credentialExpiry}
+            onChange={(event) => setCredentialExpiry(event.target.value)}
+          />
+          <Button
+            disabled={pending || !credentialTitle.trim()}
+            onClick={() =>
+              void create("credentials", {
+                title: credentialTitle,
+                issuer: credentialIssuer || null,
+                expiresOn: credentialExpiry || null,
+              })
+            }
+          >
+            {t("add")}
+          </Button>
         </div>
         {data.credentials.map((item) => (
-          <Record key={item.id} text={`${item.title} · ${item.status}${item.expiresOn ? ` · ${date(item.expiresOn)}` : ""}`} onDelete={() => remove("credentials", item.id)} disabled={pending} label={t("remove")} />
+          <Record
+            key={item.id}
+            text={`${item.title} · ${item.status}${item.expiresOn ? ` · ${date(item.expiresOn)}` : ""}`}
+            onDelete={() => remove("credentials", item.id)}
+            disabled={pending}
+            label={t("remove")}
+          />
         ))}
       </div>
       <div className="space-y-2">
         <h3 className="font-semibold">{t("workHistory")}</h3>
         <div className="grid gap-2 sm:grid-cols-4">
-          <Input placeholder={t("companyName")} value={companyName} onChange={(event) => setCompanyName(event.target.value)} />
-          <Input placeholder={t("roleTitle")} value={roleTitle} onChange={(event) => setRoleTitle(event.target.value)} />
-          <Input type="date" aria-label={t("from")} value={workStartsOn} onChange={(event) => setWorkStartsOn(event.target.value)} />
-          <Button disabled={pending || !companyName.trim() || !roleTitle.trim() || !workStartsOn} onClick={() => void create("work-history", { companyName, roleTitle, startsOn: workStartsOn })}>{t("add")}</Button>
+          <Input
+            placeholder={t("companyName")}
+            value={companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
+          />
+          <Input
+            placeholder={t("roleTitle")}
+            value={roleTitle}
+            onChange={(event) => setRoleTitle(event.target.value)}
+          />
+          <Input
+            type="date"
+            aria-label={t("from")}
+            value={workStartsOn}
+            onChange={(event) => setWorkStartsOn(event.target.value)}
+          />
+          <Button
+            disabled={
+              pending ||
+              !companyName.trim() ||
+              !roleTitle.trim() ||
+              !workStartsOn
+            }
+            onClick={() =>
+              void create("work-history", {
+                companyName,
+                roleTitle,
+                startsOn: workStartsOn,
+              })
+            }
+          >
+            {t("add")}
+          </Button>
         </div>
         {data.workHistory.map((item) => (
-          <Record key={item.id} text={`${item.roleTitle} · ${item.companyName} · ${item.verificationStatus}`} onDelete={() => remove("work-history", item.id)} disabled={pending} label={t("remove")} />
+          <Record
+            key={item.id}
+            text={`${item.roleTitle} · ${item.companyName} · ${item.verificationStatus}`}
+            onDelete={() => remove("work-history", item.id)}
+            disabled={pending}
+            label={t("remove")}
+          />
         ))}
       </div>
     </section>
   )
 }
 
-function Record({ text, onDelete, disabled, label }: { text: string; onDelete: () => void; disabled: boolean; label: string }) {
+function Record({
+  text,
+  onDelete,
+  disabled,
+  label,
+}: {
+  text: string
+  onDelete: () => void
+  disabled: boolean
+  label: string
+}) {
   return (
     <div className="bg-muted/20 flex items-center justify-between gap-3 rounded-lg p-3 text-sm">
       <span>{text}</span>
-      <Button size="sm" variant="secondary" disabled={disabled} onClick={() => void onDelete()}>{label}</Button>
+      <Button
+        size="sm"
+        variant="secondary"
+        disabled={disabled}
+        onClick={() => void onDelete()}
+      >
+        {label}
+      </Button>
     </div>
   )
 }

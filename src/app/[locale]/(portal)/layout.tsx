@@ -21,7 +21,7 @@ import { isLocale } from "@/shared/constants/platform"
 import type { Locale } from "@/shared/types/platform"
 
 export const metadata: Metadata = { robots: { index: false, follow: false } }
-export const dynamic = "force-dynamic"
+export const instant = false
 
 export default async function PortalLayout({
   children,
@@ -59,7 +59,7 @@ export default async function PortalLayout({
       <main className="bg-canvas flex min-h-screen items-center justify-center px-5 py-16">
         <section className="border-line w-full max-w-lg rounded-3xl border bg-white p-8 text-center shadow-sm">
           <h1 className="text-brand-navy text-xl font-semibold">
-            {t("title")}
+            {t("portalErrorTitle")}
           </h1>
           <p className="text-muted mt-3 text-sm">{t("bootstrapUnavailable")}</p>
           <a

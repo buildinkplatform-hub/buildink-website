@@ -7,7 +7,13 @@ describe("dashboard repository", () => {
     const overview = overviewFromAccount({
       profileType: "contractor",
       primaryAccountType: "COMPANY",
-      modules: ["projects", "offers", "opportunities", "saved", "notifications"],
+      modules: [
+        "projects",
+        "offers",
+        "opportunities",
+        "saved",
+        "notifications",
+      ],
       counts: {
         projects: 4,
         opportunities: 2,

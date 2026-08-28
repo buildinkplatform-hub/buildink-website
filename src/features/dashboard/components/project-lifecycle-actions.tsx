@@ -1,11 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
-import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
+import {
+  ReasonConfirmationDialog,
+  type ReasonedAction,
+} from "@/components/feedback/reason-confirmation-dialog"
 import {
   archiveProjectAction,
   publishProjectAction,
@@ -15,6 +17,7 @@ import {
   hasPortalPermission,
   type CompanyPermission,
 } from "@/features/dashboard/lib/portal-permissions"
+import { usePortalMutationRunner } from "@/features/dashboard/query/use-portal-mutation"
 
 const transitions: Record<string, string[]> = {
   DRAFT: ["PUBLISHED", "CANCELLED", "ARCHIVED"],
@@ -44,43 +47,59 @@ export function ProjectLifecycleActions({
   permissions: readonly string[]
 }) {
   const t = useTranslations()
-  const router = useRouter()
-  const [selected, setSelected] = useState<string>()
-  const [pending, setPending] = useState(false)
+  const runMutation = usePortalMutationRunner()
+  const [action, setAction] = useState<ReasonedAction | null>(null)
   const [message, setMessage] = useState<string>()
-  const available = (transitions[status] ?? []).filter((next) =>
+  const [currentStatus, setCurrentStatus] = useState(status)
+  const [currentVersion, setCurrentVersion] = useState(version)
+  const available = (transitions[currentStatus] ?? []).filter((next) =>
     hasPortalPermission(
       permissions,
       permissionByTransition[next] ?? "projects.edit",
     ),
   )
 
-  async function confirm() {
-    if (!selected) return
-    setPending(true)
+  async function confirm(nextStatus: string, reason: string) {
     setMessage(undefined)
-    const result =
-      selected === "PUBLISHED"
-        ? await publishProjectAction(id, version)
-        : selected === "ARCHIVED"
-          ? await archiveProjectAction(id, version)
-          : await transitionProjectAction(id, {
-              status: selected as
-                | "DRAFT"
-                | "IN_PROGRESS"
-                | "COMPLETED"
-                | "ON_HOLD"
-                | "CANCELLED"
-                | "ARCHIVED",
-              version,
-            })
-    setPending(false)
+    const optimisticVersion = currentVersion + 1
+    const result = await runMutation(
+      () =>
+        nextStatus === "PUBLISHED"
+          ? publishProjectAction(id, currentVersion)
+          : nextStatus === "ARCHIVED"
+            ? archiveProjectAction(id, currentVersion)
+            : transitionProjectAction(id, {
+                status: nextStatus as
+                  | "DRAFT"
+                  | "IN_PROGRESS"
+                  | "COMPLETED"
+                  | "ON_HOLD"
+                  | "CANCELLED"
+                  | "ARCHIVED",
+                reason: reason.trim() || undefined,
+                version: currentVersion,
+              }),
+      {
+        optimistic: {
+          id,
+          patch: {
+            status: nextStatus,
+            ...(nextStatus === "PUBLISHED"
+              ? { publicationStatus: "PUBLISHED" }
+              : {}),
+            version: optimisticVersion,
+          },
+        },
+      },
+    )
     if (!result.ok) {
       setMessage(result.message)
-      return
+      throw new Error(result.message ?? "Could not update project")
     }
-    setSelected(undefined)
-    router.refresh()
+    const payload = result.data as
+      { status?: string; version?: number } | undefined
+    setCurrentStatus(payload?.status ?? nextStatus)
+    setCurrentVersion(payload?.version ?? optimisticVersion)
   }
 
   if (!available.length) return null
@@ -97,26 +116,42 @@ export function ProjectLifecycleActions({
                 ? "secondary"
                 : "primary"
             }
-            onClick={() => setSelected(next)}
+            onClick={() => {
+              setMessage(undefined)
+              setAction({
+                title: t("dashboard.projects.lifecycle.confirmTitle"),
+                description: t(
+                  "dashboard.projects.lifecycle.confirmDescription",
+                  {
+                    status: t(`dashboard.projects.lifecycle.${next}`),
+                  },
+                ),
+                confirmLabel: t(`dashboard.projects.lifecycle.${next}`),
+                cancelLabel: t("common.cancel"),
+                pendingLabel: t("dashboard.projects.table.processing"),
+                destructive: next === "ARCHIVED" || next === "CANCELLED",
+                requireReason: next === "ARCHIVED" || next === "CANCELLED",
+                reasonLabel: t("dashboard.projects.table.reasonLabel"),
+                reasonPlaceholder: t(
+                  "dashboard.projects.table.reasonPlaceholder",
+                ),
+                onConfirm: (reason) => confirm(next, reason),
+              })
+            }}
           >
             {t(`dashboard.projects.lifecycle.${next}`)}
           </Button>
         ))}
       </div>
       {message ? <p className="text-danger text-sm">{message}</p> : null}
-      <ConfirmationDialog
-        open={Boolean(selected)}
-        onOpenChange={(open) => !open && setSelected(undefined)}
-        title={t("dashboard.projects.lifecycle.confirmTitle")}
-        description={t("dashboard.projects.lifecycle.confirmDescription", {
-          status: selected ? t(`dashboard.projects.lifecycle.${selected}`) : "",
-        })}
-        confirmLabel={t("common.confirm")}
-        cancelLabel={t("common.cancel")}
-        pending={pending}
-        destructive={selected === "ARCHIVED" || selected === "CANCELLED"}
-        onConfirm={() => void confirm()}
-      />
+      <ReasonConfirmationDialog
+        action={action}
+        onOpenChange={(open) => {
+          if (!open) setAction(null)
+        }}
+      >
+        {message ? <p className="text-danger text-sm">{message}</p> : null}
+      </ReasonConfirmationDialog>
     </div>
   )
 }

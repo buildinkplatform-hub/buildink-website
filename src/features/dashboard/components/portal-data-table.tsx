@@ -53,9 +53,16 @@ export interface PortalTableLabels {
   previous: string
   next: string
   showing: string
+  reference?: string
+  direction?: string
+  submitted?: string
+  revisions?: string
+  totalRecords?: string
+  rows?: string
+  statusLabels?: Record<string, string>
 }
 
-const pageSize = 8
+const pageSize = 10
 
 export interface PortalServerTableState {
   query?: string
@@ -79,6 +86,9 @@ export function PortalDataTable({
   columns,
   filters,
   mobileCard,
+  showFooter = false,
+  tableClassName,
+  attachedFooter = false,
 }: {
   rows: PortalTableRow[]
   empty: string
@@ -87,6 +97,9 @@ export function PortalDataTable({
   columns?: PortalTableColumn[]
   filters?: ReactNode
   mobileCard?: (row: PortalTableRow) => ReactNode
+  showFooter?: boolean
+  tableClassName?: string
+  attachedFooter?: boolean
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -225,13 +238,13 @@ export function PortalDataTable({
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-xl border bg-white shadow-[0_1px_2px_rgba(16,24,40,0.03)]">
+      <div className="border-line/70 overflow-hidden rounded-[24px] border bg-white/90 shadow-[0_16px_42px_rgba(15,23,42,0.06)]">
         {filters ? (
-          <div className="border-b bg-slate-50/80 px-4 py-4 sm:px-5">
+          <div className="border-line/70 border-b bg-slate-50/70 px-4 py-4 sm:px-5">
             {filters}
           </div>
         ) : null}
-        <div className="grid gap-3 border-b bg-slate-50/80 px-4 py-4 sm:grid-cols-[minmax(16rem,1fr)_minmax(10rem,.35fr)_minmax(10rem,.3fr)] sm:px-5">
+        <div className="grid gap-3 bg-slate-50/70 px-4 py-4 sm:grid-cols-[minmax(16rem,1fr)_minmax(10rem,.35fr)_minmax(10rem,.3fr)] sm:px-5">
           <label className="relative">
             <span className="sr-only">{labels.search}</span>
             <Search className="text-muted-foreground pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2" />
@@ -267,7 +280,7 @@ export function PortalDataTable({
                 <SelectItem value="all">{labels.allStatuses}</SelectItem>
                 {statuses.map((value) => (
                   <SelectItem key={value} value={value}>
-                    {value.replaceAll("_", " ")}
+                    {labels.statusLabels?.[value] ?? value.replaceAll("_", " ")}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -310,41 +323,76 @@ export function PortalDataTable({
 
       {visible.length ? (
         <>
-          <div className="hidden overflow-hidden rounded-xl border bg-white shadow-[0_1px_2px_rgba(16,24,40,0.03)] md:block">
-            <table className="w-full text-start text-sm">
-              <thead className="border-b bg-slate-50/80 text-xs">
-                <tr>
-                  {tableColumns.map((column) => (
-                    <th
-                      key={column.id}
-                      className={cn(
-                        "text-muted-foreground h-12 px-5 text-start align-middle text-xs font-semibold whitespace-nowrap",
-                        column.className,
-                      )}
-                    >
-                      {column.header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white [&_tr:last-child]:border-0">
-                {visible.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="border-b transition-colors hover:bg-slate-50/70"
-                  >
+          <div className="border-line/70 hidden overflow-hidden rounded-[24px] border bg-white shadow-[0_16px_42px_rgba(15,23,42,0.06)] md:block">
+            <div className="[scrollbar-width:thin] [scrollbar-color:var(--color-line)_transparent] overflow-x-auto">
+              <table
+                className={cn("w-full text-start text-sm", tableClassName)}
+              >
+                <thead className="border-line/70 border-b bg-slate-50/80 text-xs">
+                  <tr>
                     {tableColumns.map((column) => (
-                      <td
-                        key={`${row.id}-${column.id}`}
-                        className={cn("px-5 py-4 align-middle", column.cellClassName)}
+                      <th
+                        key={column.id}
+                        className={cn(
+                          "text-muted-foreground h-12 px-5 text-start align-middle text-xs font-semibold whitespace-nowrap",
+                          column.className,
+                        )}
                       >
-                        {column.render(row)}
-                      </td>
+                        {column.header}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white [&_tr:last-child]:border-0">
+                  {visible.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="border-line/60 border-b transition-colors hover:bg-slate-50/70"
+                    >
+                      {tableColumns.map((column) => (
+                        <td
+                          key={`${row.id}-${column.id}`}
+                          className={cn(
+                            "px-5 py-4 align-middle",
+                            column.cellClassName,
+                          )}
+                        >
+                          {column.render(row)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {attachedFooter ? (
+              <TableFooter
+                currentPage={server?.pageInfo.page ?? currentPage}
+                pageSize={server?.pageInfo.pageSize ?? pageSize}
+                pages={
+                  server
+                    ? Math.max(
+                        1,
+                        Math.ceil(
+                          server.pageInfo.total / server.pageInfo.pageSize,
+                        ),
+                      )
+                    : pages
+                }
+                total={server?.pageInfo.total ?? filtered.length}
+                labels={labels}
+                onPrevious={() =>
+                  server
+                    ? updateUrl({ page: server.pageInfo.page - 1 })
+                    : setPage((value) => Math.max(1, value - 1))
+                }
+                onNext={() =>
+                  server
+                    ? updateUrl({ page: server.pageInfo.page + 1 })
+                    : setPage((value) => Math.min(pages, value + 1))
+                }
+              />
+            ) : null}
           </div>
 
           <div className="grid gap-3 md:hidden">
@@ -355,7 +403,9 @@ export function PortalDataTable({
                 ) : (
                   <>
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-brand-navy font-semibold">{row.title}</p>
+                      <p className="text-brand-navy font-semibold">
+                        {row.title}
+                      </p>
                       {row.badge ? (
                         <span className="bg-primary shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
                           {row.badge}
@@ -389,20 +439,62 @@ export function PortalDataTable({
         </>
       ) : null}
 
-      {server ? (
-        server.pageInfo.total ? (
+      <div className={cn(attachedFooter && "md:hidden")}>
+        {server ? (
+          server.pageInfo.total ? (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/70 px-4 py-3 sm:px-5">
+              <p className="text-muted-foreground text-xs">
+                {server.pageInfo.total} {labels.totalRecords ?? "total records"}
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground rounded-xl border bg-white px-3 py-2 text-xs font-medium">
+                  {server.pageInfo.pageSize} {labels.rows ?? "rows"}
+                </span>
+                <span className="bg-primary flex size-10 items-center justify-center rounded-xl text-sm font-semibold text-white">
+                  {server.pageInfo.page}
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={server.pageInfo.page === 1}
+                  aria-label={labels.previous}
+                  onClick={() => updateUrl({ page: server.pageInfo.page - 1 })}
+                >
+                  <ChevronLeft className="size-4 rtl:rotate-180" />
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={!server.pageInfo.hasNextPage}
+                  aria-label={labels.next}
+                  onClick={() => updateUrl({ page: server.pageInfo.page + 1 })}
+                >
+                  <ChevronRight className="size-4 rtl:rotate-180" />
+                </Button>
+              </div>
+            </div>
+          ) : null
+        ) : (showFooter || filtered.length > pageSize) && filtered.length ? (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/70 px-4 py-3 sm:px-5">
             <p className="text-muted-foreground text-xs">
-              {server.pageInfo.total} total record{server.pageInfo.total === 1 ? "" : "s"}
+              {filtered.length} {labels.totalRecords ?? "total records"}
             </p>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground rounded-xl border bg-white px-3 py-2 text-xs font-medium">
+                {pageSize} {labels.rows ?? "rows"}
+              </span>
+              <span className="bg-primary flex size-10 items-center justify-center rounded-xl text-sm font-semibold text-white">
+                {currentPage}
+              </span>
               <Button
                 type="button"
                 size="sm"
                 variant="secondary"
-                disabled={server.pageInfo.page === 1}
+                disabled={currentPage === 1}
                 aria-label={labels.previous}
-                onClick={() => updateUrl({ page: server.pageInfo.page - 1 })}
+                onClick={() => setPage((value) => Math.max(1, value - 1))}
               >
                 <ChevronLeft className="size-4 rtl:rotate-180" />
               </Button>
@@ -410,44 +502,73 @@ export function PortalDataTable({
                 type="button"
                 size="sm"
                 variant="secondary"
-                disabled={!server.pageInfo.hasNextPage}
+                disabled={currentPage === pages}
                 aria-label={labels.next}
-                onClick={() => updateUrl({ page: server.pageInfo.page + 1 })}
+                onClick={() => setPage((value) => Math.min(pages, value + 1))}
               >
                 <ChevronRight className="size-4 rtl:rotate-180" />
               </Button>
             </div>
           </div>
-        ) : null
-      ) : filtered.length > pageSize ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/70 px-4 py-3 sm:px-5">
-          <p className="text-muted-foreground text-xs">
-            {filtered.length} total record{filtered.length === 1 ? "" : "s"}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              size="sm"
-              variant="secondary"
-              disabled={currentPage === 1}
-              aria-label={labels.previous}
-              onClick={() => setPage((value) => Math.max(1, value - 1))}
-            >
-              <ChevronLeft className="size-4 rtl:rotate-180" />
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="secondary"
-              disabled={currentPage === pages}
-              aria-label={labels.next}
-              onClick={() => setPage((value) => Math.min(pages, value + 1))}
-            >
-              <ChevronRight className="size-4 rtl:rotate-180" />
-            </Button>
-          </div>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+function TableFooter({
+  currentPage,
+  pageSize,
+  pages,
+  total,
+  labels,
+  onPrevious,
+  onNext,
+}: {
+  currentPage: number
+  pageSize: number
+  pages: number
+  total: number
+  labels: PortalTableLabels
+  onPrevious: () => void
+  onNext: () => void
+}) {
+  if (!total) return null
+  return (
+    <div className="border-line/70 flex min-h-16 flex-wrap items-center justify-between gap-3 border-t bg-slate-50/70 px-5 py-3">
+      <p className="text-muted-foreground text-xs">
+        {total} {labels.totalRecords ?? "total records"}
+      </p>
+      <div className="flex items-center gap-2">
+        <span className="border-line/80 text-muted-foreground rounded-xl border bg-white px-3 py-2 text-xs font-medium">
+          {pageSize} {labels.rows ?? "rows"}
+        </span>
+        <span className="bg-primary flex size-10 items-center justify-center rounded-xl text-sm font-semibold text-white shadow-sm">
+          {currentPage}
+        </span>
+        <Button
+          type="button"
+          size="icon"
+          variant="secondary"
+          className="size-10 rounded-xl"
+          disabled={currentPage === 1}
+          aria-label={labels.previous}
+          onClick={onPrevious}
+        >
+          <ChevronLeft className="size-4 rtl:rotate-180" />
+        </Button>
+        <Button
+          type="button"
+          size="icon"
+          variant="secondary"
+          className="size-10 rounded-xl"
+          disabled={currentPage === pages}
+          aria-label={labels.next}
+          onClick={onNext}
+        >
+          <ChevronRight className="size-4 rtl:rotate-180" />
+        </Button>
+      </div>
     </div>
   )
 }

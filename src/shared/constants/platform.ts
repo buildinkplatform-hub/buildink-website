@@ -1,4 +1,8 @@
-import type { Locale, ProfileType, PrimaryAccountType } from "@/shared/types/platform"
+import type {
+  Locale,
+  ProfileType,
+  PrimaryAccountType,
+} from "@/shared/types/platform"
 
 export const DEFAULT_LOCALE: Locale = "it"
 export const TIME_ZONE = "Europe/Rome"
@@ -45,7 +49,13 @@ export const primaryAccountTypeLabelKeys: Record<PrimaryAccountType, string> = {
 }
 
 export function isLocale(value?: string): value is Locale {
-  return value === "it" || value === "en" || value === "ar" || value === "ro" || value === "sq"
+  return (
+    value === "it" ||
+    value === "en" ||
+    value === "ar" ||
+    value === "ro" ||
+    value === "sq"
+  )
 }
 
 export function isProfileType(value?: string | null): value is ProfileType {

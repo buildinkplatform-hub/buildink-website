@@ -1,0 +1,135 @@
+{
+  "trustPages": {
+    "common": {
+      "onThisPage": "Në këtë faqe",
+      "exploreMarketplace": "Eksploro marketplace-in",
+      "createAccount": "Krijo llogari",
+      "signIn": "Hyr",
+      "learnMore": "Mëso më shumë"
+    },
+    "howItWorks": {
+      "journeyTitle": "Zgjidh rrjedhën e punës që i përshtatet rolit tënd",
+      "journeyBody": "Buildink përshtat mjetet e zbulimit, publikimit, bashkëpunimit dhe operacioneve sipas llojit të llogarisë që përdor.",
+      "roles": {
+        "projectOwner": {
+          "label": "Pronar projekti",
+          "summary": "Publiko projekte dhe tenderë, shqyrto ofertat, menaxho punët e dhëna dhe mbaj të dukshëm progresin e realizimit.",
+          "cta": "Shfleto projektet"
+        },
+        "company": {
+          "label": "Kompani",
+          "summary": "Ndërto një profil kompanie të besueshëm, menaxho ekipin, përgjigju mundësive dhe koordino punët aktive.",
+          "cta": "Shfleto kompanitë"
+        },
+        "subcontractor": {
+          "label": "Nënkontraktor",
+          "summary": "Gjej paketa relevante, dërgo oferta, shkëmbe dokumente dhe kalo punën e pranuar në fazën e realizimit.",
+          "cta": "Gjej mundësi"
+        },
+        "serviceProvider": {
+          "label": "Ofrues shërbimesh",
+          "summary": "Shfaq shërbimet e specializuara, merr kërkesa të kualifikuara dhe menaxho bisedat nga një hapësirë pune.",
+          "cta": "Shfleto shërbimet"
+        },
+        "worker": {
+          "label": "Punëtor",
+          "summary": "Krijo profil profesional, apliko në mundësi dhe përdor rrjedhat e caktuara të punës për fuqinë punëtore.",
+          "cta": "Shfleto mundësi pune"
+        }
+      },
+      "stepsTitle": "Rrjedha kryesore e Buildink",
+      "stepsBody": "Çdo fazë është e lidhur, kështu përdoruesit kalojnë nga zbulimi publik në një rrjedhë private me leje pa humbur kontekstin.",
+      "steps": {
+        "step1Title": "Krijo identitetin e duhur",
+        "step1Body": "Regjistrohu me llojin e saktë të llogarisë dhe plotëso profilin ose hapësirën e kompanisë që të përfaqëson.",
+        "step2Title": "Ndërto besim dhe verifikim",
+        "step2Body": "Shto të dhënat dhe provat e kërkuara përpara se të mbështetesh te shenjat e besimit ose statusi i publikimit.",
+        "step3Title": "Zbulo ose publiko kërkesën",
+        "step3Body": "Kërko kompani, punëtorë, projekte, tenderë dhe kërkesa, ose publiko mundësi kur lejet e tua e lejojnë.",
+        "step4Title": "Dërgo dhe vlerëso",
+        "step4Body": "Dërgo oferta ose aplikime, krahaso përgjigjet, shqyrto provat dhe zbato rrjedhën e duhur të miratimit.",
+        "step5Title": "Bashkëpuno në mënyrë të sigurt",
+        "step5Body": "Përdor mesazhe të mbrojtura, njoftime, dokumente dhe akses sipas rolit gjatë gjithë angazhimit.",
+        "step6Title": "Ekzekuto dhe ndiq realizimin",
+        "step6Body": "Kalo punën e pranuar në rrjedhat e projekteve, fuqisë punëtore, prezencës, detyrave, pajtueshmërisë dhe monitorimit operacional."
+      },
+      "featuresTitle": "Aftësitë kryesore të platformës",
+      "featuresBody": "Këto janë funksionet kryesore të produktit të lidhura nga përvoja e Website dhe portalit.",
+      "features": {
+        "feature1Title": "Zbulimi në marketplace",
+        "feature1Body": "Kërko dhe filtro kompani, profile, pajisje, projekte, tenderë dhe mundësi publike.",
+        "feature2Title": "Hapësira pune sipas rolit",
+        "feature2Body": "Navigimi dhe veprimet ndryshojnë sipas llojit të llogarisë, anëtarësimit, aftësive dhe lejeve.",
+        "feature3Title": "Oferta dhe aplikime",
+        "feature3Body": "Dërgo, shqyrto, përzgjidh, rishiko, prano ose refuzo përgjigje tregtare dhe të punësimit.",
+        "feature4Title": "Verifikim dhe prova",
+        "feature4Body": "Mbaj statusin e besimit të lidhur me provat e dorëzuara dhe kërkesat e verifikimit të shqyrtuara.",
+        "feature5Title": "Mesazhe dhe njoftime",
+        "feature5Body": "Mbaj të dukshëm aktivitetin e rëndësishëm pa ekspozuar shumë herët të dhënat private të kontaktit.",
+        "feature6Title": "Operacione dhe pajtueshmëri",
+        "feature6Body": "Ndiq realizimin e projekteve, aktivitetin e fuqisë punëtore, detyrat, prezencën, kostot, sinjalizimet dhe evidencat e pajtueshmërisë."
+      }
+    },
+    "verification": {
+      "statusTitle": "Statuset e verifikimit duhet të kenë kuptim real",
+      "statusBody": "Një shenjë besimi ka vlerë vetëm kur mbështetet nga provat dhe gjendja e shqyrtimit.",
+      "statuses": {
+        "pendingTitle": "Në pritje",
+        "pendingBody": "Provat nuk e kanë përfunduar ende shqyrtimin, ndaj pretendimet publike duhet të mbeten të kufizuara.",
+        "reviewTitle": "Në shqyrtim",
+        "reviewBody": "Dokumentet ose kontrollet e kërkuara po vlerësohen nga rrjedha e verifikimit.",
+        "verifiedTitle": "I verifikuar",
+        "verifiedBody": "Fusha e publikuar e verifikimit është përmbushur dhe miratuar."
+      },
+      "processTitle": "Çfarë kontrollon rrjedha e verifikimit",
+      "processBody": "Identiteti, kompania dhe dokumentet mbështetëse duhet të qëndrojnë në përputhje me llogarinë dhe statusin e publikimit."
+    },
+    "about": {
+      "principlesTitle": "Parimet mbi të cilat është ndërtuar Buildink",
+      "principlesBody": "Një marketplace ndërtimi ka nevojë për më shumë se lista: identitet, leje, sinjale besimi dhe një rrugë të qartë drejt punës reale.",
+      "principles": {
+        "oneTitle": "Besimi përpara pretendimeve",
+        "oneBody": "Statuset e verifikimit dhe publikimit duhet të pasqyrojnë prova reale, jo etiketa optimiste.",
+        "twoTitle": "Qartësi rolesh",
+        "twoBody": "Pronarët e projekteve, kompanitë, nënkontraktorët, ofruesit e shërbimeve dhe punëtorët duhet të shohin rrjedhat që u përshtaten.",
+        "threeTitle": "Vazhdimësi e rrjedhës",
+        "threeBody": "Zbulimi, ofertat, mesazhet, dokumentet dhe operacionet duhet të lidhen pa pengesa."
+      }
+    },
+    "contact": {
+      "optionsTitle": "Kontakto kanalin e duhur",
+      "optionsBody": "Përdor formularin e kontaktit për pyetje rreth produktit, llogarisë, marketplace-it ose lançimit dhe jep kontekst të mjaftueshëm për ta drejtuar kërkesën siç duhet.",
+      "supportTitle": "Mbështetje për llogarinë dhe produktin",
+      "supportBody": "Për aksesin, hapësirën e punës, verifikimin ose marketplace-in, përshkruaj rrjedhën e prekur dhe faqen që po përdorje.",
+      "businessTitle": "Kërkesa biznesi",
+      "businessBody": "Për partneritete, pjesëmarrje në marketplace dhe onboarding të kompanive, na trego çfarë i duhet organizatës tënde.",
+      "safetyTitle": "Siguri dhe besim",
+      "safetyBody": "Për informacion publik të pasaktë, shqetësime verifikimi ose përmbajtje të pasigurt, përdor kanalin përkatës të raportimit ose verifikimit."
+    },
+    "cookies": {
+      "preferencesTitle": "Preferencat e cookies",
+      "preferencesBody": "Cookies thelbësore mbajnë funksionale autentikimin, sigurinë dhe navigimin kryesor. Kategoritë opsionale mund të ndryshohen në çdo kohë.",
+      "essentialTitle": "Thelbësore",
+      "essentialBody": "Të nevojshme për sigurinë, autentikimin dhe funksionimin bazë të produktit.",
+      "preferencesCategoryTitle": "Preferenca",
+      "preferencesCategoryBody": "Ruan zgjedhjet e ndërfaqes dhe përvojës kur janë të disponueshme.",
+      "analyticsTitle": "Analitika",
+      "analyticsBody": "Ndihmon në matjen e përdorimit dhe performancës së produktit kur aktivizohet.",
+      "marketingTitle": "Marketing",
+      "marketingBody": "Lejon matje opsionale marketingu aty ku është konfiguruar.",
+      "alwaysOn": "Gjithmonë aktive",
+      "save": "Ruaj preferencat",
+      "saved": "Preferencat u ruajtën"
+    },
+    "footer": {
+      "eyebrow": "Ndërtuar për rrjedhat e punës në ndërtim",
+      "title": "Zbulo njerëz, kompani dhe mundësi të besueshme — pastaj mbaj punën në lëvizje.",
+      "body": "Buildink lidh zbulimin publik me verifikimin, bashkëpunimin e mbrojtur dhe hapësirat e punës sipas rolit.",
+      "trustOne": "Akses sipas rolit",
+      "trustTwo": "Besim i mbështetur nga verifikimi",
+      "trustThree": "Marketplace shumëgjuhësh",
+      "newsletterTitle": "Merr përditësime nga Buildink",
+      "systemLabel": "Marketplace dhe portal"
+    }
+  }
+}

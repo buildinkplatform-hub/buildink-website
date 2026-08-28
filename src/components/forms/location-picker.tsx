@@ -170,7 +170,8 @@ export function LocationPicker({
                 cityId: cityId || undefined,
                 countryCode: value.countryCode,
                 regionId: value.regionId,
-                cityLabel: visibleCities.find((item) => item.id === cityId)?.label,
+                cityLabel: visibleCities.find((item) => item.id === cityId)
+                  ?.label,
                 regionLabel: visibleRegions.find(
                   (item) => item.id === value.regionId,
                 )?.label,

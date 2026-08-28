@@ -60,10 +60,12 @@ self.addEventListener("notificationclick", (event) => {
 
 self.addEventListener("pushsubscriptionchange", (event) => {
   event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
-      for (const client of windowClients) {
-        client.postMessage({ type: "PUSH_SUBSCRIPTION_CHANGED" })
-      }
-    }),
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((windowClients) => {
+        for (const client of windowClients) {
+          client.postMessage({ type: "PUSH_SUBSCRIPTION_CHANGED" })
+        }
+      }),
   )
 })

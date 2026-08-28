@@ -25,7 +25,9 @@ export async function publicContentPageMetadata(
     openGraph: {
       title: page.title,
       description: page.description,
-      images: page.featuredImageUrl ? [{ url: page.featuredImageUrl }] : undefined,
+      images: page.featuredImageUrl
+        ? [{ url: page.featuredImageUrl }]
+        : undefined,
     },
     twitter: {
       card: page.featuredImageUrl ? "summary_large_image" : "summary",
@@ -72,7 +74,9 @@ export async function publicContentArticleMetadata(
     openGraph: {
       title: article.title,
       description: article.excerpt,
-      images: article.featuredImageUrl ? [{ url: article.featuredImageUrl }] : undefined,
+      images: article.featuredImageUrl
+        ? [{ url: article.featuredImageUrl }]
+        : undefined,
     },
     twitter: {
       card: article.featuredImageUrl ? "summary_large_image" : "summary",

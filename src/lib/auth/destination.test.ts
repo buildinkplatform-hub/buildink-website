@@ -19,7 +19,11 @@ describe("getSignedInDestination", () => {
 
   it("does not send approved users back into onboarding", () => {
     expect(
-      getSignedInDestination("en", "enter_portal", "/en/onboarding/profile-type"),
+      getSignedInDestination(
+        "en",
+        "enter_portal",
+        "/en/onboarding/profile-type",
+      ),
     ).toBe("/en/dashboard")
   })
 

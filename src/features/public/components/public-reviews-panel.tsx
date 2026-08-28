@@ -43,7 +43,7 @@ function StarRow({ rating }: { rating: number }) {
           key={value}
           className={
             value <= rating
-              ? "size-4 fill-primary text-primary"
+              ? "fill-primary text-primary size-4"
               : "size-4 text-slate-300"
           }
         />
@@ -131,7 +131,9 @@ export async function PublicReviewsPanel({
                   className="rounded-2xl border border-slate-100 bg-white p-3"
                 >
                   <div className="flex justify-between text-xs font-semibold">
-                    <span>{t("userReviews.histogramStar", { count: rating })}</span>
+                    <span>
+                      {t("userReviews.histogramStar", { count: rating })}
+                    </span>
                     <span>{count}</span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
@@ -145,31 +147,33 @@ export async function PublicReviewsPanel({
             })}
           </div>
           <ul className="mt-6 space-y-4">
-          {items.map((review) => (
-            <li
-              key={review.id}
-              className="rounded-2xl border border-slate-100 bg-white p-4"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-brand-navy font-semibold">
-                  {review.authorDisplayName}
+            {items.map((review) => (
+              <li
+                key={review.id}
+                className="rounded-2xl border border-slate-100 bg-white p-4"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-brand-navy font-semibold">
+                    {review.authorDisplayName}
+                  </p>
+                  <StarRow rating={review.rating} />
+                </div>
+                {review.title ? (
+                  <p className="text-brand-navy mt-2 text-sm font-semibold">
+                    {review.title}
+                  </p>
+                ) : null}
+                <p className="text-muted mt-2 text-sm leading-6">
+                  {review.comment}
                 </p>
-                <StarRow rating={review.rating} />
-              </div>
-              {review.title ? (
-                <p className="text-brand-navy mt-2 text-sm font-semibold">
-                  {review.title}
-                </p>
-              ) : null}
-              <p className="text-muted mt-2 text-sm leading-6">{review.comment}</p>
-              {review.verifiedEngagement ? (
-                <p className="text-primary mt-3 text-xs font-semibold">
-                  {t("userReviews.verifiedBadge")}
-                </p>
-              ) : null}
-            </li>
-          ))}
-        </ul>
+                {review.verifiedEngagement ? (
+                  <p className="text-primary mt-3 text-xs font-semibold">
+                    {t("userReviews.verifiedBadge")}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
         </>
       )}
 

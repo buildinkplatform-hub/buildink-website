@@ -30,7 +30,6 @@
         "verification": "Verifikimi dhe siguria",
         "help": "Qendra e ndihmës",
         "faq": "Pyetjet e shpeshta",
-        "blog": "Blog dhe analiza",
         "about": "Rreth Buildink",
         "contact": "Kontakti",
         "privacy": "Politika e privatësisë",
@@ -73,7 +72,22 @@
       "category": "Kategoria",
       "allCategories": "Të gjitha kategoritë",
       "verification": "Verifikimi",
-      "allStatuses": "Të gjitha statuset"
+      "allStatuses": "Të gjitha statuset",
+      "additional": {
+        "companyType": "Lloji i kompanisë",
+        "services": "Shërbimet",
+        "accountType": "Lloji i llogarisë",
+        "projectStage": "Faza e projektit",
+        "procurementStage": "Faza e prokurimit",
+        "tenderStatus": "Statusi i tenderit",
+        "sourceType": "Lloji i burimit",
+        "submissionChannel": "Kanali i dorëzimit",
+        "deadlineBucket": "Afati",
+        "listingType": "Lloji i listimit",
+        "availabilityStatus": "Disponueshmëria",
+        "opportunityType": "Lloji i mundësisë",
+        "opportunityStatus": "Statusi i mundësisë"
+      }
     },
     "actions": {
       "clearFilters": "Pastro filtrat",
@@ -339,11 +353,6 @@
         "eyebrow": "Pyetje të shpeshta",
         "title": "Pyetjet e shpeshta Buildink",
         "description": "Mbaj pyetjet e zakonshme të tregut të shkurtra, të lehta për t’u skanuar dhe për t’u lundruar në të gjitha gjuhët."
-      },
-      "blog": {
-        "eyebrow": "Editoriale dhe SEO",
-        "title": "Blog dhe analiza",
-        "description": "Publiko përmbajtje të gjatë të besueshme që mbështet zbulimin, besimin dhe dukshmërinë e kërkimit shumëgjuhësh."
       },
       "privacy": {
         "eyebrow": "Ligjore",

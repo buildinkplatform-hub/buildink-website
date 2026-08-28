@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
@@ -30,6 +31,7 @@ const memberRoles = [
 
 export function MemberInviteForm({ companyId }: { companyId: string }) {
   const t = useTranslations()
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [role, setRole] = useState<(typeof memberRoles)[number]>("MEMBER")
   const [title, setTitle] = useState("")
@@ -39,7 +41,7 @@ export function MemberInviteForm({ companyId }: { companyId: string }) {
 
   return (
     <form
-      className="border-line grid gap-3 rounded-2xl border bg-white p-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_160px_160px_160px_auto]"
+      className="border-line grid min-w-0 gap-5 rounded-2xl border bg-white p-5 shadow-sm sm:grid-cols-2 xl:grid-cols-2"
       onSubmit={(event) => {
         event.preventDefault()
         setPending(true)
@@ -54,7 +56,8 @@ export function MemberInviteForm({ companyId }: { companyId: string }) {
             setEmail("")
             setTitle("")
             setDepartment("")
-            setMessage(undefined)
+            setMessage(t("dashboard.members.invited"))
+            router.refresh()
           } else {
             setMessage(result.message)
           }
@@ -110,8 +113,12 @@ export function MemberInviteForm({ companyId }: { companyId: string }) {
           </SelectContent>
         </Select>
       </Field>
-      <div className="flex items-end">
-        <Button type="submit" disabled={pending || !email}>
+      <div className="flex items-end sm:col-span-2 sm:justify-end">
+        <Button
+          className="w-full sm:w-auto"
+          type="submit"
+          disabled={pending || !email}
+        >
           {t("dashboard.inviteMemberSend")}
         </Button>
       </div>

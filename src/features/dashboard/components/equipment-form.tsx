@@ -61,7 +61,9 @@ export function EquipmentForm({
   const [cityId, setCityId] = useState(equipment?.cityId ?? "")
   const [brand, setBrand] = useState(equipment?.brand ?? "")
   const [model, setModel] = useState(equipment?.model ?? "")
-  const [serialNumber, setSerialNumber] = useState(equipment?.serialNumber ?? "")
+  const [serialNumber, setSerialNumber] = useState(
+    equipment?.serialNumber ?? "",
+  )
   const [year, setYear] = useState(
     equipment?.yearManufactured ? String(equipment.yearManufactured) : "",
   )
@@ -133,7 +135,9 @@ export function EquipmentForm({
       return
     }
     const created =
-      "data" in result ? (result.data as { id?: string } | undefined) : undefined
+      "data" in result
+        ? (result.data as { id?: string } | undefined)
+        : undefined
     const id = equipment?.id ?? created?.id
     if (id) router.push(portalDetailPath("equipment", id))
   }
@@ -141,7 +145,11 @@ export function EquipmentForm({
   return (
     <div className="space-y-5">
       <Card className="space-y-4 p-5">
-        <Field label={t("dashboard.publish.name")} htmlFor="equip-name" required>
+        <Field
+          label={t("dashboard.publish.name")}
+          htmlFor="equip-name"
+          required
+        >
           <Input
             id="equip-name"
             value={name}
@@ -159,7 +167,10 @@ export function EquipmentForm({
           />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("dashboard.publish.listingType")} htmlFor="equip-type">
+          <Field
+            label={t("dashboard.publish.listingType")}
+            htmlFor="equip-type"
+          >
             <Select
               value={listingType}
               onValueChange={(value) =>
@@ -184,7 +195,10 @@ export function EquipmentForm({
               </SelectContent>
             </Select>
           </Field>
-          <Field label={t("dashboard.fields.condition")} htmlFor="equip-condition">
+          <Field
+            label={t("dashboard.fields.condition")}
+            htmlFor="equip-condition"
+          >
             <Select
               value={condition}
               onValueChange={(value) =>
@@ -268,7 +282,10 @@ export function EquipmentForm({
               onChange={(event) => setRate(event.target.value)}
             />
           </Field>
-          <Field label={t("dashboard.publish.weeklyRate")} htmlFor="equip-weekly">
+          <Field
+            label={t("dashboard.publish.weeklyRate")}
+            htmlFor="equip-weekly"
+          >
             <Input
               id="equip-weekly"
               value={weeklyRate}

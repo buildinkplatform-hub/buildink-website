@@ -4,6 +4,7 @@ import { publicBackendApi } from "@/lib/backend/public-api"
 import type {
   DirectoryQuery,
   DirectoryResult,
+  PublicDirectoryFacets,
   PublicEntityRecord,
   PublicHomeView,
   PublicModule,
@@ -32,13 +33,7 @@ type PaginatedResponse<T> = {
     total: number
     hasNextPage: boolean
   }
-  facets?: {
-    countries: string[]
-    regions: string[]
-    cities: string[]
-    categories: string[]
-    verifications: string[]
-  }
+  facets?: PublicDirectoryFacets
 }
 
 const MODULE_PATH: Partial<Record<PublicModule, string>> = {
@@ -104,7 +99,11 @@ function normalizePublicEntity(
   }
 }
 
-function buildParams(query: DirectoryQuery, locale: Locale, extra?: Record<string, string>) {
+function buildParams(
+  query: DirectoryQuery,
+  locale: Locale,
+  extra?: Record<string, string>,
+) {
   const params = new URLSearchParams({
     locale,
     page: String(query.page ?? 1),
@@ -117,6 +116,22 @@ function buildParams(query: DirectoryQuery, locale: Locale, extra?: Record<strin
     verification: query.verification ?? "",
   })
   if (query.accountType) params.set("accountType", query.accountType)
+  if (query.companyType) params.set("companyType", query.companyType)
+  for (const key of [
+    "services",
+    "projectStage",
+    "procurementStage",
+    "tenderStatus",
+    "sourceType",
+    "submissionChannel",
+    "deadlineBucket",
+    "listingType",
+    "availabilityStatus",
+    "opportunityType",
+    "opportunityStatus",
+  ] as const) {
+    if (query[key]) params.set(key, query[key] as string)
+  }
   if (extra) {
     for (const [key, value] of Object.entries(extra)) {
       if (value) params.set(key, value)
@@ -138,6 +153,12 @@ export async function fetchPublicHome(locale: Locale) {
       tenders: number
       workers: number
       projects: number
+      publicMediaPublishers: number
+      publicEvidenceDocuments: number
+    }
+    featuredEvidence?: {
+      companies: RawPublicEntityRecord[]
+      projects: RawPublicEntityRecord[]
     }
   }>(`/api/v1/public/marketplace/home?locale=${locale}`).then((response) => ({
     ...response,
@@ -155,6 +176,14 @@ export async function fetchPublicHome(locale: Locale) {
         normalizePublicEntity(item, "tenders"),
       ),
     } satisfies PublicHomeView["featured"],
+    featuredEvidence: {
+      companies: (response.featuredEvidence?.companies ?? []).map((item) =>
+        normalizePublicEntity(item, "companies"),
+      ),
+      projects: (response.featuredEvidence?.projects ?? []).map((item) =>
+        normalizePublicEntity(item, "projects"),
+      ),
+    },
   }))
 }
 
@@ -168,9 +197,9 @@ export async function fetchPublicDirectory(
   const params = buildParams(query, locale, {
     accountType: MODULE_ACCOUNT_TYPE[module] ?? query.accountType ?? "",
   })
-  const response = await publicBackendApi<PaginatedResponse<RawPublicEntityRecord>>(
-    `/api/v1/public/marketplace/${path}?${params.toString()}`,
-  ).catch(() => null)
+  const response = await publicBackendApi<
+    PaginatedResponse<RawPublicEntityRecord>
+  >(`/api/v1/public/marketplace/${path}?${params.toString()}`).catch(() => null)
   if (!response) return null
   const totalPages = Math.max(
     1,
@@ -188,18 +217,16 @@ export async function fetchPublicDirectory(
 export async function fetchPublicFacets(
   module: PublicModule,
   locale: Locale,
+  query: DirectoryQuery = {},
 ) {
-  const result = await fetchPublicDirectory(module, locale, { page: 1 })
-  if (!result) return null
   const path = MODULE_PATH[module]
   if (!path) return null
-  const params = buildParams({ page: 1 }, locale, {
+  const params = buildParams(query, locale, {
     accountType: MODULE_ACCOUNT_TYPE[module] ?? "",
   })
-  const response = await publicBackendApi<PaginatedResponse<RawPublicEntityRecord>>(
-    `/api/v1/public/marketplace/${path}?${params.toString()}`,
+  return publicBackendApi<PublicDirectoryFacets>(
+    `/api/v1/public/marketplace/${path}/facets?${params.toString()}`,
   ).catch(() => null)
-  return response?.facets ?? null
 }
 
 export async function fetchPublicEntity(
@@ -254,5 +281,7 @@ export async function fetchPublicReviews(
     items: PublicReview[]
     summary: PublicReviewSummary
     pageInfo: PaginatedResponse<unknown>["pageInfo"]
-  }>(`/api/v1/public/marketplace/reviews?${params.toString()}`).catch(() => null)
+  }>(`/api/v1/public/marketplace/reviews?${params.toString()}`).catch(
+    () => null,
+  )
 }

@@ -9,11 +9,19 @@ export default async function OnboardingRejectedPage({
 }) {
   const { locale: requestedLocale } = await params
   await guardOnboardingTerminalPage(requestedLocale, "rejected")
+
   return (
-    <div className="border-line mx-auto max-w-xl rounded-2xl border bg-white p-8 text-center shadow-[var(--shadow-card)]">
-      <CircleX className="text-danger mx-auto size-12" />
-      <h1 className="text-brand-navy mt-5 text-3xl font-bold">Application not approved</h1>
-      <p className="text-muted mt-3 leading-7">Review the decision sent to your account. If your account is still active, choosing a new profile type starts a fresh application.</p>
+    <div className="auth-panel mx-auto max-w-xl rounded-[30px] p-8 text-center sm:p-10">
+      <div className="bg-danger/7 border-danger/15 mx-auto flex size-14 items-center justify-center rounded-2xl border">
+        <CircleX className="text-danger size-7" />
+      </div>
+      <h1 className="text-brand-navy mt-5 text-3xl font-bold tracking-[-0.035em]">
+        Application not approved
+      </h1>
+      <p className="text-muted mx-auto mt-3 max-w-md leading-7">
+        Review the decision sent to your account. If your account is still
+        active, choosing a new profile type starts a fresh application.
+      </p>
     </div>
   )
 }

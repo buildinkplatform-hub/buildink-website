@@ -27,14 +27,18 @@ function originFromHost(host: string, protocol?: string | null): string {
 
 function normalizeVercelOrigin(value?: string): string | null {
   if (!value) return null
-  const raw = value.startsWith("http://") || value.startsWith("https://")
-    ? value
-    : `https://${value}`
+  const raw =
+    value.startsWith("http://") || value.startsWith("https://")
+      ? value
+      : `https://${value}`
   return normalizeOrigin(raw)
 }
 
 function isLocalOrigin(value: string | null): boolean {
-  return value === "http://localhost:3000" || value?.startsWith("http://127.0.0.1:") === true
+  return (
+    value === "http://localhost:3000" ||
+    value?.startsWith("http://127.0.0.1:") === true
+  )
 }
 
 export function resolveConfiguredPublicOrigin(
@@ -66,10 +70,14 @@ export function resolvePublicOriginFromHeaders(
     return originFromHost(forwardedHost, forwardedProto)
   }
 
-  const requestOrigin = normalizeOrigin(firstHeaderValue(headerStore.get("origin")) ?? "")
+  const requestOrigin = normalizeOrigin(
+    firstHeaderValue(headerStore.get("origin")) ?? "",
+  )
   if (requestOrigin) return requestOrigin
 
-  const refererOrigin = normalizeOrigin(firstHeaderValue(headerStore.get("referer")) ?? "")
+  const refererOrigin = normalizeOrigin(
+    firstHeaderValue(headerStore.get("referer")) ?? "",
+  )
   if (refererOrigin) return refererOrigin
 
   if (host) {

@@ -34,10 +34,9 @@ describe("AssetPreviewDialog", () => {
 
     expect(screen.getByRole("dialog")).toBeVisible()
     expect(screen.getByRole("img", { name: "profile.png" })).toBeVisible()
-    expect(screen.getByRole("link", { name: "Open full view" })).toHaveAttribute(
-      "href",
-      "https://example.test/profile.png",
-    )
+    expect(
+      screen.getByRole("link", { name: "Open full view" }),
+    ).toHaveAttribute("href", "https://example.test/profile.png")
   })
 
   it("embeds an uploaded PDF in the preview", () => {

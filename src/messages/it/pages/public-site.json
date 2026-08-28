@@ -30,7 +30,6 @@
         "verification": "Verifica e sicurezza",
         "help": "Centro assistenza",
         "faq": "FAQ",
-        "blog": "Blog e approfondimenti",
         "about": "Chi è Buildink",
         "contact": "Contatti",
         "privacy": "Privacy policy",
@@ -73,7 +72,22 @@
       "category": "Categoria",
       "allCategories": "Tutte le categorie",
       "verification": "Verifica",
-      "allStatuses": "Tutti gli stati"
+      "allStatuses": "Tutti gli stati",
+      "additional": {
+        "companyType": "Tipo di azienda",
+        "services": "Servizi",
+        "accountType": "Tipo di account",
+        "projectStage": "Fase del progetto",
+        "procurementStage": "Fase di approvvigionamento",
+        "tenderStatus": "Stato gara",
+        "sourceType": "Tipo di fonte",
+        "submissionChannel": "Canale di invio",
+        "deadlineBucket": "Scadenza",
+        "listingType": "Tipo di annuncio",
+        "availabilityStatus": "Disponibilità",
+        "opportunityType": "Tipo di opportunità",
+        "opportunityStatus": "Stato opportunità"
+      }
     },
     "actions": {
       "clearFilters": "Cancella filtri",
@@ -339,11 +353,6 @@
         "eyebrow": "Domande frequenti",
         "title": "FAQ Buildink",
         "description": "Mantieni concise e facili da consultare le domande più comuni sul marketplace in tutte le lingue."
-      },
-      "blog": {
-        "eyebrow": "Editoriale e SEO",
-        "title": "Blog e approfondimenti",
-        "description": "Pubblica contenuti lunghi affidabili che sostengono scoperta, fiducia e visibilità multilingue sui motori di ricerca."
       },
       "privacy": {
         "eyebrow": "Legale",

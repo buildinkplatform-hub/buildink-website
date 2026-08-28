@@ -51,9 +51,7 @@ export function OnboardingPushBanner() {
         disabled={push.loading}
         onClick={() => void push.subscribe()}
       >
-        {push.loading ? (
-          <LoaderCircle className="size-4 animate-spin" />
-        ) : null}
+        {push.loading ? <LoaderCircle className="size-4 animate-spin" /> : null}
         {t("pushEnable")}
       </Button>
     </div>

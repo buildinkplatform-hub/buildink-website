@@ -1,0 +1,44 @@
+{
+  "privacy": {
+    "sections": [
+      {
+        "id": "collection",
+        "title": "Informazioni che raccogliamo",
+        "body": "Buildink può trattare dati dell'account, informazioni di onboarding, contenuti pubblici del marketplace, messaggi di supporto e attività tecniche necessarie al funzionamento del servizio."
+      },
+      {
+        "id": "use",
+        "title": "Come vengono utilizzate le informazioni",
+        "body": "Utilizziamo i dati per autenticare gli utenti, gestire il marketplace, supportare i processi di verifica, rispondere alle richieste di assistenza e migliorare l'affidabilità della piattaforma."
+      }
+    ]
+  },
+  "terms": {
+    "sections": [
+      {
+        "id": "usage",
+        "title": "Utilizzo responsabile della piattaforma",
+        "body": "Gli utenti devono fornire informazioni accurate, rispettare le regole di pubblicazione ed evitare usi impropri dei flussi di marketplace, comunicazione o verifica."
+      },
+      {
+        "id": "availability",
+        "title": "Disponibilità del servizio",
+        "body": "Buildink lavora per mantenere il servizio disponibile e sicuro, ma funzionalità, flussi di lavoro e disponibilità dei contenuti possono evolvere nel tempo."
+      }
+    ]
+  },
+  "cookies": {
+    "sections": [
+      {
+        "id": "essential",
+        "title": "Cookie essenziali",
+        "body": "Alcuni cookie supportano la selezione della lingua, la continuità della sessione, le protezioni di sicurezza e le funzionalità principali del sito pubblico."
+      },
+      {
+        "id": "preferences",
+        "title": "Scelte delle preferenze",
+        "body": "I visitatori possono accettare la configurazione consigliata oppure rivedere le scelte relative ai cookie tramite i controlli delle preferenze qui sotto."
+      }
+    ]
+  }
+}

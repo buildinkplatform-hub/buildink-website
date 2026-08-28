@@ -22,7 +22,12 @@ import {
   limitAuthAction,
 } from "@/lib/auth/rate-limit"
 import { resolveConfiguredPublicOrigin } from "@/lib/url/public-origin"
-import { createClient } from "@/lib/supabase/server"
+import {
+  beginWebsiteLogoutGuard,
+  clearSupabaseAuthCookies,
+  clearWebsiteLogoutGuard,
+  createClient,
+} from "@/lib/supabase/server"
 import { isLocale } from "@/shared/constants/platform"
 import type { Locale } from "@/shared/types/platform"
 
@@ -70,11 +75,16 @@ export async function loginAction(
     15 * 60,
   )
   if (limited) return limited
+
+  // A logout guard intentionally survives the redirect to /login so a late
+  // response from an in-flight portal request cannot restore the old session.
+  // Clear it only when a new explicit sign-in begins.
+  await clearWebsiteLogoutGuard()
   const supabase = await createClient({
-    sessionMaxAgeSeconds: parsed.data.remember
-      ? 60 * 60 * 24 * 7
-      : 60 * 60 * 8,
+    sessionMaxAgeSeconds: parsed.data.remember ? 60 * 60 * 24 * 7 : 60 * 60 * 8,
   })
+  await supabase.auth.signOut({ scope: "global" }).catch(() => undefined)
+  await clearSupabaseAuthCookies()
   const { data, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email.toLowerCase(),
     password: parsed.data.password,
@@ -85,9 +95,7 @@ export async function loginAction(
       `/${locale}/verify-email?email=${encodeURIComponent(data.user?.email ?? parsed.data.email)}`,
     )
   }
-  redirect(
-    getSignedInDestination(locale, "enter_portal", parsed.data.next),
-  )
+  redirect(getSignedInDestination(locale, "enter_portal", parsed.data.next))
 }
 
 export async function registerAction(
@@ -208,12 +216,18 @@ export async function resetPasswordAction(input: ResetPasswordInput) {
     password: parsed.data.password,
   })
   if (error) return { success: false }
-  await supabase.auth.signOut()
+  await beginWebsiteLogoutGuard()
+  await supabase.auth.signOut({ scope: "global" }).catch(() => undefined)
+  await clearSupabaseAuthCookies()
   return { success: true }
 }
 
 export async function logoutAction(locale: Locale) {
+  // Set this before revocation. It closes the race where an older portal request
+  // finishes after logout and writes a freshly rotated Supabase cookie back.
+  await beginWebsiteLogoutGuard()
   const supabase = await createClient()
-  await supabase.auth.signOut()
+  await supabase.auth.signOut({ scope: "global" }).catch(() => undefined)
+  await clearSupabaseAuthCookies()
   redirect(`/${isLocale(locale) ? locale : "it"}/login`)
 }

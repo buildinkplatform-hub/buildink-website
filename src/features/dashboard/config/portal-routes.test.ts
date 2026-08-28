@@ -41,9 +41,9 @@ describe("capability-aware portal routes", () => {
     expect(
       getPortalRoute(["catalogue"], ["catalogue", "one", "edit"])?.segment,
     ).toBe("catalogue")
-    expect(getPortalRoute(["catalogue"], ["catalogue", "create"])?.segment).toBe(
-      "catalogue",
-    )
+    expect(
+      getPortalRoute(["catalogue"], ["catalogue", "create"])?.segment,
+    ).toBe("catalogue")
 
     expect(resolvePortalRoute(["projects"], ["projects"])?.action).toBe("list")
     expect(
@@ -70,7 +70,9 @@ describe("capability-aware portal routes", () => {
     expect(
       resolvePortalRoute(["tenders"], ["tenders", "create", "extra"]),
     ).toBeNull()
-    expect(resolvePortalRoute(["equipment"], ["equipment", "a", "b"])).toBeNull()
+    expect(
+      resolvePortalRoute(["equipment"], ["equipment", "a", "b"]),
+    ).toBeNull()
     expect(getPortalRoute(["projects"], ["projects", "a", "b", "c"])).toBeNull()
   })
 

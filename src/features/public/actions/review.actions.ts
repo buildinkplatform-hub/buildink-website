@@ -18,7 +18,8 @@ export async function submitPublicReviewAction(input: {
   } catch (error) {
     return {
       ok: false as const,
-      code: error instanceof BackendApiError ? error.code : "REVIEW_CREATE_FAILED",
+      code:
+        error instanceof BackendApiError ? error.code : "REVIEW_CREATE_FAILED",
       message:
         error instanceof Error ? error.message : "Could not submit the review",
     }

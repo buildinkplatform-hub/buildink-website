@@ -30,7 +30,9 @@ export function PortalRealtimeProvider({
 }: {
   children: React.ReactNode
 }) {
-  const replaceNotifications = usePortalNotificationStore((state) => state.replace)
+  const replaceNotifications = usePortalNotificationStore(
+    (state) => state.replace,
+  )
   const upsertNotification = usePortalNotificationStore((state) => state.upsert)
   const setNotificationConnected = usePortalNotificationStore(
     (state) => state.setConnected,

@@ -1,15 +1,15 @@
-import { z } from "zod";
+import { z } from "zod"
 
-const uuid = z.string().uuid();
-const nullableText = z.string().trim().nullable().optional();
-const nullableUuid = uuid.nullable().optional();
+const uuid = z.string().uuid()
+const nullableText = z.string().trim().nullable().optional()
+const nullableUuid = uuid.nullable().optional()
 const money = z
   .string()
   .regex(/^\d+$/, "Money must be a decimal-string of minor units")
   .nullable()
-  .optional();
+  .optional()
 
-const criterionKind = z.enum(["COMPLIANCE", "TECHNICAL", "COMMERCIAL"]);
+const criterionKind = z.enum(["COMPLIANCE", "TECHNICAL", "COMMERCIAL"])
 
 export const projectPackageSchema = z.object({
   title: z.string().trim().min(2).max(200),
@@ -19,7 +19,7 @@ export const projectPackageSchema = z.object({
   unit: nullableText,
   budgetMinor: money,
   currency: z.string().trim().length(3).nullable().optional(),
-});
+})
 
 export const projectCriterionSchema = z.object({
   label: z.string().trim().min(2).max(250),
@@ -28,13 +28,13 @@ export const projectCriterionSchema = z.object({
   weight: z.number().min(0).max(100),
   required: z.boolean(),
   sortOrder: z.number().int().nonnegative(),
-});
+})
 
 export const projectMediaSchema = z.object({
   assetId: uuid,
   usage: z.enum(["IMAGE", "DOCUMENT", "LOGO", "COVER"]),
   position: z.number().int().nonnegative(),
-});
+})
 
 export const projectWebsiteObject = z.object({
   ownerCompanyId: nullableUuid,
@@ -64,15 +64,15 @@ export const projectWebsiteObject = z.object({
   media: z.array(projectMediaSchema).max(30).optional(),
   publish: z.boolean().optional(),
   version: z.number().int().positive().optional(),
-});
+})
 
 function refineProjectFields(
   value: {
-    latitude?: number | null;
-    longitude?: number | null;
-    startsAt?: string | null;
-    estimatedEndAt?: string | null;
-    criteria?: Array<{ kind: string; weight: number }>;
+    latitude?: number | null
+    longitude?: number | null
+    startsAt?: string | null
+    estimatedEndAt?: string | null
+    criteria?: Array<{ kind: string; weight: number }>
   },
   context: z.RefinementCtx,
 ) {
@@ -81,7 +81,7 @@ function refineProjectFields(
       code: "custom",
       message: "Latitude and longitude must be provided together",
       path: [value.latitude == null ? "latitude" : "longitude"],
-    });
+    })
   }
   if (
     value.startsAt &&
@@ -92,23 +92,22 @@ function refineProjectFields(
       code: "custom",
       message: "Estimated end date must follow the start date",
       path: ["estimatedEndAt"],
-    });
+    })
   }
   const scoredWeight = (value.criteria ?? [])
     .filter((criterion) => criterion.kind !== "COMPLIANCE")
-    .reduce((total, criterion) => total + criterion.weight, 0);
+    .reduce((total, criterion) => total + criterion.weight, 0)
   if (scoredWeight !== 0 && Math.abs(scoredWeight - 100) > 0.001) {
     context.addIssue({
       code: "custom",
       message: "Scored criteria must total 100",
       path: ["criteria"],
-    });
+    })
   }
 }
 
-export const projectWebsiteSchema = projectWebsiteObject.superRefine(
-  refineProjectFields,
-);
+export const projectWebsiteSchema =
+  projectWebsiteObject.superRefine(refineProjectFields)
 
 export const tenderLotSchema = z.object({
   title: z.string().trim().min(2).max(200),
@@ -117,9 +116,15 @@ export const tenderLotSchema = z.object({
   categoryId: nullableUuid,
   valueMinor: money,
   currency: z.string().trim().length(3).nullable().optional(),
-});
+})
 
-export const tenderCriterionSchema = projectCriterionSchema;
+export const tenderCriterionSchema = projectCriterionSchema
+
+export const tenderMediaSchema = z.object({
+  assetId: z.string().uuid(),
+  usage: z.enum(["IMAGE", "DOCUMENT"]),
+  position: z.number().int().min(0).max(99),
+})
 
 export const tenderWebsiteObject = z.object({
   organizationCompanyId: nullableUuid,
@@ -149,11 +154,13 @@ export const tenderWebsiteObject = z.object({
   submissionMethod: nullableText,
   eligibility: z.record(z.string(), z.unknown()).optional(),
   awardCriteria: z.record(z.string(), z.unknown()).optional(),
+  tagIds: z.array(z.string().uuid()).max(20).optional(),
+  media: z.array(tenderMediaSchema).max(30).optional(),
   lots: z.array(tenderLotSchema).max(40).optional(),
   criteria: z.array(tenderCriterionSchema).max(20).optional(),
   publish: z.boolean().optional(),
   version: z.number().int().positive().optional(),
-});
+})
 
 export const tenderWebsiteSchema = tenderWebsiteObject.superRefine(
   (value, context) => {
@@ -162,20 +169,20 @@ export const tenderWebsiteSchema = tenderWebsiteObject.superRefine(
         code: "custom",
         message: "Official notices require a source URL",
         path: ["sourceUrl"],
-      });
+      })
     }
     const scoredWeight = (value.criteria ?? [])
       .filter((criterion) => criterion.kind !== "COMPLIANCE")
-      .reduce((total, criterion) => total + criterion.weight, 0);
+      .reduce((total, criterion) => total + criterion.weight, 0)
     if (scoredWeight !== 0 && Math.abs(scoredWeight - 100) > 0.001) {
       context.addIssue({
         code: "custom",
         message: "Scored criteria must total 100",
         path: ["criteria"],
-      });
+      })
     }
   },
-);
+)
 
 export const equipmentWebsiteObject = z.object({
   ownerCompanyId: nullableUuid,
@@ -203,9 +210,9 @@ export const equipmentWebsiteObject = z.object({
   currency: z.string().trim().length(3).nullable().optional(),
   publish: z.boolean().optional(),
   version: z.number().int().positive().optional(),
-});
+})
 
-export const equipmentWebsiteSchema = equipmentWebsiteObject;
+export const equipmentWebsiteSchema = equipmentWebsiteObject
 
 export const opportunityWebsiteObject = z.object({
   kind: z.enum([
@@ -252,9 +259,9 @@ export const opportunityWebsiteObject = z.object({
   attachmentAssetIds: z.array(uuid).max(10).optional(),
   publish: z.boolean().optional(),
   version: z.number().int().positive().optional(),
-});
+})
 
-export const opportunityWebsiteSchema = opportunityWebsiteObject;
+export const opportunityWebsiteSchema = opportunityWebsiteObject
 
 const OWNERSHIP_OR_CONTROL_KEYS = new Set([
   "ownerCompanyId",
@@ -265,19 +272,17 @@ const OWNERSHIP_OR_CONTROL_KEYS = new Set([
   "version",
   "attachmentAssetIds",
   "submissionChannel",
-]);
+])
 
 export function websiteSchemaKeys(shape: Record<string, unknown>) {
-  return Object.keys(shape);
+  return Object.keys(shape)
 }
 
 export function websiteAuthoringKeys(shape: Record<string, unknown>) {
-  return Object.keys(shape).filter(
-    (key) => !OWNERSHIP_OR_CONTROL_KEYS.has(key),
-  );
+  return Object.keys(shape).filter((key) => !OWNERSHIP_OR_CONTROL_KEYS.has(key))
 }
 
-export type ProjectWebsiteInput = z.infer<typeof projectWebsiteSchema>;
-export type TenderWebsiteInput = z.infer<typeof tenderWebsiteSchema>;
-export type EquipmentWebsiteInput = z.infer<typeof equipmentWebsiteSchema>;
-export type OpportunityWebsiteInput = z.infer<typeof opportunityWebsiteSchema>;
+export type ProjectWebsiteInput = z.infer<typeof projectWebsiteSchema>
+export type TenderWebsiteInput = z.infer<typeof tenderWebsiteSchema>
+export type EquipmentWebsiteInput = z.infer<typeof equipmentWebsiteSchema>
+export type OpportunityWebsiteInput = z.infer<typeof opportunityWebsiteSchema>

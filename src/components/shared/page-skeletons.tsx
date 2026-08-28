@@ -75,7 +75,7 @@ export function PublicDirectorySkeleton() {
       aria-live="polite"
       aria-label="Loading directory"
     >
-      <div className="overflow-hidden rounded-[34px] border border-line bg-white shadow-[var(--shadow-card)]">
+      <div className="border-line overflow-hidden rounded-[34px] border bg-white shadow-[var(--shadow-card)]">
         <div className="grid gap-0 lg:grid-cols-[1.1fr_.9fr]">
           <div className="space-y-4 p-6 sm:p-8">
             <Skeleton className="h-6 w-32 rounded-full" />
@@ -166,7 +166,7 @@ export function PortalPageSkeleton() {
         {Array.from({ length: 4 }, (_, index) => (
           <div
             key={index}
-            className="rounded-xl border border-line bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.03)]"
+            className="border-line rounded-xl border bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.03)]"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 space-y-3">
@@ -181,7 +181,7 @@ export function PortalPageSkeleton() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-5">
-        <div className="rounded-xl border border-line bg-white p-5 xl:col-span-3">
+        <div className="border-line rounded-xl border bg-white p-5 xl:col-span-3">
           <div className="mb-6 flex items-center justify-between gap-4">
             <div className="space-y-2">
               <Skeleton className="h-5 w-36" />
@@ -199,7 +199,7 @@ export function PortalPageSkeleton() {
             ))}
           </div>
         </div>
-        <div className="rounded-xl border border-line bg-white p-5 xl:col-span-2">
+        <div className="border-line rounded-xl border bg-white p-5 xl:col-span-2">
           <Skeleton className="mb-6 h-5 w-40" />
           <div className="space-y-5">
             {Array.from({ length: 5 }, (_, index) => (
@@ -215,13 +215,13 @@ export function PortalPageSkeleton() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-line bg-white">
-        <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row sm:items-center">
+      <div className="border-line overflow-hidden rounded-xl border bg-white">
+        <div className="border-line flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center">
           <Skeleton className="h-10 min-w-0 flex-1 rounded-[10px]" />
           <Skeleton className="h-10 w-full rounded-[10px] sm:w-40" />
           <Skeleton className="h-10 w-full rounded-[10px] sm:w-32" />
         </div>
-        <div className="divide-y divide-line px-4">
+        <div className="divide-line divide-y px-4">
           {Array.from({ length: 5 }, (_, index) => (
             <div key={index} className="flex items-center gap-4 py-4">
               <Skeleton className="size-10 shrink-0 rounded-full" />
@@ -341,7 +341,7 @@ export function OnboardingPageSkeleton() {
             <Skeleton className="h-24 w-full rounded-xl" />
           </div>
         </div>
-        <div className="flex flex-col-reverse gap-3 border-t border-line pt-5 sm:flex-row sm:justify-between">
+        <div className="border-line flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-between">
           <Skeleton className="h-12 w-full rounded-xl sm:w-32" />
           <Skeleton className="h-12 w-full rounded-xl sm:w-44" />
         </div>

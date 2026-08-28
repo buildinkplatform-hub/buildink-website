@@ -12,8 +12,7 @@ import { getApplicationIdentity } from "@/lib/auth/session"
 import { createClient } from "@/lib/supabase/server"
 import { isLocale } from "@/shared/constants/platform"
 
-export const dynamic = "force-dynamic"
-export const revalidate = 0
+export const instant = false
 
 export default async function OnboardingLayout({
   children,

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 
 import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
+import { AttachmentUpload } from "@/features/dashboard/components/attachment-upload"
 import { CityLocationField } from "@/components/forms/city-location-field"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -66,9 +67,9 @@ export function TenderForm({
   const createKey = useMemo(() => crypto.randomUUID(), [])
   const [title, setTitle] = useState(tender?.title ?? "")
   const [description, setDescription] = useState(tender?.description ?? "")
-  const [sourceKind, setSourceKind] = useState<"BUILDINK" | "EXTERNAL_OFFICIAL">(
-    (tender?.sourceKind as "BUILDINK" | "EXTERNAL_OFFICIAL") ?? "BUILDINK",
-  )
+  const [sourceKind, setSourceKind] = useState<
+    "BUILDINK" | "EXTERNAL_OFFICIAL"
+  >((tender?.sourceKind as "BUILDINK" | "EXTERNAL_OFFICIAL") ?? "BUILDINK")
   const [visibility, setVisibility] = useState<"PUBLIC" | "INVITED">(
     (tender?.visibility as "PUBLIC" | "INVITED") ?? "PUBLIC",
   )
@@ -99,6 +100,13 @@ export function TenderForm({
   const [eligibility, setEligibility] = useState(jsonNotes(tender?.eligibility))
   const [awardCriteriaNotes, setAwardCriteriaNotes] = useState(
     jsonNotes(tender?.awardCriteria),
+  )
+  const [assets, setAssets] = useState(
+    tender?.media?.map((item) => ({
+      id: item.assetId,
+      name: item.name,
+      usage: item.usage,
+    })) ?? [],
   )
   const [lots, setLots] = useState(
     tender?.lots?.length
@@ -155,6 +163,11 @@ export function TenderForm({
       submissionMethod: submissionMethod.trim() || null,
       eligibility: notesRecord(eligibility),
       awardCriteria: notesRecord(awardCriteriaNotes),
+      media: assets.map((asset, position) => ({
+        assetId: asset.id,
+        usage: asset.usage === "IMAGE" ? "IMAGE" : "DOCUMENT",
+        position,
+      })),
       currency: tender?.currency ?? "EUR",
       lots: lots
         .filter((lot) => lot.title.trim().length >= 2)
@@ -188,7 +201,12 @@ export function TenderForm({
     setMessage(undefined)
     const result =
       mode === "edit" && tender?.version
-        ? await updateEntityAction("tender", tender.id, parsed.data, tender.version)
+        ? await updateEntityAction(
+            "tender",
+            tender.id,
+            parsed.data,
+            tender.version,
+          )
         : await createTenderAction(
             parsed.data,
             createKey,
@@ -200,7 +218,9 @@ export function TenderForm({
       return
     }
     const created =
-      "data" in result ? (result.data as { id?: string } | undefined) : undefined
+      "data" in result
+        ? (result.data as { id?: string } | undefined)
+        : undefined
     const id = tender?.id ?? created?.id
     if (id) router.push(portalDetailPath("tenders", id))
   }
@@ -208,12 +228,14 @@ export function TenderForm({
   return (
     <div className="space-y-5">
       <Card className="space-y-4 p-5">
-        <Field label={t("dashboard.publish.source")} htmlFor="tender-source" required>
+        <Field
+          label={t("dashboard.publish.source")}
+          htmlFor="tender-source"
+          required
+        >
           <Select
             value={sourceKind}
-            onValueChange={(value) =>
-              setSourceKind(value as typeof sourceKind)
-            }
+            onValueChange={(value) => setSourceKind(value as typeof sourceKind)}
           >
             <SelectTrigger id="tender-source">
               <SelectValue />
@@ -228,7 +250,11 @@ export function TenderForm({
             </SelectContent>
           </Select>
         </Field>
-        <Field label={t("dashboard.publish.title")} htmlFor="tender-title" required>
+        <Field
+          label={t("dashboard.publish.title")}
+          htmlFor="tender-title"
+          required
+        >
           <Input
             id="tender-title"
             value={title}
@@ -246,7 +272,30 @@ export function TenderForm({
             onChange={(event) => setDescription(event.target.value)}
           />
         </Field>
-        <Field label={t("dashboard.publish.noticeType")} htmlFor="tender-notice">
+        <section className="border-line space-y-3 rounded-xl border p-4">
+          <div>
+            <h3 className="text-brand-navy font-semibold">Tender documents</h3>
+            <p className="text-muted text-sm">
+              Upload drawings, BOQs, specifications, and supporting documents.
+            </p>
+          </div>
+          <AttachmentUpload
+            assets={assets}
+            onChange={(next) =>
+              setAssets(
+                next.map((asset) => ({
+                  id: asset.id,
+                  name: asset.name,
+                  usage: asset.usage === "IMAGE" ? "IMAGE" : "DOCUMENT",
+                })),
+              )
+            }
+          />
+        </section>
+        <Field
+          label={t("dashboard.publish.noticeType")}
+          htmlFor="tender-notice"
+        >
           <Input
             id="tender-notice"
             value={noticeType}
@@ -304,7 +353,10 @@ export function TenderForm({
           />
         </Field>
         {categories.length ? (
-          <Field label={t("dashboard.publish.category")} htmlFor="tender-category">
+          <Field
+            label={t("dashboard.publish.category")}
+            htmlFor="tender-category"
+          >
             <Select value={categoryId} onValueChange={setCategoryId}>
               <SelectTrigger id="tender-category">
                 <SelectValue placeholder={t("dashboard.create.chooseTarget")} />
@@ -425,7 +477,9 @@ export function TenderForm({
         </Field>
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold">{t("dashboard.publish.lotsTitle")}</h3>
+            <h3 className="font-semibold">
+              {t("dashboard.publish.lotsTitle")}
+            </h3>
             <Button
               type="button"
               variant="secondary"
@@ -440,7 +494,10 @@ export function TenderForm({
             </Button>
           </div>
           {lots.map((lot, index) => (
-            <div key={index} className="grid gap-3 rounded-xl border p-3 sm:grid-cols-2">
+            <div
+              key={index}
+              className="grid gap-3 rounded-xl border p-3 sm:grid-cols-2"
+            >
               <Input
                 placeholder={t("dashboard.publish.lotTitle")}
                 value={lot.title}
@@ -449,6 +506,20 @@ export function TenderForm({
                     current.map((row, rowIndex) =>
                       rowIndex === index
                         ? { ...row, title: event.target.value }
+                        : row,
+                    ),
+                  )
+                }
+              />
+              <Textarea
+                className="sm:col-span-2"
+                placeholder={t("dashboard.publish.description")}
+                value={lot.description}
+                onChange={(event) =>
+                  setLots((current) =>
+                    current.map((row, rowIndex) =>
+                      rowIndex === index
+                        ? { ...row, description: event.target.value }
                         : row,
                     ),
                   )
@@ -496,7 +567,9 @@ export function TenderForm({
         </section>
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold">{t("dashboard.publish.criteriaTitle")}</h3>
+            <h3 className="font-semibold">
+              {t("dashboard.publish.criteriaTitle")}
+            </h3>
             <Button
               type="button"
               variant="secondary"
@@ -516,7 +589,10 @@ export function TenderForm({
             </Button>
           </div>
           {criteria.map((item, index) => (
-            <div key={index} className="grid gap-3 rounded-xl border p-3 sm:grid-cols-2">
+            <div
+              key={index}
+              className="grid gap-3 rounded-xl border p-3 sm:grid-cols-2"
+            >
               <Input
                 placeholder={t("dashboard.publish.criterionLabel")}
                 value={item.label}

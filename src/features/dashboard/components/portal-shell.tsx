@@ -3,33 +3,32 @@
 import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { motion } from "motion/react"
 import { useLocale, useTranslations } from "next-intl"
-import { usePathname } from "@/i18n/navigation"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 
 import { PublicUserMenu } from "@/components/layout/public-user-menu"
 import { BrandLogo } from "@/components/shared/brand-logo"
+import { IntentPrefetchLink } from "@/components/shared/intent-prefetch-link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { portalIcons } from "@/features/dashboard/components/portal-icons"
 import { PortalCurrencyIndicator } from "@/features/dashboard/components/portal-currency-indicator"
 import { PortalDateRangePicker } from "@/features/dashboard/components/portal-date-range-picker"
 import { PortalLanguageSwitcher } from "@/features/dashboard/components/portal-language-switcher"
 import { PortalMainContent } from "@/features/dashboard/components/portal-main-content"
 import { PortalNavBadge } from "@/features/dashboard/components/portal-nav-badge"
-import { portalIcons } from "@/features/dashboard/components/portal-icons"
 import { PortalRouteSearch } from "@/features/dashboard/components/portal-route-search"
 import { PortalNotificationMenu } from "@/features/dashboard/notifications/notification-menu"
-import { PortalPushPermissionBootstrap } from "@/features/dashboard/notifications/use-push-notifications"
 import { PortalRealtimeProvider } from "@/features/dashboard/realtime/portal-realtime-provider"
-import { Link } from "@/i18n/navigation"
+import { usePathname } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
-import { usePortalNavigationStore } from "@/stores/portal-navigation-store"
-import { usePortalSidebarStore } from "@/stores/portal-sidebar-store"
 import { primaryAccountTypeLabelKeys } from "@/shared/constants/platform"
 import type {
   Locale,
   PortalRouteDefinition,
   SessionClaims,
 } from "@/shared/types/platform"
+import { usePortalNavigationStore } from "@/stores/portal-navigation-store"
+import { usePortalSidebarStore } from "@/stores/portal-sidebar-store"
 
 function Navigation({
   routes,
@@ -45,21 +44,31 @@ function Navigation({
   const t = useTranslations()
   const pathname = usePathname()
   const startNavigation = usePortalNavigationStore((state) => state.start)
-  const links = [
+  const links: Array<{
+    segment: string
+    labelKey: string
+    state: "active" | "coming-soon"
+    section?: "people" | "operations"
+  }> = [
     { segment: "", labelKey: "common.dashboard", state: "active" as const },
     ...routes,
   ]
 
   return (
-    <nav aria-label={t("common.portalNav")} className="flex min-h-0 flex-1 flex-col">
+    <nav
+      aria-label={t("common.portalNav")}
+      className="flex min-h-0 flex-1 flex-col"
+    >
       {!collapsed ? (
         <p className="mb-2 px-3 text-[10px] font-semibold tracking-[0.18em] text-slate-400/80 uppercase">
           {t("common.portalNav")}
         </p>
       ) : null}
       <div className="min-h-0 flex-1 [scrollbar-width:thin] [scrollbar-color:rgba(148,163,184,.25)_transparent] space-y-0.5 overflow-y-auto px-2 pb-4">
-        {links.map((route) => {
-          const href = route.segment ? `/dashboard/${route.segment}` : "/dashboard"
+        {links.map((route, index) => {
+          const href = route.segment
+            ? `/dashboard/${route.segment}`
+            : "/dashboard"
           const active = route.segment
             ? new RegExp(`/dashboard/${route.segment}(?:/|$)`).test(pathname)
             : /\/dashboard\/?$/.test(pathname)
@@ -72,9 +81,12 @@ function Navigation({
             : label
 
           const link = (
-            <Link
+            <IntentPrefetchLink
               key={route.segment || "dashboard"}
               href={href}
+              prefetchOnRender={
+                instance === "desktop" && !comingSoon && index < 7
+              }
               onClick={() => {
                 if (!active) startNavigation()
                 close?.()
@@ -94,7 +106,10 @@ function Navigation({
                   transition={{ type: "spring", stiffness: 440, damping: 36 }}
                 />
               ) : null}
-              <Icon className="relative z-10 size-4 shrink-0" strokeWidth={1.8} />
+              <Icon
+                className="relative z-10 size-4 shrink-0"
+                strokeWidth={1.8}
+              />
               {!collapsed ? (
                 <span className="relative z-10 min-w-0 flex-1 truncate">
                   {label}
@@ -108,10 +123,21 @@ function Navigation({
                 </span>
               ) : null}
               <PortalNavBadge segment={route.segment} collapsed={collapsed} />
-            </Link>
+            </IntentPrefetchLink>
           )
 
-          return link
+          const showSection =
+            route.section && links[index - 1]?.section !== route.section
+          return (
+            <Fragment key={route.segment || "dashboard"}>
+              {showSection && !collapsed ? (
+                <p className="mt-4 mb-1 px-3 text-[9px] font-bold tracking-[0.16em] text-slate-500 uppercase first:mt-0">
+                  {t(`dashboard.navGroups.${route.section}`)}
+                </p>
+              ) : null}
+              {link}
+            </Fragment>
+          )
         })}
       </div>
     </nav>
@@ -140,8 +166,6 @@ export function PortalShell({
   return (
     <PortalRealtimeProvider>
       <div className="bg-background min-h-svh">
-        <PortalPushPermissionBootstrap />
-
         <aside
           className={cn(
             "fixed inset-y-0 start-0 z-40 hidden flex-col border-e border-white/8 bg-[linear-gradient(180deg,#081a33_0%,#0c2343_100%)] text-white shadow-[24px_0_60px_rgba(7,26,51,0.28)] transition-[width] duration-200 lg:flex",
@@ -157,7 +181,11 @@ export function PortalShell({
             <BrandLogo compact={collapsed} inverted={!collapsed} linked />
           </div>
           <div className="h-4 shrink-0" />
-          <Navigation routes={routes} collapsed={collapsed} instance="desktop" />
+          <Navigation
+            routes={routes}
+            collapsed={collapsed}
+            instance="desktop"
+          />
           <span className="sr-only">{session.name}</span>
           <div
             className={cn(
@@ -211,7 +239,7 @@ export function PortalShell({
               collapsed && "lg:ps-[72px]",
             )}
           >
-            <header className="border-line/70 sticky top-0 z-30 flex min-h-[76px] items-center gap-2 border-b bg-white/95 px-3 backdrop-blur sm:gap-3 sm:px-6 lg:px-7">
+            <header className="border-line/70 bg-background/95 sticky top-0 z-30 flex min-h-[76px] items-center gap-2 border-b px-3 backdrop-blur sm:gap-3 sm:px-6 lg:px-7">
               <SheetTrigger asChild>
                 <Button
                   size="icon"
@@ -239,7 +267,11 @@ export function PortalShell({
                   email={session.email}
                   subtitle={
                     session.primaryAccountType
-                      ? t(primaryAccountTypeLabelKeys[session.primaryAccountType])
+                      ? t(
+                          primaryAccountTypeLabelKeys[
+                            session.primaryAccountType
+                          ],
+                        )
                       : undefined
                   }
                   dashboardHref="/dashboard/profile"

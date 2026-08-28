@@ -31,7 +31,9 @@ export function CategoryPicker({
   triggerClassName?: string
 }) {
   const t = useTranslations("common")
-  const normalizedValue = Array.isArray(value) ? (value[0] ?? "") : (value ?? "")
+  const normalizedValue = Array.isArray(value)
+    ? (value[0] ?? "")
+    : (value ?? "")
   const parentForValue = useMemo(
     () =>
       categories.find((category) =>
@@ -78,7 +80,10 @@ export function CategoryPicker({
         onValueChange={onChange}
         disabled={!selectedParent || !childOptions.length}
       >
-        <SelectTrigger aria-label={t("subcategory")} className={triggerClassName}>
+        <SelectTrigger
+          aria-label={t("subcategory")}
+          className={triggerClassName}
+        >
           <SelectValue placeholder={subcategoryPlaceholder} />
         </SelectTrigger>
         <SelectContent>

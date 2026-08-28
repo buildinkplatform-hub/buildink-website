@@ -32,9 +32,13 @@ export function PortalQueryProvider({
     const client = new QueryClient({
       defaultOptions: {
         queries: {
-          staleTime: 30_000,
-          gcTime: 10 * 60_000,
+          // Protected directory/detail data should stay instant while users move
+          // between pages. Realtime/volatile queries can override this locally.
+          staleTime: 5 * 60_000,
+          gcTime: 30 * 60_000,
+          refetchOnMount: false,
           refetchOnWindowFocus: false,
+          refetchOnReconnect: true,
           retry: shouldRetry,
         },
         mutations: { retry: false },

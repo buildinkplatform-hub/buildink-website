@@ -141,7 +141,9 @@
         "NATIVE": "Madrelingua"
       }
     },
-    "marketplace": { "withdraw": "Ritira" },
+    "marketplace": {
+      "withdraw": "Ritira"
+    },
     "workforce": {
       "legendAvailable": "Disponibile",
       "legendPreferred": "Preferito",
@@ -234,26 +236,17 @@
       "reviewer": "Revisore"
     },
     "fields": {
-      "title": "Titolo",
       "reference": "Riferimento",
-      "description": "Descrizione",
       "category": "Categoria",
       "city": "Città",
       "country": "Paese",
-      "budget": "Budget",
-      "budgetMin": "Budget minimo",
-      "budgetMax": "Budget massimo",
       "currency": "Valuta",
-      "deadline": "Scadenza",
       "startsAt": "Data di inizio",
       "publicationStatus": "Pubblicazione",
       "status": "Stato",
       "kind": "Tipo",
-      "summary": "Riepilogo",
       "profession": "Professione",
       "durationDays": "Durata (giorni)",
-      "employmentType": "Tipo di impiego",
-      "workArrangement": "Modalità di lavoro",
       "workersNeeded": "Lavoratori richiesti",
       "sourceKind": "Fonte",
       "submissionChannel": "Canale di invio",
@@ -331,7 +324,41 @@
     "members": {
       "permissions": "Hai {count} autorizzazioni per lo spazio di lavoro di questa azienda.",
       "title": "Ruolo professionale",
-      "department": "Reparto"
+      "department": "Reparto",
+      "member": "Membro",
+      "role": "Ruolo",
+      "jobTitle": "Ruolo professionale",
+      "status": "Stato",
+      "joinedInvited": "Entrato / invitato",
+      "active": "Attivo",
+      "invited": "Invitato",
+      "pending": "Richieste di ingresso",
+      "suspended": "Sospeso",
+      "actions": "Azioni membro",
+      "edit": "Modifica membro",
+      "editTitle": "Edit {name}",
+      "editDescription": "Aggiorna il ruolo e i dati del team di questo membro.",
+      "approveJoin": "Approva ingresso",
+      "rejectJoin": "Rifiuta ingresso",
+      "resendInvite": "Reinvia invito",
+      "inviteSuccess": "Invito inviato correttamente.",
+      "rows": "righe",
+      "cancelInvite": "Annulla invito",
+      "remove": "Rimuovi membro",
+      "emptyDescription": "Invita i colleghi a collaborare in questo spazio di lavoro.",
+      "membershipDetails": "Dettagli dell'iscrizione",
+      "rolePermissions": "Autorizzazioni del ruolo",
+      "noPermissions": "Nessuna autorizzazione visibile.",
+      "externalInvitation": "Invito esterno",
+      "primaryWorkspaceMember": "Membro principale dello spazio di lavoro",
+      "workspaceMember": "Membro dello spazio di lavoro",
+      "invitedOn": "Invitato",
+      "joined": "Entrato",
+      "lastActive": "Ultima attività",
+      "updated": "Aggiornato",
+      "invitedBy": "Invitato da",
+      "companyRole": "Ruolo aziendale",
+      "email": "Email"
     }
   },
   "locations": {
@@ -341,11 +368,17 @@
       "cityName": "Città",
       "none": "Seleziona…"
     },
-    "errors": { "optionsFailed": "Impossibile caricare le località. Riprova." }
+    "errors": {
+      "optionsFailed": "Impossibile caricare le località. Riprova."
+    }
   },
   "onboarding": {
-    "fields": { "location": "Località" },
-    "hints": { "location": "Seleziona paese, regione e città dagli elenchi." },
+    "fields": {
+      "location": "Località"
+    },
+    "hints": {
+      "location": "Seleziona paese, regione e città dagli elenchi."
+    },
     "reviewFeedback": {
       "title": "Aggiornamenti richiesti prima di inviare nuovamente"
     }

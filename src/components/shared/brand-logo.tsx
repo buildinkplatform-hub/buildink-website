@@ -48,10 +48,7 @@ export function BrandLogo({
       height={45}
       alt="Buildink"
       priority
-      className={cn(
-        "h-auto w-[154px] sm:w-[174px]",
-        className,
-      )}
+      className={cn("h-auto w-[154px] sm:w-[174px]", className)}
     />
   )
 

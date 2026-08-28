@@ -4,7 +4,11 @@ import { redirect } from "next/navigation"
 import { z } from "zod"
 
 import { BackendApiError, backendApi } from "@/lib/backend/api"
-import { isLocale, isPrimaryAccountType, isProfileType } from "@/shared/constants/platform"
+import {
+  isLocale,
+  isPrimaryAccountType,
+  isProfileType,
+} from "@/shared/constants/platform"
 import {
   accountTypeFromProfileType,
   needsCompanyAssociation,
@@ -147,7 +151,9 @@ const fallbackCatalog: OnboardingCatalog = {
   ],
 }
 
-export async function getOnboardingDraftAction(account: OnboardingDraft["account"]): Promise<OnboardingDraft> {
+export async function getOnboardingDraftAction(
+  account: OnboardingDraft["account"],
+): Promise<OnboardingDraft> {
   try {
     const draft = await backendApi<BackendDraft>("/api/v1/onboarding/draft")
     return mapDraft(draft, account)
@@ -159,7 +165,9 @@ export async function getOnboardingDraftAction(account: OnboardingDraft["account
   }
 }
 
-export async function getOnboardingCatalogAction(locale: Locale): Promise<OnboardingCatalog> {
+export async function getOnboardingCatalogAction(
+  locale: Locale,
+): Promise<OnboardingCatalog> {
   if (!isLocale(locale)) return { countries: [], categories: [] }
   try {
     // The catalog is user-independent reference data; cache it in the Next.js
@@ -186,15 +194,19 @@ export async function saveProfileTypeAction(
   version?: number,
   existingProfileType?: ProfileType,
 ) {
-  if (!isPrimaryAccountType(primaryAccountType)) return { success: false as const }
+  if (!isPrimaryAccountType(primaryAccountType))
+    return { success: false as const }
   const profileType = profileTypeForAccountType(
     primaryAccountType,
     existingProfileType,
   )
-  const draft = await backendApi<BackendDraft>("/api/v1/onboarding/profile-type", {
-    method: "PUT",
-    body: JSON.stringify({ primaryAccountType, profileType, version }),
-  })
+  const draft = await backendApi<BackendDraft>(
+    "/api/v1/onboarding/profile-type",
+    {
+      method: "PUT",
+      body: JSON.stringify({ primaryAccountType, profileType, version }),
+    },
+  )
   return { success: true as const, draft: mapBackendDraft(draft) }
 }
 
@@ -216,10 +228,13 @@ export async function saveProfileAction(
     primaryAccountType,
   )
   if (association) {
-    draft = await backendApi<BackendDraft>("/api/v1/onboarding/company-association", {
-      method: "PUT",
-      body: JSON.stringify({ association }),
-    })
+    draft = await backendApi<BackendDraft>(
+      "/api/v1/onboarding/company-association",
+      {
+        method: "PUT",
+        body: JSON.stringify({ association }),
+      },
+    )
   }
   return { success: true as const, draft: mapBackendDraft(draft) }
 }
@@ -278,11 +293,16 @@ export async function createUploadIntentAction(input: Record<string, unknown>) {
     token: string
     path: string
     expiresAt: string
-  }>("/api/v1/onboarding/uploads/intents", { method: "POST", body: JSON.stringify(input) })
+  }>("/api/v1/onboarding/uploads/intents", {
+    method: "POST",
+    body: JSON.stringify(input),
+  })
 }
 
 export async function completeUploadAction(assetId: string) {
-  return backendApi(`/api/v1/onboarding/uploads/${assetId}/complete`, { method: "POST" })
+  return backendApi(`/api/v1/onboarding/uploads/${assetId}/complete`, {
+    method: "POST",
+  })
 }
 
 export async function getUploadDownloadUrlAction(assetId: string) {
@@ -296,12 +316,17 @@ export async function getUploadDownloadUrlAction(assetId: string) {
 }
 
 export async function deleteUploadAction(assetId: string) {
-  return backendApi(`/api/v1/onboarding/uploads/${assetId}`, { method: "DELETE" })
+  return backendApi(`/api/v1/onboarding/uploads/${assetId}`, {
+    method: "DELETE",
+  })
 }
 
 export async function submitOnboardingAction(locale: Locale, version?: number) {
   if (!isLocale(locale)) return { success: false as const }
-  await backendApi("/api/v1/onboarding/submit", { method: "POST", body: JSON.stringify({ version }) })
+  await backendApi("/api/v1/onboarding/submit", {
+    method: "POST",
+    body: JSON.stringify({ version }),
+  })
   redirect(`/${locale}/onboarding/pending`)
 }
 
@@ -344,8 +369,10 @@ function buildCompanyAssociation(
   }
   const resolvedMode = mode || "create"
   const companyId = String(profile.companyId ?? "")
-  if (resolvedMode === "claim" && companyId) return { mode: "claim" as const, companyId }
-  if (resolvedMode === "select" && companyId) return { mode: "join" as const, companyId }
+  if (resolvedMode === "claim" && companyId)
+    return { mode: "claim" as const, companyId }
+  if (resolvedMode === "select" && companyId)
+    return { mode: "join" as const, companyId }
   if (resolvedMode !== "create") return null
   if (profileType === "individual") return null
   return {
@@ -452,10 +479,22 @@ function normalizeProfile(
 ) {
   const result: Record<string, unknown> = {
     ...profile,
-    country: String(profile.country ?? "IT").toUpperCase().slice(0, 2),
+    country: String(profile.country ?? "IT")
+      .toUpperCase()
+      .slice(0, 2),
   }
-  for (const key of ["interests", "skills", "languages", "categories", "serviceRegions"]) {
-    if (typeof result[key] === "string") result[key] = result[key].split(",").map((value) => value.trim()).filter(Boolean)
+  for (const key of [
+    "interests",
+    "skills",
+    "languages",
+    "categories",
+    "serviceRegions",
+  ]) {
+    if (typeof result[key] === "string")
+      result[key] = result[key]
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean)
   }
   if (primaryAccountType === "COMPANY") {
     delete result.country
@@ -517,11 +556,17 @@ function mapBackendDraft(draft: BackendDraft) {
   return { ...draft, profileType, primaryAccountType }
 }
 
-function mapDraft(draft: BackendDraft, account: OnboardingDraft["account"]): OnboardingDraft {
+function mapDraft(
+  draft: BackendDraft,
+  account: OnboardingDraft["account"],
+): OnboardingDraft {
   const mapped = mapBackendDraft(draft)
   const payload = mapped.payload ?? {}
-  const profileImage = mapped.assets.find((asset) => asset.purpose === "profile_image")
-  const storedProfile = (payload.profile as Record<string, unknown> | undefined) ?? {}
+  const profileImage = mapped.assets.find(
+    (asset) => asset.purpose === "profile_image",
+  )
+  const storedProfile =
+    (payload.profile as Record<string, unknown> | undefined) ?? {}
   return {
     id: mapped.id,
     version: mapped.version,
@@ -535,23 +580,35 @@ function mapDraft(draft: BackendDraft, account: OnboardingDraft["account"]): Onb
         Array.isArray(value) ? value.join(", ") : value,
       ]),
     ),
-    profileImage: profileImage ? { id: profileImage.id, name: profileImage.originalName, size: profileImage.sizeBytes, mimeType: profileImage.mimeType, purpose: profileImage.purpose, status: profileImage.status } : undefined,
-    documents: draft.assets.filter((asset) => asset.purpose === "document").map((asset) => ({
-      id: asset.id,
-      name: asset.originalName,
-      size: asset.sizeBytes,
-      mimeType: asset.mimeType,
-      purpose: asset.purpose,
-      status: asset.status,
-      documentType: asset.documentType ?? "other",
-      expiryDate: asset.expiresAt?.slice(0, 10) ?? "",
-      issuingCountry: asset.issuingCountry ?? "",
-      ownerName: asset.ownerName ?? "",
-    })),
+    profileImage: profileImage
+      ? {
+          id: profileImage.id,
+          name: profileImage.originalName,
+          size: profileImage.sizeBytes,
+          mimeType: profileImage.mimeType,
+          purpose: profileImage.purpose,
+          status: profileImage.status,
+        }
+      : undefined,
+    documents: draft.assets
+      .filter((asset) => asset.purpose === "document")
+      .map((asset) => ({
+        id: asset.id,
+        name: asset.originalName,
+        size: asset.sizeBytes,
+        mimeType: asset.mimeType,
+        purpose: asset.purpose,
+        status: asset.status,
+        documentType: asset.documentType ?? "other",
+        expiryDate: asset.expiresAt?.slice(0, 10) ?? "",
+        issuingCountry: asset.issuingCountry ?? "",
+        ownerName: asset.ownerName ?? "",
+      })),
     consent: {
       publicProfile: false,
       documentProcessing: consentAccepted(
-        (payload.consents as Record<string, unknown> | undefined)?.documentProcessing,
+        (payload.consents as Record<string, unknown> | undefined)
+          ?.documentProcessing,
       ),
       terms: consentAccepted(
         (payload.consents as Record<string, unknown> | undefined)?.terms,
@@ -564,7 +621,9 @@ function mapDraft(draft: BackendDraft, account: OnboardingDraft["account"]): Onb
   }
 }
 
-function createEmptyDraft(account: OnboardingDraft["account"]): OnboardingDraft {
+function createEmptyDraft(
+  account: OnboardingDraft["account"],
+): OnboardingDraft {
   return {
     account,
     profile: {},

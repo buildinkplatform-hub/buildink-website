@@ -1,25 +1,25 @@
 import type { Metadata } from "next"
-import { getLocale } from "next-intl/server"
 
 import { PublicContentArticlePage } from "@/features/public/content/components/public-content-pages"
 import { publicContentArticleMetadata } from "@/features/public/content/lib/public-content-metadata"
 import type { Locale } from "@/shared/types/platform"
 
+type PageProps = { params: Promise<{ locale: string; slug: string }> }
+
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
-  const locale = (await getLocale()) as Locale
-  const { slug } = await params
-  return publicContentArticleMetadata("help", slug, locale)
+}: PageProps): Promise<Metadata> {
+  const { locale, slug } = await params
+  return publicContentArticleMetadata("help", slug, locale as Locale)
 }
 
-export default async function HelpArticlePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
-  const { slug } = await params
-  return <PublicContentArticlePage type="help" slug={slug} />
+export default async function HelpArticlePage({ params }: PageProps) {
+  const { locale, slug } = await params
+  return (
+    <PublicContentArticlePage
+      type="help"
+      slug={slug}
+      locale={locale as Locale}
+    />
+  )
 }

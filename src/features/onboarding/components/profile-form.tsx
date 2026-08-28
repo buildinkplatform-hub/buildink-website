@@ -61,7 +61,13 @@ interface ProfileField {
   options?: readonly string[]
 }
 
-const companySizeOptions = ["1-10", "11-50", "51-200", "201-500", "501+"] as const
+const companySizeOptions = [
+  "1-10",
+  "11-50",
+  "51-200",
+  "201-500",
+  "501+",
+] as const
 const companyTypeOptions = [
   "GENERAL_CONTRACTOR",
   "SUBCONTRACTOR",
@@ -160,12 +166,20 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
     { name: "companyPhone", kind: "phone", type: "tel" },
     { name: "companyWebsite", type: "url", optional: true },
     { name: "companyCategoryId", kind: "companyCategory" },
-    { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+    {
+      name: "companySubcategoryId",
+      kind: "companySubcategory",
+      optional: true,
+    },
     { name: "companyLocation", kind: "companyLocation" },
     { name: "companyAddress", kind: "textarea" },
     { name: "companyBusinessHours", kind: "textarea", optional: true },
     { name: "companySize", kind: "select", options: companySizeOptions },
-    { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
+    {
+      name: "companyTimezone",
+      kind: "select",
+      options: companyTimezoneOptions,
+    },
   ],
   supplier_contact: [
     ...commonFields,
@@ -187,12 +201,20 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
     { name: "companyPhone", kind: "phone", type: "tel" },
     { name: "companyWebsite", type: "url", optional: true },
     { name: "companyCategoryId", kind: "companyCategory" },
-    { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+    {
+      name: "companySubcategoryId",
+      kind: "companySubcategory",
+      optional: true,
+    },
     { name: "companyLocation", kind: "companyLocation" },
     { name: "companyAddress", kind: "textarea" },
     { name: "companyBusinessHours", kind: "textarea", optional: true },
     { name: "companySize", kind: "select", options: companySizeOptions },
-    { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
+    {
+      name: "companyTimezone",
+      kind: "select",
+      options: companyTimezoneOptions,
+    },
   ],
   service_provider: [
     ...commonFields,
@@ -215,12 +237,20 @@ const fieldsByProfileType: Record<ProfileType, ProfileField[]> = {
     { name: "companyPhone", kind: "phone", type: "tel" },
     { name: "companyWebsite", type: "url", optional: true },
     { name: "companyCategoryId", kind: "companyCategory" },
-    { name: "companySubcategoryId", kind: "companySubcategory", optional: true },
+    {
+      name: "companySubcategoryId",
+      kind: "companySubcategory",
+      optional: true,
+    },
     { name: "companyLocation", kind: "companyLocation" },
     { name: "companyAddress", kind: "textarea" },
     { name: "companyBusinessHours", kind: "textarea", optional: true },
     { name: "companySize", kind: "select", options: companySizeOptions },
-    { name: "companyTimezone", kind: "select", options: companyTimezoneOptions },
+    {
+      name: "companyTimezone",
+      kind: "select",
+      options: companyTimezoneOptions,
+    },
   ],
 }
 
@@ -283,7 +313,8 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
   const companyCategoryId = useWatch({ control, name: "companyCategoryId" })
   const companyCategories = catalog.categories
   const companySubcategories =
-    companyCategories.find((category) => category.id === companyCategoryId)?.children ?? []
+    companyCategories.find((category) => category.id === companyCategoryId)
+      ?.children ?? []
   const selectedCountry = useWatch({ control, name: "country" }) || "IT"
   const imagePreview =
     localImagePreview ??
@@ -360,7 +391,10 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
   if (!profileType)
     return (
       <div className="rounded-2xl bg-white p-8">
-        <Link className="text-primary font-semibold" href="/onboarding/profile-type">
+        <Link
+          className="text-primary font-semibold"
+          href="/onboarding/profile-type"
+        >
           {t("common.back")}
         </Link>
       </div>
@@ -423,233 +457,243 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
             return true
           })
           .map((field) => {
-          const id = `profile-${field.name}`
-          const label = t(`onboarding.fields.${field.name}`)
-          const placeholder = placeholderForField(field, label)
+            const id = `profile-${field.name}`
+            const label = t(`onboarding.fields.${field.name}`)
+            const placeholder = placeholderForField(field, label)
 
-          return (
-            <Field
-              key={field.name}
-              label={label}
-              htmlFor={id}
-              error={validationErrors[field.name]}
-              required={!field.optional}
-              hint={
-                field.kind === "location"
-                  ? t("onboarding.hints.location")
-                  : ["phone", "contactPreference"].includes(field.name)
-                  ? `${t("onboarding.whyWeAsk")}: ${t(`onboarding.why.${field.name === "phone" ? "phone" : field.name}`)}${
-                      field.name === "contactPreference"
-                        ? ` · ${t("onboarding.visibilityPublic")}`
-                        : ""
-                    }`
-                  : field.name === "phone"
-                    ? t("onboarding.hints.phone")
-                    : undefined
-              }
-            >
-              {field.kind === "textarea" ? (
-                <Textarea id={id} placeholder={placeholder} {...register(field.name)} />
-              ) : field.kind === "phone" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: phoneField }) => (
-                    <PhoneInput
-                      id={id}
-                      value={phoneField.value}
-                      countryCode={selectedCountry}
-                      countries={catalog.countries}
-                      onBlur={phoneField.onBlur}
-                      onChange={phoneField.onChange}
-                      onCountryChange={(country) => setValue("country", country)}
-                    />
-                  )}
-                />
-              ) : field.kind === "location" ? (
-                <Controller
-                  name="cityId"
-                  control={control}
-                  render={({ field: locationField }) => (
-                    <CityLocationField
-                      cityId={locationField.value || undefined}
-                      onChange={(nextCityId, meta) => {
-                        locationField.onChange(nextCityId)
-                        if (meta?.countryCode) setValue("country", meta.countryCode)
-                        if (meta?.regionLabel) setValue("region", meta.regionLabel)
-                        if (meta?.cityLabel) setValue("city", meta.cityLabel)
-                      }}
-                    />
-                  )}
-                />
-              ) : field.kind === "companyLocation" ? (
-                <Controller
-                  name="companyCityId"
-                  control={control}
-                  render={({ field: locationField }) => (
-                    <CityLocationField
-                      cityId={locationField.value || undefined}
-                      onChange={(nextCityId, meta) => {
-                        locationField.onChange(nextCityId)
-                        if (meta?.regionLabel)
-                          setValue("companyRegion", meta.regionLabel)
-                      }}
-                    />
-                  )}
-                />
-              ) : field.kind === "country" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: countryField }) => (
-                    <Select
-                      value={countryField.value}
-                      onValueChange={countryField.onChange}
-                    >
-                      <SelectTrigger
+            return (
+              <Field
+                key={field.name}
+                label={label}
+                htmlFor={id}
+                error={validationErrors[field.name]}
+                required={!field.optional}
+                hint={
+                  field.kind === "location"
+                    ? t("onboarding.hints.location")
+                    : ["phone", "contactPreference"].includes(field.name)
+                      ? `${t("onboarding.whyWeAsk")}: ${t(`onboarding.why.${field.name === "phone" ? "phone" : field.name}`)}${
+                          field.name === "contactPreference"
+                            ? ` · ${t("onboarding.visibilityPublic")}`
+                            : ""
+                        }`
+                      : field.name === "phone"
+                        ? t("onboarding.hints.phone")
+                        : undefined
+                }
+              >
+                {field.kind === "textarea" ? (
+                  <Textarea
+                    id={id}
+                    placeholder={placeholder}
+                    {...register(field.name)}
+                  />
+                ) : field.kind === "phone" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: phoneField }) => (
+                      <PhoneInput
                         id={id}
-                        onBlur={countryField.onBlur}
-                        className={selectTriggerClassName}
+                        value={phoneField.value}
+                        countryCode={selectedCountry}
+                        countries={catalog.countries}
+                        onBlur={phoneField.onBlur}
+                        onChange={phoneField.onChange}
+                        onCountryChange={(country) =>
+                          setValue("country", country)
+                        }
+                      />
+                    )}
+                  />
+                ) : field.kind === "location" ? (
+                  <Controller
+                    name="cityId"
+                    control={control}
+                    render={({ field: locationField }) => (
+                      <CityLocationField
+                        cityId={locationField.value || undefined}
+                        onChange={(nextCityId, meta) => {
+                          locationField.onChange(nextCityId)
+                          if (meta?.countryCode)
+                            setValue("country", meta.countryCode)
+                          if (meta?.regionLabel)
+                            setValue("region", meta.regionLabel)
+                          if (meta?.cityLabel) setValue("city", meta.cityLabel)
+                        }}
+                      />
+                    )}
+                  />
+                ) : field.kind === "companyLocation" ? (
+                  <Controller
+                    name="companyCityId"
+                    control={control}
+                    render={({ field: locationField }) => (
+                      <CityLocationField
+                        cityId={locationField.value || undefined}
+                        onChange={(nextCityId, meta) => {
+                          locationField.onChange(nextCityId)
+                          if (meta?.regionLabel)
+                            setValue("companyRegion", meta.regionLabel)
+                        }}
+                      />
+                    )}
+                  />
+                ) : field.kind === "country" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: countryField }) => (
+                      <Select
+                        value={countryField.value}
+                        onValueChange={countryField.onChange}
                       >
-                        <SelectValue placeholder={placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {catalog.countries.map((country) => (
-                          <SelectItem key={country.code} value={country.code}>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              ) : field.kind === "category" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: categoryField }) => (
-                    <CategoryPicker
-                      id={id}
-                      value={categoryField.value}
-                      categories={catalog.categories}
-                      onBlur={categoryField.onBlur}
-                      onChange={categoryField.onChange}
-                      categoryPlaceholder={t("onboarding.selectCategory")}
-                      subcategoryPlaceholder={t("onboarding.selectSubcategory")}
-                      triggerClassName={selectTriggerClassName}
-                    />
-                  )}
-                />
-              ) : field.kind === "companyCategory" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: categoryField }) => (
-                    <Select
-                      value={categoryField.value}
-                      onValueChange={(value) => {
-                        categoryField.onChange(value)
-                        setValue("companySubcategoryId", "")
-                      }}
-                    >
-                      <SelectTrigger
+                        <SelectTrigger
+                          id={id}
+                          onBlur={countryField.onBlur}
+                          className={selectTriggerClassName}
+                        >
+                          <SelectValue placeholder={placeholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {catalog.countries.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              {country.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                ) : field.kind === "category" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: categoryField }) => (
+                      <CategoryPicker
                         id={id}
+                        value={categoryField.value}
+                        categories={catalog.categories}
                         onBlur={categoryField.onBlur}
-                        className={selectTriggerClassName}
+                        onChange={categoryField.onChange}
+                        categoryPlaceholder={t("onboarding.selectCategory")}
+                        subcategoryPlaceholder={t(
+                          "onboarding.selectSubcategory",
+                        )}
+                        triggerClassName={selectTriggerClassName}
+                      />
+                    )}
+                  />
+                ) : field.kind === "companyCategory" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: categoryField }) => (
+                      <Select
+                        value={categoryField.value}
+                        onValueChange={(value) => {
+                          categoryField.onChange(value)
+                          setValue("companySubcategoryId", "")
+                        }}
                       >
-                        <SelectValue placeholder={placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {companyCategories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              ) : field.kind === "companySubcategory" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: categoryField }) => (
-                    <Select
-                      value={categoryField.value}
-                      onValueChange={categoryField.onChange}
-                    >
-                      <SelectTrigger
+                        <SelectTrigger
+                          id={id}
+                          onBlur={categoryField.onBlur}
+                          className={selectTriggerClassName}
+                        >
+                          <SelectValue placeholder={placeholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {companyCategories.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                ) : field.kind === "companySubcategory" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: categoryField }) => (
+                      <Select
+                        value={categoryField.value}
+                        onValueChange={categoryField.onChange}
+                      >
+                        <SelectTrigger
+                          id={id}
+                          onBlur={categoryField.onBlur}
+                          className={selectTriggerClassName}
+                        >
+                          <SelectValue placeholder={placeholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {companySubcategories.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                ) : field.kind === "companySelect" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: companyField }) => (
+                      <CompanySelectField
                         id={id}
-                        onBlur={categoryField.onBlur}
-                        className={selectTriggerClassName}
+                        value={companyField.value}
+                        placeholder={placeholder}
+                        triggerClassName={selectTriggerClassName}
+                        onBlur={companyField.onBlur}
+                        onChange={companyField.onChange}
+                      />
+                    )}
+                  />
+                ) : field.kind === "select" ? (
+                  <Controller
+                    name={field.name}
+                    control={control}
+                    render={({ field: selectField }) => (
+                      <Select
+                        value={selectField.value}
+                        onValueChange={selectField.onChange}
                       >
-                        <SelectValue placeholder={placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {companySubcategories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              ) : field.kind === "companySelect" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: companyField }) => (
-                    <CompanySelectField
-                      id={id}
-                      value={companyField.value}
-                      placeholder={placeholder}
-                      triggerClassName={selectTriggerClassName}
-                      onBlur={companyField.onBlur}
-                      onChange={companyField.onChange}
-                    />
-                  )}
-                />
-              ) : field.kind === "select" ? (
-                <Controller
-                  name={field.name}
-                  control={control}
-                  render={({ field: selectField }) => (
-                    <Select
-                      value={selectField.value}
-                      onValueChange={selectField.onChange}
-                    >
-                      <SelectTrigger
-                        id={id}
-                        onBlur={selectField.onBlur}
-                        className={selectTriggerClassName}
-                      >
-                        <SelectValue placeholder={placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {optionsForField(field)?.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {optionLabel(field, option)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              ) : (
-                <Input
-                  id={id}
-                  type={field.type ?? "text"}
-                  placeholder={placeholder}
-                  min={field.type === "number" ? 0 : undefined}
-                  max={field.type === "number" ? 80 : undefined}
-                  inputMode={field.type === "tel" ? "tel" : undefined}
-                  {...register(field.name)}
-                />
-              )}
-            </Field>
-          )
-        })}
+                        <SelectTrigger
+                          id={id}
+                          onBlur={selectField.onBlur}
+                          className={selectTriggerClassName}
+                        >
+                          <SelectValue placeholder={placeholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {optionsForField(field)?.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {optionLabel(field, option)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                ) : (
+                  <Input
+                    id={id}
+                    type={field.type ?? "text"}
+                    placeholder={placeholder}
+                    min={field.type === "number" ? 0 : undefined}
+                    max={field.type === "number" ? 80 : undefined}
+                    inputMode={field.type === "tel" ? "tel" : undefined}
+                    {...register(field.name)}
+                  />
+                )}
+              </Field>
+            )
+          })}
         <div className="space-y-2">
           <p className="text-brand-navy text-sm font-semibold">
             {t("onboarding.fields.profileImage")} ({t("common.optional")})
@@ -658,7 +702,7 @@ export function ProfileForm({ catalog }: { catalog: OnboardingCatalog }) {
             <div className="border-line flex items-center gap-3 rounded-xl border p-3">
               <button
                 type="button"
-                className="bg-light-blue relative size-16 shrink-0 overflow-hidden rounded-xl focus:outline-none focus-visible:ring-3 focus-visible:ring-primary/30"
+                className="bg-light-blue focus-visible:ring-primary/30 relative size-16 shrink-0 overflow-hidden rounded-xl focus:outline-none focus-visible:ring-3"
                 aria-label={`${t("onboarding.viewFull")} ${draft.profileImage.name}`}
                 onClick={() => setPreviewOpen(true)}
               >
