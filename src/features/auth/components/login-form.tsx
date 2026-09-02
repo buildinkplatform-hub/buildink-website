@@ -14,12 +14,30 @@ import { Input } from "@/components/ui/input"
 import {
   googleLoginAction,
   loginAction,
+  type ActionResult,
 } from "@/features/auth/actions/auth.actions"
 import { Link } from "@/i18n/navigation"
 import type { Locale } from "@/shared/types/platform"
 import { PasswordInput } from "./password-input"
 
 const subscribeToHydration = () => () => undefined
+
+type LoginError = NonNullable<ActionResult["error"]>
+
+function loginErrorMessageKey(error: LoginError) {
+  switch (error) {
+    case "rate_limited":
+      return "auth.loginRateLimited" as const
+    case "backend":
+      return "auth.loginUnavailable" as const
+    case "not_verified":
+      return "auth.loginNotVerified" as const
+    case "invalid":
+    case "validation":
+    default:
+      return "auth.invalid" as const
+  }
+}
 
 export function LoginForm({ next }: { next?: string }) {
   const t = useTranslations()
@@ -29,7 +47,7 @@ export function LoginForm({ next }: { next?: string }) {
     () => true,
     () => false,
   )
-  const [serverError, setServerError] = useState(false)
+  const [serverError, setServerError] = useState<LoginError | null>(null)
   const [googlePending, setGooglePending] = useState(false)
   const schema = z.object({
     email: z.email(t("auth.errors.email")),
@@ -47,9 +65,9 @@ export function LoginForm({ next }: { next?: string }) {
   })
 
   async function submit(values: FormValues) {
-    setServerError(false)
+    setServerError(null)
     const result = await loginAction(locale, { ...values, next })
-    if (!result.success) setServerError(true)
+    if (!result.success) setServerError(result.error ?? "backend")
   }
 
   return (
@@ -77,7 +95,7 @@ export function LoginForm({ next }: { next?: string }) {
             role="alert"
             className="border-danger/20 bg-danger/5 text-danger rounded-xl border p-4 text-sm shadow-[var(--shadow-xs)]"
           >
-            {t("auth.invalid")}
+            {t(loginErrorMessageKey(serverError))}
           </div>
         ) : null}
         <Field

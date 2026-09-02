@@ -2,9 +2,16 @@ import { describe, expect, it } from "vitest"
 
 import type { Locale } from "@/shared/types/platform"
 
-import type { StaticContentType } from "../types/public-content.types"
+import type {
+  PublicContentPageView,
+  StaticContentType,
+} from "../types/public-content.types"
 import { getLocalizedReviewedStaticPublicPage } from "./public-copy-pack-localized"
 import { PUBLIC_COPY_DRAFT_DATE, PUBLIC_COPY_VERSION } from "./public-copy-pack"
+import {
+  containsPublicEditorialMarker,
+  sanitizePublicStaticPage,
+} from "./public-copy-safety"
 
 const pageTypes: StaticContentType[] = [
   "about",
@@ -74,17 +81,36 @@ describe("reviewed public copy pack", () => {
     }
   })
 
-  it("keeps unresolved operational facts explicit instead of inventing them", () => {
-    const privacy = allText("privacy", "en")
-    const cookies = allText("cookies", "en")
-    const terms = allText("terms", "en")
+  it("never renders internal editorial or pre-publication notes", () => {
+    for (const locale of locales) {
+      for (const type of pageTypes) {
+        const page = getLocalizedReviewedStaticPublicPage(type, locale)
+        expect(containsPublicEditorialMarker(page)).toBe(false)
+      }
+    }
+  })
 
-    expect(privacy).toContain("must be confirmed before publication")
-    expect(cookies).toContain("production-domain audit")
-    expect(terms).toContain("commercial model must be confirmed")
-    expect(terms).toContain(
-      "Jurisdiction and the complaint procedure must be confirmed",
-    )
+  it("falls back to the page title when an unsafe description has no eyebrow", () => {
+    const page: PublicContentPageView = {
+      contentType: "about",
+      slug: "about",
+      locale: "en",
+      version: 1,
+      publishedAt: null,
+      updatedAt: "2026-09-01T00:00:00.000Z",
+      type: "about",
+      eyebrow: null,
+      title: "About Buildink",
+      description: "Draft copy before publication",
+      featuredImageUrl: null,
+      sections: [],
+      faqItems: [],
+    }
+
+    const sanitized = sanitizePublicStaticPage(page)
+
+    expect(sanitized.description).toBe("About Buildink")
+    expect(typeof sanitized.description).toBe("string")
   })
 
   it("uses real Arabic, Romanian and Albanian translations rather than English fallback", () => {

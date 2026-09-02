@@ -28,16 +28,22 @@ export function PortalFormDialog({
     <Dialog>
       <DialogTrigger asChild>
         <Button type="button">
-          <Plus className="size-4" />
+          <Plus className="size-4" aria-hidden="true" />
           {triggerLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),52rem)] max-w-3xl overflow-y-auto p-6 sm:p-8">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+      <DialogContent className="flex max-h-[calc(100svh-1.5rem)] w-[calc(100%-1.5rem)] max-w-3xl flex-col overflow-hidden rounded-2xl p-0 sm:w-[calc(100%-2rem)] sm:rounded-2xl">
+        <DialogHeader className="border-border/70 shrink-0 border-b bg-slate-50/60 px-5 py-5 pe-14 sm:px-6 sm:py-5 dark:bg-white/[0.02]">
+          <DialogTitle className="text-xl font-semibold tracking-[-0.02em]">
+            {title}
+          </DialogTitle>
+          <DialogDescription className="max-w-2xl">
+            {description}
+          </DialogDescription>
         </DialogHeader>
-        <div className="mt-6 min-w-0">{children}</div>
+        <div className="portal-scrollbar min-w-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+          {children}
+        </div>
       </DialogContent>
     </Dialog>
   )

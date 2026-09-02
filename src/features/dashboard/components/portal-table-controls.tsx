@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  ArrowDownAZ,
-  RotateCcw,
-  Search,
-  SlidersHorizontal,
-  X,
-} from "lucide-react"
+import { ArrowDownAZ, ListFilter, RotateCcw, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
@@ -26,6 +20,13 @@ export interface PortalTableControlsState {
   sort?: "newest" | "title"
   statusOptions?: string[]
   sortOptions?: Array<"newest" | "title">
+}
+
+function humanizeFilterValue(value: string) {
+  const normalized = value.trim().replaceAll("_", " ").replace(/\s+/g, " ")
+  if (!normalized) return value
+  const lower = normalized.toLocaleLowerCase()
+  return `${lower.charAt(0).toLocaleUpperCase()}${lower.slice(1)}`
 }
 
 export function PortalTableControls({
@@ -55,14 +56,14 @@ export function PortalTableControls({
   function updateUrl(updates: Record<string, string | undefined>) {
     const next = new URLSearchParams(searchParams.toString())
     for (const [key, value] of Object.entries(updates)) {
-      if (value === undefined || value === "" || value === "all") {
+      if (value === undefined || value === "" || value === "all")
         next.delete(key)
-      } else {
-        next.set(key, value)
-      }
+      else next.set(key, value)
     }
     const suffix = next.toString()
-    router.replace(suffix ? `${pathname}?${suffix}` : pathname)
+    router.replace(suffix ? `${pathname}?${suffix}` : pathname, {
+      scroll: false,
+    })
   }
 
   useEffect(() => {
@@ -82,56 +83,27 @@ export function PortalTableControls({
   )
 
   return (
-    <div className="bg-muted/20 space-y-3 px-4 py-4 sm:px-5">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="text-muted-foreground flex items-center gap-2 text-xs font-semibold tracking-[0.06em] uppercase">
-          <span className="bg-primary/8 text-primary grid size-7 place-items-center rounded-lg">
-            <SlidersHorizontal className="size-3.5" />
-          </span>
-          Filters and sorting
-        </div>
-        {hasFilters ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-8 rounded-xl text-xs"
-            onClick={() => {
-              setDraft({ base: "", value: "" })
-              updateUrl({
-                q: undefined,
-                status: undefined,
-                sort: undefined,
-                page: undefined,
-              })
-            }}
-          >
-            <RotateCcw className="size-3.5" />
-            Reset
-          </Button>
-        ) : null}
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-[minmax(16rem,1fr)_minmax(10rem,.35fr)_minmax(10rem,.3fr)]">
-        <label className="relative">
+    <div className="bg-[linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,250,255,.98))] px-4 py-3.5 sm:px-5">
+      <div className="grid gap-3 md:grid-cols-[minmax(16rem,1fr)_minmax(11rem,.34fr)_minmax(11rem,.3fr)_auto] md:items-center">
+        <label className="group relative">
           <span className="sr-only">{labels.search}</span>
-          <Search className="text-muted-foreground pointer-events-none absolute start-4 top-1/2 size-4 -translate-y-1/2" />
+          <span className="bg-primary/[0.07] text-primary group-focus-within:bg-primary/10 pointer-events-none absolute start-2.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg transition-colors">
+            <Search className="size-4" strokeWidth={2.1} />
+          </span>
           <Input
             value={query}
             onChange={(event) =>
               setDraft({ base: serverQuery, value: event.target.value })
             }
             placeholder={labels.search}
-            className="bg-card h-12 rounded-2xl ps-11 pe-10"
+            className="border-primary/10 bg-card hover:border-primary/20 focus-visible:border-primary/35 focus-visible:ring-primary/10 h-11 min-h-11 rounded-xl ps-12 pe-10 shadow-none transition-[border-color,box-shadow,background-color]"
           />
           {query ? (
             <button
               type="button"
               aria-label="Clear search"
-              className="text-muted-foreground hover:bg-muted hover:text-foreground absolute end-3 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-lg transition-colors"
-              onClick={() => {
-                setDraft({ base: serverQuery, value: "" })
-              }}
+              className="text-muted-foreground hover:bg-primary/[0.07] hover:text-primary focus-visible:ring-primary/20 absolute end-2.5 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              onClick={() => setDraft({ base: serverQuery, value: "" })}
             >
               <X className="size-3.5" />
             </button>
@@ -147,15 +119,16 @@ export function PortalTableControls({
           >
             <SelectTrigger
               aria-label={labels.status}
-              className="bg-card w-full"
+              className="border-primary/10 bg-card hover:border-primary/20 h-11 min-h-11 w-full gap-2 shadow-none"
             >
+              <ListFilter className="text-primary size-4 shrink-0" />
               <SelectValue placeholder={labels.status} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{labels.allStatuses}</SelectItem>
               {statuses.map((value) => (
                 <SelectItem key={value} value={value}>
-                  {value.replaceAll("_", " ")}
+                  {humanizeFilterValue(value)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -169,8 +142,11 @@ export function PortalTableControls({
               updateUrl({ sort: value, page: undefined })
             }
           >
-            <SelectTrigger aria-label={labels.sort} className="bg-card w-full">
-              <ArrowDownAZ className="text-muted-foreground size-4 shrink-0" />
+            <SelectTrigger
+              aria-label={labels.sort}
+              className="border-primary/10 bg-card hover:border-primary/20 h-11 min-h-11 w-full gap-2 shadow-none"
+            >
+              <ArrowDownAZ className="text-primary size-4 shrink-0" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -183,6 +159,29 @@ export function PortalTableControls({
             </SelectContent>
           </Select>
         ) : null}
+
+        {hasFilters ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-primary hover:bg-primary/[0.07] hover:text-primary h-10 justify-self-start rounded-lg px-3 text-xs md:justify-self-end"
+            onClick={() => {
+              setDraft({ base: "", value: "" })
+              updateUrl({
+                q: undefined,
+                status: undefined,
+                sort: undefined,
+                page: undefined,
+              })
+            }}
+          >
+            <RotateCcw className="size-3.5" />
+            Reset
+          </Button>
+        ) : (
+          <span className="hidden md:block" aria-hidden="true" />
+        )}
       </div>
     </div>
   )

@@ -29,12 +29,15 @@ import {
   shortlistWorkspaceOfferAction,
   withdrawPortalOfferAction,
 } from "@/features/dashboard/actions/portal.actions"
+import { canDecideOffer } from "@/features/dashboard/lib/offer-decision"
+import { canWithdrawOffer } from "@/features/dashboard/lib/offer-withdraw"
 import { usePortalMutationRunner } from "@/features/dashboard/query/use-portal-mutation"
 import { Link } from "@/i18n/navigation"
 
 type Labels = {
   actions: string
   details: string
+  editDraft: string
   accept: string
   reject: string
   requestChanges: string
@@ -43,21 +46,36 @@ type Labels = {
   cancel: string
 }
 
-export function OfferActionsMenu({
-  mode,
-  companyId,
-  id,
-  version,
-  viewHref,
-  labels,
-}: {
+type OfferActionsMenuProps = {
   mode: "buyer" | "bidder"
   companyId?: string
   id: string
   version: number
+  status: string
   viewHref: string
+  editHref?: string
   labels: Labels
-}) {
+}
+
+export function OfferActionsMenu(props: OfferActionsMenuProps) {
+  return (
+    <OfferActionsMenuStateful
+      key={`${props.id}:${props.version}:${props.status}`}
+      {...props}
+    />
+  )
+}
+
+function OfferActionsMenuStateful({
+  mode,
+  companyId,
+  id,
+  version,
+  status,
+  viewHref,
+  editHref,
+  labels,
+}: OfferActionsMenuProps) {
   const runMutation = usePortalMutationRunner()
   const [confirmAction, setConfirmAction] = useState<ReasonedAction | null>(
     null,
@@ -66,6 +84,7 @@ export function OfferActionsMenu({
   const [requestPending, setRequestPending] = useState(false)
   const [reason, setReason] = useState("")
   const [currentVersion, setCurrentVersion] = useState(version)
+  const [currentStatus, setCurrentStatus] = useState(status)
 
   async function runStatusAction(
     task: () => Promise<{
@@ -73,19 +92,20 @@ export function OfferActionsMenu({
       message?: string
       [key: string]: unknown
     }>,
-    status: string,
+    nextStatus: string,
   ) {
     const optimisticVersion = currentVersion + 1
     const result = await runMutation(task, {
       optimistic: {
         id,
-        patch: { status, version: optimisticVersion },
+        patch: { status: nextStatus, version: optimisticVersion },
       },
     })
     if (!result.ok) throw new Error(result.message ?? "Could not update offer")
     const payload = (result.data ?? result.offer) as
       { version?: number } | undefined
     setCurrentVersion(payload?.version ?? optimisticVersion)
+    setCurrentStatus(nextStatus)
   }
 
   async function requestChanges() {
@@ -111,7 +131,7 @@ export function OfferActionsMenu({
 
   function confirm(
     title: string,
-    status: string,
+    nextStatus: string,
     task: () => Promise<{
       ok: boolean
       message?: string
@@ -126,9 +146,38 @@ export function OfferActionsMenu({
       cancelLabel: labels.cancel,
       destructive,
       pendingLabel: "Processing…",
-      onConfirm: () => runStatusAction(task, status),
+      onConfirm: () => runStatusAction(task, nextStatus),
     })
   }
+
+  const canEditBidderOffer =
+    mode === "bidder" &&
+    (currentStatus === "DRAFT" || currentStatus === "CHANGES_REQUESTED") &&
+    Boolean(editHref)
+  const canAccept =
+    mode === "buyer" &&
+    Boolean(companyId) &&
+    canDecideOffer(currentStatus, "ACCEPTED")
+  const canReject =
+    mode === "buyer" &&
+    Boolean(companyId) &&
+    canDecideOffer(currentStatus, "REJECTED")
+  const canRequestChanges =
+    mode === "buyer" &&
+    Boolean(companyId) &&
+    canDecideOffer(currentStatus, "CHANGES_REQUESTED")
+  const canShortlist =
+    mode === "buyer" &&
+    Boolean(companyId) &&
+    canDecideOffer(currentStatus, "SHORTLISTED")
+  const canWithdrawBidderOffer =
+    mode === "bidder" && canWithdrawOffer(currentStatus)
+  const hasStatusAction =
+    canAccept ||
+    canReject ||
+    canRequestChanges ||
+    canShortlist ||
+    canWithdrawBidderOffer
 
   return (
     <>
@@ -149,59 +198,67 @@ export function OfferActionsMenu({
               <Eye /> {labels.details}
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          {mode === "buyer" && companyId ? (
-            <>
-              <DropdownMenuItem
-                onSelect={() =>
-                  confirm(labels.accept, "ACCEPTED", () =>
+          {canEditBidderOffer && editHref ? (
+            <DropdownMenuItem asChild>
+              <Link href={editHref} prefetch>
+                <PencilLine /> {labels.editDraft}
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
+          {hasStatusAction ? <DropdownMenuSeparator /> : null}
+          {canAccept && companyId ? (
+            <DropdownMenuItem
+              onSelect={() =>
+                confirm(labels.accept, "ACCEPTED", () =>
+                  decideWorkspaceOfferAction(
+                    companyId,
+                    id,
+                    "accept",
+                    currentVersion,
+                  ),
+                )
+              }
+            >
+              <Check /> {labels.accept}
+            </DropdownMenuItem>
+          ) : null}
+          {canReject && companyId ? (
+            <DropdownMenuItem
+              onSelect={() =>
+                confirm(
+                  labels.reject,
+                  "REJECTED",
+                  () =>
                     decideWorkspaceOfferAction(
                       companyId,
                       id,
-                      "accept",
+                      "reject",
                       currentVersion,
                     ),
-                  )
-                }
-              >
-                <Check /> {labels.accept}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() =>
-                  confirm(
-                    labels.reject,
-                    "REJECTED",
-                    () =>
-                      decideWorkspaceOfferAction(
-                        companyId,
-                        id,
-                        "reject",
-                        currentVersion,
-                      ),
-                    true,
-                  )
-                }
-              >
-                <XCircle /> {labels.reject}
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setRequestChangesOpen(true)}>
-                <PencilLine /> {labels.requestChanges}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() =>
-                  confirm(labels.shortlist, "SHORTLISTED", () =>
-                    shortlistWorkspaceOfferAction(
-                      companyId,
-                      id,
-                      currentVersion,
-                    ),
-                  )
-                }
-              >
-                <ListChecks /> {labels.shortlist}
-              </DropdownMenuItem>
-            </>
-          ) : (
+                  true,
+                )
+              }
+            >
+              <XCircle /> {labels.reject}
+            </DropdownMenuItem>
+          ) : null}
+          {canRequestChanges ? (
+            <DropdownMenuItem onSelect={() => setRequestChangesOpen(true)}>
+              <PencilLine /> {labels.requestChanges}
+            </DropdownMenuItem>
+          ) : null}
+          {canShortlist && companyId ? (
+            <DropdownMenuItem
+              onSelect={() =>
+                confirm(labels.shortlist, "SHORTLISTED", () =>
+                  shortlistWorkspaceOfferAction(companyId, id, currentVersion),
+                )
+              }
+            >
+              <ListChecks /> {labels.shortlist}
+            </DropdownMenuItem>
+          ) : null}
+          {canWithdrawBidderOffer ? (
             <DropdownMenuItem
               onSelect={() =>
                 confirm(
@@ -215,7 +272,7 @@ export function OfferActionsMenu({
             >
               <X /> {labels.withdraw}
             </DropdownMenuItem>
-          )}
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
 

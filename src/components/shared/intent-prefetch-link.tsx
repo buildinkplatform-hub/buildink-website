@@ -2,20 +2,20 @@
 
 import * as React from "react"
 
-import { Link, useRouter } from "@/i18n/navigation"
+import { Link } from "@/i18n/navigation"
 
 export type IntentPrefetchLinkProps = Omit<
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   "href"
 > & {
   href: string
-  prefetch?: boolean
+  prefetch?: boolean | null
   prefetchOnRender?: boolean
 }
 
 export function IntentPrefetchLink({
   href,
-  prefetch = true,
+  prefetch,
   prefetchOnRender = false,
   onFocus,
   onMouseEnter,
@@ -23,27 +23,28 @@ export function IntentPrefetchLink({
   onTouchStart,
   ...props
 }: IntentPrefetchLinkProps) {
-  const router = useRouter()
-  const prefetchedRef = React.useRef(false)
+  const [intentActive, setIntentActive] = React.useState(prefetchOnRender)
 
   const prefetchIntent = React.useCallback(() => {
-    if (prefetchedRef.current) return
-    prefetchedRef.current = true
-    router.prefetch(href)
-  }, [href, router])
+    setIntentActive(true)
+  }, [])
 
   React.useEffect(() => {
     if (!prefetchOnRender) return
-    // Warm high-value destinations after the shell becomes interactive rather
-    // than competing with the first protected-page render.
     const timeout = window.setTimeout(prefetchIntent, 350)
     return () => window.clearTimeout(timeout)
   }, [prefetchIntent, prefetchOnRender])
 
+  // Avoid viewport-wide protected-route prefetching. On real user intent,
+  // restore Next.js automatic prefetch behavior so dynamic routes use the
+  // nearest loading boundary and warm only the reusable shell.
+  const resolvedPrefetch =
+    prefetch !== undefined ? prefetch : intentActive ? null : false
+
   return (
     <Link
       href={href}
-      prefetch={prefetch}
+      prefetch={resolvedPrefetch}
       onFocus={(event) => {
         prefetchIntent()
         onFocus?.(event)

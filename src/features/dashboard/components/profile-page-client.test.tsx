@@ -192,12 +192,12 @@ describe("ProfilePageClient", () => {
     renderProfile()
 
     expect(
-      screen.getByRole("button", { name: /overview/i, current: "page" }),
+      screen.getByRole("tab", { name: /overview/i, selected: true }),
     ).toBeVisible()
-    expect(
-      screen.getByRole("button", { name: /documents/i }),
-    ).toHaveTextContent("1")
-    expect(screen.getByRole("button", { name: /visibility/i })).toBeVisible()
+    expect(screen.getByRole("tab", { name: /documents/i })).toHaveTextContent(
+      "1",
+    )
+    expect(screen.getByRole("tab", { name: /visibility/i })).toBeVisible()
   })
 
   it("shows the account summary captured during onboarding", () => {

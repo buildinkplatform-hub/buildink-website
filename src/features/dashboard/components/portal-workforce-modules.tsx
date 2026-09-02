@@ -49,10 +49,14 @@ export async function WorkforceModulePage({ detailId }: { detailId?: string }) {
   const isWorker = session?.primaryAccountType === "WORKER"
   const bootstrap = await getPortalBootstrap()
   const companyId = getActiveCompanyId(bootstrap?.workspaces)
+  const hasWorkforceRequests =
+    bootstrap?.entitlements.modules.includes("opportunities") ?? false
   const canReviewHiring =
-    bootstrap?.entitlements.permissions.includes(
+    hasWorkforceRequests &&
+    (bootstrap?.entitlements.permissions.includes(
       "worker_applications.review",
-    ) ?? false
+    ) ??
+      false)
 
   if (isWorker) {
     const { WorkerProfileRecords } =
@@ -109,7 +113,7 @@ export async function WorkforceModulePage({ detailId }: { detailId?: string }) {
         description={t("dashboard.descriptions.workforceCompany")}
       />
 
-      <WorkforceFlowNav audience="company" />
+      <WorkforceFlowNav audience="company" showHiring={canReviewHiring} />
 
       {companyId ? <WorkforceOperationsSummary companyId={companyId} /> : null}
 

@@ -89,11 +89,17 @@ const workerSteps = [
 export function WorkforceFlowNav({
   audience,
   active = "overview",
+  showHiring = true,
 }: {
   audience: "company" | "worker"
   active?: string
+  showHiring?: boolean
 }) {
-  const steps = audience === "worker" ? workerSteps : companySteps
+  const baseSteps = audience === "worker" ? workerSteps : companySteps
+  const steps =
+    audience === "company" && !showHiring
+      ? baseSteps.filter((step) => step.key !== "hiring")
+      : baseSteps
 
   return (
     <section
@@ -109,7 +115,12 @@ export function WorkforceFlowNav({
           context.
         </p>
       </div>
-      <div className="bg-border/70 grid gap-px sm:grid-cols-2 xl:grid-cols-5">
+      <div
+        className={cn(
+          "bg-border/70 grid gap-px sm:grid-cols-2",
+          steps.length >= 5 ? "xl:grid-cols-5" : "xl:grid-cols-4",
+        )}
+      >
         {steps.map((step, index) => {
           const Icon = step.icon
           const selected = active === step.key

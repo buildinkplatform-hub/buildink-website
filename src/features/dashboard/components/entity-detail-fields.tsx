@@ -70,17 +70,18 @@ export function EntityDetailFields({
   const fields = marketplaceEntityFields[entity].filter(
     (field) => field.key in data && field.inputType !== "collection",
   )
+
   return (
-    <dl className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+    <dl className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {fields.map((field) => (
         <div
           key={field.key}
-          className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm"
+          className="border-border/90 rounded-xl border bg-slate-50/60 p-4 dark:bg-white/[0.025]"
         >
-          <dt className="text-muted text-xs font-semibold tracking-wide uppercase">
+          <dt className="text-muted-foreground text-[11px] font-medium tracking-wide uppercase">
             {resolveLabel(field.labelKey, labels)}
           </dt>
-          <dd className="text-brand-navy mt-1 text-sm font-medium break-words">
+          <dd className="text-brand-navy mt-1.5 text-sm font-semibold break-words">
             {formatFieldValue(
               data[field.key],
               field.inputType,

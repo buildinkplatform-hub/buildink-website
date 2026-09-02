@@ -15,18 +15,25 @@ function SelectTrigger({
   children,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
+  const hasExternalAccessibleName = Boolean(
+    props.id || props["aria-label"] || props["aria-labelledby"],
+  )
+
   return (
     <SelectPrimitive.Trigger
       className={cn(
         "border-input bg-card text-foreground data-[placeholder]:text-muted-foreground hover:border-primary/25 focus-visible:border-primary/60 focus-visible:ring-primary/12 aria-invalid:border-destructive aria-invalid:ring-destructive/10 disabled:bg-muted/25 relative flex h-12 min-h-12 w-full min-w-0 items-center rounded-2xl border px-4 pe-12 text-sm shadow-[0_1px_2px_rgb(7_26_51/0.03)] transition-[border-color,box-shadow,background-color] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-55 [&>span]:truncate",
         className,
       )}
+      aria-label={
+        hasExternalAccessibleName ? props["aria-label"] : "Select an option"
+      }
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
         <span className="bg-muted/55 text-muted-foreground pointer-events-none absolute end-3.5 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-lg">
-          <ChevronDown className="size-3.5" />
+          <ChevronDown className="size-3.5" aria-hidden="true" />
         </span>
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
@@ -43,7 +50,7 @@ function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border/80 relative z-[80] max-h-80 min-w-[10rem] overflow-hidden rounded-2xl border p-1 shadow-[var(--shadow-floating)] duration-150 outline-none motion-reduce:animate-none",
+          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border/80 pointer-events-auto relative z-[120] max-h-80 min-w-[10rem] overflow-hidden rounded-2xl border p-1 shadow-[var(--shadow-floating)] duration-150 outline-none motion-reduce:animate-none",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1.5 data-[side=top]:-translate-y-1.5",
           className,
@@ -52,7 +59,7 @@ function SelectContent({
         {...props}
       >
         <SelectPrimitive.ScrollUpButton className="text-muted-foreground flex h-8 items-center justify-center rounded-xl">
-          <ChevronUp className="size-4" />
+          <ChevronUp className="size-4" aria-hidden="true" />
         </SelectPrimitive.ScrollUpButton>
         <SelectPrimitive.Viewport
           className={cn(
@@ -64,7 +71,7 @@ function SelectContent({
           {children}
         </SelectPrimitive.Viewport>
         <SelectPrimitive.ScrollDownButton className="text-muted-foreground flex h-8 items-center justify-center rounded-xl">
-          <ChevronDown className="size-4" />
+          <ChevronDown className="size-4" aria-hidden="true" />
         </SelectPrimitive.ScrollDownButton>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
@@ -102,7 +109,7 @@ function SelectItem({
       <span className="absolute end-2.5 flex size-5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
           <span className="bg-primary text-primary-foreground grid size-5 place-items-center rounded-full">
-            <Check className="size-3" />
+            <Check className="size-3" aria-hidden="true" />
           </span>
         </SelectPrimitive.ItemIndicator>
       </span>

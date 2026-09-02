@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils/cn"
 export type StatusTone = "neutral" | "info" | "success" | "warning" | "danger"
 
 const toneClass: Record<StatusTone, string> = {
-  neutral: "border-line bg-canvas text-muted",
-  info: "border-primary/15 bg-light-blue text-primary",
+  neutral: "border-border bg-muted text-muted-foreground",
+  info: "border-primary/15 bg-primary/8 text-primary",
   success: "border-success/20 bg-success/10 text-success",
-  warning: "border-warning/20 bg-warning/10 text-warning",
+  warning: "border-warning/20 bg-warning/10 text-[#B54708] dark:text-warning",
   danger: "border-danger/20 bg-danger/10 text-danger",
 }
 
@@ -39,6 +39,7 @@ const toneByStatus: Record<string, StatusTone> = {
   ACTIVE: "success",
   OPEN: "info",
   IN_PROGRESS: "info",
+  EVALUATION: "info",
   SUBMITTED: "info",
   INVITED: "warning",
   VIEWED: "info",
@@ -53,9 +54,28 @@ export function statusTone(status: string): StatusTone {
   return toneByStatus[status.toUpperCase()] ?? "neutral"
 }
 
+function humanizeStatus(status: string) {
+  const words = status.trim().replaceAll("_", " ").replace(/\s+/g, " ")
+  if (!words) return status
+  const lower = words.toLocaleLowerCase()
+  return `${lower.charAt(0).toLocaleUpperCase()}${lower.slice(1)}`
+}
+
+function isRawStatusLabel(status: string, label?: string) {
+  if (!label?.trim()) return true
+  const normalizedStatus = status
+    .trim()
+    .replaceAll("_", " ")
+    .replace(/\s+/g, " ")
+    .toLocaleUpperCase()
+  const normalizedLabel = label.trim().replace(/\s+/g, " ").toLocaleUpperCase()
+  return normalizedLabel === normalizedStatus
+}
+
 /**
- * Renders a lifecycle status. `label` is expected to already be localised; the
- * raw status is only used to pick the tone.
+ * Renders a compact lifecycle status. Localised labels are preserved. If a
+ * caller only supplies the raw backend enum, fall back to a human-readable
+ * label instead of leaking implementation values such as `PENDING_REVIEW`.
  */
 export function StatusBadge({
   status,
@@ -66,9 +86,23 @@ export function StatusBadge({
   label?: string
   className?: string
 }) {
+  const displayLabel = isRawStatusLabel(status, label)
+    ? humanizeStatus(status)
+    : label
+
   return (
-    <Badge className={cn(toneClass[statusTone(status)], className)}>
-      {label ?? status}
+    <Badge
+      className={cn(
+        "min-h-0 gap-1 px-2.5 py-1 text-[11px] leading-4 font-semibold",
+        toneClass[statusTone(status)],
+        className,
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className="size-1.5 shrink-0 rounded-full bg-current opacity-70"
+      />
+      {displayLabel}
     </Badge>
   )
 }

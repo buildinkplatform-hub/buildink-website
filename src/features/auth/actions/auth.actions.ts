@@ -192,9 +192,15 @@ export async function forgotPasswordAction(
     if (limited) return { success: true as const }
     const siteUrl = resolveConfiguredPublicOrigin()
     const supabase = await createClient()
-    await supabase.auth.resetPasswordForEmail(parsed.data.email.toLowerCase(), {
-      redirectTo: `${siteUrl}/${locale}/auth/callback?next=/${locale}/reset-password`,
-    })
+
+    // Password recovery is deliberately anti-enumerating. A provider/network
+    // failure must not reveal account existence or strand the public form in a
+    // different state from an unknown-but-valid email address.
+    await supabase.auth
+      .resetPasswordForEmail(parsed.data.email.toLowerCase(), {
+        redirectTo: `${siteUrl}/${locale}/auth/callback?next=/${locale}/reset-password`,
+      })
+      .catch(() => undefined)
   }
   return { success: true as const }
 }

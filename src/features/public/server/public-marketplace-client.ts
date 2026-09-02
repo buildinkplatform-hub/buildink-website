@@ -55,6 +55,103 @@ const MODULE_ACCOUNT_TYPE: Partial<Record<PublicModule, string>> = {
   workers: "WORKER",
 }
 
+const PROFILE_MODULES = new Set<PublicModule>([
+  "project-owners",
+  "subcontractors",
+  "service-providers",
+  "workers",
+])
+
+const verificationCopy: Record<
+  Locale,
+  {
+    verifiedCompany: string
+    verifiedProfile: string
+    pending: string
+    unverified: string
+  }
+> = {
+  en: {
+    verifiedCompany: "Verified company",
+    verifiedProfile: "Verified profile",
+    pending: "Verification pending",
+    unverified: "Unverified",
+  },
+  it: {
+    verifiedCompany: "Impresa verificata",
+    verifiedProfile: "Profilo verificato",
+    pending: "Verifica in corso",
+    unverified: "Non verificato",
+  },
+  ar: {
+    verifiedCompany: "شركة موثّقة",
+    verifiedProfile: "ملف شخصي موثّق",
+    pending: "التحقق قيد المراجعة",
+    unverified: "غير موثّق",
+  },
+  ro: {
+    verifiedCompany: "Companie verificată",
+    verifiedProfile: "Profil verificat",
+    pending: "Verificare în curs",
+    unverified: "Neverificat",
+  },
+  sq: {
+    verifiedCompany: "Kompani e verifikuar",
+    verifiedProfile: "Profil i verifikuar",
+    pending: "Verifikimi në proces",
+    unverified: "I paverifikuar",
+  },
+}
+
+const profileCopy: Record<
+  Locale,
+  {
+    projectOwner: string
+    subcontractor: string
+    serviceProvider: string
+    worker: string
+    summary: string
+  }
+> = {
+  en: {
+    projectOwner: "Project owner",
+    subcontractor: "Subcontractor",
+    serviceProvider: "Service provider",
+    worker: "Worker",
+    summary: "Published marketplace profile",
+  },
+  it: {
+    projectOwner: "Proprietario di progetto",
+    subcontractor: "Subappaltatore",
+    serviceProvider: "Fornitore di servizi",
+    worker: "Lavoratore",
+    summary: "Profilo marketplace pubblicato",
+  },
+  ar: {
+    projectOwner: "مالك مشروع",
+    subcontractor: "مقاول من الباطن",
+    serviceProvider: "مقدم خدمات",
+    worker: "عامل",
+    summary: "ملف منشور في سوق Buildink",
+  },
+  ro: {
+    projectOwner: "Proprietar de proiect",
+    subcontractor: "Subcontractant",
+    serviceProvider: "Furnizor de servicii",
+    worker: "Lucrător",
+    summary: "Profil publicat în marketplace",
+  },
+  sq: {
+    projectOwner: "Pronar projekti",
+    subcontractor: "Nënkontraktor",
+    serviceProvider: "Ofrues shërbimesh",
+    worker: "Punëtor",
+    summary: "Profil i publikuar në marketplace",
+  },
+}
+
+const FRESH_MARKETPLACE_REQUEST: RequestInit = { cache: "no-store" }
+
 function profileModuleFromSubtitle(subtitle: string | undefined): PublicModule {
   switch (subtitle) {
     case "PROJECT_OWNER":
@@ -69,33 +166,84 @@ function profileModuleFromSubtitle(subtitle: string | undefined): PublicModule {
   }
 }
 
-function normalizePublicEntity(
+function resolvedPublicModule(
   item: RawPublicEntityRecord,
   requestedModule?: PublicModule,
-): PublicEntityRecord {
+): PublicModule {
   if (requestedModule) {
-    if (MODULE_ACCOUNT_TYPE[requestedModule]) {
-      return { ...item, module: requestedModule }
-    }
+    if (MODULE_ACCOUNT_TYPE[requestedModule]) return requestedModule
     if (requestedModule === "companies" && item.module === "suppliers") {
-      return { ...item, module: "companies" }
+      return "companies"
     }
-    if (requestedModule === "opportunities") {
-      return { ...item, module: "opportunities" }
-    }
+    if (requestedModule === "opportunities") return "opportunities"
   }
 
   switch (item.module) {
     case "profiles":
-      return { ...item, module: profileModuleFromSubtitle(item.subtitle) }
+      return profileModuleFromSubtitle(item.subtitle)
     case "suppliers":
-      return { ...item, module: "companies" }
+      return "companies"
     case "opportunities":
     case "opportunities-companies":
     case "opportunities-workers":
-      return { ...item, module: "opportunities" }
+      return "opportunities"
     default:
-      return { ...item, module: item.module as PublicModule }
+      return item.module as PublicModule
+  }
+}
+
+function localizedVerification(
+  value: string,
+  publicModule: PublicModule,
+  locale: Locale,
+) {
+  const labels = verificationCopy[locale]
+  if (value === "Verified company") {
+    return PROFILE_MODULES.has(publicModule)
+      ? labels.verifiedProfile
+      : labels.verifiedCompany
+  }
+  if (value === "Verification pending") return labels.pending
+  if (value === "Unverified") return labels.unverified
+  return value
+}
+
+function localizedProfileSubtitle(publicModule: PublicModule, locale: Locale) {
+  const labels = profileCopy[locale]
+  switch (publicModule) {
+    case "project-owners":
+      return labels.projectOwner
+    case "subcontractors":
+      return labels.subcontractor
+    case "service-providers":
+      return labels.serviceProvider
+    case "workers":
+      return labels.worker
+    default:
+      return null
+  }
+}
+
+function normalizePublicEntity(
+  item: RawPublicEntityRecord,
+  requestedModule: PublicModule | undefined,
+  locale: Locale,
+): PublicEntityRecord {
+  const publicModule = resolvedPublicModule(item, requestedModule)
+  const profileSubtitle = PROFILE_MODULES.has(publicModule)
+    ? localizedProfileSubtitle(publicModule, locale)
+    : null
+  return {
+    ...item,
+    module: publicModule,
+    ...(profileSubtitle
+      ? { subtitle: profileSubtitle, summary: profileCopy[locale].summary }
+      : {}),
+    verification: localizedVerification(
+      item.verification,
+      publicModule,
+      locale,
+    ),
   }
 }
 
@@ -141,7 +289,7 @@ function buildParams(
 }
 
 export async function fetchPublicHome(locale: Locale) {
-  return publicBackendApi<{
+  const response = await publicBackendApi<{
     featured: {
       companies: RawPublicEntityRecord[]
       profiles: RawPublicEntityRecord[]
@@ -160,31 +308,102 @@ export async function fetchPublicHome(locale: Locale) {
       companies: RawPublicEntityRecord[]
       projects: RawPublicEntityRecord[]
     }
-  }>(`/api/v1/public/marketplace/home?locale=${locale}`).then((response) => ({
-    ...response,
+  }>(
+    `/api/v1/public/marketplace/home?locale=${locale}`,
+    FRESH_MARKETPLACE_REQUEST,
+  ).catch(() => null)
+
+  if (response?.aggregates) {
+    return {
+      ...response,
+      featured: {
+        companies: response.featured.companies.map((item) =>
+          normalizePublicEntity(item, "companies", locale),
+        ),
+        profiles: response.featured.profiles.map((item) =>
+          normalizePublicEntity(item, undefined, locale),
+        ),
+        projects: response.featured.projects.map((item) =>
+          normalizePublicEntity(item, "projects", locale),
+        ),
+        tenders: response.featured.tenders.map((item) =>
+          normalizePublicEntity(item, "tenders", locale),
+        ),
+      } satisfies PublicHomeView["featured"],
+      featuredEvidence: {
+        companies: (response.featuredEvidence?.companies ?? []).map((item) =>
+          normalizePublicEntity(item, "companies", locale),
+        ),
+        projects: (response.featuredEvidence?.projects ?? []).map((item) =>
+          normalizePublicEntity(item, "projects", locale),
+        ),
+      },
+    }
+  }
+
+  // The combined Home endpoint contains optional evidence aggregation. If an
+  // older backend omits aggregates or one optional Home query fails, rebuild
+  // the core marketplace summary from the same live public directory APIs
+  // rather than pairing fixture cards with misleading zero counters.
+  const [companies, workers, projects, tenders] = await Promise.all([
+    fetchPublicDirectory("companies", locale, { page: 1 }),
+    fetchPublicDirectory("workers", locale, { page: 1 }),
+    fetchPublicDirectory("projects", locale, { page: 1 }),
+    fetchPublicDirectory("tenders", locale, {
+      page: 1,
+      tenderStatus: "OPEN",
+    }),
+  ])
+
+  if (!companies && !workers && !projects && !tenders) {
+    if (!response)
+      throw new Error("Public marketplace Home data is unavailable")
+    return {
+      ...response,
+      featured: {
+        companies: response.featured.companies.map((item) =>
+          normalizePublicEntity(item, "companies", locale),
+        ),
+        profiles: response.featured.profiles.map((item) =>
+          normalizePublicEntity(item, undefined, locale),
+        ),
+        projects: response.featured.projects.map((item) =>
+          normalizePublicEntity(item, "projects", locale),
+        ),
+        tenders: response.featured.tenders.map((item) =>
+          normalizePublicEntity(item, "tenders", locale),
+        ),
+      },
+      aggregates: {
+        companies: 0,
+        tenders: 0,
+        workers: 0,
+        projects: 0,
+        publicMediaPublishers: 0,
+        publicEvidenceDocuments: 0,
+      },
+      featuredEvidence: { companies: [], projects: [] },
+    }
+  }
+
+  return {
     featured: {
-      companies: response.featured.companies.map((item) =>
-        normalizePublicEntity(item, "companies"),
-      ),
-      profiles: response.featured.profiles.map((item) =>
-        normalizePublicEntity(item, "workers"),
-      ),
-      projects: response.featured.projects.map((item) =>
-        normalizePublicEntity(item, "projects"),
-      ),
-      tenders: response.featured.tenders.map((item) =>
-        normalizePublicEntity(item, "tenders"),
-      ),
-    } satisfies PublicHomeView["featured"],
-    featuredEvidence: {
-      companies: (response.featuredEvidence?.companies ?? []).map((item) =>
-        normalizePublicEntity(item, "companies"),
-      ),
-      projects: (response.featuredEvidence?.projects ?? []).map((item) =>
-        normalizePublicEntity(item, "projects"),
-      ),
+      companies: companies?.items.slice(0, 2) ?? [],
+      profiles: workers?.items.slice(0, 2) ?? [],
+      projects: projects?.items.slice(0, 1) ?? [],
+      tenders: tenders?.items.slice(0, 1) ?? [],
     },
-  }))
+    aggregates: {
+      companies: companies?.total ?? 0,
+      tenders: tenders?.total ?? 0,
+      workers: workers?.total ?? 0,
+      projects: projects?.total ?? 0,
+      publicMediaPublishers: response?.aggregates?.publicMediaPublishers ?? 0,
+      publicEvidenceDocuments:
+        response?.aggregates?.publicEvidenceDocuments ?? 0,
+    },
+    featuredEvidence: { companies: [], projects: [] },
+  }
 }
 
 export async function fetchPublicDirectory(
@@ -199,14 +418,19 @@ export async function fetchPublicDirectory(
   })
   const response = await publicBackendApi<
     PaginatedResponse<RawPublicEntityRecord>
-  >(`/api/v1/public/marketplace/${path}?${params.toString()}`).catch(() => null)
+  >(
+    `/api/v1/public/marketplace/${path}?${params.toString()}`,
+    FRESH_MARKETPLACE_REQUEST,
+  ).catch(() => null)
   if (!response) return null
   const totalPages = Math.max(
     1,
     Math.ceil(response.pageInfo.total / response.pageInfo.pageSize),
   )
   return {
-    items: response.items.map((item) => normalizePublicEntity(item, module)),
+    items: response.items.map((item) =>
+      normalizePublicEntity(item, module, locale),
+    ),
     page: response.pageInfo.page,
     total: response.pageInfo.total,
     totalPages,
@@ -226,6 +450,7 @@ export async function fetchPublicFacets(
   })
   return publicBackendApi<PublicDirectoryFacets>(
     `/api/v1/public/marketplace/${path}/facets?${params.toString()}`,
+    FRESH_MARKETPLACE_REQUEST,
   ).catch(() => null)
 }
 
@@ -239,8 +464,9 @@ export async function fetchPublicEntity(
   const effectiveSlug = encodeURIComponent(slug)
   return publicBackendApi<RawPublicEntityRecord>(
     `/api/v1/public/marketplace/${path}/${effectiveSlug}?locale=${locale}`,
+    FRESH_MARKETPLACE_REQUEST,
   )
-    .then((item) => normalizePublicEntity(item, module))
+    .then((item) => normalizePublicEntity(item, module, locale))
     .catch(() => null)
 }
 
@@ -250,8 +476,9 @@ export async function fetchPublicCatalogueItem(
 ): Promise<PublicEntityRecord | null> {
   return publicBackendApi<RawPublicEntityRecord>(
     `/api/v1/public/marketplace/catalogue/${encodeURIComponent(id)}?locale=${locale}`,
+    FRESH_MARKETPLACE_REQUEST,
   )
-    .then((item) => normalizePublicEntity(item, "companies"))
+    .then((item) => normalizePublicEntity(item, "companies", locale))
     .catch(() => null)
 }
 
@@ -259,9 +486,12 @@ export async function fetchPublicSearch(locale: Locale, query: DirectoryQuery) {
   const params = buildParams(query, locale)
   return publicBackendApi<{ items: RawPublicEntityRecord[] }>(
     `/api/v1/public/marketplace/search?${params.toString()}`,
+    FRESH_MARKETPLACE_REQUEST,
   )
     .then((response) => ({
-      items: response.items.map((item) => normalizePublicEntity(item)),
+      items: response.items.map((item) =>
+        normalizePublicEntity(item, undefined, locale),
+      ),
     }))
     .catch(() => ({ items: [] }))
 }
@@ -281,7 +511,8 @@ export async function fetchPublicReviews(
     items: PublicReview[]
     summary: PublicReviewSummary
     pageInfo: PaginatedResponse<unknown>["pageInfo"]
-  }>(`/api/v1/public/marketplace/reviews?${params.toString()}`).catch(
-    () => null,
-  )
+  }>(
+    `/api/v1/public/marketplace/reviews?${params.toString()}`,
+    FRESH_MARKETPLACE_REQUEST,
+  ).catch(() => null)
 }

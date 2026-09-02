@@ -46,6 +46,7 @@ test.describe("auth form edge cases", () => {
   test("remember-me is optional and keyboard-operable", async ({ page }) => {
     await page.goto("/en/login")
     const remember = page.getByRole("checkbox")
+    await expect(remember).toBeEnabled()
     await expect(remember).not.toBeChecked()
     await remember.focus()
     await page.keyboard.press("Space")
@@ -76,7 +77,7 @@ test.describe("auth form edge cases", () => {
       page.locator('#confirmPassword[aria-invalid="true"]'),
     ).toBeVisible()
     await expect(
-      page.locator('button[role="checkbox"][aria-invalid="true"]'),
+      page.locator('input[type="checkbox"][aria-invalid="true"]'),
     ).toHaveCount(2)
   })
 

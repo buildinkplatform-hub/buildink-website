@@ -1141,8 +1141,17 @@ export function CatalogueCreateForm({
             createKey,
           ).then((result) => {
             setPending(false)
-            setMessage(result.ok ? undefined : result.message)
-            if (result.ok) router.refresh()
+            if (!result.ok) {
+              setMessage(result.message)
+              return
+            }
+            setMessage(undefined)
+            const created = result.data as { id?: string } | undefined
+            router.push(
+              created?.id
+                ? `/dashboard/catalogue/${created.id}`
+                : "/dashboard/catalogue",
+            )
           })
         }}
       >

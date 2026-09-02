@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { NextIntlClientProvider } from "next-intl"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { submitVerificationAction } from "@/features/dashboard/actions/portal.actions"
 import messages from "@/messages/en"
@@ -34,16 +34,49 @@ function renderSubmit(
 }
 
 describe("VerificationSubmitClient", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it("explains blocked submission states", () => {
     renderSubmit({ disabledReasons: ["Upload at least one document."] })
 
-    expect(
-      screen.getByText("Verification cannot be submitted yet"),
-    ).toBeVisible()
-    expect(screen.getByText("Upload at least one document.")).toBeVisible()
+    const blockedStatus = screen.getByRole("status")
+    expect(blockedStatus).toHaveTextContent(
+      "Verification cannot be submitted yet",
+    )
+    expect(blockedStatus).toHaveTextContent("Upload at least one document.")
     expect(
       screen.getByRole("button", { name: "Submit verification" }),
     ).toBeDisabled()
+  })
+
+  it("gives the reviewer notes field an explicit accessible label", () => {
+    renderSubmit()
+
+    expect(
+      screen.getByRole("textbox", { name: "Optional notes for the reviewer" }),
+    ).toBeVisible()
+  })
+
+  it("shows backend submission errors and does not refresh stale state", async () => {
+    const user = userEvent.setup()
+    vi.mocked(submitVerificationAction).mockResolvedValue({
+      ok: false as const,
+      code: "VERIFICATION_SUBMIT_FAILED",
+      message: "The verification request could not be submitted.",
+    })
+    renderSubmit()
+
+    await user.click(
+      screen.getByRole("button", { name: "Submit verification" }),
+    )
+
+    const alert = await screen.findByRole("alert")
+    expect(alert).toHaveTextContent(
+      "The verification request could not be submitted.",
+    )
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("submits selected documents and refreshes the route", async () => {
@@ -54,7 +87,7 @@ describe("VerificationSubmitClient", () => {
     renderSubmit()
 
     await user.type(
-      screen.getByPlaceholderText("Optional notes for the reviewer"),
+      screen.getByRole("textbox", { name: "Optional notes for the reviewer" }),
       "All files are current.",
     )
     await user.click(
@@ -65,7 +98,8 @@ describe("VerificationSubmitClient", () => {
       documentAssetIds: ["asset-1", "asset-2"],
       applicantNotes: "All files are current.",
     })
-    expect(await screen.findByText("Verification submitted.")).toBeVisible()
+    const status = await screen.findByRole("status")
+    expect(status).toHaveTextContent("Verification submitted.")
     expect(refresh).toHaveBeenCalled()
   })
 })

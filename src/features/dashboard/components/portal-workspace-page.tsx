@@ -1,9 +1,16 @@
 import { getTranslations } from "next-intl/server"
 
-import { Card } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { CompanyClaimList } from "@/features/dashboard/components/company-claim-list"
 import { CompanyCreateForm } from "@/features/dashboard/components/company-create-form"
 import { PortalPageHeader } from "@/features/dashboard/components/portal-page-header"
+import { StatusBadge } from "@/features/dashboard/components/status-badge"
 import { WorkspaceProfileEditor } from "@/features/dashboard/components/workspace-profile-editor"
 import {
   getPortalBootstrap,
@@ -14,6 +21,14 @@ import {
   listPortalTaxonomy,
 } from "@/features/dashboard/data/portal-client"
 import { getActiveWorkspace } from "@/features/dashboard/lib/active-workspace"
+
+function humanize(value: string) {
+  return value
+    .trim()
+    .toLocaleLowerCase()
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toLocaleUpperCase())
+}
 
 export async function ResilientWorkspaceModulePage() {
   const t = await getTranslations()
@@ -60,105 +75,114 @@ export async function ResilientWorkspaceModulePage() {
   ] as const
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-5 sm:space-y-6">
       <PortalPageHeader
         eyebrow={t("common.dashboard")}
         title={t("dashboard.nav.workspace")}
         description={t("dashboard.descriptions.workspace")}
       />
+
       {overview ? (
-        <div className="space-y-6">
-          <Card className="rounded-[28px] border-slate-200/80 p-6 shadow-sm">
-            <p className="text-primary text-xs font-bold tracking-[0.2em] uppercase">
-              {t("dashboard.nav.workspace")}
-            </p>
-            <h2 className="text-brand-navy mt-3 text-3xl font-bold">
-              {overview.workspace.name}
-            </h2>
-            <p className="text-muted mt-2 text-sm leading-6">
-              {[overview.workspace.role, overview.workspace.status]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
+        <div className="space-y-5">
+          <Card>
+            <CardContent className="flex flex-col gap-4 pt-5 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
+              <div className="min-w-0">
+                <p className="text-muted-foreground text-[11px] font-semibold tracking-[0.08em] uppercase">
+                  {t("dashboard.nav.workspace")}
+                </p>
+                <h2 className="text-foreground mt-1.5 truncate text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
+                  {overview.workspace.name}
+                </h2>
+                {overview.workspace.role ? (
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {humanize(overview.workspace.role)}
+                  </p>
+                ) : null}
+              </div>
+              {overview.workspace.status ? (
+                <StatusBadge status={overview.workspace.status} />
+              ) : null}
+            </CardContent>
           </Card>
 
           {dashboard ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {workspaceMetricKeys
                 .filter((key) => dashboard.metrics[key] !== undefined)
                 .map((key) => (
                   <Card
                     key={key}
-                    className="rounded-[24px] border-slate-200/80 p-5 shadow-sm"
+                    className="hover:border-primary/15 transition-colors"
                   >
-                    <p className="text-muted text-sm">
-                      {t(`dashboard.metric.${key}`)}
-                    </p>
-                    <p className="text-brand-navy mt-2 text-2xl font-bold">
-                      {dashboard.metrics[key] ?? 0}
-                    </p>
+                    <CardContent className="pt-5 sm:pt-5">
+                      <p className="text-muted-foreground text-xs font-medium">
+                        {t(`dashboard.metric.${key}`)}
+                      </p>
+                      <p className="text-foreground mt-1.5 text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+                        {dashboard.metrics[key] ?? 0}
+                      </p>
+                    </CardContent>
                   </Card>
                 ))}
             </div>
           ) : null}
 
           {profile && workspace && permissions.includes("company.edit") ? (
-            <Card className="rounded-[30px] border-white/70 p-6 shadow-[var(--shadow-card)] sm:p-7">
-              <div className="mb-6">
-                <h2 className="text-brand-navy text-xl font-semibold">
-                  {t("dashboard.nav.workspace")}
-                </h2>
-                <p className="text-muted mt-2 text-sm leading-6">
+            <Card>
+              <CardHeader className="border-border/70 border-b bg-slate-50/55 dark:bg-white/[0.02]">
+                <CardTitle>{t("dashboard.nav.workspace")}</CardTitle>
+                <CardDescription>
                   {t("dashboard.descriptions.workspace")}
-                </p>
-              </div>
-              <WorkspaceProfileEditor
-                companyId={workspace.companyId}
-                profile={profile}
-                permissions={permissions}
-                taxonomy={{
-                  categories: categories.items,
-                  tags: tags.items,
-                  regions: regions.items,
-                }}
-              />
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-5 sm:pt-6">
+                <WorkspaceProfileEditor
+                  companyId={workspace.companyId}
+                  profile={profile}
+                  permissions={permissions}
+                  taxonomy={{
+                    categories: categories.items,
+                    tags: tags.items,
+                    regions: regions.items,
+                  }}
+                />
+              </CardContent>
             </Card>
           ) : null}
 
           {claims.items.length ? (
-            <Card className="rounded-[30px] border-white/70 p-6 shadow-[var(--shadow-card)] sm:p-7">
-              <div className="mb-6">
-                <h2 className="text-brand-navy text-xl font-semibold">
-                  {t("dashboard.nav.workspace")}
-                </h2>
-              </div>
-              <CompanyClaimList items={claims.items} />
+            <Card>
+              <CardHeader className="border-border/70 border-b bg-slate-50/55 dark:bg-white/[0.02]">
+                <CardTitle>{t("dashboard.nav.workspace")}</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-5 sm:pt-6">
+                <CompanyClaimList items={claims.items} />
+              </CardContent>
             </Card>
           ) : null}
         </div>
       ) : (
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
-          <Card className="rounded-[30px] border-white/70 p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <div className="mb-6">
-              <h2 className="text-brand-navy text-xl font-semibold">
-                {t("dashboard.companyForm.create")}
-              </h2>
-              <p className="text-muted mt-2 text-sm leading-6">
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+          <Card>
+            <CardHeader className="border-border/70 border-b bg-slate-50/55 dark:bg-white/[0.02]">
+              <CardTitle>{t("dashboard.companyForm.create")}</CardTitle>
+              <CardDescription>
                 {t("dashboard.companyForm.description")}
-              </p>
-            </div>
-            <CompanyCreateForm categories={categories.items} />
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-5 sm:pt-6">
+              <CompanyCreateForm categories={categories.items} />
+            </CardContent>
           </Card>
-          <Card className="rounded-[30px] border-white/70 p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <div className="mb-6">
-              <h2 className="text-brand-navy text-xl font-semibold">
-                {t("dashboard.nav.workspace")}
-              </h2>
-              <p className="text-muted mt-2 text-sm leading-6">
-                {t("dashboard.noWorkspace")}
-              </p>
-            </div>
-            <CompanyClaimList items={claims.items} />
+
+          <Card>
+            <CardHeader className="border-border/70 border-b bg-slate-50/55 dark:bg-white/[0.02]">
+              <CardTitle>{t("dashboard.nav.workspace")}</CardTitle>
+              <CardDescription>{t("dashboard.noWorkspace")}</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-5 sm:pt-6">
+              <CompanyClaimList items={claims.items} />
+            </CardContent>
           </Card>
         </div>
       )}

@@ -11,6 +11,7 @@ import {
   getReviewedStaticPublicPage,
 } from "./public-copy-pack"
 import { publicCopyRo } from "./public-copy-pack.ro"
+import { sanitizePublicStaticPage } from "./public-copy-safety"
 import { publicCopySq } from "./public-copy-pack.sq"
 
 const translatedPages = {
@@ -24,11 +25,11 @@ export function getLocalizedReviewedStaticPublicPage(
   locale: Locale,
 ): PublicContentPageView {
   if (locale === "it" || locale === "en") {
-    return getReviewedStaticPublicPage(type, locale)
+    return sanitizePublicStaticPage(getReviewedStaticPublicPage(type, locale))
   }
 
   const page = translatedPages[locale][type]
-  return {
+  return sanitizePublicStaticPage({
     contentType: "page",
     slug: type,
     locale,
@@ -42,5 +43,5 @@ export function getLocalizedReviewedStaticPublicPage(
     featuredImageUrl: null,
     sections: page.sections,
     faqItems: page.faqItems ?? [],
-  }
+  })
 }

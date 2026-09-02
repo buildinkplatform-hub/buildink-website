@@ -7,19 +7,47 @@ interface NotificationState {
   unreadCount: number
   connected: boolean
   replace: (items: PortalNotification[], unreadCount: number) => void
+  reset: () => void
   upsert: (item: PortalNotification) => void
   setRead: (id: string, read: boolean) => void
   markAllRead: () => void
   setConnected: (connected: boolean) => void
 }
 
+const workforceAlertTypes = new Set([
+  "workforce.alert.created",
+  "workforce.alert.escalated",
+])
+
+/**
+ * Workforce alerts are company-scoped operational notifications. Historical
+ * rows may contain a project-specific `/dashboard/projects/:id/alerts` URL,
+ * which can become stale when the alert's project is no longer available to
+ * the active workspace. Route them through the stable company alert inbox.
+ */
+export function normalizePortalNotification(
+  item: PortalNotification,
+): PortalNotification {
+  if (
+    workforceAlertTypes.has(item.type) &&
+    item.actionUrl?.startsWith("/dashboard/projects/") &&
+    item.actionUrl.endsWith("/alerts")
+  ) {
+    return { ...item, actionUrl: "/dashboard/operations/alerts" }
+  }
+  return item
+}
+
 export const usePortalNotificationStore = create<NotificationState>((set) => ({
   items: [],
   unreadCount: 0,
   connected: false,
-  replace: (items, unreadCount) => set({ items, unreadCount }),
-  upsert: (item) =>
+  replace: (items, unreadCount) =>
+    set({ items: items.map(normalizePortalNotification), unreadCount }),
+  reset: () => set({ items: [], unreadCount: 0, connected: false }),
+  upsert: (incoming) =>
     set((state) => {
+      const item = normalizePortalNotification(incoming)
       const existing = state.items.find((current) => current.id === item.id)
       return {
         items: [

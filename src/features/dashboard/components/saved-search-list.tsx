@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { BellRing, Search, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
+import { PortalInlineAlert } from "@/features/dashboard/components/portal-form-layout"
 import { deleteSavedSearchCachedAction } from "@/features/dashboard/actions/portal-saved.actions"
 import type { PortalSavedSearch } from "@/features/dashboard/data/portal-client"
 import { portalQueryKeys } from "@/features/dashboard/query/portal-query-keys"
@@ -23,49 +24,75 @@ export function SavedSearchList({ items }: { items: PortalSavedSearch[] }) {
 
   if (!visibleItems.length && !selected) {
     return (
-      <p className="text-muted-foreground">
-        {t("dashboard.savedSearch.empty")}
-      </p>
+      <div className="border-border/80 bg-muted/10 grid min-h-40 place-items-center rounded-xl border border-dashed p-6 text-center">
+        <div className="max-w-sm">
+          <span className="bg-muted text-muted-foreground mx-auto grid size-10 place-items-center rounded-xl">
+            <Search className="size-4" aria-hidden="true" />
+          </span>
+          <p className="text-foreground mt-3 text-sm font-semibold">
+            {t("dashboard.savedSearch.empty")}
+          </p>
+        </div>
+      </div>
     )
   }
 
   return (
     <div className="space-y-3" aria-busy={Boolean(pendingId)}>
-      {visibleItems.map((item) => (
-        <Card
-          key={item.id}
-          className="flex items-start justify-between gap-4 p-4"
-        >
-          <div>
-            <p className="text-foreground font-semibold">{item.name}</p>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {t(`dashboard.savedSearch.kinds.${item.kind}`)}
-              {item.query ? ` · ${item.query}` : ""}
-            </p>
-            {item.alert?.enabled ? (
-              <p className="text-primary mt-1 text-xs font-semibold">
-                {t("dashboard.savedSearch.alertFrequency", {
-                  frequency: t(
-                    `dashboard.savedSearch.frequencies.${item.alert.frequency}`,
-                  ),
-                })}
-              </p>
-            ) : null}
-          </div>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setSelected(item)}
-          >
-            {t("dashboard.savedSearch.delete")}
-          </Button>
-        </Card>
-      ))}
+      <div className="border-border/80 overflow-hidden rounded-xl border">
+        <div className="divide-border/70 divide-y">
+          {visibleItems.map((item) => (
+            <article
+              key={item.id}
+              className="hover:bg-muted/18 flex flex-col gap-3 px-4 py-3.5 transition-colors sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="flex min-w-0 items-start gap-3">
+                <span className="border-primary/10 bg-primary/8 text-primary grid size-9 shrink-0 place-items-center rounded-xl border">
+                  {item.alert?.enabled ? (
+                    <BellRing className="size-4" aria-hidden="true" />
+                  ) : (
+                    <Search className="size-4" aria-hidden="true" />
+                  )}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-foreground truncate text-sm font-semibold">
+                    {item.name}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs leading-5">
+                    {t(`dashboard.savedSearch.kinds.${item.kind}`)}
+                    {item.query ? ` · ${item.query}` : ""}
+                  </p>
+                  {item.alert?.enabled ? (
+                    <p className="text-primary mt-1 text-xs font-semibold">
+                      {t("dashboard.savedSearch.alertFrequency", {
+                        frequency: t(
+                          `dashboard.savedSearch.frequencies.${item.alert.frequency}`,
+                        ),
+                      })}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="text-destructive hover:bg-destructive/8 hover:text-destructive self-start sm:self-auto"
+                disabled={Boolean(pendingId)}
+                onClick={() => setSelected(item)}
+              >
+                <Trash2 className="size-4" />
+                {t("dashboard.savedSearch.delete")}
+              </Button>
+            </article>
+          ))}
+        </div>
+      </div>
+
       {message ? (
-        <p role="alert" className="text-destructive text-sm">
-          {message}
-        </p>
+        <PortalInlineAlert tone="error">{message}</PortalInlineAlert>
       ) : null}
+
       <ConfirmationDialog
         open={Boolean(selected)}
         onOpenChange={(open) => !open && setSelected(undefined)}

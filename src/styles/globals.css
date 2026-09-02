@@ -274,6 +274,163 @@ button:not(:disabled),
   box-shadow: var(--shadow-card);
 }
 
+/* Authenticated Portal workspace density follows the Admin shell while the
+   public Website keeps its more editorial/marketing visual rhythm. */
+.portal-workspace {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Keep the authenticated workspace bright and cool-toned without changing the
+   public Website palette. Muted text stays neutral for contrast; only Portal
+   canvas, borders and utility surfaces receive the blue-white treatment. */
+html:not(.dark) .portal-workspace {
+  --background: #f8fbff;
+  --border: #dce8f6;
+  --input: #cbdced;
+  --secondary: #eef6ff;
+  --accent: #f1f7ff;
+  --light-blue: #eef6ff;
+  --canvas: var(--background);
+  --line: var(--border);
+
+  background:
+    radial-gradient(
+      circle at 18% -6%,
+      rgb(23 107 255 / 0.055),
+      transparent 34rem
+    ),
+    linear-gradient(180deg, #fbfdff 0%, #f7fbff 42rem, #f8fbff 100%);
+}
+
+.portal-workspace .surface-panel {
+  border-color: color-mix(in srgb, var(--primary) 8%, var(--border));
+  background: color-mix(in srgb, var(--card) 99%, var(--primary) 1%);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Legacy gray/slate utility surfaces are intentionally remapped only inside
+   the authenticated Portal. This removes the gray cast from Support, Members,
+   old detail panels and filters while preserving all text/status semantics. */
+html:not(.dark) .portal-workspace .bg-muted,
+html:not(.dark) .portal-workspace .bg-muted\/10,
+html:not(.dark) .portal-workspace .bg-muted\/15,
+html:not(.dark) .portal-workspace .bg-muted\/18,
+html:not(.dark) .portal-workspace .bg-muted\/20,
+html:not(.dark) .portal-workspace .bg-muted\/22,
+html:not(.dark) .portal-workspace .bg-muted\/25,
+html:not(.dark) .portal-workspace .bg-muted\/30,
+html:not(.dark) .portal-workspace .bg-muted\/35,
+html:not(.dark) .portal-workspace .bg-muted\/40,
+html:not(.dark) .portal-workspace .bg-slate-50,
+html:not(.dark) .portal-workspace .bg-slate-50\/55,
+html:not(.dark) .portal-workspace .bg-slate-50\/60,
+html:not(.dark) .portal-workspace .bg-slate-50\/70,
+html:not(.dark) .portal-workspace .bg-slate-50\/80 {
+  background-color: color-mix(
+    in srgb,
+    var(--primary) 3%,
+    var(--card)
+  ) !important;
+}
+
+html:not(.dark) .portal-workspace .hover\:bg-muted\/30:hover,
+html:not(.dark) .portal-workspace .hover\:bg-slate-50\/70:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--primary) 4.5%,
+    var(--card)
+  ) !important;
+}
+
+/* Keep legacy Portal cards from reintroducing the old marketing-style 20–30px
+   radius and elevated shadows. Public Website cards are intentionally outside
+   .portal-workspace and therefore remain unchanged. */
+.portal-workspace [class*="bg-card"][class*="rounded-[30px]"],
+.portal-workspace [class*="bg-card"][class*="rounded-[28px]"],
+.portal-workspace [class*="bg-card"][class*="rounded-[26px]"],
+.portal-workspace [class*="bg-card"][class*="rounded-[24px]"],
+.portal-workspace [class*="bg-card"][class*="rounded-[22px]"],
+.portal-workspace [class*="bg-card"][class*="rounded-[20px]"] {
+  border-radius: 1rem;
+}
+
+.portal-workspace [class*="bg-card"][class*="shadow-[var(--shadow-card)]"],
+.portal-workspace [class*="bg-card"][class*="shadow-sm"] {
+  box-shadow: var(--shadow-xs);
+}
+
+/* The Project wizard predates the shared PortalFormActions primitive. Its
+   distinctive action row receives the same sticky workspace behavior without
+   changing the form state machine or navigation semantics. */
+.portal-workspace
+  form
+  [class*="border-line/80"][class*="justify-between"][class*="shadow-sm"] {
+  position: sticky;
+  bottom: 0.75rem;
+  z-index: 20;
+  background: color-mix(in srgb, var(--card) 96%, var(--primary) 4%);
+  backdrop-filter: blur(12px);
+}
+
+/* The public/auth UI intentionally keeps 48px controls. Inside the business
+   Portal, 44px controls match the Admin density while remaining comfortably
+   above WCAG 2.2 AA minimum target sizing. Checkbox/radio/file controls keep
+   their native sizing because their wrapping labels provide the larger target. */
+.portal-workspace
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+  min-height: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  padding-inline: 0.875rem;
+  font-size: 0.875rem;
+}
+
+.portal-workspace [role="combobox"] {
+  min-height: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.portal-workspace textarea {
+  min-height: 6.5rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.portal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #bfd3eb transparent;
+}
+
+.portal-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.portal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.portal-scrollbar::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background: #bfd3eb;
+  background-clip: content-box;
+}
+
+.portal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #91afd2;
+  background-clip: content-box;
+}
+
+.portal-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .glass-panel {
   border: 1px solid rgb(255 255 255 / 0.74);
   background: rgb(255 255 255 / 0.76);
@@ -321,6 +478,15 @@ button:not(:disabled),
 
 .soft-float {
   animation: soft-float 7s ease-in-out infinite;
+}
+
+@media (max-width: 639px) {
+  .portal-workspace
+    form
+    [class*="border-line/80"][class*="justify-between"][class*="shadow-sm"] {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
 }
 
 @media (min-width: 768px) {

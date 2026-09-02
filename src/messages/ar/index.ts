@@ -5,6 +5,7 @@ import authRegister from "./pages/auth/register.json"
 import authResetPassword from "./pages/auth/reset-password.json"
 import authShared from "./pages/auth/shared.json"
 import dashboard from "./pages/dashboard.json"
+import supportHeader from "./pages/support-header.json"
 import operations from "./pages/operations.json"
 import home from "./pages/home.json"
 import notFound from "./pages/not-found.json"
@@ -20,11 +21,47 @@ import onboardingShared from "./pages/onboarding/shared.json"
 import common from "./shared/common.json"
 import metadata from "./shared/metadata.json"
 
+// Keep reviewed replacements inside one catalogue object instead of merging a
+// second publicSite namespace. mergeMessages intentionally rejects duplicate
+// runtime keys so accidental catalogue collisions cannot ship.
+const publicSiteCustomerCopy = {
+  ...publicSite,
+  publicSite: {
+    ...publicSite.publicSite,
+    pages: {
+      ...publicSite.publicSite.pages,
+      suppliers: {
+        ...publicSite.publicSite.pages.suppliers,
+        description:
+          "قارن ما يقدمه كل مورّد، وأين يعمل، ووسائل التواصل التي اختار إتاحتها للعامة.",
+      },
+      projects: {
+        ...publicSite.publicSite.pages.projects,
+        description:
+          "راجع نطاق المشروع وتوقيته وموقعه ومعلومات الميزانية العامة دون كشف بيانات التسليم الخاصة.",
+      },
+      verification: {
+        ...publicSite.publicSite.pages.verification,
+        cards: {
+          ...publicSite.publicSite.pages.verification.cards,
+          card2Body:
+            "ملفات الهوية والتحقق الخاصة تبقى خارج الصفحات العامة ولا تظهر للزوار.",
+        },
+      },
+      terms: {
+        ...publicSite.publicSite.pages.terms,
+        description:
+          "شروط الخدمة المعتمدة مرتبة بوضوح وتعرض الحقوق والالتزامات الرئيسية ضمن تجربة متسقة مع بقية Buildink.",
+      },
+    },
+  },
+}
+
 export default mergeMessages(
   metadata,
   common,
   home,
-  publicSite,
+  publicSiteCustomerCopy,
   trustPages,
   authShared,
   authLogin,
@@ -37,6 +74,7 @@ export default mergeMessages(
   onboardingDocuments,
   onboardingReview,
   dashboard,
+  supportHeader,
   operations,
   portalAlignment,
   offline,

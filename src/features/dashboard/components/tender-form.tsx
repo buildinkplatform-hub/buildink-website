@@ -7,7 +7,6 @@ import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
 import { AttachmentUpload } from "@/features/dashboard/components/attachment-upload"
 import { CityLocationField } from "@/components/forms/city-location-field"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -19,6 +18,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  PortalFormActions,
+  PortalFormSection,
+  PortalInlineAlert,
+  PortalOptionRow,
+} from "@/features/dashboard/components/portal-form-layout"
 import {
   createTenderAction,
   updateEntityAction,
@@ -139,6 +144,8 @@ export function TenderForm({
   const [message, setMessage] = useState<string>()
   const [confirmOpen, setConfirmOpen] = useState(false)
   const external = sourceKind === "EXTERNAL_OFFICIAL"
+  const saveDisabled =
+    pending || !title.trim() || !description.trim() || !deadlineAt
 
   function body(publish = false) {
     return {
@@ -226,152 +233,155 @@ export function TenderForm({
   }
 
   return (
-    <div className="space-y-5">
-      <Card className="space-y-4 p-5">
-        <Field
-          label={t("dashboard.publish.source")}
-          htmlFor="tender-source"
-          required
-        >
-          <Select
-            value={sourceKind}
-            onValueChange={(value) => setSourceKind(value as typeof sourceKind)}
-          >
-            <SelectTrigger id="tender-source">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="BUILDINK">
-                {t("dashboard.publish.buildinkTender")}
-              </SelectItem>
-              <SelectItem value="EXTERNAL_OFFICIAL">
-                {t("dashboard.publish.externalTender")}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field
-          label={t("dashboard.publish.title")}
-          htmlFor="tender-title"
-          required
-        >
-          <Input
-            id="tender-title"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          />
-        </Field>
-        <Field
-          label={t("dashboard.publish.description")}
-          htmlFor="tender-description"
-          required
-        >
-          <Textarea
-            id="tender-description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-        </Field>
-        <section className="border-line space-y-3 rounded-xl border p-4">
-          <div>
-            <h3 className="text-brand-navy font-semibold">Tender documents</h3>
-            <p className="text-muted text-sm">
-              Upload drawings, BOQs, specifications, and supporting documents.
-            </p>
-          </div>
-          <AttachmentUpload
-            assets={assets}
-            onChange={(next) =>
-              setAssets(
-                next.map((asset) => ({
-                  id: asset.id,
-                  name: asset.name,
-                  usage: asset.usage === "IMAGE" ? "IMAGE" : "DOCUMENT",
-                })),
-              )
-            }
-          />
-        </section>
-        <Field
-          label={t("dashboard.publish.noticeType")}
-          htmlFor="tender-notice"
-        >
-          <Input
-            id="tender-notice"
-            value={noticeType}
-            onChange={(event) => setNoticeType(event.target.value)}
-          />
-        </Field>
-        <Field
-          label={t("dashboard.fields.sourceAuthority")}
-          htmlFor="tender-authority"
-        >
-          <Input
-            id="tender-authority"
-            value={sourceAuthority}
-            onChange={(event) => setSourceAuthority(event.target.value)}
-          />
-        </Field>
-        {external ? (
+    <div className="space-y-5" aria-busy={pending}>
+      <PortalFormSection
+        title={t("dashboard.publish.tenderTitle")}
+        description={t("dashboard.descriptions.tenders")}
+      >
+        <div className="grid gap-5 lg:grid-cols-2">
           <Field
-            label={t("dashboard.publish.sourceUrl")}
-            htmlFor="tender-url"
+            label={t("dashboard.publish.source")}
+            htmlFor="tender-source"
             required
           >
-            <Input
-              id="tender-url"
-              value={sourceUrl}
-              onChange={(event) => setSourceUrl(event.target.value)}
-            />
-          </Field>
-        ) : (
-          <Field
-            label={t("dashboard.bidding.visibility")}
-            htmlFor="tender-visibility"
-          >
-            <select
-              id="tender-visibility"
-              className="border-line h-11 w-full rounded-xl border bg-white px-3 text-sm"
-              value={visibility}
-              onChange={(event) =>
-                setVisibility(event.target.value as typeof visibility)
-              }
+            <Select
+              value={sourceKind}
+              onValueChange={(next) => setSourceKind(next as typeof sourceKind)}
             >
-              <option value="PUBLIC">
-                {t("dashboard.bidding.visibilityPublic")}
-              </option>
-              <option value="INVITED">
-                {t("dashboard.bidding.visibilityInvited")}
-              </option>
-            </select>
-          </Field>
-        )}
-        <Field label={t("dashboard.publish.location")} htmlFor="tender-city">
-          <CityLocationField
-            cityId={cityId || undefined}
-            onChange={setCityId}
-          />
-        </Field>
-        {categories.length ? (
-          <Field
-            label={t("dashboard.publish.category")}
-            htmlFor="tender-category"
-          >
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger id="tender-category">
-                <SelectValue placeholder={t("dashboard.create.chooseTarget")} />
+              <SelectTrigger id="tender-source">
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((item) => (
-                  <SelectItem key={item.id} value={item.id}>
-                    {item.name ?? item.label ?? item.slug ?? item.id}
-                  </SelectItem>
-                ))}
+                <SelectItem value="BUILDINK">
+                  {t("dashboard.publish.buildinkTender")}
+                </SelectItem>
+                <SelectItem value="EXTERNAL_OFFICIAL">
+                  {t("dashboard.publish.externalTender")}
+                </SelectItem>
               </SelectContent>
             </Select>
           </Field>
-        ) : null}
-        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label={t("dashboard.publish.noticeType")}
+            htmlFor="tender-notice"
+          >
+            <Input
+              id="tender-notice"
+              value={noticeType}
+              onChange={(event) => setNoticeType(event.target.value)}
+            />
+          </Field>
+          <div className="lg:col-span-2">
+            <Field
+              label={t("dashboard.publish.title")}
+              htmlFor="tender-title"
+              required
+            >
+              <Input
+                id="tender-title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+              />
+            </Field>
+          </div>
+          <div className="lg:col-span-2">
+            <Field
+              label={t("dashboard.publish.description")}
+              htmlFor="tender-description"
+              required
+            >
+              <Textarea
+                id="tender-description"
+                rows={6}
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </Field>
+          </div>
+          <Field
+            label={t("dashboard.fields.sourceAuthority")}
+            htmlFor="tender-authority"
+          >
+            <Input
+              id="tender-authority"
+              value={sourceAuthority}
+              onChange={(event) => setSourceAuthority(event.target.value)}
+            />
+          </Field>
+          {external ? (
+            <Field
+              label={t("dashboard.publish.sourceUrl")}
+              htmlFor="tender-url"
+              required
+            >
+              <Input
+                id="tender-url"
+                type="url"
+                inputMode="url"
+                value={sourceUrl}
+                onChange={(event) => setSourceUrl(event.target.value)}
+              />
+            </Field>
+          ) : (
+            <Field
+              label={t("dashboard.bidding.visibility")}
+              htmlFor="tender-visibility"
+            >
+              <Select
+                value={visibility}
+                onValueChange={(next) =>
+                  setVisibility(next as typeof visibility)
+                }
+              >
+                <SelectTrigger id="tender-visibility">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PUBLIC">
+                    {t("dashboard.bidding.visibilityPublic")}
+                  </SelectItem>
+                  <SelectItem value="INVITED">
+                    {t("dashboard.bidding.visibilityInvited")}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+          )}
+          <Field label={t("dashboard.publish.location")} htmlFor="tender-city">
+            <CityLocationField
+              cityId={cityId || undefined}
+              onChange={setCityId}
+            />
+          </Field>
+          {categories.length ? (
+            <Field
+              label={t("dashboard.publish.category")}
+              htmlFor="tender-category"
+            >
+              <Select value={categoryId} onValueChange={setCategoryId}>
+                <SelectTrigger id="tender-category">
+                  <SelectValue
+                    placeholder={t("dashboard.create.chooseTarget")}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.name ?? item.label ?? item.slug ?? item.id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+          ) : null}
+        </div>
+      </PortalFormSection>
+
+      <PortalFormSection
+        title={t("dashboard.fields.procurementMethod")}
+        description={t("dashboard.publish.confirmTender")}
+      >
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           <Field
             label={t("dashboard.publish.deadline")}
             htmlFor="tender-deadline"
@@ -415,7 +425,7 @@ export function TenderForm({
             />
           </Field>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field
             label={t("dashboard.fields.procurementMethod")}
             htmlFor="tender-method"
@@ -455,50 +465,77 @@ export function TenderForm({
             onChange={(event) => setSubmissionMethod(event.target.value)}
           />
         </Field>
-        <Field
-          label={t("dashboard.fields.eligibility")}
-          htmlFor="tender-eligibility"
-        >
-          <Textarea
-            id="tender-eligibility"
-            value={eligibility}
-            onChange={(event) => setEligibility(event.target.value)}
-          />
-        </Field>
-        <Field
-          label={t("dashboard.fields.awardCriteria")}
-          htmlFor="tender-award-criteria"
-        >
-          <Textarea
-            id="tender-award-criteria"
-            value={awardCriteriaNotes}
-            onChange={(event) => setAwardCriteriaNotes(event.target.value)}
-          />
-        </Field>
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">
-              {t("dashboard.publish.lotsTitle")}
-            </h3>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() =>
-                setLots((current) => [
-                  ...current,
-                  { title: "", reference: "", description: "", budget: "" },
-                ])
-              }
-            >
-              {t("dashboard.publish.addLot")}
-            </Button>
-          </div>
+        <div className="grid gap-5 lg:grid-cols-2">
+          <Field
+            label={t("dashboard.fields.eligibility")}
+            htmlFor="tender-eligibility"
+          >
+            <Textarea
+              id="tender-eligibility"
+              rows={4}
+              value={eligibility}
+              onChange={(event) => setEligibility(event.target.value)}
+            />
+          </Field>
+          <Field
+            label={t("dashboard.fields.awardCriteria")}
+            htmlFor="tender-award-criteria"
+          >
+            <Textarea
+              id="tender-award-criteria"
+              rows={4}
+              value={awardCriteriaNotes}
+              onChange={(event) => setAwardCriteriaNotes(event.target.value)}
+            />
+          </Field>
+        </div>
+      </PortalFormSection>
+
+      <PortalFormSection
+        title="Tender documents"
+        description="Upload drawings, BOQs, specifications, and supporting documents."
+      >
+        <AttachmentUpload
+          assets={assets}
+          onChange={(next) =>
+            setAssets(
+              next.map((asset) => ({
+                id: asset.id,
+                name: asset.name,
+                usage: asset.usage === "IMAGE" ? "IMAGE" : "DOCUMENT",
+              })),
+            )
+          }
+        />
+      </PortalFormSection>
+
+      <PortalFormSection
+        title={t("dashboard.publish.lotsTitle")}
+        description={t("dashboard.publish.lotsOptional")}
+        actions={
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              setLots((current) => [
+                ...current,
+                { title: "", reference: "", description: "", budget: "" },
+              ])
+            }
+          >
+            {t("dashboard.publish.addLot")}
+          </Button>
+        }
+      >
+        <div className="grid gap-3">
           {lots.map((lot, index) => (
             <div
               key={index}
-              className="grid gap-3 rounded-xl border p-3 sm:grid-cols-2"
+              className="border-border/80 bg-muted/10 grid gap-3 rounded-xl border p-3.5 sm:grid-cols-2"
             >
               <Input
+                aria-label={t("dashboard.publish.lotTitle")}
                 placeholder={t("dashboard.publish.lotTitle")}
                 value={lot.title}
                 onChange={(event) =>
@@ -511,8 +548,23 @@ export function TenderForm({
                   )
                 }
               />
+              <Input
+                aria-label={t("dashboard.publish.lotReference")}
+                placeholder={t("dashboard.publish.lotReference")}
+                value={lot.reference}
+                onChange={(event) =>
+                  setLots((current) =>
+                    current.map((row, rowIndex) =>
+                      rowIndex === index
+                        ? { ...row, reference: event.target.value }
+                        : row,
+                    ),
+                  )
+                }
+              />
               <Textarea
                 className="sm:col-span-2"
+                aria-label={t("dashboard.publish.description")}
                 placeholder={t("dashboard.publish.description")}
                 value={lot.description}
                 onChange={(event) =>
@@ -526,19 +578,8 @@ export function TenderForm({
                 }
               />
               <Input
-                placeholder={t("dashboard.publish.lotReference")}
-                value={lot.reference}
-                onChange={(event) =>
-                  setLots((current) =>
-                    current.map((row, rowIndex) =>
-                      rowIndex === index
-                        ? { ...row, reference: event.target.value }
-                        : row,
-                    ),
-                  )
-                }
-              />
-              <Input
+                aria-label={t("dashboard.publish.lotValue")}
+                inputMode="decimal"
                 placeholder={t("dashboard.publish.lotValue")}
                 value={lot.budget}
                 onChange={(event) =>
@@ -551,49 +592,57 @@ export function TenderForm({
                   )
                 }
               />
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() =>
-                  setLots((current) =>
-                    current.filter((_, rowIndex) => rowIndex !== index),
-                  )
-                }
-              >
-                {t("common.remove")}
-              </Button>
+              <div className="flex items-center justify-end">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="text-destructive hover:bg-destructive/8 hover:text-destructive"
+                  onClick={() =>
+                    setLots((current) =>
+                      current.filter((_, rowIndex) => rowIndex !== index),
+                    )
+                  }
+                >
+                  {t("common.remove")}
+                </Button>
+              </div>
             </div>
           ))}
-        </section>
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">
-              {t("dashboard.publish.criteriaTitle")}
-            </h3>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() =>
-                setCriteria((current) => [
-                  ...current,
-                  {
-                    label: "",
-                    kind: "COMPLIANCE",
-                    weight: "0",
-                    required: true,
-                  },
-                ])
-              }
-            >
-              {t("dashboard.publish.addCriterion")}
-            </Button>
-          </div>
+        </div>
+      </PortalFormSection>
+
+      <PortalFormSection
+        title={t("dashboard.publish.criteriaTitle")}
+        actions={
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              setCriteria((current) => [
+                ...current,
+                {
+                  label: "",
+                  kind: "COMPLIANCE",
+                  weight: "0",
+                  required: true,
+                },
+              ])
+            }
+          >
+            {t("dashboard.publish.addCriterion")}
+          </Button>
+        }
+      >
+        <div className="grid gap-3">
           {criteria.map((item, index) => (
             <div
               key={index}
-              className="grid gap-3 rounded-xl border p-3 sm:grid-cols-2"
+              className="border-border/80 bg-muted/10 grid gap-3 rounded-xl border p-3.5 sm:grid-cols-2"
             >
               <Input
+                aria-label={t("dashboard.publish.criterionLabel")}
                 placeholder={t("dashboard.publish.criterionLabel")}
                 value={item.label}
                 onChange={(event) =>
@@ -618,7 +667,9 @@ export function TenderForm({
                   )
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger
+                  aria-label={t("dashboard.publish.criterionKind")}
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -634,6 +685,7 @@ export function TenderForm({
                   type="number"
                   min="0"
                   max="100"
+                  aria-label={t("dashboard.publish.criterionWeight")}
                   value={item.weight}
                   onChange={(event) =>
                     setCriteria((current) =>
@@ -646,57 +698,39 @@ export function TenderForm({
                   }
                 />
               ) : null}
-              <label className="flex items-center gap-2 text-sm">
-                <Checkbox
-                  checked={item.required}
-                  onChange={(event) =>
-                    setCriteria((current) =>
-                      current.map((row, rowIndex) =>
-                        rowIndex === index
-                          ? { ...row, required: event.target.checked }
-                          : row,
-                      ),
-                    )
-                  }
-                />
-                {t("dashboard.publish.criterionRequired")}
-              </label>
+              <PortalOptionRow>
+                <label className="flex min-h-6 flex-1 items-center gap-2 text-sm font-medium">
+                  <Checkbox
+                    checked={item.required}
+                    onChange={(event) =>
+                      setCriteria((current) =>
+                        current.map((row, rowIndex) =>
+                          rowIndex === index
+                            ? { ...row, required: event.target.checked }
+                            : row,
+                        ),
+                      )
+                    }
+                  />
+                  {t("dashboard.publish.criterionRequired")}
+                </label>
+              </PortalOptionRow>
             </div>
           ))}
-        </section>
-      </Card>
-      {message ? <p className="text-danger text-sm">{message}</p> : null}
-      <div className="flex flex-wrap gap-3">
-        <Button
-          type="button"
-          disabled={pending || !title || !description || !deadlineAt}
-          onClick={() => void save(false)}
-        >
-          {mode === "edit"
-            ? t("dashboard.edit.save")
-            : t("dashboard.publish.saveDraft")}
-        </Button>
-        {mode === "create" ? (
-          <>
-            <Button
-              type="button"
-              disabled={pending || !title || !description || !deadlineAt}
-              onClick={() => setConfirmOpen(true)}
-            >
-              {t("dashboard.publish.publish")}
-            </Button>
-            <ConfirmationDialog
-              open={confirmOpen}
-              onOpenChange={setConfirmOpen}
-              title={t("dashboard.publish.publish")}
-              description={t("dashboard.publish.confirmTender")}
-              confirmLabel={t("dashboard.publish.publish")}
-              cancelLabel={t("common.cancel")}
-              pending={pending}
-              onConfirm={() => void save(true)}
-            />
-          </>
-        ) : null}
+        </div>
+      </PortalFormSection>
+
+      {message ? (
+        <PortalInlineAlert tone="error">{message}</PortalInlineAlert>
+      ) : null}
+
+      <PortalFormActions
+        hint={
+          mode === "create"
+            ? t("dashboard.publish.confirmTender")
+            : t("dashboard.projects.form.confirmEditDescription")
+        }
+      >
         <Button type="button" variant="secondary" asChild>
           <Link
             href={
@@ -708,7 +742,37 @@ export function TenderForm({
             {t("common.cancel")}
           </Link>
         </Button>
-      </div>
+        <Button
+          type="button"
+          variant={mode === "create" ? "secondary" : "primary"}
+          disabled={saveDisabled}
+          onClick={() => void save(false)}
+        >
+          {mode === "edit"
+            ? t("dashboard.edit.save")
+            : t("dashboard.publish.saveDraft")}
+        </Button>
+        {mode === "create" ? (
+          <Button
+            type="button"
+            disabled={saveDisabled || (external && !sourceUrl.trim())}
+            onClick={() => setConfirmOpen(true)}
+          >
+            {t("dashboard.publish.publish")}
+          </Button>
+        ) : null}
+      </PortalFormActions>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={t("dashboard.publish.publish")}
+        description={t("dashboard.publish.confirmTender")}
+        confirmLabel={t("dashboard.publish.publish")}
+        cancelLabel={t("common.cancel")}
+        pending={pending}
+        onConfirm={() => void save(true)}
+      />
     </div>
   )
 }

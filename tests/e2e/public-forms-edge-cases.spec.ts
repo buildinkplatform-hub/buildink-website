@@ -1,4 +1,23 @@
+import { randomUUID } from "node:crypto"
+
 import { expect, test } from "@playwright/test"
+
+const externalRun = Boolean(process.env.PLAYWRIGHT_BASE_URL)
+const livePublicMutationsEnabled =
+  process.env.E2E_LIVE_PUBLIC_MUTATIONS === "true"
+const liveMutationTimeout = externalRun ? 15_000 : 5_000
+const contactSuccess = /Thanks\s*[-—]\s*your message has been received\./
+
+function requirePublicMutationBackend() {
+  test.skip(
+    externalRun && !livePublicMutationsEnabled,
+    "Public mutation persistence uses the Playwright mock backend by default. Set E2E_LIVE_PUBLIC_MUTATIONS=true only when the external Website has a writable test backend.",
+  )
+}
+
+function uniqueTestEmail(prefix: string) {
+  return `${prefix}+${randomUUID()}@example.com`
+}
 
 async function dismissCookieBanner(page: import("@playwright/test").Page) {
   await page.addInitScript(() => {
@@ -40,10 +59,11 @@ test.describe("public form edge cases", () => {
   test("general contact persists structured category, profile and reference context", async ({
     page,
   }) => {
+    requirePublicMutationBackend()
     await page.goto("/en/contact")
     const form = page.getByRole("main").locator("form").last()
     await form.getByLabel("Your name").fill("QA User")
-    await form.getByLabel("Email address").fill("qa.public@example.com")
+    await form.getByLabel("Email address").fill(uniqueTestEmail("qa.public"))
     await form.getByLabel("Phone number (optional)").fill("+39 0200000000")
     await form.getByLabel("Contact category").selectOption("VERIFICATION")
     await form
@@ -62,20 +82,19 @@ test.describe("public form edge cases", () => {
     const submit = form.getByRole("button", { name: "Send message" })
     await submit.click()
     await expect(
-      page.getByRole("status").filter({
-        hasText: "Thanks — your message has been received.",
-      }),
-    ).toBeVisible()
+      page.getByRole("status").filter({ hasText: contactSuccess }),
+    ).toBeVisible({ timeout: liveMutationTimeout })
     await expect(form).toHaveCount(0)
   })
 
   test("illegal-content flow requires exact URL, reason, legal basis and good-faith confirmation", async ({
     page,
   }) => {
+    requirePublicMutationBackend()
     await page.goto("/en/contact")
     const form = page.getByRole("main").locator("form").last()
     await form.getByLabel("Your name").fill("Reporter")
-    await form.getByLabel("Email address").fill("reporter@example.com")
+    await form.getByLabel("Email address").fill(uniqueTestEmail("reporter"))
     await form
       .getByLabel("Contact category")
       .selectOption("ILLEGAL_CONTENT_ABUSE")
@@ -103,15 +122,14 @@ test.describe("public form edge cases", () => {
     await goodFaith.check()
     await submit.click()
     await expect(
-      page.getByRole("status").filter({
-        hasText: "Thanks — your message has been received.",
-      }),
-    ).toBeVisible()
+      page.getByRole("status").filter({ hasText: contactSuccess }),
+    ).toBeVisible({ timeout: liveMutationTimeout })
   })
 
   test("newsletter validates email and records a successful consented subscription", async ({
     page,
   }) => {
+    requirePublicMutationBackend()
     await page.goto("/en/about")
     const footer = page.locator("footer")
     const input = footer.getByPlaceholder("Enter your email address")
@@ -124,10 +142,10 @@ test.describe("public form edge cases", () => {
     await submit.click()
     await expect(input).toHaveJSProperty("validity.typeMismatch", true)
 
-    await input.fill("qa.newsletter@example.com")
+    await input.fill(uniqueTestEmail("qa.newsletter"))
     await submit.click()
     await expect(
       footer.getByRole("status").filter({ hasText: "Thanks" }),
-    ).toBeVisible()
+    ).toBeVisible({ timeout: liveMutationTimeout })
   })
 })

@@ -36,31 +36,27 @@ export function ConfirmationDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={(next) => !pending && onOpenChange(next)}>
-      <DialogContent
-        showClose={!pending}
-        className="max-w-md overflow-hidden rounded-[22px] p-0 sm:rounded-[24px]"
-      >
-        <DialogHeader className="gap-0 p-5 pe-14 sm:p-6 sm:pe-16">
+      <DialogContent showClose={!pending} className="max-w-lg">
+        <DialogHeader>
           <span
             className={cn(
-              "mb-4 flex size-11 items-center justify-center rounded-xl border",
+              "mb-2 grid size-12 place-items-center rounded-2xl border",
               destructive
-                ? "border-destructive/20 bg-destructive/10 text-destructive"
-                : "border-warning/20 bg-warning/10 text-warning",
+                ? "border-destructive/15 bg-destructive/8 text-destructive"
+                : "border-warning/15 bg-warning/8 text-warning",
             )}
           >
             <TriangleAlert className="size-5" aria-hidden="true" />
           </span>
-          <DialogTitle className="text-xl sm:text-[22px]">{title}</DialogTitle>
-          <DialogDescription className="mt-2 max-w-sm text-sm leading-6">
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription className="max-w-md leading-6">
             {description}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="bg-muted/25 mt-0 border-t px-5 py-4 sm:px-6 sm:py-4">
+        <DialogFooter>
           <Button
             type="button"
             variant="secondary"
-            size="md"
             disabled={pending}
             onClick={() => onOpenChange(false)}
           >
@@ -69,7 +65,6 @@ export function ConfirmationDialog({
           <Button
             type="button"
             variant={destructive ? "destructive" : "primary"}
-            size="md"
             disabled={pending}
             aria-busy={pending}
             onClick={onConfirm}
@@ -77,7 +72,7 @@ export function ConfirmationDialog({
             {pending ? (
               <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" />
             ) : null}
-            <span>{pending ? `${confirmLabel}…` : confirmLabel}</span>
+            {pending ? `${confirmLabel}…` : confirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

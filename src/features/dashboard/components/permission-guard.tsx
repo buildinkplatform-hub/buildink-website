@@ -35,16 +35,22 @@ export async function PermissionDeniedState({
   const t = await getTranslations("dashboard")
   return (
     <Card
-      className="border-warning/30 mx-auto max-w-2xl p-8 text-center"
+      className="border-warning/25 bg-warning/[0.035] mx-auto w-full max-w-2xl p-6 sm:p-7"
       role="alert"
     >
-      <ShieldAlert className="text-warning mx-auto size-9" aria-hidden="true" />
-      <h1 className="text-brand-navy mt-4 text-2xl font-bold">
-        {t("permissionDeniedTitle")}
-      </h1>
-      <p className="text-muted mt-2 text-sm">
-        {description ?? t("permissionDeniedBody")}
-      </p>
+      <div className="flex items-start gap-4">
+        <span className="border-warning/20 bg-warning/10 text-warning grid size-10 shrink-0 place-items-center rounded-xl border">
+          <ShieldAlert className="size-4.5" aria-hidden="true" />
+        </span>
+        <div className="min-w-0">
+          <h1 className="text-brand-navy text-lg font-semibold tracking-[-0.02em]">
+            {t("permissionDeniedTitle")}
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm leading-6">
+            {description ?? t("permissionDeniedBody")}
+          </p>
+        </div>
+      </div>
     </Card>
   )
 }

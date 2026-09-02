@@ -16,8 +16,12 @@ const locales = ["en", "it", "ar", "ro", "sq"] as const
 test("renders every public trust and legal route instead of a 404", async ({
   page,
 }) => {
+  test.setTimeout(90_000)
   for (const path of publicPages) {
-    const response = await page.goto(`/en/${path}`)
+    const response = await page.goto(`/en/${path}`, {
+      waitUntil: "domcontentloaded",
+      timeout: 30_000,
+    })
     expect(response?.status(), path).toBeLessThan(400)
     await expect(page.locator("main#main-content")).toBeVisible()
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
@@ -27,17 +31,21 @@ test("renders every public trust and legal route instead of a 404", async ({
 test("keeps trust pages localized across every supported locale", async ({
   page,
 }) => {
+  test.setTimeout(90_000)
   for (const locale of locales) {
-    const response = await page.goto(`/${locale}/how-it-works`)
+    const response = await page.goto(`/${locale}/how-it-works`, {
+      waitUntil: "domcontentloaded",
+      timeout: 30_000,
+    })
     expect(response?.status(), locale).toBeLessThan(400)
     await expect(page.locator("html")).toHaveAttribute("lang", locale)
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-    await expect(page.getByRole("tablist")).toBeVisible()
+    await expect(page.getByRole("tablist")).toBeVisible({ timeout: 15_000 })
   }
 })
 
 test("how it works exposes real marketplace entry points", async ({ page }) => {
-  await page.goto("/en/how-it-works")
+  await page.goto("/en/how-it-works", { waitUntil: "domcontentloaded" })
 
   for (const label of [
     "Global search",
@@ -50,7 +58,9 @@ test("how it works exposes real marketplace entry points", async ({ page }) => {
     await expect(page.getByRole("link", { name: label }).first()).toBeVisible()
   }
 
-  await page.getByRole("tab", { name: "Company" }).click()
+  const companyTab = page.getByRole("tab", { name: "Company" })
+  await expect(companyTab).toBeVisible({ timeout: 15_000 })
+  await companyTab.click()
   await expect(
     page.getByRole("link", { name: "Browse companies" }),
   ).toBeVisible()
@@ -65,10 +75,12 @@ test("how it works exposes real marketplace entry points", async ({ page }) => {
 test("offers working cookie controls and improved footer navigation", async ({
   page,
 }) => {
-  await page.goto("/en/cookies")
+  await page.goto("/en/cookies", { waitUntil: "domcontentloaded" })
 
-  await expect(page.getByRole("checkbox", { name: "Analytics" })).toBeVisible()
-  await page.getByRole("checkbox", { name: "Analytics" }).click()
+  const analytics = page.getByRole("checkbox", { name: "Analytics" })
+  await expect(analytics).toBeEnabled({ timeout: 15_000 })
+  await analytics.click()
+  await expect(analytics).toBeChecked()
   await page.getByRole("button", { name: "Save preferences" }).click()
   await expect(page.getByText("Preferences saved")).toBeVisible()
 

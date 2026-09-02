@@ -23,26 +23,33 @@ export interface TabItem {
 export function TabsNav({
   items,
   className,
+  variant = "workspace",
 }: {
   items: TabItem[]
   className?: string
+  variant?: "default" | "workspace"
 }) {
   const router = useRouter()
   const active = items.find((item) => item.active) ?? items[0]
+  const workspace = variant === "workspace"
 
   return (
     <nav
       aria-label="Section navigation"
       className={cn(
-        "border-border/70 bg-card/90 rounded-[1.35rem] border p-1.5 shadow-[var(--shadow-sm)] backdrop-blur",
+        workspace
+          ? "border-border/90 rounded-2xl border bg-slate-50/65 p-1 shadow-[var(--shadow-xs)] dark:bg-white/[0.025]"
+          : "border-border/70 bg-card/90 rounded-[1.35rem] border p-1.5 shadow-[var(--shadow-sm)] backdrop-blur",
         className,
       )}
     >
       <div className="md:hidden">
-        <div className="text-muted-foreground mb-1.5 flex items-center gap-2 px-2 text-[11px] font-semibold tracking-[0.07em] uppercase">
-          <LayoutGrid className="text-primary size-3.5" />
-          Section
-        </div>
+        {!workspace ? (
+          <div className="text-muted-foreground mb-1.5 flex items-center gap-2 px-2 text-[11px] font-semibold tracking-[0.07em] uppercase">
+            <LayoutGrid className="text-primary size-3.5" />
+            Section
+          </div>
+        ) : null}
         <Select
           value={active?.value}
           onValueChange={(value) => {
@@ -50,7 +57,12 @@ export function TabsNav({
             if (item?.href) router.push(item.href)
           }}
         >
-          <SelectTrigger className="bg-muted/25 min-h-11 w-full border-0 font-semibold shadow-none">
+          <SelectTrigger
+            className={cn(
+              "min-h-11 w-full font-semibold shadow-none",
+              workspace ? "bg-card border-0" : "bg-muted/25 border-0",
+            )}
+          >
             <SelectValue placeholder="Choose a section" />
           </SelectTrigger>
           <SelectContent>
@@ -71,17 +83,29 @@ export function TabsNav({
       </div>
 
       <div
-        className="hidden gap-1 md:grid"
-        style={{
-          gridTemplateColumns: `repeat(${Math.max(items.length, 1)}, minmax(0, 1fr))`,
-        }}
+        className={cn(
+          "hidden gap-1 md:grid",
+          workspace && "md:flex md:flex-wrap md:items-center",
+        )}
+        style={
+          workspace
+            ? undefined
+            : {
+                gridTemplateColumns: `repeat(${Math.max(items.length, 1)}, minmax(0, 1fr))`,
+              }
+        }
       >
         {items.map((item) => {
           const itemClass = cn(
-            "focus-visible:ring-primary/20 relative inline-flex min-h-10 min-w-0 w-full items-center justify-center gap-2 rounded-xl px-3.5 text-center text-sm font-semibold transition-[color,background-color,box-shadow] outline-none focus-visible:ring-3",
-            item.active
-              ? "bg-primary text-primary-foreground shadow-[0_6px_16px_rgb(23_107_255/0.22)]"
-              : "text-foreground hover:bg-muted/60 hover:text-primary",
+            "focus-visible:ring-primary/20 relative inline-flex min-h-10 min-w-0 items-center justify-center gap-2 rounded-xl px-3.5 text-center text-sm font-semibold transition-[color,background-color,box-shadow,border-color] outline-none focus-visible:ring-3",
+            !workspace && "w-full",
+            workspace
+              ? item.active
+                ? "border-border/90 bg-card text-primary border shadow-[var(--shadow-xs)]"
+                : "text-muted-foreground hover:bg-card/70 hover:text-foreground"
+              : item.active
+                ? "bg-primary text-primary-foreground shadow-[0_6px_16px_rgb(23_107_255/0.22)]"
+                : "text-foreground hover:bg-muted/60 hover:text-primary",
           )
           const content = (
             <>
@@ -90,7 +114,7 @@ export function TabsNav({
                 <span
                   className={cn(
                     "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-                    item.active
+                    item.active && !workspace
                       ? "bg-white/16 text-white"
                       : "bg-muted text-muted-foreground",
                   )}

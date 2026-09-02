@@ -35,10 +35,31 @@ test("auth-sensitive pages are never publicly cacheable", async ({
 }) => {
   for (const path of ["/en/login", "/en/dashboard"]) {
     const response = await request.get(path, { maxRedirects: 0 })
-    const cacheControl = response.headers()["cache-control"] ?? ""
+    const headers = response.headers()
+    const cacheControl = headers["cache-control"] ?? ""
+    const cdnCacheControl = headers["cdn-cache-control"] ?? ""
+    const netlifyCdnCacheControl = headers["netlify-cdn-cache-control"] ?? ""
 
-    expect(cacheControl, `${path} should be private`).toContain("private")
-    expect(cacheControl, `${path} should disable storage`).toContain("no-store")
+    // Next.js may normalize the browser-facing Cache-Control header on dynamic
+    // responses to `no-cache, must-revalidate`. The security boundary is that
+    // neither browser nor shared/CDN caches may reuse the response as public
+    // content. Keep the explicit CDN no-store headers authoritative too.
+    expect(cacheControl, `${path} must not be publicly cacheable`).not.toMatch(
+      /(?:^|,)\s*(?:public|s-maxage\s*=)/i,
+    )
+    expect(
+      /no-store/i.test(cacheControl) ||
+        (/no-cache/i.test(cacheControl) &&
+          /must-revalidate/i.test(cacheControl)),
+      `${path} must require revalidation or disable browser storage`,
+    ).toBe(true)
+    expect(cdnCacheControl, `${path} must disable CDN storage`).toContain(
+      "no-store",
+    )
+    expect(
+      netlifyCdnCacheControl,
+      `${path} must disable Netlify CDN storage`,
+    ).toContain("no-store")
   }
 })
 

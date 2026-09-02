@@ -5,6 +5,7 @@ import authRegister from "./pages/auth/register.json"
 import authResetPassword from "./pages/auth/reset-password.json"
 import authShared from "./pages/auth/shared.json"
 import dashboard from "./pages/dashboard.json"
+import supportHeader from "./pages/support-header.json"
 import operations from "./pages/operations.json"
 import home from "./pages/home.json"
 import notFound from "./pages/not-found.json"
@@ -19,6 +20,12 @@ import onboardingRole from "./pages/onboarding/role.json"
 import onboardingShared from "./pages/onboarding/shared.json"
 import common from "./shared/common.json"
 import metadata from "./shared/metadata.json"
+
+const portalAlignmentMessages = {
+  dashboard: portalAlignment.dashboard,
+  locations: portalAlignment.locations,
+  onboarding: portalAlignment.onboarding,
+}
 
 export default mergeMessages(
   metadata,
@@ -37,8 +44,9 @@ export default mergeMessages(
   onboardingDocuments,
   onboardingReview,
   dashboard,
+  supportHeader,
   operations,
-  portalAlignment,
+  portalAlignmentMessages,
   offline,
   notFound,
 )

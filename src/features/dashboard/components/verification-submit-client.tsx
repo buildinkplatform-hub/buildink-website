@@ -1,11 +1,17 @@
 "use client"
 
 import { useState } from "react"
+import { Loader2 } from "lucide-react"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
+import { Field } from "@/components/ui/field"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  PortalFormActions,
+  PortalInlineAlert,
+} from "@/features/dashboard/components/portal-form-layout"
 import { submitVerificationAction } from "@/features/dashboard/actions/portal.actions"
 
 export function VerificationSubmitClient({
@@ -25,27 +31,42 @@ export function VerificationSubmitClient({
   const router = useRouter()
   const [notes, setNotes] = useState("")
   const [pending, setPending] = useState(false)
-  const [message, setMessage] = useState<string>()
+  const [feedback, setFeedback] = useState<{
+    tone: "success" | "error"
+    message: string
+  }>()
   const blocked = disabledReasons.length > 0
 
   async function submit() {
-    if (!documentIds.length || blocked) return
+    if (!documentIds.length || blocked || pending) return
     setPending(true)
-    setMessage(undefined)
-    const result = await submitVerificationAction({
-      documentAssetIds: documentIds,
-      applicantNotes: notes || undefined,
-    })
-    setPending(false)
-    setMessage(result.ok ? t("submitted") : result.message)
-    if (result.ok) router.refresh()
+    setFeedback(undefined)
+    try {
+      const result = await submitVerificationAction({
+        documentAssetIds: documentIds,
+        applicantNotes: notes.trim() || undefined,
+      })
+      if (!result.ok) {
+        setFeedback({
+          tone: "error",
+          message: "message" in result ? result.message : t("blockedTitle"),
+        })
+        return
+      }
+      setFeedback({ tone: "success", message: t("submitted") })
+      router.refresh()
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5" aria-busy={pending}>
       <div>
-        <h2 className="text-brand-navy font-semibold">{t("submitTitle")}</h2>
-        <p className="text-muted mt-1 text-sm leading-6">
+        <h2 className="text-foreground text-base font-semibold tracking-[-0.015em]">
+          {t("submitTitle")}
+        </h2>
+        <p className="text-muted-foreground mt-1 text-sm leading-6">
           {t("submitSummary", {
             documents: documentIds.length,
             fulfilled: fulfilledRequiredCount,
@@ -54,39 +75,52 @@ export function VerificationSubmitClient({
           })}
         </p>
       </div>
+
       {blocked ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-3 text-sm text-amber-950">
-          <p className="font-semibold">{t("blockedTitle")}</p>
-          <ul className="mt-2 list-disc space-y-1 pl-5">
+        <PortalInlineAlert tone="warning" title={t("blockedTitle")}>
+          <ul className="list-inside list-disc space-y-1">
             {disabledReasons.map((reason) => (
               <li key={reason}>{reason}</li>
             ))}
           </ul>
-        </div>
+        </PortalInlineAlert>
       ) : null}
-      <Textarea
-        value={notes}
-        onChange={(event) => setNotes(event.target.value)}
-        placeholder={t("notesPlaceholder")}
-        disabled={pending || blocked}
-      />
-      <Button
-        disabled={pending || !documentIds.length || blocked}
-        onClick={() => void submit()}
-      >
-        {pending ? t("submitting") : t("submit")}
-      </Button>
-      {message ? (
-        <p
-          className={
-            message === t("submitted")
-              ? "text-success text-sm font-semibold"
-              : "text-danger text-sm font-semibold"
-          }
+
+      <Field label={t("notesPlaceholder")} htmlFor="verification-notes">
+        <Textarea
+          id="verification-notes"
+          rows={4}
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          placeholder={t("notesPlaceholder")}
+          disabled={pending || blocked}
+        />
+      </Field>
+
+      {feedback ? (
+        <PortalInlineAlert
+          tone={feedback.tone}
+          role={feedback.tone === "error" ? "alert" : "status"}
         >
-          {message}
-        </p>
+          {feedback.message}
+        </PortalInlineAlert>
       ) : null}
+
+      <PortalFormActions
+        sticky={false}
+        hint={blocked ? t("blockedTitle") : t("submitTitle")}
+      >
+        <Button
+          type="button"
+          disabled={pending || !documentIds.length || blocked}
+          onClick={() => void submit()}
+        >
+          {pending ? (
+            <Loader2 className="size-4 animate-spin motion-reduce:animate-none" />
+          ) : null}
+          {pending ? t("submitting") : t("submit")}
+        </Button>
+      </PortalFormActions>
     </div>
   )
 }

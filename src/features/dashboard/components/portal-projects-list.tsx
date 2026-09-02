@@ -15,6 +15,7 @@ import {
   RotateCcw,
   Search,
   Send,
+  SlidersHorizontal,
   X,
   XCircle,
 } from "lucide-react"
@@ -22,7 +23,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { DatePicker } from "@/components/ui/date-picker"
 import {
   DropdownMenu,
@@ -198,7 +199,7 @@ export function PortalProjectsList({
   )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <ProjectStats labels={labels.stats} locale={locale} projects={projects} />
       <ProjectToolbar
         categories={categories}
@@ -246,7 +247,7 @@ function ProjectStats({
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        icon={<FolderKanban className="size-5" />}
+        icon={<FolderKanban className="size-4.5" />}
         label={labels.active}
         value={
           projects.filter((item) =>
@@ -255,17 +256,17 @@ function ProjectStats({
         }
       />
       <StatCard
-        icon={<Send className="size-5" />}
+        icon={<Send className="size-4.5" />}
         label={labels.published}
         value={projects.filter((item) => item.status === "PUBLISHED").length}
       />
       <StatCard
-        icon={<Play className="size-5" />}
+        icon={<Play className="size-4.5" />}
         label={labels.inProgress}
         value={projects.filter((item) => item.status === "IN_PROGRESS").length}
       />
       <StatCard
-        icon={<Banknote className="size-5" />}
+        icon={<Banknote className="size-4.5" />}
         label={labels.portfolioValue}
         value={formatMoney(
           String(portfolioValue),
@@ -287,18 +288,18 @@ function StatCard({
   value: ReactNode
 }) {
   return (
-    <Card className="rounded-lg p-5">
-      <div className="flex items-center gap-4">
-        <span className="bg-primary/10 text-primary grid size-11 shrink-0 place-items-center rounded-xl">
-          {icon}
-        </span>
+    <Card className="group hover:border-primary/15 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)] motion-reduce:hover:translate-y-0">
+      <CardContent className="flex min-h-[108px] items-start justify-between gap-4 pt-5 sm:pt-5">
         <div className="min-w-0">
-          <p className="text-muted text-xs font-medium">{label}</p>
-          <p className="text-brand-navy truncate text-2xl font-bold tabular-nums">
+          <p className="text-muted-foreground text-xs font-semibold">{label}</p>
+          <p className="text-brand-navy mt-1.5 truncate text-[1.65rem] leading-8 font-bold tracking-[-0.03em] tabular-nums">
             {value}
           </p>
         </div>
-      </div>
+        <span className="border-primary/10 bg-primary/8 text-primary grid size-10 shrink-0 place-items-center rounded-xl border">
+          {icon}
+        </span>
+      </CardContent>
     </Card>
   )
 }
@@ -339,20 +340,19 @@ function ProjectToolbar({
   tags: PortalTaxonomyItem[]
 }) {
   return (
-    <Card className="rounded-2xl">
-      <div className="flex flex-wrap gap-3 p-4">
-        <label className="relative min-w-full sm:min-w-72 sm:flex-1 lg:max-w-96">
+    <Card className="overflow-hidden">
+      <div className="grid gap-3 p-4 sm:p-5 lg:grid-cols-[minmax(18rem,1fr)_11rem_11rem_auto] lg:items-center">
+        <label className="relative min-w-0">
           <span className="sr-only">{labels.search}</span>
-          <Search className="text-muted pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2" />
+          <Search className="text-muted-foreground pointer-events-none absolute start-3.5 top-1/2 size-4 -translate-y-1/2" />
           <Input
             value={query}
             onChange={(event) => onSearch(event.target.value)}
             placeholder={labels.search}
-            className="bg-white ps-9"
+            className="bg-background ps-10 shadow-none"
           />
         </label>
         <FilterSelect
-          className="w-full sm:w-40"
           label={labels.allStatuses}
           value={filters.status}
           onValueChange={(value) => onUpdate({ status: value })}
@@ -365,53 +365,76 @@ function ProjectToolbar({
           ]}
         />
         <FilterSelect
-          className="w-full sm:w-44"
-          label={labels.allCategories}
-          value={filters.categoryId}
-          onValueChange={(value) => onUpdate({ categoryId: value })}
+          label={labels.sortNewest}
+          value={filters.sort}
+          onValueChange={(value) => onUpdate({ sort: value })}
           options={[
-            { value: "all", label: labels.allCategories },
-            ...categories.map((item) => ({
-              value: item.id,
-              label: taxonomyLabel(item, locale),
-            })),
+            { value: "newest", label: labels.sortNewest },
+            { value: "title", label: labels.sortTitle },
           ]}
         />
-        <FilterSelect
-          className="w-full sm:w-44"
-          label={labels.allLocations}
-          value={filters.cityId}
-          onValueChange={(value) => onUpdate({ cityId: value })}
-          options={[
-            { value: "all", label: labels.allLocations },
-            ...cities.map((item) => ({
-              value: item.id,
-              label: taxonomyLabel(item, locale),
-            })),
-          ]}
-        />
-        <FilterSelect
-          className="w-full sm:w-44"
-          label={labels.allTags}
-          value={filters.tagId}
-          onValueChange={(value) => onUpdate({ tagId: value })}
-          options={[
-            { value: "all", label: labels.allTags },
-            ...tags.map((item) => ({
-              value: item.id,
-              label: taxonomyLabel(item, locale),
-            })),
-          ]}
-        />
-        <span className="w-full sm:w-40">
+        <Button
+          type="button"
+          variant="secondary"
+          className="justify-self-start lg:justify-self-end"
+          onClick={() => downloadProjectsCsv(projects)}
+        >
+          <Download className="size-4" aria-hidden="true" />
+          {labels.export}
+        </Button>
+      </div>
+
+      <div className="border-border/70 border-t bg-slate-50/55 px-4 py-3.5 sm:px-5 dark:bg-white/[0.02]">
+        <div className="text-muted-foreground mb-3 flex items-center gap-2 text-[11px] font-semibold tracking-[0.08em] uppercase">
+          <SlidersHorizontal
+            className="text-primary size-3.5"
+            aria-hidden="true"
+          />
+          Filters
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[repeat(5,minmax(0,1fr))_auto] xl:items-center">
+          <FilterSelect
+            label={labels.allCategories}
+            value={filters.categoryId}
+            onValueChange={(value) => onUpdate({ categoryId: value })}
+            options={[
+              { value: "all", label: labels.allCategories },
+              ...categories.map((item) => ({
+                value: item.id,
+                label: taxonomyLabel(item, locale),
+              })),
+            ]}
+          />
+          <FilterSelect
+            label={labels.allLocations}
+            value={filters.cityId}
+            onValueChange={(value) => onUpdate({ cityId: value })}
+            options={[
+              { value: "all", label: labels.allLocations },
+              ...cities.map((item) => ({
+                value: item.id,
+                label: taxonomyLabel(item, locale),
+              })),
+            ]}
+          />
+          <FilterSelect
+            label={labels.allTags}
+            value={filters.tagId}
+            onValueChange={(value) => onUpdate({ tagId: value })}
+            options={[
+              { value: "all", label: labels.allTags },
+              ...tags.map((item) => ({
+                value: item.id,
+                label: taxonomyLabel(item, locale),
+              })),
+            ]}
+          />
           <DatePicker
             id="project-list-deadline-from"
             value={filters.deadlineFrom}
             onChange={(value) => onUpdate({ deadlineFrom: value })}
             placeholder={labels.deadlineFrom}
           />
-        </span>
-        <span className="w-full sm:w-40">
           <DatePicker
             id="project-list-deadline-to"
             value={filters.deadlineTo}
@@ -421,36 +444,19 @@ function ProjectToolbar({
               filters.deadlineFrom ? new Date(filters.deadlineFrom) : undefined
             }
           />
-        </span>
-        <FilterSelect
-          className="w-full sm:w-40"
-          label={labels.sortNewest}
-          value={filters.sort}
-          onValueChange={(value) => onUpdate({ sort: value })}
-          options={[
-            { value: "newest", label: labels.sortNewest },
-            { value: "title", label: labels.sortTitle },
-          ]}
-        />
-        {hasActiveFilters ? (
-          <Button
-            type="button"
-            variant="secondary"
-            className="border-danger/40 text-danger hover:border-danger hover:bg-danger/5 hover:text-danger"
-            onClick={onClearAll}
-          >
-            <X className="size-4" />
-            {labels.clearAll}
-          </Button>
-        ) : null}
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => downloadProjectsCsv(projects)}
-        >
-          <Download className="size-4" />
-          {labels.export}
-        </Button>
+          {hasActiveFilters ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-danger hover:bg-danger/5 hover:text-danger justify-self-start"
+              onClick={onClearAll}
+            >
+              <X className="size-4" aria-hidden="true" />
+              {labels.clearAll}
+            </Button>
+          ) : null}
+        </div>
       </div>
     </Card>
   )
@@ -471,7 +477,10 @@ function FilterSelect({
 }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger aria-label={label} className={cn("bg-white", className)}>
+      <SelectTrigger
+        aria-label={label}
+        className={cn("bg-background w-full shadow-none", className)}
+      >
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>
@@ -504,21 +513,23 @@ function ProjectsTable({
 }) {
   if (!projects.length) {
     return (
-      <div className="grid min-h-72 place-items-center rounded-2xl border border-dashed bg-white p-8 text-center">
-        <div>
-          <Inbox className="text-muted mx-auto mb-3 size-8" />
+      <Card className="grid min-h-64 place-items-center border-dashed p-8 text-center shadow-none">
+        <div className="max-w-sm">
+          <span className="border-primary/10 bg-primary/8 text-primary mx-auto mb-4 grid size-11 place-items-center rounded-xl border">
+            <Inbox className="size-5" aria-hidden="true" />
+          </span>
           <h3 className="text-brand-navy font-semibold">{empty}</h3>
         </div>
-      </div>
+      </Card>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <div className="border-line/70 hidden overflow-hidden rounded-2xl border bg-white shadow-[0_1px_3px_rgba(16,24,40,0.04)] md:block">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1200px] text-start text-sm">
-            <thead className="border-line/70 border-b bg-slate-50/80">
+    <div className="space-y-3">
+      <div className="border-border/90 bg-card hidden overflow-hidden rounded-2xl border shadow-[var(--shadow-xs)] md:block">
+        <div className="portal-scrollbar overflow-x-auto">
+          <table className="w-full min-w-[1160px] text-start text-sm">
+            <thead className="border-border/70 border-b bg-slate-50/80 dark:bg-white/[0.025]">
               <tr>
                 {[
                   labels.project,
@@ -532,23 +543,23 @@ function ProjectsTable({
                 ].map((header) => (
                   <th
                     key={header}
-                    className="text-muted h-12 px-5 text-start align-middle text-xs font-semibold whitespace-nowrap last:sticky last:end-0 last:z-10 last:bg-slate-50 last:shadow-[-10px_0_10px_-10px_rgba(16,24,40,0.18)] rtl:last:shadow-[10px_0_10px_-10px_rgba(16,24,40,0.18)]"
+                    className="text-muted-foreground h-11 px-4 text-start align-middle text-[11px] font-semibold tracking-[0.035em] whitespace-nowrap uppercase last:sticky last:end-0 last:z-10 last:bg-slate-50 sm:px-5 dark:last:bg-[#101e31]"
                   >
                     {header}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white [&_tr:last-child]:border-0">
+            <tbody className="bg-card [&_tr:last-child]:border-0">
               {projects.map((project) => (
                 <tr
                   key={project.id}
-                  className="border-line/60 border-b transition-colors hover:bg-slate-50/70 [&:hover_td:last-child]:bg-slate-50"
+                  className="border-border/60 border-b transition-colors hover:bg-slate-50/70 dark:hover:bg-white/[0.035]"
                 >
-                  <td className="px-5 py-4 align-middle">
+                  <td className="px-4 py-3 align-middle sm:px-5">
                     <ProjectIdentity project={project} />
                   </td>
-                  <td className="px-5 py-4 align-middle">
+                  <td className="px-4 py-3 align-middle sm:px-5">
                     <span
                       className="block max-w-44 truncate font-medium"
                       title={ownerLabel(project)}
@@ -556,20 +567,18 @@ function ProjectsTable({
                       {ownerLabel(project)}
                     </span>
                   </td>
-                  <td className="px-5 py-4 align-middle">
-                    <div className="whitespace-nowrap">
-                      <StatusBadge
-                        status={project.status}
-                        label={labelize(project.status)}
-                      />
-                    </div>
+                  <td className="px-4 py-3 align-middle sm:px-5">
+                    <StatusBadge
+                      status={project.status}
+                      label={labelize(project.status)}
+                    />
                   </td>
-                  <td className="px-5 py-4 align-middle">
+                  <td className="px-4 py-3 align-middle sm:px-5">
                     <span className="block max-w-40 truncate">
                       {project.locationLabel ?? "-"}
                     </span>
                   </td>
-                  <td className="px-5 py-4 align-middle">
+                  <td className="px-4 py-3 align-middle sm:px-5">
                     <span className="whitespace-nowrap tabular-nums">
                       {formatMoney(
                         project.budgetMinor,
@@ -578,15 +587,15 @@ function ProjectsTable({
                       )}
                     </span>
                   </td>
-                  <td className="px-5 py-4 align-middle">
-                    <span className="text-muted text-xs whitespace-nowrap">
+                  <td className="px-4 py-3 align-middle sm:px-5">
+                    <span className="text-muted-foreground text-xs whitespace-nowrap">
                       {formatDate(project.deadlineAt, locale)}
                     </span>
                   </td>
-                  <td className="px-5 py-4 align-middle">
+                  <td className="px-4 py-3 align-middle sm:px-5">
                     <span className="tabular-nums">{project.packageCount}</span>
                   </td>
-                  <td className="sticky end-0 z-10 bg-white px-5 py-4 align-middle shadow-[-10px_0_10px_-10px_rgba(16,24,40,0.18)] rtl:shadow-[10px_0_10px_-10px_rgba(16,24,40,0.18)]">
+                  <td className="bg-card sticky end-0 z-10 px-4 py-3 align-middle sm:px-5">
                     <ProjectActionsMenu
                       labels={labels}
                       permissions={permissions}
@@ -599,7 +608,7 @@ function ProjectsTable({
           </table>
         </div>
         <ProjectTablePagination
-          className="border-x-0 border-b-0 shadow-none"
+          className="rounded-none border-x-0 border-b-0 shadow-none"
           labels={labels}
           onPageChange={onPageChange}
           pageInfo={pageInfo}
@@ -608,7 +617,7 @@ function ProjectsTable({
 
       <div className="grid gap-3 md:hidden">
         {projects.map((project) => (
-          <Card key={project.id} className="rounded-2xl p-4 shadow-none">
+          <Card key={project.id} className="p-4 shadow-none">
             <div className="flex items-start gap-3">
               <ProjectAvatar title={project.title} />
               <div className="min-w-0 flex-1">
@@ -618,15 +627,15 @@ function ProjectsTable({
                 >
                   {project.title}
                 </Link>
-                <p className="text-muted mt-1 text-xs">
-                  {ownerLabel(project)} / {project.locationLabel ?? "-"}
+                <p className="text-muted-foreground mt-1 text-xs">
+                  {ownerLabel(project)} · {project.locationLabel ?? "-"}
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <StatusBadge
                     status={project.status}
                     label={labelize(project.status)}
                   />
-                  <span className="text-xs font-semibold">
+                  <span className="text-xs font-semibold tabular-nums">
                     {formatMoney(project.budgetMinor, project.currency, locale)}
                   </span>
                 </div>
@@ -674,26 +683,26 @@ function ProjectTablePagination({
   return (
     <div
       className={cn(
-        "border-line/70 flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-slate-50/70 px-4 py-3 sm:px-5",
+        "border-border/70 flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-slate-50/55 px-4 py-3 sm:px-5 dark:bg-white/[0.02]",
         className,
       )}
     >
-      <p className="text-muted text-xs">{labels.totalRecords}</p>
+      <p className="text-muted-foreground text-xs">{labels.totalRecords}</p>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="border-line/70 text-muted hidden rounded-xl border bg-white px-3 py-2 text-xs font-medium sm:inline-flex">
+        <span className="border-border/70 bg-card text-muted-foreground hidden rounded-lg border px-3 py-2 text-xs font-medium sm:inline-flex">
           {pageInfo.pageSize} rows
         </span>
         <div className="hidden items-center gap-1 sm:flex">
           {pageNumbers.map((page, index) => (
             <span key={page} className="contents">
               {index > 0 && page - pageNumbers[index - 1]! > 1 ? (
-                <span className="text-muted px-1">...</span>
+                <span className="text-muted-foreground px-1">…</span>
               ) : null}
               <Button
                 type="button"
                 size="icon"
-                variant={page === currentPage ? "primary" : "secondary"}
-                className="size-9 min-h-0 px-0"
+                variant={page === currentPage ? "primary" : "ghost"}
+                className="size-8 min-h-0 rounded-md px-0 text-xs"
                 aria-label={`Go to page ${page}`}
                 aria-current={page === currentPage ? "page" : undefined}
                 onClick={() => onPageChange(page)}
@@ -703,14 +712,14 @@ function ProjectTablePagination({
             </span>
           ))}
         </div>
-        <span className="text-muted text-xs tabular-nums sm:hidden">
+        <span className="text-muted-foreground min-w-14 text-center text-xs tabular-nums sm:hidden">
           {currentPage} / {pageCount}
         </span>
         <Button
           type="button"
           size="icon"
           variant="secondary"
-          className="size-9 min-h-0 px-0"
+          className="size-9 min-h-0 rounded-lg px-0"
           disabled={currentPage === 1}
           aria-label={labels.previous}
           onClick={() => onPageChange(currentPage - 1)}
@@ -721,7 +730,7 @@ function ProjectTablePagination({
           type="button"
           size="icon"
           variant="secondary"
-          className="size-9 min-h-0 px-0"
+          className="size-9 min-h-0 rounded-lg px-0"
           disabled={!pageInfo.hasNextPage}
           aria-label={labels.next}
           onClick={() => onPageChange(currentPage + 1)}
@@ -746,7 +755,7 @@ function ProjectIdentity({ project }: { project: PortalProject }) {
           {project.title}
         </Link>
         <p
-          className="text-muted truncate text-xs"
+          className="text-muted-foreground truncate text-xs"
           title={project.reference ?? ""}
         >
           {project.reference || "-"}
@@ -760,7 +769,7 @@ function ProjectAvatar({ title }: { title: string }) {
   return (
     <span
       aria-hidden
-      className="bg-primary/10 text-primary inline-flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+      className="border-primary/10 bg-primary/8 text-primary inline-flex size-9 shrink-0 items-center justify-center rounded-full border text-xs font-bold"
     >
       {getInitials(title)}
     </span>
@@ -847,7 +856,8 @@ function ProjectActionsMenu({
           <Button
             type="button"
             size="icon"
-            variant="secondary"
+            variant="ghost"
+            className="size-9 min-h-9 rounded-lg"
             disabled={pending}
             aria-label={labels.actionsFor.replace("{title}", project.title)}
           >

@@ -1,10 +1,12 @@
 "use client"
 
-import { Trash2 } from "lucide-react"
+import { FileText, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslations } from "next-intl"
 
+import { Button } from "@/components/ui/button"
 import { FileInput } from "@/components/ui/file-input"
+import { PortalInlineAlert } from "@/features/dashboard/components/portal-form-layout"
 import { uploadPortalFile } from "@/features/dashboard/data/upload-portal-file"
 
 export function AttachmentUpload({
@@ -29,7 +31,7 @@ export function AttachmentUpload({
   const [error, setError] = useState<string>()
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3" aria-busy={loading}>
       <FileInput
         accept=".pdf,.doc,.docx,.xlsx,.csv,.jpg,.jpeg,.png,application/pdf"
         multiple
@@ -37,7 +39,7 @@ export function AttachmentUpload({
         description={t("dashboard.create.uploadHint")}
         loading={loading}
         onFilesSelected={(files) => {
-          if (!files?.length) return
+          if (!files?.length || loading) return
           setLoading(true)
           setError(undefined)
           void (async () => {
@@ -70,26 +72,49 @@ export function AttachmentUpload({
           })()
         }}
       />
-      {assets.map((asset) => (
-        <div
-          key={asset.id}
-          className="flex items-center justify-between gap-2 text-xs"
-        >
-          <p className="text-muted truncate">{asset.name}</p>
-          <button
-            type="button"
-            className="text-danger inline-flex shrink-0 items-center gap-1 font-medium hover:underline"
-            onClick={() =>
-              onChange(assets.filter((item) => item.id !== asset.id))
-            }
-            aria-label={`${t("common.remove")} ${asset.name}`}
-          >
-            <Trash2 className="size-3.5" aria-hidden="true" />
-            {t("common.remove")}
-          </button>
-        </div>
-      ))}
-      {error ? <p className="text-danger text-sm">{error}</p> : null}
+
+      {assets.length ? (
+        <ul className="border-border/80 divide-border/70 divide-y overflow-hidden rounded-xl border">
+          {assets.map((asset) => (
+            <li
+              key={asset.id}
+              className="bg-card flex min-w-0 items-center gap-3 px-3.5 py-2.5"
+            >
+              <span className="border-primary/10 bg-primary/8 text-primary grid size-9 shrink-0 place-items-center rounded-xl border">
+                <FileText className="size-4" aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p
+                  className="text-foreground ltr-content truncate text-sm font-medium"
+                  title={asset.name}
+                >
+                  {asset.name}
+                </p>
+                <p className="text-muted-foreground mt-0.5 text-[11px] font-medium uppercase">
+                  {asset.usage ?? "DOCUMENT"}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="text-destructive hover:bg-destructive/8 hover:text-destructive shrink-0"
+                disabled={loading}
+                onClick={() =>
+                  onChange(assets.filter((item) => item.id !== asset.id))
+                }
+                aria-label={`${t("common.remove")} ${asset.name}`}
+              >
+                <Trash2 className="size-4" aria-hidden="true" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {error ? (
+        <PortalInlineAlert tone="error">{error}</PortalInlineAlert>
+      ) : null}
     </div>
   )
 }

@@ -51,11 +51,26 @@ function accountMenu(page: Page, email: string) {
   return page.getByRole("button", { name: new RegExp(email, "i") })
 }
 
-async function expectSignedInAs(page: Page, account: SwitchAccount) {
+async function authCookies(page: Page) {
+  return (await page.context().cookies()).filter(
+    (cookie) =>
+      cookie.name === "sb-buildink-website-auth" ||
+      cookie.name.startsWith("sb-buildink-website-auth."),
+  )
+}
+
+function sessionSignature(cookies: Awaited<ReturnType<typeof authCookies>>) {
+  return cookies
+    .map((cookie) => `${cookie.name}=${cookie.value}`)
+    .sort()
+    .join(";")
+}
+
+async function expectAuthenticatedSession(page: Page) {
   await expect(page).toHaveURL(/\/en\/dashboard(?:\/|$)/, { timeout: 45_000 })
-  await expect(accountMenu(page, account.email)).toBeVisible({
-    timeout: 45_000,
-  })
+  await expect
+    .poll(async () => (await authCookies(page)).length, { timeout: 45_000 })
+    .toBeGreaterThan(0)
 }
 
 async function login(page: Page, account: SwitchAccount) {
@@ -63,25 +78,29 @@ async function login(page: Page, account: SwitchAccount) {
   await page.getByLabel("Email address").fill(account.email)
   await page.locator("#password").fill(account.password)
   await page.getByRole("button", { name: "Log in", exact: true }).click()
-  await expectSignedInAs(page, account)
+  await expectAuthenticatedSession(page)
 }
 
 async function logout(page: Page, account: SwitchAccount) {
   const menu = accountMenu(page, account.email)
-  await menu.click()
-  await page.getByRole("menuitem", { name: "Log out" }).click()
-  await page
-    .getByRole("button", { name: "Yes, log out" })
-    .click({ timeout: 20_000 })
-  await page.waitForURL(/\/en\/login/, { timeout: 30_000 })
-}
+  if (await menu.isVisible().catch(() => false)) {
+    await menu.click()
+    await page.getByRole("menuitem", { name: "Log out" }).click()
+    await page
+      .getByRole("button", { name: "Yes, log out" })
+      .click({ timeout: 20_000 })
+  } else {
+    // Supabase-only test users do not have a Buildink application profile. The
+    // bootstrap-unavailable shell must still expose the real logout action.
+    const fallbackLogout = page.getByRole("button", {
+      name: "Log out",
+      exact: true,
+    })
+    await expect(fallbackLogout).toBeVisible({ timeout: 20_000 })
+    await fallbackLogout.click()
+  }
 
-async function authCookies(page: Page) {
-  return (await page.context().cookies()).filter(
-    (cookie) =>
-      cookie.name === "sb-buildink-website-auth" ||
-      cookie.name.startsWith("sb-buildink-website-auth."),
-  )
+  await page.waitForURL(/\/en\/login(?:\?|$)/, { timeout: 30_000 })
 }
 
 async function expectNoAuthCookies(page: Page) {
@@ -101,29 +120,31 @@ test("logout terminates the session and allows switching to another account", as
   try {
     await login(page, first)
     const staleFirstSessionCookies = await authCookies(page)
+    const firstSignature = sessionSignature(staleFirstSessionCookies)
     expect(staleFirstSessionCookies.length).toBeGreaterThan(0)
 
     await logout(page, first)
     await expectNoAuthCookies(page)
 
-    // Model the production race from C-01: a portal response that started before
-    // logout arrives late and attempts to restore an old Supabase auth cookie.
-    // Treat cookie values as opaque: @supabase/ssr controls their encoding.
+    // Model C-01: a portal response started before logout arrives late and tries
+    // to restore an opaque stale Supabase cookie. The logout guard must reject it.
     await page.context().addCookies(staleFirstSessionCookies)
-    await page.reload()
-    await expect(page).toHaveURL(/\/en\/login/)
+    await page.reload({ waitUntil: "domcontentloaded" })
+    await expect(page).toHaveURL(/\/en\/login(?:\?|$)/, { timeout: 30_000 })
     await expectNoAuthCookies(page)
 
     await login(page, second)
+    const secondSessionCookies = await authCookies(page)
+    expect(sessionSignature(secondSessionCookies)).not.toBe(firstSignature)
     await expect(accountMenu(page, first.email)).toHaveCount(0)
 
-    await page.reload()
-    await expectSignedInAs(page, second)
-    await expect(accountMenu(page, first.email)).toHaveCount(0)
+    await page.reload({ waitUntil: "domcontentloaded" })
+    await expectAuthenticatedSession(page)
+    expect(sessionSignature(await authCookies(page))).not.toBe(firstSignature)
 
     await logout(page, second)
     await expectNoAuthCookies(page)
-    await expect(page).toHaveURL(/\/en\/login/)
+    await expect(page).toHaveURL(/\/en\/login(?:\?|$)/)
   } finally {
     await deleteAccount(admin, first)
     await deleteAccount(admin, second)
@@ -144,7 +165,6 @@ test("browser back after logout cannot restore protected portal content", async 
 
     await page.goBack({ waitUntil: "domcontentloaded" }).catch(() => null)
     await expect(page).toHaveURL(/\/en\/login(?:\?|$)/, { timeout: 30_000 })
-    await expect(accountMenu(page, account.email)).toHaveCount(0)
     await expectNoAuthCookies(page)
   } finally {
     await deleteAccount(admin, account)

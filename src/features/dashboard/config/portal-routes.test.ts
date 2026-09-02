@@ -98,17 +98,35 @@ describe("capability-aware portal routes", () => {
     }
   })
 
-  it("supports create-only authoring for offers and applications", () => {
-    for (const segment of ["offers", "applications"] as const) {
-      expect(resolvePortalRoute([segment], [segment])?.action).toBe("list")
-      expect(resolvePortalRoute([segment], [segment, "create"])?.action).toBe(
-        "create",
-      )
-      expect(resolvePortalRoute([segment], [segment, "abc"])?.action).toBe(
-        "detail",
-      )
-      expect(resolvePortalRoute([segment], [segment, "abc", "edit"])).toBeNull()
-    }
+  it("supports create and draft-edit authoring for offers", () => {
+    expect(resolvePortalRoute(["offers"], ["offers"])?.action).toBe("list")
+    expect(resolvePortalRoute(["offers"], ["offers", "create"])?.action).toBe(
+      "create",
+    )
+    expect(resolvePortalRoute(["offers"], ["offers", "abc"])?.action).toBe(
+      "detail",
+    )
+    expect(resolvePortalRoute(["offers"], ["offers", "abc", "edit"])).toEqual(
+      expect.objectContaining({
+        action: "edit",
+        recordId: "abc",
+      }),
+    )
+  })
+
+  it("keeps applications create-only", () => {
+    expect(resolvePortalRoute(["applications"], ["applications"])?.action).toBe(
+      "list",
+    )
+    expect(
+      resolvePortalRoute(["applications"], ["applications", "create"])?.action,
+    ).toBe("create")
+    expect(
+      resolvePortalRoute(["applications"], ["applications", "abc"])?.action,
+    ).toBe("detail")
+    expect(
+      resolvePortalRoute(["applications"], ["applications", "abc", "edit"]),
+    ).toBeNull()
   })
 
   it("keeps purpose-built routes on a single page", () => {

@@ -27,6 +27,13 @@ interface MessageState {
   updateConversation: (summary: ConversationSummary) => void
   setConversations: (items: ConversationSummary[]) => void
   clearConversationUnread: (conversationId: string) => void
+  reset: () => void
+}
+
+const emptyMessageState = {
+  messagesByConversation: {},
+  conversations: {},
+  totalUnread: 0,
 }
 
 function recomputeTotal(conversations: Record<string, ConversationSummary>) {
@@ -36,15 +43,28 @@ function recomputeTotal(conversations: Record<string, ConversationSummary>) {
   )
 }
 
+function mergeMessages(
+  existing: RealtimeMessage[],
+  incoming: RealtimeMessage[],
+) {
+  const byId = new Map(existing.map((message) => [message.id, message]))
+  for (const message of incoming) byId.set(message.id, message)
+  return [...byId.values()].sort(
+    (left, right) =>
+      new Date(left.sentAt).getTime() - new Date(right.sentAt).getTime(),
+  )
+}
+
 export const usePortalMessageStore = create<MessageState>((set) => ({
-  messagesByConversation: {},
-  conversations: {},
-  totalUnread: 0,
+  ...emptyMessageState,
   setInitialMessages: (conversationId, messages) =>
     set((state) => ({
       messagesByConversation: {
         ...state.messagesByConversation,
-        [conversationId]: messages,
+        [conversationId]: mergeMessages(
+          state.messagesByConversation[conversationId] ?? [],
+          messages,
+        ),
       },
     })),
   appendMessage: (message, viewerId) =>
@@ -96,4 +116,5 @@ export const usePortalMessageStore = create<MessageState>((set) => ({
         totalUnread: recomputeTotal(conversations),
       }
     }),
+  reset: () => set(emptyMessageState),
 }))

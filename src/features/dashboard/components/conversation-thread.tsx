@@ -1,14 +1,14 @@
 "use client"
 
+import { AlertCircle, Send } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useFormatter, useTranslations } from "next-intl"
 
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import {
-  markPortalConversationReadAction,
-  sendPortalMessageAction,
-} from "@/features/dashboard/actions/portal.actions"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { sendConversationMessageAction } from "@/features/dashboard/actions/message-thread.actions"
+import { markPortalConversationReadAction } from "@/features/dashboard/actions/portal.actions"
 import {
   usePortalMessageStore,
   type RealtimeMessage,
@@ -36,6 +36,9 @@ export function ConversationThread({
   )
   const setInitialMessages = usePortalMessageStore(
     (state) => state.setInitialMessages,
+  )
+  const updateConversation = usePortalMessageStore(
+    (state) => state.updateConversation,
   )
   const clearConversationUnread = usePortalMessageStore(
     (state) => state.clearConversationUnread,
@@ -68,69 +71,118 @@ export function ConversationThread({
     setActionError(null)
     const clientMessageId = crypto.randomUUID()
     try {
-      const result = await sendPortalMessageAction(
+      const result = await sendConversationMessageAction(
         conversationId,
         next,
         clientMessageId,
       )
-      if (result.ok) setBody("")
-      else setActionError(result.message)
+      if (result.ok) {
+        const conversation = result.conversation
+        setInitialMessages(
+          conversation.id,
+          conversation.messages.map((message) => ({
+            ...message,
+            conversationId: conversation.id,
+          })),
+        )
+        updateConversation({
+          id: conversation.id,
+          lastMessageAt: conversation.lastMessageAt,
+          unreadCount: conversation.unreadCount,
+        })
+        setBody("")
+      } else {
+        setActionError(result.message)
+      }
     } finally {
       setPending(false)
     }
   }
 
   return (
-    <div className="space-y-3">
+    <Card className="overflow-hidden">
       {actionError ? (
-        <p className="text-danger text-sm" role="alert" aria-live="assertive">
-          {actionError}
-        </p>
+        <div
+          className="border-danger/15 bg-danger/5 text-danger flex items-start gap-2 border-b px-4 py-3 text-sm sm:px-5"
+          role="alert"
+          aria-live="assertive"
+        >
+          <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <span>{actionError}</span>
+        </div>
       ) : null}
-      <div className="border-line max-h-[min(60vh,520px)] space-y-3 overflow-y-auto rounded-2xl border bg-white/70 p-3">
+
+      <div className="portal-scrollbar max-h-[min(60vh,560px)] min-h-[280px] space-y-3 overflow-y-auto bg-slate-50/35 px-4 py-5 sm:px-5 dark:bg-white/[0.015]">
         {messages.length ? (
           messages.map((message) => (
-            <Card
+            <article
               key={message.id}
               className={
                 message.mine
-                  ? "border-primary/20 bg-primary/5 ms-8 p-3"
-                  : "border-line me-8 p-3"
+                  ? "ms-auto max-w-[85%] sm:max-w-[72%]"
+                  : "me-auto max-w-[85%] sm:max-w-[72%]"
               }
             >
-              <p className="text-sm whitespace-pre-wrap">{message.body}</p>
-              <p className="text-muted mt-1 text-xs">
+              <div
+                className={
+                  message.mine
+                    ? "border-primary/15 bg-primary/8 rounded-2xl rounded-ee-md border px-4 py-3"
+                    : "border-border/90 bg-card rounded-2xl rounded-es-md border px-4 py-3 shadow-[var(--shadow-xs)]"
+                }
+              >
+                <p className="text-foreground text-sm leading-6 whitespace-pre-wrap">
+                  {message.body}
+                </p>
+              </div>
+              <p
+                className={
+                  message.mine
+                    ? "text-muted-foreground mt-1 text-end text-[11px]"
+                    : "text-muted-foreground mt-1 text-[11px]"
+                }
+              >
                 {format.dateTime(new Date(message.sentAt), {
                   dateStyle: "medium",
                   timeStyle: "short",
                 })}
               </p>
-            </Card>
+            </article>
           ))
         ) : (
-          <p className="text-muted px-2 py-6 text-center text-sm">
-            {t("emptyThread")}
-          </p>
+          <div className="grid min-h-[240px] place-items-center text-center">
+            <p className="text-muted-foreground text-sm">{t("emptyThread")}</p>
+          </div>
         )}
         <div ref={bottomRef} />
       </div>
+
       <form
-        className="flex flex-col gap-2 sm:flex-row"
+        className="border-border/70 bg-card flex items-center gap-2 border-t p-3 sm:p-4"
         onSubmit={(event) => {
           event.preventDefault()
           void send()
         }}
       >
-        <input
+        <Input
           value={body}
+          disabled={pending}
           onChange={(event) => setBody(event.target.value)}
           placeholder={placeholder}
-          className="border-input bg-background min-h-11 flex-1 rounded-xl border px-3 text-sm"
+          aria-label={placeholder}
+          autoComplete="off"
+          className="min-w-0 flex-1 shadow-none"
         />
-        <Button type="submit" disabled={pending || !body.trim()}>
-          {sendLabel}
+        <Button
+          type="submit"
+          size="icon"
+          className="size-11 min-h-11 shrink-0 rounded-xl"
+          disabled={pending || !body.trim()}
+          aria-label={sendLabel}
+          title={sendLabel}
+        >
+          <Send className="size-4" aria-hidden="true" />
         </Button>
       </form>
-    </div>
+    </Card>
   )
 }

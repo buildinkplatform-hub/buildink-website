@@ -51,7 +51,7 @@ export function ForgotPasswordForm() {
   return (
     <div className="auth-panel rounded-[30px] p-6 sm:p-9">
       <div className="border-primary/10 bg-primary/6 text-primary flex size-12 items-center justify-center rounded-2xl border">
-        <Mail className="size-5" />
+        <Mail className="size-5" aria-hidden="true" />
       </div>
       <h1 className="text-brand-navy mt-6 text-3xl font-bold tracking-[-0.035em]">
         {t("auth.forgotTitle")}
@@ -65,6 +65,7 @@ export function ForgotPasswordForm() {
           await forgotPasswordAction(email, locale)
           setSent(true)
         })}
+        noValidate
       >
         <Field
           label={t("auth.email")}
@@ -77,6 +78,8 @@ export function ForgotPasswordForm() {
             type="email"
             autoComplete="email"
             className="ltr-content"
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? "email-error" : undefined}
             {...register("email")}
           />
         </Field>

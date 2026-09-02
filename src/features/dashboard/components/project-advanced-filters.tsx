@@ -1,5 +1,6 @@
 "use client"
 
+import { FolderTree, MapPin, Tags } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import { DatePicker } from "@/components/ui/date-picker"
@@ -78,13 +79,20 @@ export function ProjectAdvancedFilters({
     })
   }
 
+  const triggerClassName =
+    "border-primary/10 bg-card gap-2 shadow-none hover:border-primary/20"
+
   return (
     <div className={cn("grid gap-3 md:grid-cols-2 xl:grid-cols-5", className)}>
       <Select
         value={categoryId ?? "all"}
         onValueChange={(value) => updateFilter("categoryId", value)}
       >
-        <SelectTrigger aria-label={labels.category}>
+        <SelectTrigger
+          aria-label={labels.category}
+          className={triggerClassName}
+        >
+          <FolderTree className="text-primary size-4 shrink-0" />
           <SelectValue placeholder={labels.allCategories} />
         </SelectTrigger>
         <SelectContent>
@@ -100,7 +108,11 @@ export function ProjectAdvancedFilters({
         value={cityId ?? "all"}
         onValueChange={(value) => updateFilter("cityId", value)}
       >
-        <SelectTrigger aria-label={labels.allLocations}>
+        <SelectTrigger
+          aria-label={labels.allLocations}
+          className={triggerClassName}
+        >
+          <MapPin className="text-primary size-4 shrink-0" />
           <SelectValue placeholder={labels.allLocations} />
         </SelectTrigger>
         <SelectContent>
@@ -116,7 +128,8 @@ export function ProjectAdvancedFilters({
         value={tagId ?? "all"}
         onValueChange={(value) => updateFilter("tagId", value)}
       >
-        <SelectTrigger aria-label={labels.tag}>
+        <SelectTrigger aria-label={labels.tag} className={triggerClassName}>
+          <Tags className="text-primary size-4 shrink-0" />
           <SelectValue placeholder={labels.allTags} />
         </SelectTrigger>
         <SelectContent>

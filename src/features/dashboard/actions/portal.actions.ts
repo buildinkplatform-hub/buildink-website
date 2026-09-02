@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 
 import { BackendApiError } from "@/lib/backend/api"
 import {
@@ -115,6 +115,7 @@ export async function updateMeProfileAction(input: {
   try {
     const profile = await updatePortalProfile(input)
     revalidatePath("/dashboard")
+    updateTag("public-marketplace")
     return { ok: true as const, profile }
   } catch (error) {
     return {
@@ -323,6 +324,7 @@ export async function updateVisibilityAction(
       profileVisibilityContract.parse(input),
     )
     revalidatePath("/dashboard")
+    updateTag("public-marketplace")
     return { ok: true as const, visibility }
   } catch (error) {
     return fail(error, "VISIBILITY_UPDATE_FAILED")
@@ -336,6 +338,7 @@ export async function updatePersonaAction(
   try {
     await updatePortalPersona(personaUpdateContract.parse(input), version)
     revalidatePath("/dashboard")
+    updateTag("public-marketplace")
     return { ok: true as const }
   } catch (error) {
     return fail(error, "PERSONA_UPDATE_FAILED")
@@ -350,6 +353,7 @@ export async function updateProfileCollectionsAction(
       profileCollectionsContract.parse(input),
     )
     revalidatePath("/dashboard")
+    updateTag("public-marketplace")
     return { ok: true as const, collections }
   } catch (error) {
     return fail(error, "PROFILE_COLLECTIONS_UPDATE_FAILED")
@@ -360,6 +364,7 @@ async function mutate<T>(run: () => Promise<T>, fallback: string) {
   try {
     const data = await run()
     revalidatePath("/dashboard")
+    updateTag("public-marketplace")
     return { ok: true as const, data }
   } catch (error) {
     return fail(error, fallback)
@@ -1023,6 +1028,7 @@ export async function publishWorkspaceProfileAction(
     await publishWorkspaceProfile(companyId, version)
     revalidatePath("/dashboard/workspace")
     revalidatePath("/dashboard")
+    updateTag("public-marketplace")
     return { ok: true as const }
   } catch (error) {
     return fail(error, "WORKSPACE_PUBLISH_FAILED")
@@ -1071,6 +1077,7 @@ export async function updateEntityAction(
     revalidatePath(
       `/dashboard/${entity === "equipment" ? "equipment" : entity + "s"}`,
     )
+    updateTag("public-marketplace")
     return { ok: true as const, data }
   } catch (error) {
     return fail(error, "ENTITY_UPDATE_FAILED")
@@ -1086,6 +1093,7 @@ export async function updateCatalogueItemAction(
   try {
     await updatePortalCatalogueItem(companyId, id, body, version)
     revalidatePath("/dashboard/catalogue")
+    updateTag("public-marketplace")
     return { ok: true as const }
   } catch (error) {
     return fail(error, "CATALOGUE_UPDATE_FAILED")
@@ -1127,6 +1135,7 @@ export async function submitVerificationAction(input: {
     revalidatePath("/dashboard")
     revalidatePath("/dashboard/profile")
     revalidatePath("/dashboard/verification")
+    updateTag("public-marketplace")
     return { ok: true as const }
   } catch (error) {
     return fail(error, "VERIFICATION_SUBMIT_FAILED")

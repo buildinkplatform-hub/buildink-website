@@ -206,7 +206,9 @@ function actionsFor(
     case "COMPANY":
       if (modules.has("projects")) actions.push("publishProject")
       if (modules.has("tenders")) actions.push("browseTenders")
-      if (modules.has("workforce")) actions.push("requestWorkers")
+      if (modules.has("workforce") && modules.has("opportunities")) {
+        actions.push("requestWorkers")
+      }
       break
     case "PROJECT_OWNER":
       if (modules.has("projects")) actions.push("publishProject")
@@ -225,7 +227,6 @@ function actionsFor(
       break
     case "WORKER":
       if (modules.has("workforce")) actions.push("updateAvailability")
-      if (modules.has("opportunities")) actions.push("browseTenders")
       if (modules.has("verification")) actions.push("addCertificate")
       break
     case undefined:

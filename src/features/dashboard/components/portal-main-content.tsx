@@ -15,16 +15,16 @@ export function PortalMainContent({ children }: { children: React.ReactNode }) {
     finish()
   }, [pathname, finish])
 
-  // Keep the previous route interactive while Next prepares the next segment.
-  // The route swap uses only a short opacity transition so navigation does not
-  // feel like a full page reload on slower authenticated data requests.
+  // Keep route transitions consistent with the Admin workspace: preserve the
+  // old screen while Next prepares the next segment, then use a short motion
+  // cue instead of a full-page flash or blank state.
   return (
     <motion.div
       key={pathname}
-      className="mx-auto w-full max-w-[1460px]"
-      initial={reduced ? false : { opacity: 0.72 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.12, ease: "easeOut" }}
+      className="mx-auto w-full max-w-[1680px]"
+      initial={reduced ? false : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

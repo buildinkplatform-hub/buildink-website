@@ -17,6 +17,7 @@ interface SupportMessageState {
     messages: RealtimeSupportMessage[],
   ) => void
   appendMessage: (message: RealtimeSupportMessage) => void
+  reset: () => void
 }
 
 export const usePortalSupportMessageStore = create<SupportMessageState>(
@@ -41,5 +42,6 @@ export const usePortalSupportMessageStore = create<SupportMessageState>(
           },
         }
       }),
+    reset: () => set({ messagesByTicket: {} }),
   }),
 )

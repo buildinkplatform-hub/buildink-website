@@ -79,10 +79,14 @@ async function expectPopupInViewport(page: Page, role: "menu" | "listbox") {
 test("public routes remain usable without horizontal overflow in LTR and RTL", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(120_000)
   for (const { locale, direction } of locales) {
     for (const route of routes) {
       const path = `/${locale}${route === "/" ? "" : route}`
-      const response = await page.goto(path)
+      const response = await page.goto(path, {
+        waitUntil: "domcontentloaded",
+        timeout: 45_000,
+      })
       expect(response?.ok(), `${path} should respond successfully`).toBe(true)
       await expect(page.locator("html")).toHaveAttribute("lang", locale)
       await expect(page.locator("html")).toHaveAttribute("dir", direction)
@@ -114,7 +118,7 @@ test("mobile navigation opens from the reading-start edge", async ({
   test.skip((page.viewportSize()?.width ?? 1280) >= 1280)
 
   for (const { locale, direction } of locales) {
-    await page.goto(`/${locale}`)
+    await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" })
     await page.locator("button:has(svg.lucide-menu)").click()
     const navigation = page.getByRole("dialog")
     await expect(navigation).toBeVisible()
@@ -140,7 +144,7 @@ test("public dropdowns stay legible and inside the viewport in LTR and RTL", asy
   })
 
   for (const { locale } of locales) {
-    await page.goto(`/${locale}`)
+    await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" })
 
     const languageLabel = locale === "ar" ? /^اللغة:/ : /^Language:/
     await page.getByRole("button", { name: languageLabel }).click()

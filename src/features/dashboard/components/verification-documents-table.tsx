@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import { FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import {
@@ -55,7 +56,9 @@ export function VerificationDocumentsTable({
         documentTypeLabel: item.documentType?.replaceAll("_", " ") ?? "-",
         statusLabel: item.status,
         statusText: item.status.replaceAll("_", " "),
-        expiresAtLabel: item.expiresAt ?? "-",
+        expiresAtLabel: item.expiresAt
+          ? formatDate(item.expiresAt, locale)
+          : "-",
         createdAtLabel: formatDate(item.createdAt, locale),
         statuses: [
           item.documentType ?? "",
@@ -79,15 +82,15 @@ export function VerificationDocumentsTable({
           className: "min-w-[260px]",
           render: (row) => (
             <div className="flex items-center gap-3">
-              <div className="bg-light-blue text-primary flex size-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold">
-                DOC
+              <div className="border-primary/10 bg-primary/8 text-primary flex size-9 shrink-0 items-center justify-center rounded-xl border">
+                <FileText className="size-4" aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <p className="text-brand-navy truncate font-semibold">
+                <p className="text-foreground truncate text-sm font-semibold">
                   {row.title}
                 </p>
-                <p className="text-muted mt-1 text-xs">
-                  {String(row.documentTypeLabel ?? "-")}
+                <p className="text-muted-foreground mt-1 text-xs capitalize">
+                  {String(row.documentTypeLabel ?? "-").toLowerCase()}
                 </p>
               </div>
             </div>
@@ -106,12 +109,20 @@ export function VerificationDocumentsTable({
         {
           id: "expiry",
           header: t("dashboard.documents.expires"),
-          render: (row) => String(row.expiresAtLabel ?? "-"),
+          render: (row) => (
+            <span className="text-muted-foreground text-xs whitespace-nowrap">
+              {String(row.expiresAtLabel ?? "-")}
+            </span>
+          ),
         },
         {
           id: "uploaded",
           header: t("dashboard.documents.uploaded"),
-          render: (row) => String(row.createdAtLabel ?? "-"),
+          render: (row) => (
+            <span className="text-muted-foreground text-xs whitespace-nowrap">
+              {String(row.createdAtLabel ?? "-")}
+            </span>
+          ),
         },
         {
           id: "actions",
@@ -155,16 +166,16 @@ function VerificationDocumentFilterSummary({
     { label: t("dashboard.documents.expired"), value: expiredCount },
   ]
   return (
-    <div className="grid gap-2 sm:grid-cols-5">
+    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-2xl bg-white px-4 py-3 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.22)]"
+          className="border-border/80 bg-card rounded-xl border px-3.5 py-3 shadow-[var(--shadow-xs)]"
         >
-          <p className="text-muted truncate text-[11px] font-semibold tracking-wide uppercase">
+          <p className="text-muted-foreground truncate text-[10px] font-semibold tracking-[0.05em] uppercase">
             {item.label}
           </p>
-          <p className="text-brand-navy mt-1 text-xl leading-none font-bold">
+          <p className="text-foreground mt-1 text-lg leading-none font-bold tabular-nums">
             {item.value}
           </p>
         </div>

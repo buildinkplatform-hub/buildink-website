@@ -27,23 +27,28 @@ export function CookiePreferencesPanel() {
   const t = useTranslations("trustPages.cookies")
   const [preferences, setPreferences] = useState<CookiePreferences>(DEFAULTS)
   const [saved, setSaved] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     const stored = window.localStorage.getItem(PREFERENCES_KEY)
-    if (!stored) return
-    try {
-      const parsed = JSON.parse(stored) as Partial<CookiePreferences>
-      // Restoring a user-controlled browser preference necessarily occurs
-      // after hydration because localStorage is unavailable on the server.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPreferences({
-        preferences: Boolean(parsed.preferences),
-        analytics: Boolean(parsed.analytics),
-        marketing: Boolean(parsed.marketing),
-      })
-    } catch {
-      window.localStorage.removeItem(PREFERENCES_KEY)
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as Partial<CookiePreferences>
+        // Restoring a user-controlled browser preference necessarily occurs
+        // after hydration because localStorage is unavailable on the server.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setPreferences({
+          preferences: Boolean(parsed.preferences),
+          analytics: Boolean(parsed.analytics),
+          marketing: Boolean(parsed.marketing),
+        })
+      } catch {
+        window.localStorage.removeItem(PREFERENCES_KEY)
+      }
     }
+    // Do not let a user toggle a control before the persisted values have been
+    // restored; otherwise the hydration effect can overwrite that first click.
+    setHydrated(true)
   }, [])
 
   const options = [
@@ -69,7 +74,7 @@ export function CookiePreferencesPanel() {
       <div className="border-b border-slate-200/70 bg-slate-50/70 p-6 sm:p-7">
         <div className="flex items-start gap-4">
           <span className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-2xl">
-            <Cookie className="size-5" />
+            <Cookie className="size-5" aria-hidden="true" />
           </span>
           <div>
             <h2 className="text-brand-navy text-2xl font-bold">
@@ -86,7 +91,7 @@ export function CookiePreferencesPanel() {
         <div className="flex items-start justify-between gap-5 p-6 sm:p-7">
           <div className="flex gap-4">
             <span className="bg-success/10 text-success flex size-10 shrink-0 items-center justify-center rounded-xl">
-              <LockKeyhole className="size-4" />
+              <LockKeyhole className="size-4" aria-hidden="true" />
             </span>
             <div>
               <h3 className="text-brand-navy font-bold">
@@ -115,11 +120,13 @@ export function CookiePreferencesPanel() {
             </div>
             <Checkbox
               checked={preferences[option.key]}
+              disabled={!hydrated}
               onChange={(event) => {
+                const checked = event.currentTarget.checked
                 setSaved(false)
                 setPreferences((current) => ({
                   ...current,
-                  [option.key]: event.currentTarget.checked,
+                  [option.key]: checked,
                 }))
               }}
               aria-label={option.title}
@@ -130,6 +137,7 @@ export function CookiePreferencesPanel() {
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/70 bg-white p-6 sm:p-7">
         <Button
+          disabled={!hydrated}
           onClick={() => {
             window.localStorage.setItem(
               PREFERENCES_KEY,
@@ -146,7 +154,7 @@ export function CookiePreferencesPanel() {
             className="text-success flex items-center gap-2 text-sm font-semibold"
             role="status"
           >
-            <CheckCircle2 className="size-4" />
+            <CheckCircle2 className="size-4" aria-hidden="true" />
             {t("saved")}
           </p>
         ) : null}

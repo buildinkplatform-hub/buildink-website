@@ -75,28 +75,32 @@ export function PortalRouteSearch({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="border-line text-muted hover:border-line focus-visible:ring-primary/12 hover:bg-accent flex size-11 shrink-0 items-center justify-center rounded-[10px] border bg-[#F8FAFC] text-start text-sm transition focus-visible:ring-2 focus-visible:outline-none sm:h-10 sm:w-full sm:max-w-[460px] sm:justify-start sm:gap-2.5 sm:px-3.5"
+        className="border-primary/10 bg-card text-foreground hover:border-primary/25 hover:bg-primary/[0.025] focus-visible:ring-primary/15 flex size-11 shrink-0 items-center justify-center rounded-[10px] border text-start text-sm shadow-[var(--shadow-xs)] transition-[border-color,background-color,box-shadow] focus-visible:ring-2 focus-visible:outline-none sm:h-10 sm:w-full sm:max-w-[460px] sm:justify-start sm:gap-2.5 sm:px-2.5"
         aria-label="Search dashboard pages"
       >
-        <Search className="size-4" />
-        <span className="hidden min-w-0 flex-1 truncate sm:block">
+        <span className="bg-primary/[0.08] text-primary grid size-7 shrink-0 place-items-center rounded-lg">
+          <Search className="size-4" strokeWidth={2.1} />
+        </span>
+        <span className="text-muted-foreground hidden min-w-0 flex-1 truncate sm:block">
           Search dashboard pages...
         </span>
-        <kbd className="hidden rounded border bg-white px-1.5 py-0.5 text-[10px] font-medium text-slate-500 md:inline">
+        <kbd className="border-primary/10 bg-primary/[0.04] text-primary hidden rounded-md border px-1.5 py-0.5 text-[10px] font-semibold md:inline">
           Ctrl K
         </kbd>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="top-[8%] w-[calc(100vw-1.5rem)] max-w-xl translate-y-0 p-0 sm:top-[12%]">
+        <DialogContent className="border-primary/10 top-[8%] w-[calc(100vw-1.5rem)] max-w-xl translate-y-0 overflow-hidden p-0 shadow-[var(--shadow-floating)] sm:top-[12%]">
           <DialogHeader className="sr-only">
             <DialogTitle>Search dashboard pages</DialogTitle>
             <DialogDescription>
               Navigate quickly between dashboard pages.
             </DialogDescription>
           </DialogHeader>
-          <div className="focus-within:border-primary/30 focus-within:bg-accent/45 flex items-center gap-2 border-b px-4">
-            <Search className="text-muted size-5" />
+          <div className="border-primary/10 bg-primary/[0.02] focus-within:bg-primary/[0.035] flex items-center gap-3 border-b px-4 transition-colors">
+            <span className="bg-primary/[0.08] text-primary grid size-8 shrink-0 place-items-center rounded-lg">
+              <Search className="size-4" strokeWidth={2.1} />
+            </span>
             <Input
               aria-label="Search dashboard pages"
               autoFocus
@@ -106,7 +110,7 @@ export function PortalRouteSearch({
               className="h-14 rounded-none border-0 bg-transparent px-0 shadow-none focus:border-transparent focus:ring-0 focus-visible:ring-0"
             />
           </div>
-          <div className="max-h-[min(60vh,440px)] overflow-y-auto p-2">
+          <div className="portal-scrollbar max-h-[min(60vh,440px)] overflow-y-auto p-2">
             {items.length ? (
               items.map((item) => {
                 const Icon =
@@ -117,26 +121,31 @@ export function PortalRouteSearch({
                     key={item.href}
                     type="button"
                     onClick={() => navigate(item.href)}
-                    className="hover:bg-accent focus-visible:ring-primary/12 flex w-full items-center gap-3 rounded-xl p-3 text-start transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    className="hover:bg-primary/[0.045] focus-visible:ring-primary/15 flex w-full items-center gap-3 rounded-xl p-3 text-start transition-colors focus-visible:ring-2 focus-visible:outline-none"
                   >
-                    <span className="bg-primary/8 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
+                    <span className="border-primary/10 bg-primary/[0.07] text-primary flex size-9 shrink-0 items-center justify-center rounded-lg border">
                       <Icon className="size-4" />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="text-brand-navy block truncate text-sm font-semibold">
                         {item.label}
                       </span>
-                      <span className="text-muted mt-0.5 block truncate text-xs">
+                      <span className="text-muted-foreground mt-0.5 block truncate text-xs">
                         {item.description}
                       </span>
                     </span>
-                    <CornerDownLeft className="text-muted size-4" />
+                    <CornerDownLeft className="text-primary/60 size-4 shrink-0" />
                   </button>
                 )
               })
             ) : (
-              <div className="text-muted p-8 text-center text-sm">
-                No matching pages found.
+              <div className="p-8 text-center">
+                <span className="border-primary/10 bg-primary/[0.06] text-primary mx-auto mb-3 grid size-10 place-items-center rounded-xl border">
+                  <Search className="size-4" />
+                </span>
+                <p className="text-muted-foreground text-sm">
+                  No matching pages found.
+                </p>
               </div>
             )}
           </div>

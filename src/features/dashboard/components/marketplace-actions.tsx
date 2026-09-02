@@ -23,12 +23,14 @@ import {
   stageWorkspaceApplicationAction,
   sendPortalMessageAction,
 } from "@/features/dashboard/actions/portal.actions"
+import { canDecideOffer } from "@/features/dashboard/lib/offer-decision"
 import { usePortalMutationRunner } from "@/features/dashboard/query/use-portal-mutation"
 
 export function OfferDecisionActions({
   companyId,
   id,
   version,
+  status,
   acceptLabel,
   rejectLabel,
   requestChangesLabel,
@@ -37,6 +39,7 @@ export function OfferDecisionActions({
   companyId: string
   id: string
   version: number
+  status: string
   acceptLabel: string
   rejectLabel: string
   requestChangesLabel: string
@@ -47,6 +50,11 @@ export function OfferDecisionActions({
   const [pendingAction, setPendingAction] = useState<string>()
   const [requestOpen, setRequestOpen] = useState(false)
   const [changeReason, setChangeReason] = useState("")
+  const canAccept = canDecideOffer(status, "ACCEPTED")
+  const canReject = canDecideOffer(status, "REJECTED")
+  const canRequestChanges = canDecideOffer(status, "CHANGES_REQUESTED")
+  const canShortlist =
+    Boolean(shortlistLabel) && canDecideOffer(status, "SHORTLISTED")
 
   async function decide(decision: "accept" | "reject") {
     setPendingAction(decision)
@@ -69,6 +77,7 @@ export function OfferDecisionActions({
   }
 
   async function shortlist() {
+    if (!canShortlist) return
     setPendingAction("shortlist")
     try {
       await runMutation(
@@ -86,6 +95,7 @@ export function OfferDecisionActions({
   }
 
   async function requestChanges() {
+    if (!canRequestChanges) return
     const reason = changeReason.trim()
     if (!reason) return
     setPendingAction("changes")
@@ -109,38 +119,47 @@ export function OfferDecisionActions({
     }
   }
 
+  if (!canAccept && !canReject && !canRequestChanges && !canShortlist)
+    return null
+
   return (
     <div className="mt-3 flex flex-wrap gap-2">
-      <Button
-        size="sm"
-        disabled={Boolean(pendingAction)}
-        onClick={() => void decide("accept")}
-      >
-        {pendingAction === "accept" ? (
-          <Loader2 className="animate-spin" />
-        ) : null}
-        {acceptLabel}
-      </Button>
-      <Button
-        size="sm"
-        variant="secondary"
-        disabled={Boolean(pendingAction)}
-        onClick={() => void decide("reject")}
-      >
-        {pendingAction === "reject" ? (
-          <Loader2 className="animate-spin" />
-        ) : null}
-        {rejectLabel}
-      </Button>
-      <Button
-        size="sm"
-        variant="secondary"
-        disabled={Boolean(pendingAction)}
-        onClick={() => setRequestOpen(true)}
-      >
-        {requestChangesLabel}
-      </Button>
-      {shortlistLabel ? (
+      {canAccept ? (
+        <Button
+          size="sm"
+          disabled={Boolean(pendingAction)}
+          onClick={() => void decide("accept")}
+        >
+          {pendingAction === "accept" ? (
+            <Loader2 className="animate-spin" />
+          ) : null}
+          {acceptLabel}
+        </Button>
+      ) : null}
+      {canReject ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={Boolean(pendingAction)}
+          onClick={() => void decide("reject")}
+        >
+          {pendingAction === "reject" ? (
+            <Loader2 className="animate-spin" />
+          ) : null}
+          {rejectLabel}
+        </Button>
+      ) : null}
+      {canRequestChanges ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={Boolean(pendingAction)}
+          onClick={() => setRequestOpen(true)}
+        >
+          {requestChangesLabel}
+        </Button>
+      ) : null}
+      {canShortlist && shortlistLabel ? (
         <Button
           size="sm"
           variant="secondary"
@@ -153,19 +172,21 @@ export function OfferDecisionActions({
           {shortlistLabel}
         </Button>
       ) : null}
-      <PromptDialog
-        open={requestOpen}
-        onOpenChange={setRequestOpen}
-        title={requestChangesLabel}
-        description={requestChangesLabel}
-        value={changeReason}
-        onValueChange={setChangeReason}
-        confirmLabel={requestChangesLabel}
-        cancelLabel={common("cancel")}
-        pending={pendingAction === "changes"}
-        minLength={3}
-        onConfirm={() => void requestChanges()}
-      />
+      {canRequestChanges ? (
+        <PromptDialog
+          open={requestOpen}
+          onOpenChange={setRequestOpen}
+          title={requestChangesLabel}
+          description={requestChangesLabel}
+          value={changeReason}
+          onValueChange={setChangeReason}
+          confirmLabel={requestChangesLabel}
+          cancelLabel={common("cancel")}
+          pending={pendingAction === "changes"}
+          minLength={3}
+          onConfirm={() => void requestChanges()}
+        />
+      ) : null}
     </div>
   )
 }

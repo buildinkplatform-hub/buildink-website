@@ -2,10 +2,16 @@
 
 import { Eye, FileText, UserRound } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import type { ReactNode } from "react"
 
-import { Card } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { ProfileCollectionsEditor } from "@/features/dashboard/components/profile-collections-editor"
 import { ProfileDocumentsManager } from "@/features/dashboard/components/profile-documents-manager"
 import { ProfileEditor } from "@/features/dashboard/components/profile-editor"
@@ -19,6 +25,7 @@ import type {
   PortalProfileCollections,
   PortalVisibility,
 } from "@/features/dashboard/data/portal-client"
+import { cn } from "@/lib/utils/cn"
 
 type PersonaPayload = Awaited<
   ReturnType<
@@ -52,7 +59,6 @@ export function ProfilePageClient({
   const t = useTranslations()
   const params = useSearchParams()
   const pathname = usePathname()
-  const router = useRouter()
   const requestedTab = params.get("tab") ?? initialTab
   const tab: ProfileTab = profileTabs.some((item) => item.id === requestedTab)
     ? (requestedTab as ProfileTab)
@@ -62,13 +68,18 @@ export function ProfilePageClient({
     if (value === "overview") next.delete("tab")
     else next.set("tab", value)
     const query = next.toString()
-    router.replace(query ? `${pathname}?${query}` : pathname, {
-      scroll: false,
-    })
+
+    // All profile tab data is already available on this client page. Keep the
+    // URL in sync without triggering a new Server Component/backend request.
+    window.history.replaceState(
+      null,
+      "",
+      query ? `${pathname}?${query}` : pathname,
+    )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <ProfileTabNav
         active={tab}
         documentCount={documents.length}
@@ -106,12 +117,12 @@ function ProfileOverviewTab({
 }) {
   const t = useTranslations()
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <ProfileTabCard
         title={t("dashboard.profileTabs.overview")}
         description={t("dashboard.profile.accountSummaryDescription")}
       >
-        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {[
             { label: t("dashboard.profile.email"), value: profile.email },
             {
@@ -140,8 +151,11 @@ function ProfileOverviewTab({
               value: new Date(profile.updatedAt).toLocaleString(),
             },
           ].map((item) => (
-            <div key={item.label} className="border-line rounded-xl border p-3">
-              <dt className="text-muted text-xs tracking-[0.12em] uppercase">
+            <div
+              key={item.label}
+              className="border-border/90 rounded-xl border bg-slate-50/60 p-4 dark:bg-white/[0.025]"
+            >
+              <dt className="text-muted-foreground text-[11px] font-medium tracking-wide uppercase">
                 {item.label}
               </dt>
               <dd className="text-brand-navy mt-1.5 text-sm font-semibold break-words">
@@ -188,27 +202,29 @@ function ProfileTabNav({
 }) {
   const t = useTranslations()
   return (
-    <div className="border-line overflow-x-auto border-b">
+    <div className="border-border/90 portal-scrollbar overflow-x-auto rounded-2xl border bg-slate-50/65 p-1 shadow-[var(--shadow-xs)] dark:bg-white/[0.025]">
       <nav
-        className="flex min-w-max gap-1"
+        className="flex min-w-max items-center gap-1"
         aria-label={t("dashboard.nav.profile")}
       >
         {profileTabs.map(({ id, icon: Icon }) => (
           <button
             key={id}
             type="button"
-            className={`flex min-h-11 items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
+            role="tab"
+            aria-selected={active === id}
+            className={cn(
+              "focus-visible:ring-primary/20 inline-flex min-h-10 items-center gap-2 rounded-xl px-3.5 text-sm font-semibold transition-[background-color,color,border-color,box-shadow] outline-none focus-visible:ring-3",
               active === id
-                ? "border-primary text-primary"
-                : "text-muted hover:text-brand-navy border-transparent"
-            }`}
-            aria-current={active === id ? "page" : undefined}
+                ? "border-border/90 bg-card text-primary border shadow-[var(--shadow-xs)]"
+                : "text-muted-foreground hover:bg-card/70 hover:text-foreground",
+            )}
             onClick={() => onChange(id)}
           >
-            <Icon className="size-4" />
+            <Icon className="size-4" aria-hidden="true" />
             {t(`dashboard.profileTabs.${id}`)}
             {id === "documents" ? (
-              <span className="bg-light-blue text-primary rounded-full px-1.5 text-xs">
+              <span className="bg-muted text-muted-foreground rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
                 {documentCount}
               </span>
             ) : null}
@@ -229,14 +245,12 @@ export function ProfileTabCard({
   children: ReactNode
 }) {
   return (
-    <Card className="rounded-[30px] border-white/70 p-6 shadow-[var(--shadow-card)] sm:p-7">
-      <div className="mb-6">
-        <h2 className="text-brand-navy text-xl font-semibold">{title}</h2>
-        {description ? (
-          <p className="text-muted mt-2 text-sm leading-6">{description}</p>
-        ) : null}
-      </div>
-      {children}
+    <Card>
+      <CardHeader className="border-border/70 border-b bg-slate-50/55 dark:bg-white/[0.02]">
+        <CardTitle>{title}</CardTitle>
+        {description ? <CardDescription>{description}</CardDescription> : null}
+      </CardHeader>
+      <CardContent className="pt-5 sm:pt-6">{children}</CardContent>
     </Card>
   )
 }

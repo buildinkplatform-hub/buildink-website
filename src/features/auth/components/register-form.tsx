@@ -134,7 +134,13 @@ export function RegisterForm() {
           error={errors.name?.message}
           required
         >
-          <Input id="name" autoComplete="name" {...register("name")} />
+          <Input
+            id="name"
+            autoComplete="name"
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? "name-error" : undefined}
+            {...register("name")}
+          />
         </Field>
         <Field
           label={t("auth.email")}
@@ -147,6 +153,8 @@ export function RegisterForm() {
             type="email"
             autoComplete="email"
             className="ltr-content"
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? "email-error" : undefined}
             {...register("email")}
           />
         </Field>
@@ -161,6 +169,8 @@ export function RegisterForm() {
             <PasswordInput
               id="password"
               autoComplete="new-password"
+              aria-invalid={Boolean(errors.password)}
+              aria-describedby={errors.password ? "password-error" : undefined}
               {...register("password")}
             />
           </Field>
@@ -173,6 +183,10 @@ export function RegisterForm() {
             <PasswordInput
               id="confirmPassword"
               autoComplete="new-password"
+              aria-invalid={Boolean(errors.confirmPassword)}
+              aria-describedby={
+                errors.confirmPassword ? "confirmPassword-error" : undefined
+              }
               {...register("confirmPassword")}
             />
           </Field>

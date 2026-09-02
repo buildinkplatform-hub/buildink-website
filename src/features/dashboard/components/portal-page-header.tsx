@@ -26,19 +26,20 @@ export function PortalPageHeader({
           className="text-muted-foreground mb-3 px-0.5 text-xs"
         />
       ) : null}
+
       <div className="flex flex-wrap items-start justify-between gap-4 sm:gap-5">
-        <div className="max-w-3xl min-w-0 flex-1">
+        <div className="max-w-4xl min-w-0 flex-1">
           {eyebrow ? (
-            <p className="text-primary border-primary/10 bg-primary/5 mb-2 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+            <p className="text-primary mb-1.5 text-[11px] font-bold tracking-[0.16em] uppercase sm:text-xs">
               {eyebrow}
             </p>
           ) : null}
           <h1
             className={cn(
-              "text-brand-950 font-bold tracking-[-0.04em] text-balance break-words",
+              "text-brand-navy font-bold tracking-[-0.04em] text-balance break-words",
               compact
-                ? "text-[1.75rem] leading-[2.1rem] sm:text-[2rem]"
-                : "text-[29px] leading-[37px] sm:text-[2.15rem] sm:leading-[2.6rem]",
+                ? "text-[1.65rem] leading-8 sm:text-[1.9rem] sm:leading-9"
+                : "text-[29px] leading-[38px] sm:text-[2.15rem] sm:leading-[2.6rem]",
             )}
           >
             {title}

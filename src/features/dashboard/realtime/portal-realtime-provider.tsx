@@ -33,6 +33,7 @@ export function PortalRealtimeProvider({
   const replaceNotifications = usePortalNotificationStore(
     (state) => state.replace,
   )
+  const resetNotifications = usePortalNotificationStore((state) => state.reset)
   const upsertNotification = usePortalNotificationStore((state) => state.upsert)
   const setNotificationConnected = usePortalNotificationStore(
     (state) => state.setConnected,
@@ -41,8 +42,12 @@ export function PortalRealtimeProvider({
   const updateConversation = usePortalMessageStore(
     (state) => state.updateConversation,
   )
+  const resetMessages = usePortalMessageStore((state) => state.reset)
   const appendSupportMessage = usePortalSupportMessageStore(
     (state) => state.appendMessage,
+  )
+  const resetSupportMessages = usePortalSupportMessageStore(
+    (state) => state.reset,
   )
   const eventT = useTranslations("dashboard.notificationEvents")
 
@@ -51,6 +56,13 @@ export function PortalRealtimeProvider({
     let socket: Socket | undefined
     let unsubscribeAuth: (() => void) | undefined
     let viewerId: string | undefined
+    let currentUserId: string | null = null
+
+    const resetRealtimeAccountState = () => {
+      resetNotifications()
+      resetMessages()
+      resetSupportMessages()
+    }
 
     const refreshNotifications = async () => {
       try {
@@ -61,14 +73,8 @@ export function PortalRealtimeProvider({
       }
     }
 
-    const connect = async () => {
-      await refreshNotifications()
-      const supabase = createClient()
-      const { data } = await supabase.auth.getSession()
-      const token = data.session?.access_token
-      viewerId = data.session?.user.id
-      if (!token || !active) return
-
+    const connectSocket = (token: string) => {
+      socket?.disconnect()
       socket = io(`${getBackendBaseUrl()}/realtime`, {
         transports: ["websocket"],
         auth: { token },
@@ -118,12 +124,41 @@ export function PortalRealtimeProvider({
       )
 
       socket.io.on("reconnect", () => void refreshNotifications())
+    }
+
+    const connect = async () => {
+      const supabase = createClient()
+      const { data } = await supabase.auth.getSession()
+      const session = data.session
+      const token = session?.access_token
+      viewerId = session?.user.id
+      currentUserId = session?.user.id ?? null
+
+      if (!token || !currentUserId || !active) {
+        resetRealtimeAccountState()
+        return
+      }
+
+      // A provider mount can occur after an in-tab account transition. Clear
+      // every account-scoped realtime store before loading the current user.
+      resetRealtimeAccountState()
+      await refreshNotifications()
+      if (!active) return
+      connectSocket(token)
 
       const { data: authListener } = supabase.auth.onAuthStateChange(
-        async (_event: AuthChangeEvent, session: Session | null) => {
-          viewerId = session?.user.id
-          const nextToken = session?.access_token
-          if (!nextToken || !active) {
+        async (_event: AuthChangeEvent, nextSession: Session | null) => {
+          if (!active) return
+          const nextUserId = nextSession?.user.id ?? null
+          const nextToken = nextSession?.access_token
+          viewerId = nextSession?.user.id
+
+          if (!nextUserId || !nextToken) {
+            currentUserId = null
+            socket?.disconnect()
+            socket = undefined
+            resetRealtimeAccountState()
+
             if (_event === "SIGNED_OUT") {
               const registration =
                 await navigator.serviceWorker?.getRegistration("/sw.js")
@@ -138,9 +173,15 @@ export function PortalRealtimeProvider({
             }
             return
           }
-          if (!socket) return
-          socket.auth = { token: nextToken }
-          if (!socket.connected) socket.connect()
+
+          const accountChanged = currentUserId !== nextUserId
+          currentUserId = nextUserId
+          if (accountChanged) {
+            resetRealtimeAccountState()
+            await refreshNotifications()
+          }
+          if (!active) return
+          connectSocket(nextToken)
         },
       )
 
@@ -180,12 +221,16 @@ export function PortalRealtimeProvider({
       clearInterval(poll)
       unsubscribeAuth?.()
       socket?.disconnect()
+      resetRealtimeAccountState()
     }
   }, [
     appendMessage,
     appendSupportMessage,
     eventT,
     replaceNotifications,
+    resetMessages,
+    resetNotifications,
+    resetSupportMessages,
     setNotificationConnected,
     updateConversation,
     upsertNotification,

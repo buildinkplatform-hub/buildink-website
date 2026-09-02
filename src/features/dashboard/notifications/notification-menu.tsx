@@ -25,6 +25,8 @@ import {
 import { Link } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
 
+const menuItemLimit = 8
+
 export function PortalNotificationMenu() {
   const t = useTranslations("dashboard.inbox")
   const eventT = useTranslations("dashboard.notificationEvents")
@@ -32,26 +34,16 @@ export function PortalNotificationMenu() {
   const items = usePortalNotificationStore((state) => state.items)
   const unreadCount = usePortalNotificationStore((state) => state.unreadCount)
   const replace = usePortalNotificationStore((state) => state.replace)
-  const setRead = usePortalNotificationStore((state) => state.setRead)
-  const markAllReadStore = usePortalNotificationStore(
-    (state) => state.markAllRead,
-  )
   const notifications = usePortalNotifications()
   const setReadMutation = useSetPortalNotificationRead()
   const markAllReadMutation = useMarkAllPortalNotificationsRead()
 
   useEffect(() => {
     if (!notifications.data) return
-    replace(
-      notifications.data.items.slice(0, 8),
-      notifications.data.unreadCount,
-    )
+    // The store is shared with the full Notifications page. Keep the complete
+    // result here and apply the dropdown's eight-item limit only at render time.
+    replace(notifications.data.items, notifications.data.unreadCount)
   }, [notifications.data, replace])
-
-  const readAll = async () => {
-    await markAllReadMutation.mutateAsync()
-    markAllReadStore()
-  }
 
   return (
     <DropdownMenu>
@@ -91,7 +83,7 @@ export function PortalNotificationMenu() {
             variant="ghost"
             size="sm"
             disabled={!unreadCount || markAllReadMutation.isPending}
-            onClick={() => void readAll()}
+            onClick={() => markAllReadMutation.mutate()}
           >
             <CheckCheck className="size-3.5" />
             {t("markAllRead")}
@@ -99,13 +91,12 @@ export function PortalNotificationMenu() {
         </div>
         <DropdownMenuSeparator />
         <div className="max-h-[min(65vh,420px)] overflow-y-auto p-1.5">
-          {items.map((item) => (
+          {items.slice(0, menuItemLimit).map((item) => (
             <DropdownMenuItem key={item.id} asChild className="p-0">
               <Link
                 href={portalNotificationHref(item.actionUrl)}
                 onClick={() => {
                   if (!item.readAt) {
-                    setRead(item.id, true)
                     setReadMutation.mutate({ id: item.id, read: true })
                   }
                 }}

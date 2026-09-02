@@ -159,7 +159,7 @@ export const PORTAL_ROUTE_CAPABILITIES = {
   members: { detail: true },
   projects: { detail: true, create: true, edit: true },
   opportunities: { detail: true, create: true, edit: true },
-  offers: { detail: true, create: true },
+  offers: { detail: true, create: true, edit: true },
   applications: { detail: true, create: true },
   tenders: { detail: true, create: true, edit: true },
   workforce: {},

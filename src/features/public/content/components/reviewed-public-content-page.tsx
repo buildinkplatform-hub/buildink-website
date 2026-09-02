@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { PublicContactForm } from "@/features/public/components/public-contact-form"
 import { ContentShell } from "@/features/public/components/public-shells"
 import { CookiePreferencesPanel } from "@/features/public/content/components/cookie-preferences-panel"
+import { HowItWorksExplorer } from "@/features/public/content/components/how-it-works-explorer"
 import { getPublicContentPage } from "@/features/public/content/data/public-content.repository"
 import type { Locale } from "@/shared/types/platform"
 
@@ -21,30 +22,27 @@ const pageChrome: Record<
   }
 > = {
   it: {
-    meta: (version) => `Bozza aggiornata 28 agosto 2026 · Versione ${version}`,
+    meta: (version) => `Aggiornata il 28 agosto 2026 · Versione ${version}`,
     onThisPage: "In questa pagina",
     cookieSettings: "Impostazioni cookie",
   },
   en: {
-    meta: (version) => `Draft updated 28 August 2026 · Version ${version}`,
+    meta: (version) => `Updated 28 August 2026 · Version ${version}`,
     onThisPage: "On this page",
     cookieSettings: "Cookie settings",
   },
   ar: {
-    meta: (version) =>
-      `مسودة مترجمة محدثة في 28 أغسطس 2026 · الإصدار ${version}`,
+    meta: (version) => `تم التحديث في 28 أغسطس 2026 · الإصدار ${version}`,
     onThisPage: "في هذه الصفحة",
     cookieSettings: "إعدادات ملفات تعريف الارتباط",
   },
   ro: {
-    meta: (version) =>
-      `Proiect tradus actualizat la 28 august 2026 · Versiunea ${version}`,
+    meta: (version) => `Actualizat la 28 august 2026 · Versiunea ${version}`,
     onThisPage: "În această pagină",
     cookieSettings: "Setări cookie",
   },
   sq: {
-    meta: (version) =>
-      `Draft i përkthyer, përditësuar më 28 gusht 2026 · Versioni ${version}`,
+    meta: (version) => `Përditësuar më 28 gusht 2026 · Versioni ${version}`,
     onThisPage: "Në këtë faqe",
     cookieSettings: "Cilësimet e cookie-ve",
   },
@@ -129,6 +127,8 @@ export async function ReviewedPublicContentPage({
       }
       aside={aside}
     >
+      {type === "how-it-works" ? <HowItWorksExplorer /> : null}
+
       {type === "faq" ? (
         <>
           <script

@@ -5,6 +5,7 @@ import authRegister from "./pages/auth/register.json"
 import authResetPassword from "./pages/auth/reset-password.json"
 import authShared from "./pages/auth/shared.json"
 import dashboard from "./pages/dashboard.json"
+import supportHeader from "./pages/support-header.json"
 import operations from "./pages/operations.json"
 import locations from "./pages/locations.json"
 import home from "./pages/home.json"
@@ -37,6 +38,7 @@ export default mergeMessages(
   onboardingDocuments,
   onboardingReview,
   dashboard,
+  supportHeader,
   operations,
   locations,
   offline,

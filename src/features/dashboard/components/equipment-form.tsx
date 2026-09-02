@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl"
 import { ConfirmationDialog } from "@/components/feedback/confirmation-dialog"
 import { CityLocationField } from "@/components/forms/city-location-field"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -19,7 +18,14 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import {
+  PortalFormActions,
+  PortalFormSection,
+  PortalInlineAlert,
+  PortalOptionRow,
+} from "@/features/dashboard/components/portal-form-layout"
+import {
   createEquipmentAction,
+  publishEquipmentAction,
   updateEntityAction,
 } from "@/features/dashboard/actions/portal.actions"
 import { portalDetailPath } from "@/features/dashboard/config/portal-routes"
@@ -88,6 +94,12 @@ export function EquipmentForm({
   const [message, setMessage] = useState<string>()
   const [confirmOpen, setConfirmOpen] = useState(false)
 
+  const canPublishDraft =
+    mode === "edit" &&
+    equipment?.status === "DRAFT" &&
+    typeof equipment.version === "number"
+  const saveDisabled = pending || name.trim().length < 2
+
   function body(publish = false) {
     return {
       name,
@@ -142,39 +154,94 @@ export function EquipmentForm({
     if (id) router.push(portalDetailPath("equipment", id))
   }
 
+  async function publishDraft() {
+    if (
+      !equipment ||
+      !canPublishDraft ||
+      typeof equipment.version !== "number"
+    ) {
+      return
+    }
+    const parsed = equipmentWebsiteSchema.safeParse(body(false))
+    if (!parsed.success) {
+      setMessage(parsed.error.issues[0]?.message)
+      return
+    }
+
+    setPending(true)
+    setMessage(undefined)
+    const saved = await updateEntityAction(
+      "equipment",
+      equipment.id,
+      parsed.data,
+      equipment.version,
+    )
+    if (!saved.ok) {
+      setPending(false)
+      setMessage(saved.message)
+      return
+    }
+
+    const savedVersion = (saved.data as { version?: number } | undefined)
+      ?.version
+    if (typeof savedVersion !== "number") {
+      setPending(false)
+      setMessage("Could not publish the saved equipment draft.")
+      return
+    }
+
+    const published = await publishEquipmentAction(equipment.id, savedVersion)
+    setPending(false)
+    if (!published.ok) {
+      setMessage(published.message)
+      return
+    }
+
+    router.push(portalDetailPath("equipment", equipment.id))
+    router.refresh()
+  }
+
   return (
-    <div className="space-y-5">
-      <Card className="space-y-4 p-5">
-        <Field
-          label={t("dashboard.publish.name")}
-          htmlFor="equip-name"
-          required
-        >
-          <Input
-            id="equip-name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </Field>
-        <Field
-          label={t("dashboard.publish.description")}
-          htmlFor="equip-description"
-        >
-          <Textarea
-            id="equip-description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
+    <div className="space-y-5" aria-busy={pending}>
+      <PortalFormSection
+        title={t("dashboard.publish.equipmentTitle")}
+        description={t("dashboard.descriptions.equipment")}
+      >
+        <div className="grid gap-5 lg:grid-cols-2">
+          <div className="lg:col-span-2">
+            <Field
+              label={t("dashboard.publish.name")}
+              htmlFor="equip-name"
+              required
+            >
+              <Input
+                id="equip-name"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+              />
+            </Field>
+          </div>
+          <div className="lg:col-span-2">
+            <Field
+              label={t("dashboard.publish.description")}
+              htmlFor="equip-description"
+            >
+              <Textarea
+                id="equip-description"
+                rows={5}
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </Field>
+          </div>
           <Field
             label={t("dashboard.publish.listingType")}
             htmlFor="equip-type"
           >
             <Select
               value={listingType}
-              onValueChange={(value) =>
-                setListingType(value as (typeof listingTypes)[number])
+              onValueChange={(next) =>
+                setListingType(next as (typeof listingTypes)[number])
               }
             >
               <SelectTrigger id="equip-type">
@@ -201,8 +268,8 @@ export function EquipmentForm({
           >
             <Select
               value={condition}
-              onValueChange={(value) =>
-                setCondition(value as (typeof conditions)[number])
+              onValueChange={(next) =>
+                setCondition(next as (typeof conditions)[number])
               }
             >
               <SelectTrigger id="equip-condition">
@@ -217,28 +284,40 @@ export function EquipmentForm({
               </SelectContent>
             </Select>
           </Field>
+          <Field
+            label={t("dashboard.publish.category")}
+            htmlFor="equip-category"
+          >
+            <Select value={categoryId} onValueChange={setCategoryId}>
+              <SelectTrigger id="equip-category">
+                <SelectValue placeholder={t("dashboard.create.chooseTarget")} />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.name ?? item.label ?? item.slug ?? item.id}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field
+            label={t("dashboard.publish.location")}
+            htmlFor="equip-location"
+          >
+            <CityLocationField
+              cityId={cityId || undefined}
+              onChange={setCityId}
+            />
+          </Field>
         </div>
-        <Field label={t("dashboard.publish.category")} htmlFor="equip-category">
-          <Select value={categoryId} onValueChange={setCategoryId}>
-            <SelectTrigger id="equip-category">
-              <SelectValue placeholder={t("dashboard.create.chooseTarget")} />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((item) => (
-                <SelectItem key={item.id} value={item.id}>
-                  {item.name ?? item.label ?? item.slug ?? item.id}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label={t("dashboard.publish.location")} htmlFor="equip-location">
-          <CityLocationField
-            cityId={cityId || undefined}
-            onChange={setCityId}
-          />
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
+      </PortalFormSection>
+
+      <PortalFormSection
+        title={t("dashboard.publish.brand")}
+        description={t("dashboard.descriptions.equipment")}
+      >
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           <Field label={t("dashboard.publish.brand")} htmlFor="equip-brand">
             <Input
               id="equip-brand"
@@ -267,6 +346,7 @@ export function EquipmentForm({
             <Input
               id="equip-year"
               type="number"
+              inputMode="numeric"
               min={1900}
               max={2100}
               value={year}
@@ -274,10 +354,17 @@ export function EquipmentForm({
             />
           </Field>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+      </PortalFormSection>
+
+      <PortalFormSection
+        title={t("dashboard.create.price")}
+        description={t("dashboard.publish.ratePublic")}
+      >
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           <Field label={t("dashboard.create.price")} htmlFor="equip-rate">
             <Input
               id="equip-rate"
+              inputMode="decimal"
               value={rate}
               onChange={(event) => setRate(event.target.value)}
             />
@@ -288,6 +375,7 @@ export function EquipmentForm({
           >
             <Input
               id="equip-weekly"
+              inputMode="decimal"
               value={weeklyRate}
               onChange={(event) => setWeeklyRate(event.target.value)}
             />
@@ -298,6 +386,7 @@ export function EquipmentForm({
           >
             <Input
               id="equip-monthly"
+              inputMode="decimal"
               value={monthlyRate}
               onChange={(event) => setMonthlyRate(event.target.value)}
             />
@@ -305,65 +394,54 @@ export function EquipmentForm({
           <Field label={t("dashboard.fields.salePrice")} htmlFor="equip-sale">
             <Input
               id="equip-sale"
+              inputMode="decimal"
               value={salePrice}
               onChange={(event) => setSalePrice(event.target.value)}
             />
           </Field>
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <Checkbox
-            checked={ratePublic}
-            onChange={(event) => setRatePublic(event.target.checked)}
-          />
-          {t("dashboard.publish.ratePublic")}
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <Checkbox
-            checked={operatorIncluded}
-            onChange={(event) => setOperatorIncluded(event.target.checked)}
-          />
-          {t("dashboard.publish.operatorIncluded")}
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <Checkbox
-            checked={deliveryAvailable}
-            onChange={(event) => setDeliveryAvailable(event.target.checked)}
-          />
-          {t("dashboard.publish.deliveryAvailable")}
-        </label>
-      </Card>
-      {message ? <p className="text-danger text-sm">{message}</p> : null}
-      <div className="flex flex-wrap gap-3">
-        <Button
-          type="button"
-          disabled={pending || !name}
-          onClick={() => void save(false)}
-        >
-          {mode === "edit"
-            ? t("dashboard.edit.save")
-            : t("dashboard.publish.saveDraft")}
-        </Button>
-        {mode === "create" ? (
-          <>
-            <Button
-              type="button"
-              disabled={pending || !name}
-              onClick={() => setConfirmOpen(true)}
-            >
-              {t("dashboard.publish.publish")}
-            </Button>
-            <ConfirmationDialog
-              open={confirmOpen}
-              onOpenChange={setConfirmOpen}
-              title={t("dashboard.publish.publish")}
-              description={t("dashboard.publish.confirmEquipment")}
-              confirmLabel={t("dashboard.publish.publish")}
-              cancelLabel={t("common.cancel")}
-              pending={pending}
-              onConfirm={() => void save(true)}
+        <PortalOptionRow>
+          <label className="flex min-h-6 flex-1 items-center gap-3 text-sm font-medium">
+            <Checkbox
+              checked={ratePublic}
+              onChange={(event) => setRatePublic(event.target.checked)}
             />
-          </>
-        ) : null}
+            {t("dashboard.publish.ratePublic")}
+          </label>
+        </PortalOptionRow>
+      </PortalFormSection>
+
+      <PortalFormSection
+        title={t("dashboard.publish.operatorIncluded")}
+        description={t("dashboard.descriptions.equipment")}
+      >
+        <div className="grid gap-3 sm:grid-cols-2">
+          <PortalOptionRow>
+            <label className="flex min-h-6 flex-1 items-center gap-3 text-sm font-medium">
+              <Checkbox
+                checked={operatorIncluded}
+                onChange={(event) => setOperatorIncluded(event.target.checked)}
+              />
+              {t("dashboard.publish.operatorIncluded")}
+            </label>
+          </PortalOptionRow>
+          <PortalOptionRow>
+            <label className="flex min-h-6 flex-1 items-center gap-3 text-sm font-medium">
+              <Checkbox
+                checked={deliveryAvailable}
+                onChange={(event) => setDeliveryAvailable(event.target.checked)}
+              />
+              {t("dashboard.publish.deliveryAvailable")}
+            </label>
+          </PortalOptionRow>
+        </div>
+      </PortalFormSection>
+
+      {message ? (
+        <PortalInlineAlert tone="error">{message}</PortalInlineAlert>
+      ) : null}
+
+      <PortalFormActions hint={t("dashboard.publish.confirmEquipment")}>
         <Button type="button" variant="secondary" asChild>
           <Link
             href={
@@ -375,7 +453,37 @@ export function EquipmentForm({
             {t("common.cancel")}
           </Link>
         </Button>
-      </div>
+        <Button
+          type="button"
+          variant={mode === "create" ? "secondary" : "primary"}
+          disabled={saveDisabled}
+          onClick={() => void save(false)}
+        >
+          {mode === "edit"
+            ? t("dashboard.edit.save")
+            : t("dashboard.publish.saveDraft")}
+        </Button>
+        {mode === "create" || canPublishDraft ? (
+          <Button
+            type="button"
+            disabled={saveDisabled}
+            onClick={() => setConfirmOpen(true)}
+          >
+            {t("dashboard.publish.publish")}
+          </Button>
+        ) : null}
+      </PortalFormActions>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={t("dashboard.publish.publish")}
+        description={t("dashboard.publish.confirmEquipment")}
+        confirmLabel={t("dashboard.publish.publish")}
+        cancelLabel={t("common.cancel")}
+        pending={pending}
+        onConfirm={() => void (mode === "edit" ? publishDraft() : save(true))}
+      />
     </div>
   )
 }

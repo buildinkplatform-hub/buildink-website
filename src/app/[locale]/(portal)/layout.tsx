@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 
+import { logoutAction } from "@/features/auth/actions/auth.actions"
 import { PortalShell } from "@/features/dashboard/components/portal-shell"
 import { getPortalRoutes } from "@/features/dashboard/config/portal-routes"
 import { getPortalBootstrap } from "@/features/dashboard/data/portal-client"
@@ -54,7 +55,10 @@ export default async function PortalLayout({
       const destination = getSignedInDestination(locale, nextAction)
       if (!isDashboardHref(destination, locale)) redirect(destination)
     }
-    const t = await getTranslations({ locale, namespace: "dashboard" })
+    const [t, common] = await Promise.all([
+      getTranslations({ locale, namespace: "dashboard" }),
+      getTranslations({ locale, namespace: "common" }),
+    ])
     return (
       <main className="bg-canvas flex min-h-screen items-center justify-center px-5 py-16">
         <section className="border-line w-full max-w-lg rounded-3xl border bg-white p-8 text-center shadow-sm">
@@ -62,12 +66,22 @@ export default async function PortalLayout({
             {t("portalErrorTitle")}
           </h1>
           <p className="text-muted mt-3 text-sm">{t("bootstrapUnavailable")}</p>
-          <a
-            href={`/${locale}/dashboard`}
-            className="bg-primary mt-6 inline-flex min-h-10 items-center justify-center rounded-xl px-5 text-sm font-semibold text-white"
-          >
-            {t("retry")}
-          </a>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <a
+              href={`/${locale}/dashboard`}
+              className="bg-primary inline-flex min-h-10 items-center justify-center rounded-xl px-5 text-sm font-semibold text-white"
+            >
+              {t("retry")}
+            </a>
+            <form action={logoutAction.bind(null, locale)}>
+              <button
+                type="submit"
+                className="border-line text-brand-navy inline-flex min-h-10 items-center justify-center rounded-xl border bg-white px-5 text-sm font-semibold"
+              >
+                {common("logout")}
+              </button>
+            </form>
+          </div>
         </section>
       </main>
     )

@@ -36,20 +36,20 @@ export function OperationsMetricCard({
   trend?: { value: string; favorable: boolean }
 }) {
   const tones = {
-    navy: "bg-foreground/5 text-foreground",
-    blue: "bg-primary/10 text-primary",
-    green: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-    amber: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
-    red: "bg-red-500/10 text-red-700 dark:text-red-400",
+    navy: "border-brand-navy/8 bg-brand-navy/6 text-brand-navy",
+    blue: "border-primary/10 bg-primary/8 text-primary",
+    green: "border-success/15 bg-success/8 text-success",
+    amber: "border-warning/15 bg-warning/8 text-[#B54708] dark:text-warning",
+    red: "border-danger/15 bg-danger/8 text-danger",
   }
   return (
-    <Card className="group hover:border-primary/20 rounded-[24px] p-5 shadow-sm transition-[box-shadow,border-color] hover:shadow-md motion-reduce:transition-none">
-      <div className="flex items-start justify-between gap-4">
+    <Card className="group hover:border-primary/15 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)] motion-reduce:hover:translate-y-0">
+      <div className="flex min-h-[108px] items-start justify-between gap-4 p-5">
         <div className="min-w-0">
-          <p className="text-muted-foreground text-xs font-semibold tracking-[0.12em] uppercase">
+          <p className="text-muted-foreground text-xs font-semibold tracking-[0.01em]">
             {label}
           </p>
-          <p className="text-foreground mt-2 text-2xl font-bold tabular-nums">
+          <p className="text-brand-navy mt-1.5 text-[1.65rem] leading-8 font-bold tracking-[-0.03em] tabular-nums">
             {value}
           </p>
           {detail ? (
@@ -57,33 +57,31 @@ export function OperationsMetricCard({
               {detail}
             </p>
           ) : null}
+          {trend ? (
+            <p
+              className={cn(
+                "mt-2 flex items-center gap-1 text-xs font-semibold",
+                trend.favorable ? "text-success" : "text-danger",
+              )}
+            >
+              {trend.favorable ? (
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              ) : (
+                <ArrowDownRight className="size-3.5" aria-hidden="true" />
+              )}
+              {trend.value}
+            </p>
+          ) : null}
         </div>
         <span
           className={cn(
-            "grid size-11 shrink-0 place-items-center rounded-2xl",
+            "grid size-10 shrink-0 place-items-center rounded-xl border",
             tones[tone],
           )}
         >
-          <Icon className="size-5" aria-hidden="true" />
+          <Icon className="size-4.5" aria-hidden="true" />
         </span>
       </div>
-      {trend ? (
-        <p
-          className={cn(
-            "mt-4 flex items-center gap-1 text-xs font-semibold",
-            trend.favorable
-              ? "text-emerald-700 dark:text-emerald-400"
-              : "text-red-700 dark:text-red-400",
-          )}
-        >
-          {trend.favorable ? (
-            <ArrowUpRight className="size-3.5" />
-          ) : (
-            <ArrowDownRight className="size-3.5" />
-          )}
-          {trend.value}
-        </p>
-      ) : null}
     </Card>
   )
 }
@@ -99,11 +97,11 @@ export function OperationsStatusBadge({ status }: { status: string }) {
     "ACTIVE",
     "HIRED",
   ].includes(normalized)
-    ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+    ? "border-success/20 bg-success/10 text-success"
     : ["REJECTED", "VOIDED", "CRITICAL", "CANCELLED", "INACTIVE"].includes(
           normalized,
         )
-      ? "border-red-500/25 bg-red-500/10 text-red-700 dark:text-red-400"
+      ? "border-danger/20 bg-danger/10 text-danger"
       : [
             "SUBMITTED",
             "OPERATIONALLY_APPROVED",
@@ -113,10 +111,19 @@ export function OperationsStatusBadge({ status }: { status: string }) {
             "REOPENED",
             "INTERVIEW",
           ].includes(normalized)
-        ? "border-amber-500/25 bg-amber-500/10 text-amber-800 dark:text-amber-300"
-        : "border-primary/20 bg-primary/10 text-primary"
+        ? "border-warning/20 bg-warning/10 text-[#B54708] dark:text-warning"
+        : "border-primary/15 bg-primary/8 text-primary"
   return (
-    <Badge className={cn("min-h-7 px-2.5 font-semibold", tone)}>
+    <Badge
+      className={cn(
+        "min-h-0 gap-1 px-2.5 py-1 text-[11px] leading-4 font-semibold",
+        tone,
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className="size-1.5 rounded-full bg-current opacity-70"
+      />
       {t.has(normalized) ? t(normalized) : labelize(status)}
     </Badge>
   )
@@ -154,19 +161,16 @@ export function OperationsDataTable({
       resource={resource}
       columns={columns}
     >
-      <Card className="overflow-hidden rounded-[24px] shadow-sm">
-        <div className="hidden overflow-x-auto md:block">
+      <Card className="overflow-hidden">
+        <div className="hidden md:block">
           <Table className="min-w-[840px]">
-            <TableHeader className="bg-muted/35">
+            <TableHeader>
               <TableRow className="hover:bg-transparent">
                 {columns.map((column) => (
                   <TableHead
                     key={column.key}
                     data-column={column.key}
-                    className={cn(
-                      "text-muted-foreground h-11 text-xs font-semibold",
-                      column.className,
-                    )}
+                    className={cn(column.className)}
                   >
                     {column.label}
                   </TableHead>
@@ -175,15 +179,12 @@ export function OperationsDataTable({
             </TableHeader>
             <TableBody>
               {rows.map((row, index) => (
-                <TableRow
-                  key={String(row.id ?? index)}
-                  className="hover:bg-muted/25 transition-colors motion-reduce:transition-none"
-                >
+                <TableRow key={String(row.id ?? index)}>
                   {columns.map((column) => (
                     <TableCell
                       key={column.key}
                       data-column={column.key}
-                      className={cn("py-3.5 align-middle", column.className)}
+                      className={cn("align-middle", column.className)}
                     >
                       {column.render
                         ? column.render(row)
@@ -200,7 +201,7 @@ export function OperationsDataTable({
           {rows.map((row, index) => (
             <article
               key={String(row.id ?? index)}
-              className="bg-muted/20 overflow-hidden rounded-2xl border"
+              className="border-border/90 bg-card overflow-hidden rounded-xl border"
             >
               {columns.map((column, columnIndex) => (
                 <div
@@ -208,7 +209,8 @@ export function OperationsDataTable({
                   data-column={column.key}
                   className={cn(
                     "flex items-start justify-between gap-4 px-4 py-3",
-                    columnIndex !== columns.length - 1 && "border-b",
+                    columnIndex !== columns.length - 1 &&
+                      "border-border/70 border-b",
                   )}
                 >
                   <span className="text-muted-foreground min-w-24 text-xs font-semibold">
@@ -237,12 +239,14 @@ export function OperationsEmptyState({
   description?: string
 }) {
   return (
-    <Card className="bg-muted/10 grid min-h-60 place-items-center rounded-[24px] border-dashed p-8 text-center shadow-none">
+    <Card className="grid min-h-56 place-items-center border-dashed p-8 text-center shadow-none">
       <div className="max-w-md">
-        <span className="bg-muted text-muted-foreground mx-auto grid size-12 place-items-center rounded-2xl">
-          <Inbox className="size-6" aria-hidden="true" />
+        <span className="border-primary/10 bg-primary/8 text-primary mx-auto grid size-11 place-items-center rounded-xl border">
+          <Inbox className="size-5" aria-hidden="true" />
         </span>
-        <h3 className="text-foreground mt-4 font-semibold">{title}</h3>
+        <h3 className="text-foreground mt-4 font-semibold tracking-[-0.01em]">
+          {title}
+        </h3>
         {description ? (
           <p className="text-muted-foreground mt-1.5 text-sm leading-6">
             {description}
@@ -267,11 +271,11 @@ export function OperationsAlertCard({
   return (
     <Card
       className={cn(
-        "rounded-2xl border-s-4 p-4 shadow-none",
+        "border-s-4 p-4 shadow-none",
         severity === "CRITICAL"
-          ? "border-s-red-500"
+          ? "border-s-danger"
           : severity === "WARNING"
-            ? "border-s-amber-500"
+            ? "border-s-warning"
             : "border-s-primary",
       )}
     >
@@ -280,13 +284,13 @@ export function OperationsAlertCard({
           className={cn(
             "mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl",
             severity === "CRITICAL"
-              ? "bg-red-500/10 text-red-700 dark:text-red-400"
+              ? "bg-danger/10 text-danger"
               : severity === "WARNING"
-                ? "bg-amber-500/10 text-amber-700 dark:text-amber-400"
-                : "bg-primary/10 text-primary",
+                ? "bg-warning/10 dark:text-warning text-[#B54708]"
+                : "bg-primary/8 text-primary",
           )}
         >
-          <AlertTriangle className="size-4.5" />
+          <AlertTriangle className="size-4" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">

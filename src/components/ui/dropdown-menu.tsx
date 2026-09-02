@@ -22,7 +22,7 @@ function DropdownMenuContent({
         sideOffset={sideOffset}
         collisionPadding={12}
         className={cn(
-          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border/80 z-[80] max-h-[min(var(--radix-dropdown-menu-content-available-height),28rem)] min-w-52 overflow-y-auto rounded-2xl border p-1.5 shadow-[var(--shadow-floating)] duration-150 outline-none motion-reduce:animate-none",
+          "bg-popover text-popover-foreground data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border/80 pointer-events-auto z-[120] max-h-[min(var(--radix-dropdown-menu-content-available-height),28rem)] min-w-52 overflow-y-auto rounded-xl border p-1.5 shadow-[var(--shadow-floating)] duration-150 outline-none motion-reduce:animate-none",
           className,
         )}
         {...props}
@@ -41,7 +41,7 @@ function DropdownMenuItem({
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
-        "text-foreground focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/8 relative flex min-h-10 cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0",
+        "text-foreground focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/8 relative flex min-h-10 cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0",
         inset && "ps-9",
         className,
       )}
@@ -90,7 +90,7 @@ function DropdownMenuCheckboxItem({
   return (
     <DropdownMenuPrimitive.CheckboxItem
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground relative flex min-h-10 cursor-default items-center rounded-xl py-2 ps-9 pe-3 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
+        "focus:bg-accent focus:text-accent-foreground relative flex min-h-10 cursor-default items-center rounded-lg py-2 ps-9 pe-3 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
         className,
       )}
       checked={checked}
@@ -119,7 +119,7 @@ function DropdownMenuSubTrigger({
   return (
     <DropdownMenuPrimitive.SubTrigger
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex min-h-10 cursor-default items-center rounded-xl px-3 py-2 text-sm outline-none select-none",
+        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex min-h-10 cursor-default items-center rounded-lg px-3 py-2 text-sm outline-none select-none",
         inset && "ps-9",
         className,
       )}
@@ -155,7 +155,7 @@ function MultiSelect({
           id={id}
           type="button"
           aria-haspopup="menu"
-          className="border-input bg-card text-foreground hover:border-primary/25 focus-visible:border-primary/60 focus-visible:ring-primary/12 flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl border px-4 text-start text-sm shadow-[0_1px_2px_rgb(7_26_51/0.03)] transition-[border-color,box-shadow,background-color] outline-none focus-visible:ring-3"
+          className="border-input bg-card text-foreground hover:border-primary/25 focus-visible:border-primary/60 focus-visible:ring-primary/12 flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border px-3.5 text-start text-sm shadow-[0_1px_2px_rgb(7_26_51/0.03)] transition-[border-color,box-shadow,background-color] outline-none focus-visible:ring-3"
         >
           <span
             className={cn(

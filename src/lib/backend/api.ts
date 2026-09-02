@@ -45,6 +45,10 @@ export async function readBackendEnvelope<T>(
   }
 }
 
+function retryDelay() {
+  return new Promise((resolve) => setTimeout(resolve, 150))
+}
+
 export async function backendApi<T>(
   path: string,
   init: RequestInit = {},
@@ -59,35 +63,54 @@ export async function backendApi<T>(
   const useDataCache = Boolean(init.next)
   const method = (init.method ?? "GET").toUpperCase()
   const attempts = method === "GET" || method === "HEAD" ? 2 : 1
-  const timeout = AbortSignal.timeout(
-    Number(process.env.BACKEND_API_TIMEOUT_MS ?? 10_000),
-  )
-  const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout
+  const timeoutMs = Number(process.env.BACKEND_API_TIMEOUT_MS ?? 10_000)
   let response: Response | undefined
+  let lastFetchError: unknown
+
   for (let attempt = 0; attempt < attempts; attempt += 1) {
-    response = await fetch(
-      `${process.env.BACKEND_API_URL ?? "http://localhost:4000"}${path}`,
-      {
-        ...init,
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-          ...init.headers,
+    const timeout = AbortSignal.timeout(timeoutMs)
+    const signal = init.signal
+      ? AbortSignal.any([init.signal, timeout])
+      : timeout
+
+    try {
+      response = await fetch(
+        `${process.env.BACKEND_API_URL ?? "http://localhost:4000"}${path}`,
+        {
+          ...init,
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${token}`,
+            ...init.headers,
+          },
+          // Only force no-store when the caller has not opted into the Next.js data cache.
+          ...(useDataCache
+            ? {}
+            : { cache: init.cache ?? ("no-store" as const) }),
+          signal,
         },
-        // Only force no-store when the caller has not opted into the Next.js data cache.
-        ...(useDataCache ? {} : { cache: init.cache ?? ("no-store" as const) }),
-        signal,
-      },
-    )
+      )
+    } catch (error) {
+      lastFetchError = error
+      if (init.signal?.aborted) throw error
+      if (attempt === attempts - 1) break
+      await retryDelay()
+      continue
+    }
+
     if (response.status < 500 || attempt === attempts - 1) break
     await response.body?.cancel().catch(() => undefined)
-    await new Promise((resolve) => setTimeout(resolve, 150))
+    response = undefined
+    await retryDelay()
   }
+
   if (!response) {
     throw new BackendApiError(
       503,
       "BACKEND_UNAVAILABLE",
-      "The backend is unavailable",
+      lastFetchError instanceof Error
+        ? `The backend is unavailable: ${lastFetchError.message}`
+        : "The backend is unavailable",
     )
   }
   const payload = await readBackendEnvelope<T>(response)

@@ -26,6 +26,13 @@ import {
 } from "@/features/dashboard/actions/portal.actions"
 import type { PortalOfferTarget } from "@/features/dashboard/data/portal-client"
 
+type TenderOfferTarget = {
+  id: string
+  kind: "tender"
+  title: string
+  currency?: string | null
+}
+
 function eurosToMinor(value: string) {
   const amount = Number(value.replace(",", "."))
   if (!Number.isFinite(amount) || amount < 0) return ""
@@ -50,19 +57,27 @@ export function OfferCreateForm({
   opportunities,
   packages,
   lots,
+  tenders = [],
+  initialTarget,
   submitterCompanyId,
 }: {
   opportunities: PortalOfferTarget[]
   packages: PortalOfferTarget[]
   lots: PortalOfferTarget[]
+  tenders?: TenderOfferTarget[]
+  initialTarget?: string
   submitterCompanyId?: string
 }) {
   const t = useTranslations()
   const router = useRouter()
   const idempotencyKey = useMemo(() => crypto.randomUUID(), [])
-  const [target, setTarget] = useState("")
+  const allTargets = [...tenders, ...opportunities, ...packages, ...lots]
+  const initialSelection = allTargets.find(
+    (item) => `${item.kind}:${item.id}` === initialTarget,
+  )
+  const [target, setTarget] = useState(initialSelection ? initialTarget! : "")
   const [price, setPrice] = useState("")
-  const [currency, setCurrency] = useState("EUR")
+  const [currency, setCurrency] = useState(initialSelection?.currency ?? "EUR")
   const [duration, setDuration] = useState("")
   const [notes, setNotes] = useState("")
   const [scope, setScope] = useState("")
@@ -87,12 +102,14 @@ export function OfferCreateForm({
   const [status, setStatus] = useState<"idle" | "pending" | "saved" | "error">(
     "idle",
   )
+  const [submitted, setSubmitted] = useState(false)
   const [message, setMessage] = useState<string>()
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  const selected = [...opportunities, ...packages, ...lots].find(
+  const selected = allTargets.find(
     (item) => `${item.kind}:${item.id}` === target,
   )
+  const skipInitialTargetAutosave = useRef(Boolean(initialSelection))
   const draftIdRef = useRef(draftId)
   const versionRef = useRef(version)
   useEffect(() => {
@@ -134,6 +151,7 @@ export function OfferCreateForm({
             }
           }),
       }
+      if (selected?.kind === "tender") body.tenderId = selected.id
       if (selected?.kind === "opportunity") body.opportunityId = selected.id
       if (selected?.kind === "package") {
         body.projectId = selected.projectId ?? selected.parentId
@@ -164,7 +182,11 @@ export function OfferCreateForm({
   )
 
   useEffect(() => {
-    if (!selected) return
+    if (!selected || submitted) return
+    if (skipInitialTargetAutosave.current) {
+      skipInitialTargetAutosave.current = false
+      return
+    }
     window.clearTimeout(timer.current)
     timer.current = setTimeout(() => {
       void (async () => {
@@ -190,10 +212,10 @@ export function OfferCreateForm({
       })()
     }, 800)
     return () => window.clearTimeout(timer.current)
-  }, [idempotencyKey, payload, selected])
+  }, [idempotencyKey, payload, selected, submitted])
 
   async function submit() {
-    if (!selected) return
+    if (!selected || submitted) return
     setStatus("pending")
     const body = payload(true)
     const created = draftId
@@ -204,8 +226,10 @@ export function OfferCreateForm({
       setMessage(created.message)
       return
     }
+    setSubmitted(true)
     setStatus("saved")
-    router.refresh()
+    setMessage(undefined)
+    router.push("/dashboard/offers")
   }
 
   return (
@@ -214,15 +238,20 @@ export function OfferCreateForm({
         {t("dashboard.create.offerTitle")}
       </h2>
       <Field
-        label={t("dashboard.create.target")}
+        label={t("dashboard.create.chooseTarget")}
         htmlFor="offer-target"
         required
       >
-        <Select value={target} onValueChange={setTarget}>
+        <Select value={target} onValueChange={setTarget} disabled={submitted}>
           <SelectTrigger id="offer-target">
             <SelectValue placeholder={t("dashboard.create.chooseTarget")} />
           </SelectTrigger>
           <SelectContent>
+            {tenders.map((item) => (
+              <SelectItem key={item.id} value={`tender:${item.id}`}>
+                {item.title}
+              </SelectItem>
+            ))}
             {opportunities.map((item) => (
               <SelectItem key={item.id} value={`opportunity:${item.id}`}>
                 {item.title}
@@ -246,6 +275,7 @@ export function OfferCreateForm({
           id="offer-price"
           inputMode="decimal"
           value={price}
+          disabled={submitted}
           onChange={(event) => setPrice(event.target.value)}
           placeholder="1500.00"
         />
@@ -255,6 +285,7 @@ export function OfferCreateForm({
           id="offer-currency"
           value={currency}
           maxLength={3}
+          disabled={submitted}
           onChange={(event) => setCurrency(event.target.value.toUpperCase())}
         />
       </Field>
@@ -263,6 +294,7 @@ export function OfferCreateForm({
           id="offer-duration"
           inputMode="numeric"
           value={duration}
+          disabled={submitted}
           onChange={(event) => setDuration(event.target.value)}
         />
       </Field>
@@ -270,6 +302,7 @@ export function OfferCreateForm({
         <Textarea
           id="offer-notes"
           value={notes}
+          disabled={submitted}
           onChange={(event) => setNotes(event.target.value)}
         />
       </Field>
@@ -277,6 +310,7 @@ export function OfferCreateForm({
         <Textarea
           id="offer-scope"
           value={scope}
+          disabled={submitted}
           onChange={(event) => setScope(event.target.value)}
         />
       </Field>
@@ -288,6 +322,7 @@ export function OfferCreateForm({
           <Textarea
             id="offer-assumptions"
             value={assumptions}
+            disabled={submitted}
             onChange={(event) => setAssumptions(event.target.value)}
           />
         </Field>
@@ -298,6 +333,7 @@ export function OfferCreateForm({
           <Textarea
             id="offer-exclusions"
             value={exclusions}
+            disabled={submitted}
             onChange={(event) => setExclusions(event.target.value)}
           />
         </Field>
@@ -308,6 +344,7 @@ export function OfferCreateForm({
           <Textarea
             id="offer-payment-terms"
             value={paymentTerms}
+            disabled={submitted}
             onChange={(event) => setPaymentTerms(event.target.value)}
           />
         </Field>
@@ -318,6 +355,7 @@ export function OfferCreateForm({
           <Textarea
             id="offer-warranty-terms"
             value={warrantyTerms}
+            disabled={submitted}
             onChange={(event) => setWarrantyTerms(event.target.value)}
           />
         </Field>
@@ -330,6 +368,7 @@ export function OfferCreateForm({
           id="offer-price-valid-until"
           type="date"
           value={priceValidUntil}
+          disabled={submitted}
           onChange={(event) => setPriceValidUntil(event.target.value)}
         />
       </Field>
@@ -342,6 +381,7 @@ export function OfferCreateForm({
             type="button"
             size="sm"
             variant="secondary"
+            disabled={submitted}
             onClick={() =>
               setItems((current) => [
                 ...current,
@@ -361,6 +401,7 @@ export function OfferCreateForm({
               aria-label={t("dashboard.create.itemDescription")}
               placeholder={t("dashboard.create.itemDescription")}
               value={item.description}
+              disabled={submitted}
               onChange={(event) =>
                 setItems((current) =>
                   current.map((entry, itemIndex) =>
@@ -376,6 +417,7 @@ export function OfferCreateForm({
               placeholder={t("dashboard.create.quantity")}
               inputMode="decimal"
               value={item.quantity}
+              disabled={submitted}
               onChange={(event) =>
                 setItems((current) =>
                   current.map((entry, itemIndex) =>
@@ -390,6 +432,7 @@ export function OfferCreateForm({
               aria-label={t("dashboard.create.unit")}
               placeholder={t("dashboard.create.unit")}
               value={item.unit}
+              disabled={submitted}
               onChange={(event) =>
                 setItems((current) =>
                   current.map((entry, itemIndex) =>
@@ -406,6 +449,7 @@ export function OfferCreateForm({
                 placeholder={t("dashboard.create.unitPrice")}
                 inputMode="decimal"
                 value={item.unitPrice}
+                disabled={submitted}
                 onChange={(event) =>
                   setItems((current) =>
                     current.map((entry, itemIndex) =>
@@ -420,6 +464,7 @@ export function OfferCreateForm({
                 type="button"
                 size="sm"
                 variant="secondary"
+                disabled={submitted}
                 onClick={() =>
                   setItems((current) =>
                     current.filter((_, itemIndex) => itemIndex !== index),
@@ -438,7 +483,7 @@ export function OfferCreateForm({
       {message ? <p className="text-danger text-sm">{message}</p> : null}
       <Button
         type="button"
-        disabled={!selected || status === "pending"}
+        disabled={!selected || status === "pending" || submitted}
         onClick={() => void submit()}
       >
         {t("dashboard.create.submitOffer")}
@@ -465,6 +510,7 @@ export function ApplicationCreateForm({
   const [status, setStatus] = useState<"idle" | "pending" | "saved" | "error">(
     "idle",
   )
+  const [submitted, setSubmitted] = useState(false)
   const [message, setMessage] = useState<string>()
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const draftIdRef = useRef(draftId)
@@ -475,7 +521,7 @@ export function ApplicationCreateForm({
   }, [draftId, version])
 
   useEffect(() => {
-    if (!opportunityId) return
+    if (!opportunityId || submitted) return
     window.clearTimeout(timer.current)
     timer.current = setTimeout(() => {
       void (async () => {
@@ -506,10 +552,10 @@ export function ApplicationCreateForm({
       })()
     }, 800)
     return () => window.clearTimeout(timer.current)
-  }, [attachments, cover, idempotencyKey, opportunityId])
+  }, [attachments, cover, idempotencyKey, opportunityId, submitted])
 
   async function submit() {
-    if (!opportunityId) return
+    if (!opportunityId || submitted) return
     setStatus("pending")
     const created = draftId
       ? await submitApplicationAction(draftId, version)
@@ -527,8 +573,10 @@ export function ApplicationCreateForm({
       setMessage(created.message)
       return
     }
+    setSubmitted(true)
     setStatus("saved")
-    router.refresh()
+    setMessage(undefined)
+    router.push("/dashboard/applications")
   }
 
   return (
@@ -541,7 +589,11 @@ export function ApplicationCreateForm({
         htmlFor="application-target"
         required
       >
-        <Select value={opportunityId} onValueChange={setOpportunityId}>
+        <Select
+          value={opportunityId}
+          onValueChange={setOpportunityId}
+          disabled={submitted}
+        >
           <SelectTrigger id="application-target">
             <SelectValue placeholder={t("dashboard.create.chooseTarget")} />
           </SelectTrigger>
@@ -558,6 +610,7 @@ export function ApplicationCreateForm({
         <Textarea
           id="application-cover"
           value={cover}
+          disabled={submitted}
           onChange={(event) => setCover(event.target.value)}
         />
       </Field>
@@ -566,7 +619,7 @@ export function ApplicationCreateForm({
       {message ? <p className="text-danger text-sm">{message}</p> : null}
       <Button
         type="button"
-        disabled={!opportunityId || status === "pending"}
+        disabled={!opportunityId || status === "pending" || submitted}
         onClick={() => void submit()}
       >
         {t("dashboard.create.submitApplication")}

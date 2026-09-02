@@ -4,10 +4,12 @@ import { cn } from "@/lib/utils/cn"
 
 export function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
-    <table
-      className={cn("w-full caption-bottom text-sm", className)}
-      {...props}
-    />
+    <div className="portal-scrollbar w-full overflow-x-auto overscroll-x-contain">
+      <table
+        className={cn("w-full caption-bottom text-sm", className)}
+        {...props}
+      />
+    </div>
   )
 }
 
@@ -17,7 +19,10 @@ export function TableHeader({
 }: React.ComponentProps<"thead">) {
   return (
     <thead
-      className={cn("border-line/70 border-b bg-slate-50/80", className)}
+      className={cn(
+        "border-border/70 border-b bg-slate-50/80 dark:bg-white/[0.025] [&_tr]:border-b",
+        className,
+      )}
       {...props}
     />
   )
@@ -36,7 +41,7 @@ export function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
       className={cn(
-        "border-line/60 border-b transition-colors hover:bg-slate-50/70",
+        "border-border/60 dark:data-[state=selected]:bg-primary/10 border-b transition-colors hover:bg-slate-50/70 data-[state=selected]:bg-blue-50 dark:hover:bg-white/[0.035]",
         className,
       )}
       {...props}
@@ -48,7 +53,7 @@ export function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "text-muted h-12 px-4 text-start align-middle text-xs font-semibold",
+        "text-muted-foreground h-11 px-4 text-start align-middle text-xs font-semibold whitespace-nowrap",
         className,
       )}
       {...props}

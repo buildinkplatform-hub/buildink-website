@@ -40,13 +40,20 @@ function statusCopy(
 
 export async function MyReviewsPanel() {
   const t = await getTranslations("dashboard.myReviews")
+  const rootT = await getTranslations()
   const format = await getFormatter()
-  const result = await listMyReviews({ page: 1, pageSize: 20 })
+  const result = await listMyReviews({ page: 1, pageSize: 20 }).catch(
+    () => null,
+  )
 
   return (
     <Card className="p-6 shadow-sm">
       <h2 className="text-brand-navy font-bold">{t("title")}</h2>
-      {result.items.length ? (
+      {!result ? (
+        <p className="text-muted mt-4 text-sm">
+          {rootT("dashboard.bootstrapUnavailable")}
+        </p>
+      ) : result.items.length ? (
         <ul className="mt-5 space-y-3">
           {result.items.map((item) => {
             const status = asReviewStatus(item.status)

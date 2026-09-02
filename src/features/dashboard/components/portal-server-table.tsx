@@ -97,21 +97,22 @@ export function PortalServerTable({
     }
     if (server?.query) params.set("q", server.query)
     if (server?.status) params.set("status", server.status)
-    if (server?.sort && server.sort !== "newest") {
+    if (server?.sort && server.sort !== "newest")
       params.set("sort", server.sort)
-    }
     if (page > 1) params.set("page", String(page))
     const suffix = params.toString()
     return suffix ? `${basePath}?${suffix}` : basePath
   }
 
   return (
-    <div className="space-y-4">
-      <div className="surface-panel overflow-hidden rounded-[1.5rem] shadow-[var(--shadow-sm)]">
+    <div className="space-y-3">
+      <section className="border-primary/10 bg-card overflow-hidden rounded-2xl border shadow-[var(--shadow-xs)]">
         {filters ? (
-          <div className="border-border/70 bg-muted/18 border-b px-4 py-4 sm:px-5">
-            <div className="text-muted-foreground mb-3 flex items-center gap-2 text-[11px] font-semibold tracking-[0.08em] uppercase">
-              <SlidersHorizontal className="text-primary size-3.5" />
+          <div className="border-primary/10 bg-primary/[0.025] border-b px-4 py-3.5 sm:px-5">
+            <div className="text-brand-navy mb-3 flex items-center gap-2 text-[11px] font-semibold tracking-[0.08em] uppercase">
+              <span className="bg-primary/[0.08] text-primary grid size-7 place-items-center rounded-lg">
+                <SlidersHorizontal className="size-3.5" />
+              </span>
               Additional filters
             </div>
             {filters}
@@ -134,12 +135,12 @@ export function PortalServerTable({
             sortOptions: server?.sortOptions,
           }}
         />
-      </div>
+      </section>
 
       {!rows.length ? (
-        <div className="surface-panel grid min-h-72 place-items-center rounded-[1.5rem] border-dashed p-8 text-center">
+        <section className="border-primary/10 bg-card grid min-h-64 place-items-center rounded-2xl border border-dashed p-8 text-center shadow-[var(--shadow-xs)]">
           <div className="max-w-sm">
-            <span className="border-primary/10 bg-primary/8 text-primary mx-auto mb-4 grid size-12 place-items-center rounded-2xl border">
+            <span className="border-primary/10 bg-primary/[0.07] text-primary mx-auto mb-4 grid size-11 place-items-center rounded-xl border">
               <Inbox className="size-5" aria-hidden="true" />
             </span>
             <p className="text-foreground font-semibold tracking-[-0.01em]">
@@ -151,65 +152,63 @@ export function PortalServerTable({
               </p>
             ) : null}
           </div>
-        </div>
+        </section>
       ) : null}
 
       {rows.length ? (
-        <>
-          <div className="surface-panel hidden overflow-hidden rounded-t-[1.5rem] rounded-b-none md:block">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-start text-sm">
-                <thead className="border-border/70 bg-muted/30 border-b text-xs">
-                  <tr>
+        <section className="border-primary/10 bg-card overflow-hidden rounded-2xl border shadow-[var(--shadow-xs)]">
+          <div className="portal-scrollbar hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[760px] text-start text-sm">
+              <thead className="border-primary/10 bg-primary/[0.035] border-b text-xs dark:bg-white/[0.025]">
+                <tr>
+                  {columns.map((column) => (
+                    <th
+                      key={column.id}
+                      className={cn(
+                        "text-muted-foreground h-11 px-4 text-start align-middle text-[11px] font-semibold tracking-[0.035em] whitespace-nowrap uppercase sm:px-5",
+                        column.className,
+                      )}
+                    >
+                      {column.header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-card [&_tr:last-child]:border-0">
+                {rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="border-primary/[0.07] hover:bg-primary/[0.025] border-b transition-colors dark:hover:bg-white/[0.035]"
+                  >
                     {columns.map((column) => (
-                      <th
-                        key={column.id}
+                      <td
+                        key={`${row.id}-${column.id}`}
                         className={cn(
-                          "text-muted-foreground h-12 px-5 text-start align-middle text-[11px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase",
-                          column.className,
+                          "px-4 py-3.5 align-middle sm:px-5",
+                          column.cellClassName,
                         )}
                       >
-                        {column.header}
-                      </th>
+                        {column.render(row)}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody className="bg-card [&_tr:last-child]:border-0">
-                  {rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-border/60 hover:bg-muted/22 border-b transition-colors"
-                    >
-                      {columns.map((column) => (
-                        <td
-                          key={`${row.id}-${column.id}`}
-                          className={cn(
-                            "px-5 py-4 align-middle",
-                            column.cellClassName,
-                          )}
-                        >
-                          {column.render(row)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          <div className="grid gap-3 md:hidden">
+          <div className="bg-primary/[0.012] grid gap-3 p-3 md:hidden">
             {rows.map((row) => (
               <Card
                 key={row.id}
-                className="surface-panel rounded-[1.35rem] p-4 shadow-none"
+                className="border-primary/10 rounded-xl p-4 shadow-none"
               >
                 {mobileCard ? (
                   mobileCard(row)
                 ) : (
                   <>
                     <p className="text-foreground font-semibold">{row.title}</p>
-                    <div className="mt-4 flex flex-wrap gap-2 border-t pt-3">
+                    <div className="border-primary/10 mt-4 flex flex-wrap gap-2 border-t pt-3">
                       {row.detailHref ? (
                         <Button asChild size="sm" variant="secondary">
                           <Link href={row.detailHref}>
@@ -224,79 +223,81 @@ export function PortalServerTable({
               </Card>
             ))}
           </div>
-        </>
-      ) : null}
 
-      {server && server.pageInfo.total ? (
-        <div className="surface-panel bg-card/90 flex flex-col gap-3 rounded-2xl px-4 py-3 sm:px-5 md:-mt-4 md:flex-row md:items-center md:justify-between md:rounded-t-none md:border-t-0">
-          <div>
-            <p className="text-foreground text-xs font-medium tabular-nums">
-              {firstRecord}–{lastRecord} of {server.pageInfo.total}
-            </p>
-            <p className="text-muted-foreground mt-0.5 text-[11px]">
-              Page {currentPage} of {pageCount} · {server.pageInfo.pageSize}{" "}
-              rows
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="border-border/70 bg-muted/30 hidden items-center gap-1 rounded-xl border p-1 sm:flex">
-              {pageNumbers.map((page, index) => (
-                <span key={page} className="contents">
-                  {index > 0 && page - pageNumbers[index - 1]! > 1 ? (
-                    <span className="text-muted-foreground px-1 text-xs">
-                      …
+          {server && server.pageInfo.total ? (
+            <footer className="border-primary/10 bg-primary/[0.025] flex flex-col gap-3 border-t px-4 py-3 sm:px-5 md:flex-row md:items-center md:justify-between dark:bg-white/[0.02]">
+              <div>
+                <p className="text-foreground text-xs font-medium tabular-nums">
+                  {firstRecord}–{lastRecord} of {server.pageInfo.total}
+                </p>
+                <p className="text-muted-foreground mt-0.5 text-[11px]">
+                  Page {currentPage} of {pageCount} · {server.pageInfo.pageSize}{" "}
+                  rows
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="border-primary/10 bg-card hidden items-center gap-1 rounded-lg border p-1 sm:flex">
+                  {pageNumbers.map((page, index) => (
+                    <span key={page} className="contents">
+                      {index > 0 && page - pageNumbers[index - 1]! > 1 ? (
+                        <span className="text-muted-foreground px-1 text-xs">
+                          …
+                        </span>
+                      ) : null}
+                      <Button
+                        asChild
+                        size="icon"
+                        variant={page === currentPage ? "primary" : "ghost"}
+                        className="size-8 min-h-0 rounded-md px-0 text-xs"
+                        aria-label={
+                          labels.goToPage?.(page) ?? `Go to page ${page}`
+                        }
+                        aria-current={page === currentPage ? "page" : undefined}
+                      >
+                        <Link href={pageHref(page)}>{page}</Link>
+                      </Button>
                     </span>
-                  ) : null}
-                  <Button
-                    asChild
-                    size="icon"
-                    variant={page === currentPage ? "primary" : "ghost"}
-                    className="size-8 min-h-0 rounded-lg px-0 text-xs"
-                    aria-label={labels.goToPage?.(page) ?? `Go to page ${page}`}
-                    aria-current={page === currentPage ? "page" : undefined}
-                  >
-                    <Link href={pageHref(page)}>{page}</Link>
-                  </Button>
+                  ))}
+                </div>
+                <span className="text-muted-foreground min-w-16 text-center text-xs tabular-nums sm:hidden">
+                  {currentPage} / {pageCount}
                 </span>
-              ))}
-            </div>
-            <span className="text-muted-foreground min-w-16 text-center text-xs tabular-nums sm:hidden">
-              {currentPage} / {pageCount}
-            </span>
-            <Button
-              asChild={currentPage > 1}
-              size="icon"
-              variant="secondary"
-              className="size-9 min-h-0 rounded-xl px-0"
-              disabled={currentPage === 1}
-              aria-label={labels.previous}
-            >
-              {currentPage > 1 ? (
-                <Link href={pageHref(currentPage - 1)}>
-                  <ChevronLeft className="size-4 rtl:rotate-180" />
-                </Link>
-              ) : (
-                <ChevronLeft className="size-4 rtl:rotate-180" />
-              )}
-            </Button>
-            <Button
-              asChild={server.pageInfo.hasNextPage}
-              size="icon"
-              variant="secondary"
-              className="size-9 min-h-0 rounded-xl px-0"
-              disabled={!server.pageInfo.hasNextPage}
-              aria-label={labels.next}
-            >
-              {server.pageInfo.hasNextPage ? (
-                <Link href={pageHref(currentPage + 1)}>
-                  <ChevronRight className="size-4 rtl:rotate-180" />
-                </Link>
-              ) : (
-                <ChevronRight className="size-4 rtl:rotate-180" />
-              )}
-            </Button>
-          </div>
-        </div>
+                <Button
+                  asChild={currentPage > 1}
+                  size="icon"
+                  variant="secondary"
+                  className="size-9 min-h-0 rounded-lg px-0"
+                  disabled={currentPage === 1}
+                  aria-label={labels.previous}
+                >
+                  {currentPage > 1 ? (
+                    <Link href={pageHref(currentPage - 1)}>
+                      <ChevronLeft className="size-4 rtl:rotate-180" />
+                    </Link>
+                  ) : (
+                    <ChevronLeft className="size-4 rtl:rotate-180" />
+                  )}
+                </Button>
+                <Button
+                  asChild={server.pageInfo.hasNextPage}
+                  size="icon"
+                  variant="secondary"
+                  className="size-9 min-h-0 rounded-lg px-0"
+                  disabled={!server.pageInfo.hasNextPage}
+                  aria-label={labels.next}
+                >
+                  {server.pageInfo.hasNextPage ? (
+                    <Link href={pageHref(currentPage + 1)}>
+                      <ChevronRight className="size-4 rtl:rotate-180" />
+                    </Link>
+                  ) : (
+                    <ChevronRight className="size-4 rtl:rotate-180" />
+                  )}
+                </Button>
+              </div>
+            </footer>
+          ) : null}
+        </section>
       ) : null}
     </div>
   )

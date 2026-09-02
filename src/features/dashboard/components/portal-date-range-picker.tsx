@@ -69,13 +69,13 @@ export function PortalDateRangePicker() {
         <Button
           type="button"
           variant="outline"
-          className="group h-10 min-w-10 justify-start gap-2 rounded-xl px-2.5 sm:min-w-48 sm:px-3"
+          className="border-primary/10 bg-card hover:border-primary/25 hover:bg-primary/[0.025] group h-10 min-w-10 justify-start gap-2 rounded-xl px-2.5 shadow-[var(--shadow-xs)] sm:min-w-48 sm:px-3"
           aria-label={`Date range: ${label}`}
         >
-          <span className="bg-primary/10 text-primary flex size-7 shrink-0 items-center justify-center rounded-lg">
+          <span className="bg-primary/[0.08] text-primary flex size-7 shrink-0 items-center justify-center rounded-lg">
             <CalendarRange className="size-4" />
           </span>
-          <span className="hidden min-w-0 flex-1 text-left sm:block">
+          <span className="hidden min-w-0 flex-1 text-start sm:block">
             <span className="text-muted-foreground block text-[10px] font-semibold tracking-[0.12em] uppercase">
               Date range
             </span>
@@ -83,16 +83,16 @@ export function PortalDateRangePicker() {
               {label}
             </span>
           </span>
-          <ChevronDown className="text-muted-foreground hidden size-4 shrink-0 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none sm:block" />
+          <ChevronDown className="text-primary/60 hidden size-4 shrink-0 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none sm:block" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="bg-popover text-popover-foreground w-[calc(100vw-1rem)] max-w-[720px] overflow-hidden rounded-2xl border p-0 shadow-xl"
+        className="border-primary/10 bg-popover text-popover-foreground w-[calc(100vw-1rem)] max-w-[720px] overflow-hidden rounded-2xl border p-0 shadow-[var(--shadow-panel)]"
       >
-        <div className="bg-muted/20 flex items-start justify-between gap-4 border-b px-4 py-4 sm:px-5">
+        <div className="border-primary/10 bg-primary/[0.025] flex items-start justify-between gap-4 border-b px-4 py-4 sm:px-5">
           <div>
             <p className="text-foreground text-sm font-semibold">
               Reporting window
@@ -106,7 +106,7 @@ export function PortalDateRangePicker() {
             type="button"
             size="icon"
             variant="ghost"
-            className="-mt-1 -mr-1 size-8 shrink-0"
+            className="hover:bg-primary/[0.06] -me-1 -mt-1 size-8 shrink-0"
             onClick={close}
             aria-label="Close date range picker"
           >
@@ -115,7 +115,7 @@ export function PortalDateRangePicker() {
         </div>
 
         <div className="grid md:grid-cols-[160px_minmax(0,1fr)]">
-          <aside className="bg-muted/10 border-b p-3 md:border-r md:border-b-0">
+          <aside className="border-primary/10 bg-primary/[0.018] border-b p-3 md:border-e md:border-b-0">
             <p className="text-muted-foreground px-2 pb-2 text-[11px] font-semibold tracking-[0.12em] uppercase">
               Quick ranges
             </p>
@@ -142,7 +142,7 @@ export function PortalDateRangePicker() {
           </aside>
 
           <div className="min-w-0">
-            <div className="border-b px-4 py-3 sm:px-5">
+            <div className="border-primary/10 border-b px-4 py-3 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs">
                 <span
                   className="bg-primary size-2 shrink-0 rounded-full"
@@ -166,14 +166,14 @@ export function PortalDateRangePicker() {
           </div>
         </div>
 
-        <div className="bg-muted/15 flex flex-col-reverse gap-2 border-t p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+        <div className="border-primary/10 bg-primary/[0.025] flex flex-col-reverse gap-2 border-t p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
           <Button
             type="button"
             size="sm"
             variant="ghost"
             onClick={clear}
             disabled={!range?.from && !draft?.from}
-            className="justify-center sm:justify-start"
+            className="hover:bg-primary/[0.06] justify-center sm:justify-start"
           >
             <RotateCcw className="size-4" />
             Clear range
@@ -217,7 +217,7 @@ function PresetButton({
       type="button"
       size="sm"
       variant={selected ? "secondary" : "ghost"}
-      className="h-9 justify-between px-2.5 text-xs md:w-full"
+      className="hover:bg-primary/[0.06] h-9 justify-between px-2.5 text-xs md:w-full"
       onClick={() => onSelect(value)}
       aria-pressed={selected}
     >

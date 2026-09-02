@@ -1,6 +1,14 @@
 "use client"
 
-import { ArrowDownAZ, ChevronLeft, ChevronRight, Search } from "lucide-react"
+import {
+  ArrowDownAZ,
+  ChevronLeft,
+  ChevronRight,
+  Inbox,
+  ListFilter,
+  Search,
+  X,
+} from "lucide-react"
 import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
@@ -14,12 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { StatusBadge } from "@/features/dashboard/components/status-badge"
 import { Link } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/cn"
-import {
-  statusTone,
-  type StatusTone,
-} from "@/features/dashboard/components/status-badge"
 
 export interface PortalTableRow {
   id: string
@@ -78,6 +83,13 @@ export interface PortalServerTableState {
   }
 }
 
+function humanizeValue(value: string) {
+  const normalized = value.trim().replaceAll("_", " ").replace(/\s+/g, " ")
+  if (!normalized) return value
+  const lower = normalized.toLocaleLowerCase()
+  return `${lower.charAt(0).toLocaleUpperCase()}${lower.slice(1)}`
+}
+
 export function PortalDataTable({
   rows,
   empty,
@@ -127,13 +139,15 @@ export function PortalDataTable({
       }
     }
     const suffix = next.toString()
-    router.replace(suffix ? `${pathname}?${suffix}` : pathname)
+    router.replace(suffix ? `${pathname}?${suffix}` : pathname, {
+      scroll: false,
+    })
   }
 
   useEffect(() => {
     if (!server || query === (server.query ?? "")) return
     const timeout = setTimeout(
-      () => updateUrl({ q: query.trim(), page: 1 }),
+      () => updateUrl({ q: query.trim() || undefined, page: 1 }),
       350,
     )
     return () => clearTimeout(timeout)
@@ -186,28 +200,35 @@ export function PortalDataTable({
     setPage(1)
   }
 
+  function clearSearch() {
+    setQueryDraft({ base: serverQuery, value: "" })
+    if (!server) resetPage()
+  }
+
   const tableColumns: PortalTableColumn[] = columns ?? [
     {
       id: "details",
       header: labels.details,
       className: "w-[42%]",
       render: (row: PortalTableRow) => (
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           <div className="flex items-start gap-3">
-            <p className="text-brand-navy min-w-0 flex-1 text-sm font-semibold">
+            <p className="text-foreground min-w-0 flex-1 text-sm font-semibold tracking-[-0.01em]">
               {row.title}
             </p>
             {row.badge ? (
-              <span className="bg-primary shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="bg-primary/8 text-primary border-primary/10 shrink-0 rounded-lg border px-2 py-0.5 text-[10px] font-semibold">
                 {row.badge}
               </span>
             ) : null}
           </div>
           {row.secondary ? (
-            <p className="text-muted text-xs font-medium">{row.secondary}</p>
+            <p className="text-muted-foreground text-xs font-medium">
+              {row.secondary}
+            </p>
           ) : null}
           {row.meta ? (
-            <p className="text-muted line-clamp-2 max-w-2xl text-xs leading-5">
+            <p className="text-muted-foreground line-clamp-2 max-w-2xl text-xs leading-5">
               {row.meta}
             </p>
           ) : null}
@@ -218,15 +239,17 @@ export function PortalDataTable({
       id: "status",
       header: labels.status,
       className: "w-[24%]",
-      render: (row: PortalTableRow) => <StatusList values={row.statuses} />,
+      render: (row: PortalTableRow) => (
+        <StatusList values={row.statuses} labels={labels.statusLabels} />
+      ),
     },
     {
       id: "actions",
       header: labels.actions,
       render: (row: PortalTableRow) => (
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           {row.detailHref ? (
-            <Button asChild size="sm" variant="secondary">
+            <Button asChild size="sm" variant="outline">
               <Link href={row.detailHref}>{labels.details}</Link>
             </Button>
           ) : null}
@@ -236,18 +259,41 @@ export function PortalDataTable({
     },
   ]
 
+  const pagination = {
+    currentPage: server?.pageInfo.page ?? currentPage,
+    pageSize: server?.pageInfo.pageSize ?? pageSize,
+    pages: server
+      ? Math.max(1, Math.ceil(server.pageInfo.total / server.pageInfo.pageSize))
+      : pages,
+    total: server?.pageInfo.total ?? filtered.length,
+    onPrevious: () =>
+      server
+        ? updateUrl({ page: Math.max(1, server.pageInfo.page - 1) })
+        : setPage((value) => Math.max(1, value - 1)),
+    onNext: () =>
+      server
+        ? updateUrl({ page: server.pageInfo.page + 1 })
+        : setPage((value) => Math.min(pages, value + 1)),
+  }
+
+  const shouldShowPagination = server
+    ? server.pageInfo.total > 0
+    : (showFooter || filtered.length > pageSize) && filtered.length > 0
+
   return (
     <div className="space-y-4">
-      <div className="border-line/70 overflow-hidden rounded-[24px] border bg-white/90 shadow-[0_16px_42px_rgba(15,23,42,0.06)]">
+      <div className="border-primary/10 bg-card overflow-hidden rounded-2xl border shadow-[var(--shadow-xs)]">
         {filters ? (
-          <div className="border-line/70 border-b bg-slate-50/70 px-4 py-4 sm:px-5">
+          <div className="border-primary/10 bg-primary/[0.02] border-b px-4 py-3.5 sm:px-5">
             {filters}
           </div>
         ) : null}
-        <div className="grid gap-3 bg-slate-50/70 px-4 py-4 sm:grid-cols-[minmax(16rem,1fr)_minmax(10rem,.35fr)_minmax(10rem,.3fr)] sm:px-5">
-          <label className="relative">
+        <div className="grid gap-3 bg-[linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,250,255,.98))] px-4 py-3.5 sm:grid-cols-[minmax(16rem,1fr)_minmax(10rem,.35fr)_minmax(10rem,.3fr)] sm:px-5">
+          <label className="group relative">
             <span className="sr-only">{labels.search}</span>
-            <Search className="text-muted-foreground pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2" />
+            <span className="bg-primary/[0.07] text-primary group-focus-within:bg-primary/10 pointer-events-none absolute start-2.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg transition-colors">
+              <Search className="size-4" strokeWidth={2.1} />
+            </span>
             <Input
               value={query}
               onChange={(event) => {
@@ -255,8 +301,18 @@ export function PortalDataTable({
                 if (!server) resetPage()
               }}
               placeholder={labels.search}
-              className="bg-white ps-9"
+              className="border-primary/10 bg-card hover:border-primary/20 focus-visible:border-primary/35 focus-visible:ring-primary/10 h-11 min-h-11 rounded-xl ps-12 pe-10 shadow-none transition-[border-color,box-shadow]"
             />
+            {query ? (
+              <button
+                type="button"
+                aria-label="Clear search"
+                className="text-muted-foreground hover:bg-primary/[0.07] hover:text-primary focus-visible:ring-primary/20 absolute end-2.5 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                onClick={clearSearch}
+              >
+                <X className="size-3.5" />
+              </button>
+            ) : null}
           </label>
 
           {statuses.length ? (
@@ -272,15 +328,16 @@ export function PortalDataTable({
             >
               <SelectTrigger
                 aria-label={labels.status}
-                className="w-full bg-white"
+                className="border-primary/10 bg-card hover:border-primary/20 h-11 min-h-11 w-full gap-2 rounded-xl shadow-none"
               >
+                <ListFilter className="text-primary size-4 shrink-0" />
                 <SelectValue placeholder={labels.status} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{labels.allStatuses}</SelectItem>
                 {statuses.map((value) => (
                   <SelectItem key={value} value={value}>
-                    {labels.statusLabels?.[value] ?? value.replaceAll("_", " ")}
+                    {labels.statusLabels?.[value] ?? humanizeValue(value)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -297,9 +354,9 @@ export function PortalDataTable({
             >
               <SelectTrigger
                 aria-label={labels.sort}
-                className="w-full bg-white"
+                className="border-primary/10 bg-card hover:border-primary/20 h-11 min-h-11 w-full gap-2 rounded-xl shadow-none"
               >
-                <ArrowDownAZ className="text-muted-foreground size-4" />
+                <ArrowDownAZ className="text-primary size-4 shrink-0" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -316,25 +373,32 @@ export function PortalDataTable({
       </div>
 
       {!visible.length ? (
-        <Card className="rounded-xl border-dashed p-12 text-center">
-          <p className="text-muted-foreground text-sm">{empty}</p>
+        <Card className="border-primary/10 grid min-h-64 place-items-center border-dashed p-8 text-center">
+          <div className="max-w-sm">
+            <div className="border-primary/10 bg-primary/[0.07] text-primary mx-auto mb-4 flex size-11 items-center justify-center rounded-xl border">
+              <Inbox className="size-5" aria-hidden="true" />
+            </div>
+            <p className="text-foreground font-semibold tracking-[-0.015em]">
+              {empty}
+            </p>
+          </div>
         </Card>
       ) : null}
 
       {visible.length ? (
         <>
-          <div className="border-line/70 hidden overflow-hidden rounded-[24px] border bg-white shadow-[0_16px_42px_rgba(15,23,42,0.06)] md:block">
-            <div className="[scrollbar-width:thin] [scrollbar-color:var(--color-line)_transparent] overflow-x-auto">
+          <div className="border-primary/10 bg-card hidden overflow-hidden rounded-2xl border shadow-[var(--shadow-xs)] md:block">
+            <div className="portal-scrollbar overflow-x-auto">
               <table
                 className={cn("w-full text-start text-sm", tableClassName)}
               >
-                <thead className="border-line/70 border-b bg-slate-50/80 text-xs">
+                <thead className="bg-primary/[0.035] border-primary/10 border-b">
                   <tr>
                     {tableColumns.map((column) => (
                       <th
                         key={column.id}
                         className={cn(
-                          "text-muted-foreground h-12 px-5 text-start align-middle text-xs font-semibold whitespace-nowrap",
+                          "text-muted-foreground h-11 px-4 text-start align-middle text-[11px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase sm:px-5",
                           column.className,
                         )}
                       >
@@ -343,17 +407,17 @@ export function PortalDataTable({
                     ))}
                   </tr>
                 </thead>
-                <tbody className="bg-white [&_tr:last-child]:border-0">
+                <tbody className="[&_tr:last-child]:border-0">
                   {visible.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-line/60 border-b transition-colors hover:bg-slate-50/70"
+                      className="border-primary/[0.07] hover:bg-primary/[0.025] border-b transition-colors"
                     >
                       {tableColumns.map((column) => (
                         <td
                           key={`${row.id}-${column.id}`}
                           className={cn(
-                            "px-5 py-4 align-middle",
+                            "px-4 py-3.5 align-middle sm:px-5",
                             column.cellClassName,
                           )}
                         >
@@ -365,67 +429,50 @@ export function PortalDataTable({
                 </tbody>
               </table>
             </div>
-            {attachedFooter ? (
-              <TableFooter
-                currentPage={server?.pageInfo.page ?? currentPage}
-                pageSize={server?.pageInfo.pageSize ?? pageSize}
-                pages={
-                  server
-                    ? Math.max(
-                        1,
-                        Math.ceil(
-                          server.pageInfo.total / server.pageInfo.pageSize,
-                        ),
-                      )
-                    : pages
-                }
-                total={server?.pageInfo.total ?? filtered.length}
-                labels={labels}
-                onPrevious={() =>
-                  server
-                    ? updateUrl({ page: server.pageInfo.page - 1 })
-                    : setPage((value) => Math.max(1, value - 1))
-                }
-                onNext={() =>
-                  server
-                    ? updateUrl({ page: server.pageInfo.page + 1 })
-                    : setPage((value) => Math.min(pages, value + 1))
-                }
-              />
+            {attachedFooter && shouldShowPagination ? (
+              <PaginationBar {...pagination} labels={labels} attached />
             ) : null}
           </div>
 
           <div className="grid gap-3 md:hidden">
             {visible.map((row) => (
-              <Card key={row.id} className="rounded-xl p-4 shadow-none">
+              <Card
+                key={row.id}
+                className="border-primary/10 p-4 shadow-[var(--shadow-xs)]"
+              >
                 {mobileCard ? (
                   mobileCard(row)
                 ) : (
                   <>
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-brand-navy font-semibold">
+                      <p className="text-foreground font-semibold tracking-[-0.01em]">
                         {row.title}
                       </p>
                       {row.badge ? (
-                        <span className="bg-primary shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
+                        <span className="bg-primary/8 text-primary border-primary/10 shrink-0 rounded-lg border px-2 py-0.5 text-[10px] font-semibold">
                           {row.badge}
                         </span>
                       ) : null}
                     </div>
                     {row.secondary ? (
-                      <p className="text-muted mt-1 text-sm">{row.secondary}</p>
+                      <p className="text-muted-foreground mt-1 text-sm">
+                        {row.secondary}
+                      </p>
                     ) : null}
                     {row.meta ? (
-                      <p className="text-muted mt-2 text-xs leading-5">
+                      <p className="text-muted-foreground mt-2 text-xs leading-5">
                         {row.meta}
                       </p>
                     ) : null}
                     <div className="mt-3">
-                      <StatusList values={row.statuses} />
+                      <StatusList
+                        values={row.statuses}
+                        labels={labels.statusLabels}
+                      />
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {row.detailHref ? (
-                        <Button asChild size="sm" variant="secondary">
+                        <Button asChild size="sm" variant="outline">
                           <Link href={row.detailHref}>{labels.details}</Link>
                         </Button>
                       ) : null}
@@ -439,84 +486,16 @@ export function PortalDataTable({
         </>
       ) : null}
 
-      <div className={cn(attachedFooter && "md:hidden")}>
-        {server ? (
-          server.pageInfo.total ? (
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/70 px-4 py-3 sm:px-5">
-              <p className="text-muted-foreground text-xs">
-                {server.pageInfo.total} {labels.totalRecords ?? "total records"}
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground rounded-xl border bg-white px-3 py-2 text-xs font-medium">
-                  {server.pageInfo.pageSize} {labels.rows ?? "rows"}
-                </span>
-                <span className="bg-primary flex size-10 items-center justify-center rounded-xl text-sm font-semibold text-white">
-                  {server.pageInfo.page}
-                </span>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  disabled={server.pageInfo.page === 1}
-                  aria-label={labels.previous}
-                  onClick={() => updateUrl({ page: server.pageInfo.page - 1 })}
-                >
-                  <ChevronLeft className="size-4 rtl:rotate-180" />
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  disabled={!server.pageInfo.hasNextPage}
-                  aria-label={labels.next}
-                  onClick={() => updateUrl({ page: server.pageInfo.page + 1 })}
-                >
-                  <ChevronRight className="size-4 rtl:rotate-180" />
-                </Button>
-              </div>
-            </div>
-          ) : null
-        ) : (showFooter || filtered.length > pageSize) && filtered.length ? (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-slate-50/70 px-4 py-3 sm:px-5">
-            <p className="text-muted-foreground text-xs">
-              {filtered.length} {labels.totalRecords ?? "total records"}
-            </p>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground rounded-xl border bg-white px-3 py-2 text-xs font-medium">
-                {pageSize} {labels.rows ?? "rows"}
-              </span>
-              <span className="bg-primary flex size-10 items-center justify-center rounded-xl text-sm font-semibold text-white">
-                {currentPage}
-              </span>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={currentPage === 1}
-                aria-label={labels.previous}
-                onClick={() => setPage((value) => Math.max(1, value - 1))}
-              >
-                <ChevronLeft className="size-4 rtl:rotate-180" />
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={currentPage === pages}
-                aria-label={labels.next}
-                onClick={() => setPage((value) => Math.min(pages, value + 1))}
-              >
-                <ChevronRight className="size-4 rtl:rotate-180" />
-              </Button>
-            </div>
-          </div>
-        ) : null}
-      </div>
+      {shouldShowPagination ? (
+        <div className={cn(attachedFooter && "md:hidden")}>
+          <PaginationBar {...pagination} labels={labels} />
+        </div>
+      ) : null}
     </div>
   )
 }
 
-function TableFooter({
+function PaginationBar({
   currentPage,
   pageSize,
   pages,
@@ -524,6 +503,7 @@ function TableFooter({
   labels,
   onPrevious,
   onNext,
+  attached = false,
 }: {
   currentPage: number
   pageSize: number
@@ -532,25 +512,39 @@ function TableFooter({
   labels: PortalTableLabels
   onPrevious: () => void
   onNext: () => void
+  attached?: boolean
 }) {
   if (!total) return null
+
   return (
-    <div className="border-line/70 flex min-h-16 flex-wrap items-center justify-between gap-3 border-t bg-slate-50/70 px-5 py-3">
+    <div
+      className={cn(
+        "bg-primary/[0.025] flex min-h-14 flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5",
+        attached
+          ? "border-primary/10 border-t"
+          : "border-primary/10 rounded-2xl border shadow-[var(--shadow-xs)]",
+      )}
+    >
       <p className="text-muted-foreground text-xs">
         {total} {labels.totalRecords ?? "total records"}
       </p>
       <div className="flex items-center gap-2">
-        <span className="border-line/80 text-muted-foreground rounded-xl border bg-white px-3 py-2 text-xs font-medium">
+        <span className="border-primary/10 bg-card text-muted-foreground hidden rounded-lg border px-2.5 py-1.5 text-xs font-medium sm:inline-flex">
           {pageSize} {labels.rows ?? "rows"}
         </span>
-        <span className="bg-primary flex size-10 items-center justify-center rounded-xl text-sm font-semibold text-white shadow-sm">
+        <span
+          className="bg-primary/8 text-primary border-primary/10 inline-flex h-9 min-w-9 items-center justify-center rounded-lg border px-2 text-xs font-semibold tabular-nums"
+          aria-label={`${currentPage} / ${pages}`}
+        >
           {currentPage}
+          <span className="text-muted-foreground mx-1">/</span>
+          {pages}
         </span>
         <Button
           type="button"
           size="icon"
-          variant="secondary"
-          className="size-10 rounded-xl"
+          variant="outline"
+          className="border-primary/10 bg-card hover:bg-primary/[0.04] size-9"
           disabled={currentPage === 1}
           aria-label={labels.previous}
           onClick={onPrevious}
@@ -560,8 +554,8 @@ function TableFooter({
         <Button
           type="button"
           size="icon"
-          variant="secondary"
-          className="size-10 rounded-xl"
+          variant="outline"
+          className="border-primary/10 bg-card hover:bg-primary/[0.04] size-9"
           disabled={currentPage === pages}
           aria-label={labels.next}
           onClick={onNext}
@@ -573,34 +567,21 @@ function TableFooter({
   )
 }
 
-const chipTone: Record<StatusTone, string> = {
-  neutral: "bg-canvas text-muted",
-  info: "bg-light-blue text-brand-navy",
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/10 text-warning",
-  danger: "bg-danger/10 text-danger",
-}
-
 function StatusList({
   values = [],
+  labels,
 }: {
   values?: Array<string | null | undefined>
+  labels?: Record<string, string>
 }) {
+  const statuses = values.filter((value): value is string => Boolean(value))
+  if (!statuses.length) return null
+
   return (
     <div className="flex flex-wrap gap-1.5">
-      {values
-        .filter((value): value is string => Boolean(value))
-        .map((value) => (
-          <span
-            key={value}
-            className={cn(
-              "inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide uppercase",
-              chipTone[statusTone(value)],
-            )}
-          >
-            {value.replaceAll("_", " ")}
-          </span>
-        ))}
+      {statuses.map((value) => (
+        <StatusBadge key={value} status={value} label={labels?.[value]} />
+      ))}
     </div>
   )
 }

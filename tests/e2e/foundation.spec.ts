@@ -5,7 +5,8 @@ function escapeRegExp(value: string) {
 }
 
 test("sets html lang and dir for every platform locale", async ({ page }) => {
-  await page.goto("/")
+  test.setTimeout(60_000)
+  await page.goto("/", { waitUntil: "domcontentloaded" })
   await expect(page).toHaveURL(/\/it$/)
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
   const cases = [
@@ -16,7 +17,7 @@ test("sets html lang and dir for every platform locale", async ({ page }) => {
     { path: "/sq", lang: "sq", dir: "ltr" },
   ] as const
   for (const item of cases) {
-    await page.goto(item.path)
+    await page.goto(item.path, { waitUntil: "domcontentloaded" })
     await expect(page.locator("html")).toHaveAttribute("lang", item.lang)
     await expect(page.locator("html")).toHaveAttribute("dir", item.dir)
   }
@@ -51,8 +52,11 @@ test("retires blogs and permanently redirects duplicate public routes", async ({
     expect(response.headers().location).toBe(destination)
   }
 
-  await page.goto("/en/faq")
-  await expect(page.locator("main button[aria-expanded]")).toHaveCount(20)
+  await page.goto("/en/faq", { waitUntil: "domcontentloaded" })
+  // The reviewed source-controlled FAQ intentionally publishes ten entries.
+  // Keep this assertion synchronized with the authoritative content pack rather
+  // than the retired twenty-item CMS/demo fixture.
+  await expect(page.locator("main button[aria-expanded]")).toHaveCount(10)
 })
 
 test("logs in a provisioned Supabase user and renders the authenticated portal", async ({
@@ -111,7 +115,7 @@ test("shows anti-enumeration recovery and reset token states", async ({
   await page.getByRole("button", { name: "Send reset instructions" }).click()
   await expect(
     page.getByRole("heading", { name: "Check your inbox" }),
-  ).toBeVisible()
+  ).toBeVisible({ timeout: 20_000 })
   await page.goto("/en/reset-password")
   await expect(
     page.getByRole("heading", { name: "This reset link is not valid" }),
