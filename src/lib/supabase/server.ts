@@ -42,6 +42,20 @@ export const getAccessToken = cache(async (): Promise<string | null> => {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData.user) return null
 
+  if (process.env.E2E_USE_MOCK_AUTH === "true" && userData.user.email) {
+    if (process.env.E2E_DEBUG === "true") {
+      console.error("Using hermetic E2E backend token")
+    }
+    const encode = (value: object) =>
+      Buffer.from(JSON.stringify(value)).toString("base64url")
+    return `${encode({ alg: "none", typ: "JWT" })}.${encode({
+      sub: userData.user.id,
+      email: userData.user.email,
+      user_metadata: userData.user.user_metadata,
+      exp: Math.floor(Date.now() / 1000) + 3600,
+    })}.e2e`
+  }
+
   const { data: retry } = await supabase.auth.getSession()
   return retry.session?.access_token ?? null
 })

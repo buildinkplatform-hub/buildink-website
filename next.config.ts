@@ -81,6 +81,15 @@ const nextConfig: NextConfig = {
       expire: 2 * 60 * 60,
     },
   },
+  experimental: {
+    optimizePackageImports: [
+      "@tanstack/react-query",
+      "lucide-react",
+      "motion",
+      "react-hook-form",
+      "zod",
+    ],
+  },
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
   turbopack: {

@@ -31,6 +31,18 @@ export function WorkerProfileRecords({
   const t = useTranslations("dashboard.workforce")
   const router = useRouter()
   const [pending, setPending] = useState(false)
+  const [deletedRecordIds, setDeletedRecordIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  )
+  const availability = data.availability.filter(
+    (item) => !deletedRecordIds.has(`availability:${item.id}`),
+  )
+  const credentials = data.credentials.filter(
+    (item) => !deletedRecordIds.has(`credentials:${item.id}`),
+  )
+  const workHistory = data.workHistory.filter(
+    (item) => !deletedRecordIds.has(`work-history:${item.id}`),
+  )
   const [availableFrom, setAvailableFrom] = useState("")
   const [availableTo, setAvailableTo] = useState("")
   const [availabilityKind, setAvailabilityKind] =
@@ -47,9 +59,12 @@ export function WorkerProfileRecords({
     body: Record<string, unknown>,
   ) {
     setPending(true)
-    const result = await createWorkerRecordAction(kind, body)
-    setPending(false)
-    if (result.ok) router.refresh()
+    try {
+      const result = await createWorkerRecordAction(kind, body)
+      if (result.ok) router.refresh()
+    } finally {
+      setPending(false)
+    }
   }
 
   async function remove(
@@ -57,16 +72,24 @@ export function WorkerProfileRecords({
     id: string,
   ) {
     setPending(true)
-    const result = await deleteWorkerRecordAction(kind, id)
-    setPending(false)
-    if (result.ok) router.refresh()
+    try {
+      const result = await deleteWorkerRecordAction(kind, id)
+      if (!result.ok) return
+      setDeletedRecordIds((current) => {
+        const next = new Set(current)
+        next.add(`${kind}:${id}`)
+        return next
+      })
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
     <section className="border-line space-y-5 rounded-xl border p-4">
       <h2 className="text-brand-navy text-lg font-semibold">{t("title")}</h2>
       <WorkerAvailabilityCalendar
-        availability={data.availability}
+        availability={availability}
         busyPeriods={data.busyPeriods ?? []}
       />
       <div className="space-y-2">
@@ -113,10 +136,10 @@ export function WorkerProfileRecords({
             {t("add")}
           </Button>
         </div>
-        {data.availability.map((item) => (
+        {availability.map((item) => (
           <Record
             key={item.id}
-            text={`${item.kind} · ${date(item.startsOn)} – ${item.endsOn ? date(item.endsOn) : t("openEnded")}`}
+            text={`${item.kind.replaceAll("_", " ")} · ${date(item.startsOn)} – ${item.endsOn ? date(item.endsOn) : t("openEnded")}`}
             onDelete={() => remove("availability", item.id)}
             disabled={pending}
             label={t("remove")}
@@ -155,10 +178,10 @@ export function WorkerProfileRecords({
             {t("add")}
           </Button>
         </div>
-        {data.credentials.map((item) => (
+        {credentials.map((item) => (
           <Record
             key={item.id}
-            text={`${item.title} · ${item.status}${item.expiresOn ? ` · ${date(item.expiresOn)}` : ""}`}
+            text={`${item.title} · ${item.status.replaceAll("_", " ")}${item.expiresOn ? ` · ${date(item.expiresOn)}` : ""}`}
             onDelete={() => remove("credentials", item.id)}
             disabled={pending}
             label={t("remove")}
@@ -202,10 +225,10 @@ export function WorkerProfileRecords({
             {t("add")}
           </Button>
         </div>
-        {data.workHistory.map((item) => (
+        {workHistory.map((item) => (
           <Record
             key={item.id}
-            text={`${item.roleTitle} · ${item.companyName} · ${item.verificationStatus}`}
+            text={`${item.roleTitle} · ${item.companyName} · ${item.verificationStatus.replaceAll("_", " ")}`}
             onDelete={() => remove("work-history", item.id)}
             disabled={pending}
             label={t("remove")}

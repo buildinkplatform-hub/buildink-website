@@ -375,12 +375,12 @@ export async function fetchPublicHome(locale: Locale) {
         ),
       },
       aggregates: {
-        companies: 0,
-        tenders: 0,
-        workers: 0,
-        projects: 0,
-        publicMediaPublishers: 0,
-        publicEvidenceDocuments: 0,
+        companies: null,
+        tenders: null,
+        workers: null,
+        projects: null,
+        publicMediaPublishers: null,
+        publicEvidenceDocuments: null,
       },
       featuredEvidence: { companies: [], projects: [] },
     }
@@ -394,13 +394,14 @@ export async function fetchPublicHome(locale: Locale) {
       tenders: tenders?.items.slice(0, 1) ?? [],
     },
     aggregates: {
-      companies: companies?.total ?? 0,
-      tenders: tenders?.total ?? 0,
-      workers: workers?.total ?? 0,
-      projects: projects?.total ?? 0,
-      publicMediaPublishers: response?.aggregates?.publicMediaPublishers ?? 0,
+      companies: companies?.total ?? null,
+      tenders: tenders?.total ?? null,
+      workers: workers?.total ?? null,
+      projects: projects?.total ?? null,
+      publicMediaPublishers:
+        response?.aggregates?.publicMediaPublishers ?? null,
       publicEvidenceDocuments:
-        response?.aggregates?.publicEvidenceDocuments ?? 0,
+        response?.aggregates?.publicEvidenceDocuments ?? null,
     },
     featuredEvidence: { companies: [], projects: [] },
   }

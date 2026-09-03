@@ -135,6 +135,7 @@ export function WorkspaceProfileEditor({
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<string>()
   const [tab, setTab] = useState<WorkspaceTab>("identity")
+  const [version, setVersion] = useState(profile.version)
   const canPublish = hasPortalPermission(permissions, "company.publish")
   const [categoryIds, setCategoryIds] = useState<string[]>(
     profile.categoryIds ??
@@ -234,13 +235,12 @@ export function WorkspaceProfileEditor({
         cityText: values.cityText || null,
         postalCode: values.postalCode || null,
         countryCode: values.countryCode || null,
-        identifiers: profile.identifiers,
       },
-      profile.version,
+      version,
     )
     setPending(false)
     setMessage(result.ok ? t("dashboard.profile.saved") : result.message)
-    if (result.ok) router.refresh()
+    if (result.ok) setVersion(result.data.version)
   }
 
   async function saveTaxonomy() {
@@ -248,11 +248,11 @@ export function WorkspaceProfileEditor({
     const result = await updateWorkspaceProfileAction(
       companyId,
       { categoryIds, tagIds, serviceRegionIds },
-      profile.version,
+      version,
     )
     setPending(false)
     setMessage(result.ok ? t("dashboard.profile.saved") : result.message)
-    if (result.ok) router.refresh()
+    if (result.ok) setVersion(result.data.version)
   }
 
   async function saveIdentifiers() {
@@ -271,11 +271,23 @@ export function WorkspaceProfileEditor({
             isPublic: item.isPublic,
           })),
       },
-      profile.version,
+      version,
     )
     setPending(false)
     setMessage(result.ok ? t("dashboard.profile.saved") : result.message)
-    if (result.ok) router.refresh()
+    if (result.ok) {
+      setVersion(result.data.version)
+      setIdentifiers(
+        (result.data.identifiers ?? []).map((item) => ({
+          id: item.id,
+          countryCode: item.countryCode,
+          kind: item.kind,
+          rawValue: item.rawValue,
+          isPrimary: item.isPrimary,
+          isPublic: item.isPublic,
+        })),
+      )
+    }
   }
 
   async function saveServices() {
@@ -291,11 +303,20 @@ export function WorkspaceProfileEditor({
             description: item.description.trim() || null,
           })),
       },
-      profile.version,
+      version,
     )
     setPending(false)
     setMessage(result.ok ? t("dashboard.profile.saved") : result.message)
-    if (result.ok) router.refresh()
+    if (result.ok) {
+      setVersion(result.data.version)
+      setServices(
+        (result.data.services ?? []).map((item) => ({
+          id: item.id,
+          name: item.name,
+          description: item.description ?? "",
+        })),
+      )
+    }
   }
 
   async function saveCertifications() {
@@ -313,19 +334,27 @@ export function WorkspaceProfileEditor({
             expiresAt: item.expiresAt || null,
           })),
       },
-      profile.version,
+      version,
     )
     setPending(false)
     setMessage(result.ok ? t("dashboard.profile.saved") : result.message)
-    if (result.ok) router.refresh()
+    if (result.ok) {
+      setVersion(result.data.version)
+      setCertifications(
+        (result.data.certifications ?? []).map((item) => ({
+          id: item.id,
+          name: item.name,
+          issuer: item.issuer ?? "",
+          issuedAt: item.issuedAt ? item.issuedAt.slice(0, 10) : "",
+          expiresAt: item.expiresAt ? item.expiresAt.slice(0, 10) : "",
+        })),
+      )
+    }
   }
 
   async function publish() {
     setPending(true)
-    const result = await publishWorkspaceProfileAction(
-      companyId,
-      profile.version,
-    )
+    const result = await publishWorkspaceProfileAction(companyId, version)
     setPending(false)
     setMessage(
       result.ok ? t("dashboard.workspace.publishRequested") : result.message,
@@ -338,11 +367,11 @@ export function WorkspaceProfileEditor({
     const result = await updateWorkspaceProfileAction(
       companyId,
       { visibility },
-      profile.version,
+      version,
     )
     setPending(false)
     setMessage(result.ok ? t("dashboard.profile.saved") : result.message)
-    if (result.ok) router.refresh()
+    if (result.ok) setVersion(result.data.version)
   }
 
   async function requestCapability(capability: string) {

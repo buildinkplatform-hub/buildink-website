@@ -12,6 +12,7 @@ export default async function globalSetup() {
   if (process.env.E2E_SKIP_AUTH === "true") return
 
   const environment = ensureE2EEnvironment()
+  if (process.env.E2E_USE_MOCK_AUTH === "true") return
   const required = {
     NEXT_PUBLIC_SUPABASE_URL: environment.supabaseUrl,
     E2E_SUPABASE_SECRET_KEY: environment.supabaseSecret,

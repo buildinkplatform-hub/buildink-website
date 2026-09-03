@@ -608,7 +608,17 @@ async function ProjectsDetailPage({ query }: { query: PortalQuery }) {
                     </p>
                   ) : null}
                   <p className="text-muted mt-1 text-xs">
-                    {[item.quantity, item.unit, item.budgetMinor, item.currency]
+                    {[
+                      item.quantity,
+                      item.unit,
+                      item.budgetMinor
+                        ? formatPortalMoney(
+                            item.budgetMinor,
+                            item.currency,
+                            locale,
+                          )
+                        : null,
+                    ]
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
@@ -625,7 +635,7 @@ async function ProjectsDetailPage({ query }: { query: PortalQuery }) {
                 <Card key={item.id} className="p-3">
                   <p className="font-semibold">{item.label}</p>
                   <p className="text-muted text-xs">
-                    {item.kind} · {item.weight}% ·{" "}
+                    {item.kind.replaceAll("_", " ")} · {item.weight}% ·{" "}
                     {item.required
                       ? t("common.required")
                       : t("common.optional")}
@@ -644,7 +654,7 @@ async function ProjectsDetailPage({ query }: { query: PortalQuery }) {
                   <Card key={item.assetId} className="p-3">
                     <DocumentLink assetId={item.assetId} label={item.name} />
                     <p className="text-muted mt-1 text-xs">
-                      {item.usage} · {item.position + 1}
+                      {item.usage.replaceAll("_", " ")} · {item.position + 1}
                     </p>
                   </Card>
                 ))}
@@ -1402,6 +1412,7 @@ async function TendersEditPage({ id }: { id: string }) {
 
 async function TendersDetailPage({ query }: { query: PortalQuery }) {
   const t = await getTranslations()
+  const locale = await getLocale()
   const bootstrap = await getPortalBootstrap()
   const detail = query.id
     ? await getPortalTender(query.id, query.page).catch(() => null)
@@ -1507,7 +1518,16 @@ async function TendersDetailPage({ query }: { query: PortalQuery }) {
                     <p className="text-muted mt-1 text-sm">{lot.description}</p>
                   ) : null}
                   <p className="text-muted mt-1 text-xs">
-                    {[lot.reference, lot.valueMinor, lot.currency]
+                    {[
+                      lot.reference,
+                      lot.valueMinor
+                        ? formatPortalMoney(
+                            lot.valueMinor,
+                            lot.currency,
+                            locale,
+                          )
+                        : null,
+                    ]
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
@@ -1524,7 +1544,7 @@ async function TendersDetailPage({ query }: { query: PortalQuery }) {
                 <Card key={item.id} className="p-3">
                   <p className="font-semibold">{item.label}</p>
                   <p className="text-muted text-xs">
-                    {item.kind} · {item.weight}% ·{" "}
+                    {item.kind.replaceAll("_", " ")} · {item.weight}% ·{" "}
                     {item.required
                       ? t("common.required")
                       : t("common.optional")}

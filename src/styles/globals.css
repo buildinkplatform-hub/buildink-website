@@ -49,6 +49,10 @@
 }
 
 :root {
+  /* Network-independent system stacks keep builds deterministic and avoid a
+     render-blocking third-party font request in production. */
+  --font-inter: "Segoe UI", Roboto, Helvetica, Arial;
+  --font-noto-arabic: "Segoe UI", Tahoma, Arial;
   color-scheme: light;
 
   --brand-navy: #071a33;

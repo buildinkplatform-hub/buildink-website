@@ -68,6 +68,7 @@ export function LoginForm({ next }: { next?: string }) {
     setServerError(null)
     const result = await loginAction(locale, { ...values, next })
     if (!result.success) setServerError(result.error ?? "backend")
+    else if (result.destination) window.location.assign(result.destination)
   }
 
   return (

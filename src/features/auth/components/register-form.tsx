@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowRight, LoaderCircle, UserPlus } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -20,9 +20,16 @@ import { PasswordInput } from "@/features/auth/components/password-input"
 import { Link } from "@/i18n/navigation"
 import type { Locale } from "@/shared/types/platform"
 
+const subscribeToHydration = () => () => undefined
+
 export function RegisterForm() {
   const t = useTranslations()
   const locale = useLocale() as Locale
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  )
   const [serverError, setServerError] = useState<RegistrationActionError>()
   const [submittedEmail, setSubmittedEmail] = useState("")
   const [cooldownSeconds, setCooldownSeconds] = useState(0)
@@ -137,6 +144,7 @@ export function RegisterForm() {
           <Input
             id="name"
             autoComplete="name"
+            disabled={!hydrated}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? "name-error" : undefined}
             {...register("name")}
@@ -153,6 +161,7 @@ export function RegisterForm() {
             type="email"
             autoComplete="email"
             className="ltr-content"
+            disabled={!hydrated}
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? "email-error" : undefined}
             {...register("email")}
@@ -169,6 +178,7 @@ export function RegisterForm() {
             <PasswordInput
               id="password"
               autoComplete="new-password"
+              disabled={!hydrated}
               aria-invalid={Boolean(errors.password)}
               aria-describedby={errors.password ? "password-error" : undefined}
               {...register("password")}
@@ -183,6 +193,7 @@ export function RegisterForm() {
             <PasswordInput
               id="confirmPassword"
               autoComplete="new-password"
+              disabled={!hydrated}
               aria-invalid={Boolean(errors.confirmPassword)}
               aria-describedby={
                 errors.confirmPassword ? "confirmPassword-error" : undefined
@@ -193,6 +204,7 @@ export function RegisterForm() {
         </div>
         <label className="text-muted hover:text-brand-navy flex cursor-pointer items-start gap-3 text-sm leading-6 transition-colors">
           <Checkbox
+            disabled={!hydrated}
             aria-invalid={Boolean(errors.terms)}
             {...register("terms")}
           />
@@ -212,6 +224,7 @@ export function RegisterForm() {
         </label>
         <label className="text-muted hover:text-brand-navy flex cursor-pointer items-start gap-3 text-sm leading-6 transition-colors">
           <Checkbox
+            disabled={!hydrated}
             aria-invalid={Boolean(errors.privacy)}
             {...register("privacy")}
           />
@@ -232,12 +245,14 @@ export function RegisterForm() {
           </span>
         </label>
         <label className="text-muted hover:text-brand-navy flex cursor-pointer items-start gap-3 text-sm leading-6 transition-colors">
-          <Checkbox {...register("marketing")} />
+          <Checkbox disabled={!hydrated} {...register("marketing")} />
           {t("auth.marketing")}
         </label>
         <Button
           className="w-full"
-          disabled={isSubmitting || googlePending || cooldownSeconds > 0}
+          disabled={
+            !hydrated || isSubmitting || googlePending || cooldownSeconds > 0
+          }
         >
           {isSubmitting ? (
             <LoaderCircle className="size-4 animate-spin" />
@@ -257,7 +272,7 @@ export function RegisterForm() {
         type="button"
         variant="secondary"
         className="w-full"
-        disabled={isSubmitting || googlePending}
+        disabled={!hydrated || isSubmitting || googlePending}
         onClick={async () => {
           setGooglePending(true)
           await googleLoginAction(locale).catch(() => setGooglePending(false))

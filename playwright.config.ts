@@ -5,7 +5,9 @@ import { ensureE2EEnvironment } from "./tests/e2e/e2e-env"
 ensureE2EEnvironment()
 
 const externalBaseUrl = process.env.PLAYWRIGHT_BASE_URL
-const liveSharedAccountRun = Boolean(externalBaseUrl)
+const playwrightEnv = Object.fromEntries(
+  Object.entries(process.env).filter(([, value]) => typeof value === "string"),
+) as Record<string, string>
 const localWebCommand =
   process.env.E2E_PREBUILT === "true"
     ? "npm run start -- --hostname 127.0.0.1 --port 3100"
@@ -14,10 +16,12 @@ const localWebCommand =
 export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
-  // Local mock tests do not share mutable remote identity state. Live runs do,
-  // so keep the single provisioned Supabase account serialized across projects.
-  fullyParallel: !liveSharedAccountRun,
-  workers: liveSharedAccountRun ? 1 : undefined,
+  // Every authenticated project still uses the configured Supabase Auth
+  // service, even when application API calls use the local mock backend.
+  // Serial execution avoids sign-in throttling and concurrent RSC stream
+  // pressure hiding real workflow failures behind infrastructure flakes.
+  fullyParallel: false,
+  workers: 1,
   retries: process.env.CI ? 2 : 0,
   reporter: "html",
   use: {
@@ -30,12 +34,14 @@ export default defineConfig({
         {
           command: "node tests/e2e/mock-backend.mjs",
           url: "http://127.0.0.1:4100/health/live",
+          env: playwrightEnv,
           reuseExistingServer: false,
           timeout: 30_000,
         },
         {
           command: localWebCommand,
           url: "http://127.0.0.1:3100/it",
+          env: playwrightEnv,
           reuseExistingServer: !process.env.CI,
           timeout: 240_000,
         },

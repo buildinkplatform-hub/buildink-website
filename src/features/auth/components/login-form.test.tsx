@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { NextIntlClientProvider } from "next-intl"
 import type { ComponentProps } from "react"
@@ -29,14 +29,12 @@ function renderLoginForm() {
 
 async function submitLogin() {
   const user = userEvent.setup()
-  await user.type(
-    screen.getByLabelText(/^Email address/),
-    "buildinkplatform+service-test@gmail.com",
-  )
-  await user.type(
-    screen.getByLabelText(/^Password/),
-    "Buildink!WebsiteTest#7318",
-  )
+  fireEvent.change(screen.getByLabelText(/^Email address/), {
+    target: { value: "service@example.test" },
+  })
+  fireEvent.change(screen.getByLabelText(/^Password/), {
+    target: { value: "valid-test-password" },
+  })
   await user.click(screen.getByRole("button", { name: /^Log in$/ }))
 }
 

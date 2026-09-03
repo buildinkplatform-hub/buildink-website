@@ -97,6 +97,7 @@ async function inspectPage(page: Page, route: string) {
     ]
       .filter(visible)
       .filter((element) => {
+        if (element.getAttribute("aria-hidden") === "true") return false
         if (element instanceof HTMLInputElement && element.type === "hidden")
           return false
         const id = element.id

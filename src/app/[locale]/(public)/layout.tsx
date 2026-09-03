@@ -5,6 +5,8 @@ import { PublicHeader } from "@/components/layout/public-header"
 import { PublicCookieBanner } from "@/features/public/components/public-cookie-banner"
 import type { Locale } from "@/shared/types/platform"
 
+export const instant = false
+
 const consentLabels: Record<Locale, { accept: string; reject: string }> = {
   it: { accept: "Accetta tutto", reject: "Rifiuta tutto" },
   en: { accept: "Accept all", reject: "Reject all" },

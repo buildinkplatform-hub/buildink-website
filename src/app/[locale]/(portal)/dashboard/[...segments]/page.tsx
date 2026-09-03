@@ -16,6 +16,7 @@ import { PortalTenderDetailPage } from "@/features/dashboard/components/portal-t
 import { PortalVerificationPage } from "@/features/dashboard/components/portal-verification-page"
 import { ResilientWorkspaceModulePage } from "@/features/dashboard/components/portal-workspace-page"
 import { PortalModuleLoadFallback } from "@/features/dashboard/components/portal-module-load-fallback"
+import { OperationsEmptyState } from "@/features/dashboard/components/operations-ui"
 import {
   SettingsModulePage,
   SupportModulePage,
@@ -47,6 +48,7 @@ import {
 } from "@/features/dashboard/data/portal-client"
 import { isTenderOwnedByPortalActor } from "@/features/dashboard/lib/tender-ownership"
 import { getRequiredPortalSession } from "@/lib/auth/session"
+import { BackendApiError } from "@/lib/backend/api"
 import { redirect } from "@/i18n/navigation"
 import type { Locale, PrimaryAccountType } from "@/shared/types/platform"
 
@@ -302,6 +304,14 @@ export default async function PortalModuleRoute({
       segment: resolved.definition.segment,
       error,
     })
+    if (error instanceof BackendApiError && error.status === 403) {
+      return (
+        <OperationsEmptyState
+          title="Access restricted"
+          description="Your active workspace role does not have permission to view this data. Switch to an authorized workspace or ask a workspace administrator for access."
+        />
+      )
+    }
     return (
       <PortalModuleLoadFallback
         href={`/dashboard/${resolved.definition.segment}`}

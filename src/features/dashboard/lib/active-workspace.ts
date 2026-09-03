@@ -18,9 +18,7 @@ export function getActiveWorkspace<T extends ActiveWorkspaceLike>(
   return (
     workspaces.find(
       (workspace) => workspace.status.toLowerCase() === "active",
-    ) ??
-    workspaces[0] ??
-    null
+    ) ?? null
   )
 }
 

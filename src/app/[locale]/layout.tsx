@@ -5,7 +5,6 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server"
-import { Inter, Noto_Sans_Arabic } from "next/font/google"
 import { notFound } from "next/navigation"
 import { NextIntlClientProvider } from "next-intl"
 import { Toaster } from "sonner"
@@ -25,17 +24,6 @@ export const viewport: Viewport = {
 }
 
 export const instant = false
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-})
-const notoArabic = Noto_Sans_Arabic({
-  subsets: ["arabic"],
-  variable: "--font-noto-arabic",
-  display: "swap",
-})
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -90,7 +78,6 @@ export default async function LocaleLayout({
       lang={locale}
       dir={direction}
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${notoArabic.variable}`}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>

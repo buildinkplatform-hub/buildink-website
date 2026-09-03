@@ -10,6 +10,7 @@ import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
+  labelize,
   OperationsMetricCard,
   OperationsStatusBadge,
 } from "@/features/dashboard/components/operations-ui"
@@ -231,7 +232,7 @@ export async function WorkforceModulePage({ detailId }: { detailId?: string }) {
                 rows={requests.items.map((item) => ({
                   id: item.id,
                   title: item.title,
-                  kindLabel: item.kind?.replaceAll("_", " ") ?? "-",
+                  kindLabel: item.kind ? labelize(item.kind) : "-",
                   statusLabel: item.statusV1?.replaceAll("_", " ") ?? "-",
                   publicationLabel: item.publicationStatus.replaceAll("_", " "),
                   secondary: item.kind ?? undefined,

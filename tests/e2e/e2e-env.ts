@@ -40,6 +40,18 @@ export function ensureE2EEnvironment() {
   process.env.NEXT_PUBLIC_SITE_URL ??= "http://127.0.0.1:3100"
   process.env.BACKEND_API_URL ??= "http://127.0.0.1:4100"
   process.env.AUTH_RATE_LIMIT_ALLOW_MEMORY ??= "true"
+  process.env.E2E_USE_MOCK_AUTH ??= process.env.PLAYWRIGHT_BASE_URL
+    ? "false"
+    : "true"
+
+  if (process.env.E2E_USE_MOCK_AUTH === "true") {
+    process.env.BACKEND_API_URL = "http://127.0.0.1:4100"
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "http://127.0.0.1:4100"
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "e2e-anon-key"
+    process.env.E2E_SUPABASE_SECRET_KEY = "e2e-service-role-key"
+    delete process.env.UPSTASH_REDIS_REST_URL
+    delete process.env.UPSTASH_REDIS_REST_TOKEN
+  }
   process.env.E2E_SUPABASE_SECRET_KEY ??= process.env.SUPABASE_SECRET_KEY
   process.env.E2E_USER_EMAIL ??= `buildink-e2e-${Date.now()}-${process.pid}@example.com`
   process.env.E2E_USER_PASSWORD ??= "Buildink-E2E-Only@2026"

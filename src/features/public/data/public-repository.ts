@@ -255,6 +255,18 @@ const homeMetricLabels: Record<Locale, string[]> = {
   ],
 }
 
+function fixtureHomeAggregates() {
+  return {
+    companies: publicEntities.companies.length,
+    tenders: publicEntities.tenders.length,
+    workers: publicEntities.profiles.filter((item) => item.module === "workers")
+      .length,
+    projects: publicEntities.projects.length,
+    publicMediaPublishers: 0,
+    publicEvidenceDocuments: 0,
+  }
+}
+
 export async function getHomeView(locale: Locale): Promise<PublicHomeView> {
   "use cache"
   cacheLife("publicMarketplace")
@@ -282,41 +294,37 @@ export async function getHomeView(locale: Locale): Promise<PublicHomeView> {
     companies: [],
     projects: [],
   }
-  const aggregates = apiHome?.aggregates ?? {
-    companies: 0,
-    tenders: 0,
-    workers: 0,
-    projects: 0,
-    publicMediaPublishers: 0,
-    publicEvidenceDocuments: 0,
-  }
+  const aggregates =
+    apiHome?.aggregates ?? (allowFixtures ? fixtureHomeAggregates() : null)
+  const metricValue = (value: number | null | undefined) =>
+    typeof value === "number" ? formatCount(value, locale) : "—"
 
   return {
     locale,
     metrics: [
       {
         label: metricLabels[0],
-        value: formatCount(aggregates.companies, locale),
+        value: metricValue(aggregates?.companies),
       },
       {
         label: metricLabels[1],
-        value: formatCount(aggregates.tenders, locale),
+        value: metricValue(aggregates?.tenders),
       },
       {
         label: metricLabels[2],
-        value: formatCount(aggregates.workers, locale),
+        value: metricValue(aggregates?.workers),
       },
       {
         label: metricLabels[3],
-        value: formatCount(aggregates.projects, locale),
+        value: metricValue(aggregates?.projects),
       },
       {
         label: metricLabels[4],
-        value: formatCount(aggregates.publicMediaPublishers, locale),
+        value: metricValue(aggregates?.publicMediaPublishers),
       },
       {
         label: metricLabels[5],
-        value: formatCount(aggregates.publicEvidenceDocuments, locale),
+        value: metricValue(aggregates?.publicEvidenceDocuments),
       },
     ],
     featured,

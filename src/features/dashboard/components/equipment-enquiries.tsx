@@ -27,6 +27,8 @@ export function EquipmentEnquiries({
   const t = useTranslations("dashboard.equipmentEnquiries")
   const router = useRouter()
   const [pending, setPending] = useState(false)
+  const [visibleSubmitted] = useState(submitted)
+  const [visibleReceived, setVisibleReceived] = useState(received)
   const [equipmentId, setEquipmentId] = useState("")
   const [startsOn, setStartsOn] = useState("")
   const [endsOn, setEndsOn] = useState("")
@@ -43,6 +45,32 @@ export function EquipmentEnquiries({
     })
     setPending(false)
     if (result.ok) router.refresh()
+  }
+
+  async function transition(
+    item: PortalEquipmentEnquiry,
+    status: (typeof transitions)[number],
+  ) {
+    if (!companyId) return
+    setPending(true)
+    try {
+      const result = await transitionEquipmentEnquiryAction(
+        companyId,
+        item.id,
+        status,
+        item.version,
+      )
+      if (!result.ok) throw new Error(result.message)
+      setVisibleReceived((current) =>
+        current.map((entry) =>
+          entry.id === item.id
+            ? { ...entry, status, version: entry.version + 1 }
+            : entry,
+        ),
+      )
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -79,8 +107,14 @@ export function EquipmentEnquiries({
         {t("send")}
       </Button>
       {[
-        ...received.map((item) => ({ ...item, inbox: "received" as const })),
-        ...submitted.map((item) => ({ ...item, inbox: "submitted" as const })),
+        ...visibleReceived.map((item) => ({
+          ...item,
+          inbox: "received" as const,
+        })),
+        ...visibleSubmitted.map((item) => ({
+          ...item,
+          inbox: "submitted" as const,
+        })),
       ].map((item) => (
         <div
           key={`${item.inbox}:${item.id}`}
@@ -104,19 +138,7 @@ export function EquipmentEnquiries({
                   size="sm"
                   variant={status === "ACCEPTED" ? "primary" : "secondary"}
                   disabled={pending}
-                  onClick={() =>
-                    void (async () => {
-                      setPending(true)
-                      await transitionEquipmentEnquiryAction(
-                        companyId,
-                        item.id,
-                        status,
-                        item.version,
-                      )
-                      setPending(false)
-                      router.refresh()
-                    })()
-                  }
+                  onClick={() => void transition(item, status)}
                 >
                   {status}
                 </Button>

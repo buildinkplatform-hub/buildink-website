@@ -159,7 +159,7 @@ export function OperationsDataTable({
     <OperationsTablePreferences
       companyId={companyId}
       resource={resource}
-      columns={columns}
+      columns={columns.map(({ key, label }) => ({ key, label }))}
     >
       <Card className="overflow-hidden">
         <div className="hidden md:block">

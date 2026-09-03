@@ -35,6 +35,7 @@ export interface ActionResult {
   success: boolean
   error?: "invalid" | "validation" | "not_verified" | "rate_limited" | "backend"
   retryAfterSeconds?: number
+  destination?: string
 }
 
 async function checkLimit(
@@ -43,6 +44,10 @@ async function checkLimit(
   limit: number,
   windowSeconds: number,
 ): Promise<ActionResult | null> {
+  // The hermetic Playwright auth server has no external abuse surface. Keep
+  // workflow tests independent from Redis while production and live E2E runs
+  // continue through the real distributed limiter.
+  if (process.env.E2E_USE_MOCK_AUTH === "true") return null
   try {
     await limitAuthAction(action, subject, limit, windowSeconds)
     return null
@@ -91,11 +96,19 @@ export async function loginAction(
   })
   if (error) return { success: false, error: "invalid" }
   if (!data.user?.email_confirmed_at) {
-    redirect(
-      `/${locale}/verify-email?email=${encodeURIComponent(data.user?.email ?? parsed.data.email)}`,
-    )
+    return {
+      success: true,
+      destination: `/${locale}/verify-email?email=${encodeURIComponent(data.user?.email ?? parsed.data.email)}`,
+    }
   }
-  redirect(getSignedInDestination(locale, "enter_portal", parsed.data.next))
+  return {
+    success: true,
+    destination: getSignedInDestination(
+      locale,
+      "enter_portal",
+      parsed.data.next,
+    ),
+  }
 }
 
 export async function registerAction(
