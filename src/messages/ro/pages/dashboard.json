@@ -110,7 +110,10 @@
         "direction": "Direcție",
         "submitted": "Trimisă",
         "notSubmitted": "Nu a fost trimisă",
-        "inbox": { "submitted": "Trimisă", "received": "Primită" },
+        "inbox": {
+          "submitted": "Trimisă",
+          "received": "Primită"
+        },
         "totalRecords": "înregistrări totale",
         "rows": "rânduri"
       },
@@ -784,7 +787,9 @@
         "upload": "Încarcă sau înlocuiește documentele lipsă.",
         "verified": "Monitorizează expirările și menține profilul actualizat.",
         "submit": "Trimite documentele selectate spre analiză."
-      }
+      },
+      "policyChangedTitle": "Cerințele de verificare s-au schimbat",
+      "policyChangedBody": "Contul tău este aprobat, dar politica activă de verificare necesită acum documente care lipsesc. Încarcă-le pentru a menține verificarea actualizată."
     },
     "fields": {
       "title": "Titlu",
