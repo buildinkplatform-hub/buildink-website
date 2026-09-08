@@ -213,7 +213,6 @@ function actionsFor(
     case "PROJECT_OWNER":
       if (modules.has("projects")) actions.push("publishProject")
       if (modules.has("tenders")) actions.push("browseTenders")
-      if (modules.has("offers")) actions.push("createProposal")
       break
     case "SUBCONTRACTOR":
       if (modules.has("tenders")) actions.push("browseTenders")
