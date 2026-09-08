@@ -134,7 +134,10 @@
         "direction": "Direction",
         "submitted": "Submitted",
         "notSubmitted": "Not submitted",
-        "inbox": { "submitted": "Sent", "received": "Received" },
+        "inbox": {
+          "submitted": "Sent",
+          "received": "Received"
+        },
         "totalRecords": "total records",
         "rows": "rows"
       },
@@ -188,7 +191,10 @@
       "enquiries": "Enquiries",
       "availability": "Availability"
     },
-    "navGroups": { "people": "Hiring & People", "operations": "Operations" },
+    "navGroups": {
+      "people": "Hiring & People",
+      "operations": "Operations"
+    },
     "descriptions": {
       "profile": "Manage your public identity, contact details and marketplace information.",
       "documents": "Upload and track certificates and verification records.",
@@ -1002,7 +1008,9 @@
         "upload": "Upload or replace missing verification documents.",
         "verified": "Monitor document expiry and keep your profile current.",
         "submit": "Submit the selected documents for admin review."
-      }
+      },
+      "policyChangedTitle": "Verification requirements changed",
+      "policyChangedBody": "Your account is approved, but the active verification policy now requires documents that are missing. Upload them to keep your verification current."
     },
     "fields": {
       "title": "Title",
