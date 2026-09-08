@@ -119,6 +119,9 @@ export async function PortalVerificationPage() {
     (item) => item.required && item.uploaded,
   ).length
   const documents = status?.documents ?? []
+  const approvedWithMissingRequirements =
+    ["VERIFIED", "APPROVED"].includes(statusValue.toUpperCase()) &&
+    fulfilledRequiredCount < requiredCount
   const blockedReasons: string[] = []
 
   if (!requirements.length && !overview?.submission) {
@@ -236,6 +239,15 @@ export async function PortalVerificationPage() {
           ))}
         </div>
       </Card>
+
+      {approvedWithMissingRequirements ? (
+        <PortalInlineAlert
+          tone="warning"
+          title={t("dashboard.verification.policyChangedTitle")}
+        >
+          {t("dashboard.verification.policyChangedBody")}
+        </PortalInlineAlert>
+      ) : null}
 
       <Card className="border-primary/15 bg-primary/[0.035] p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
