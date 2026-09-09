@@ -192,14 +192,17 @@ export async function PublicPlaceholder({ locale }: { locale: Locale }) {
   ])
   const heroCategories = companyFacets.categories.slice(0, 8)
   const secondaryCategories = [
-    t("categoryGeneralContractor"),
-    t("categoryElectrical"),
-    t("categoryPlumbing"),
-    t("categoryHvac"),
-    t("categoryEquipment"),
-    t("categoryWorkersLabor"),
-    t("categorySuppliers"),
-    t("categoryEngineering"),
+    {
+      value: "general-contracting",
+      label: t("categoryGeneralContractor"),
+    },
+    { value: "electrical", label: t("categoryElectrical") },
+    { value: "plumbing", label: t("categoryPlumbing") },
+    { value: "hvac", label: t("categoryHvac") },
+    { value: "equipment-rental", label: t("categoryEquipment") },
+    { value: "masonry-concrete", label: t("categoryWorkersLabor") },
+    { value: "materials-supply", label: t("categorySuppliers") },
+    { value: "building-services", label: t("categoryEngineering") },
   ]
   const highlightColumns = [
     {
@@ -369,13 +372,13 @@ export async function PublicPlaceholder({ locale }: { locale: Locale }) {
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   {secondaryCategories.map((category) => (
                     <Link
-                      key={category}
-                      href={`/companies?category=${encodeURIComponent(category)}`}
+                      key={category.value}
+                      href={`/companies?category=${encodeURIComponent(category.value)}`}
                       className="hover:bg-light-blue flex min-h-18 items-center justify-between rounded-2xl border border-slate-100 px-4 py-3 transition-colors"
                     >
                       <div>
                         <p className="text-brand-navy text-sm font-semibold">
-                          {category}
+                          {category.label}
                         </p>
                         <p className="text-muted mt-1 text-xs">
                           {t("viewLabel")}
