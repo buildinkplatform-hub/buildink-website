@@ -268,7 +268,10 @@ export async function PublicPlaceholder({ locale }: { locale: Locale }) {
                         />
                       </div>
                       <Select name="category" defaultValue="__all__">
-                        <SelectTrigger className="min-h-13 rounded-2xl border-white/70 bg-white text-base">
+                        <SelectTrigger
+                          className="min-h-13 rounded-2xl border-white/70 bg-white text-base"
+                          aria-label={site("filters.category")}
+                        >
                           <SelectValue
                             placeholder={site("filters.allCategories")}
                           />
