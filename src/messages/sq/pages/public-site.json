@@ -141,7 +141,7 @@
     },
     "detail": {
       "contactTitle": "Kontakt dhe besim",
-      "reportHint": "Faqet publike të detajeve duhet t’u japin vizitorëve një rrugë të sigurt për të raportuar përmbajtje publike të pasaktë ose të pasigurt.",
+      "reportHint": "Mund të raportosh përmbajtje publike të pasaktë ose të pasigurt dhe ekipi i Buildink do ta shqyrtojë.",
       "relatedTitle": "Elemente publike të lidhura",
       "relatedBody": "Mbaj zbulimin në lëvizje duke lidhur një grup të vogël, relevant të regjistrimeve publike fqinje.",
       "reviewSummary": "{rating} ({count} vlerësime)",
@@ -287,9 +287,9 @@
       "howItWorks": {
         "eyebrow": "Qartësi procesi",
         "title": "Si funksionon Buildink për çdo audiencë publike",
-        "description": "Shpjego zbulimin, verifikimin, publikimin dhe rrjedhat e përgjigjes para se t’u kërkosh vizitorëve të krijojnë një llogari.",
+        "description": "Zbulo kompani, profesionistë dhe mundësi, kontrollo statusin e verifikimit dhe krijo llogari për të publikuar ose përgjigjur sipas rolit tënd.",
         "sectionOneTitle": "Rrugë sipas rolit",
-        "sectionOneBody": "Kjo faqe duhet t’i përgjigjet pyetjes së parë praktike të çdo vizitori: çfarë mund të bëj këtu dhe çfarë ndodh më pas?",
+        "sectionOneBody": "Zgjidh rrugën e rolit tënd: shfleto tregun publik fillimisht, pastaj krijo llogari kur të jesh gati të publikosh ose kontaktosh.",
         "cards": {
           "card1Title": "Për kompani dhe pronarë",
           "card1Body": "Qartëso se si kompanitë publikojnë identitete publike, projekte, kërkesa dhe rrugë kontakti të miratuara.",
@@ -302,16 +302,16 @@
       "verification": {
         "eyebrow": "Besim dhe siguri",
         "title": "Çfarë verifikon Buildink — dhe çfarë jo",
-        "description": "Përdor gjuhë të thjeshtë për të përshkruar kuptimin e verifikimit publik, kufijtë e privatësisë dhe se si vizitorët mund të raportojnë shqetësime.",
+        "description": "Verifikimi publik tregon kontrollet e përfunduara nga Buildink, mbron dokumentet private dhe ofron një mënyrë për të raportuar shqetësime.",
         "sectionOneTitle": "Verifikim me kufij të ndershëm",
-        "sectionOneBody": "Faqet e besimit funksionojnë më mirë kur rrisin besimin pa pretenduar më shumë se sa mund të garantojë platforma.",
+        "sectionOneBody": "Distinktivët e verifikimit rrisin besimin, por nuk janë garanci përtej kontrolleve të deklaruara.",
         "cards": {
           "card1Title": "Distinktivët e verifikimit",
-          "card1Body": "Shpjego se çfarë përfaqëson një distinktiv në faqet e kompanisë, profilit dhe listimit.",
+          "card1Body": "Distinktivi tregon se kontrollet e deklaruara për llogarinë ose listimin janë përfunduar.",
           "card2Title": "Trajtimi i privatësisë",
-          "card2Body": "Bëj të qartë se identiteti privat dhe skedarët e verifikimit nuk i përkasin sipërfaqes publike.",
+          "card2Body": "Dokumentet private të identitetit dhe verifikimit mbeten të mbrojtura dhe nuk shfaqen publikisht.",
           "card3Title": "Rrjedha e raportimit dhe shqyrtimit",
-          "card3Body": "Vizitorët duhet të dinë gjithmonë si të raportojnë përmbajtje publike të pasigurt, mashtruese ose të pasaktë."
+          "card3Body": "Mund të raportosh përmbajtje të pasigurt, mashtruese ose të pasaktë që ekipi ta shqyrtojë."
         }
       },
       "about": {
