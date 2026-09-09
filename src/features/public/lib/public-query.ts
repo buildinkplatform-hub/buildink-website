@@ -9,7 +9,8 @@ export function parseDirectoryQuery(
 
   function value(key: string) {
     const raw = searchParams?.[key]
-    return Array.isArray(raw) ? raw[0] : raw
+    const resolved = Array.isArray(raw) ? raw[0] : raw
+    return resolved && resolved !== "__all__" ? resolved : undefined
   }
 
   return {
@@ -39,7 +40,13 @@ export function parseDirectoryQuery(
 export function buildQueryString(query: DirectoryQuery) {
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(query)) {
-    if (value === undefined || value === null || value === "") continue
+    if (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      value === "__all__"
+    )
+      continue
     params.set(key, String(value))
   }
   return params.toString()
