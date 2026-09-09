@@ -437,6 +437,34 @@ export async function getRelatedEntities(
 export async function searchAll(query: DirectoryQuery, locale: Locale = "en") {
   const api = await fetchPublicSearch(locale, query)
   if (api.items.length) return api.items
+
+  // Keep global discovery useful when the aggregate search endpoint is
+  // temporarily unavailable or returns an incomplete empty response. Each
+  // directory remains the source of truth for its own visibility rules.
+  const modules: PublicModule[] = [
+    "companies",
+    "project-owners",
+    "subcontractors",
+    "service-providers",
+    "workers",
+    "projects",
+    "tenders",
+    "equipment",
+    "opportunities",
+  ]
+  const directoryResults = await Promise.all(
+    modules.map((module) =>
+      fetchPublicDirectory(module, locale, { ...query, page: 1 }),
+    ),
+  )
+  const unique = new Map<string, PublicEntityRecord>()
+  for (const result of directoryResults) {
+    for (const item of result?.items ?? []) {
+      unique.set(`${item.module}:${item.slug}`, item)
+    }
+  }
+  if (unique.size) return [...unique.values()]
+
   if (!allowFixtures) return []
   return (
     Object.keys(publicEntities) as Array<keyof typeof publicEntities>
