@@ -123,6 +123,9 @@ export async function PublicEntityDetailPage({
     isReviewsTab ? "/reviews" : ""
   }`
   const primaryVisual = selectPrimaryVisual(item)
+  const primaryContactHref = item.contact.email
+    ? `mailto:${item.contact.email}`
+    : item.contact.website
 
   const tabs =
     module === "companies" ? (
@@ -206,9 +209,14 @@ export async function PublicEntityDetailPage({
                   {t("actions.viewDetails")}
                 </Link>
               </Button>
-              {item.contact?.email ? (
+              {primaryContactHref ? (
                 <Button asChild>
-                  <a href={`mailto:${item.contact.email}`}>
+                  <a
+                    href={primaryContactHref}
+                    {...(!item.contact.email
+                      ? { target: "_blank", rel: "noreferrer" }
+                      : {})}
+                  >
                     {t("actions.primaryContact")}
                   </a>
                 </Button>
@@ -264,7 +272,18 @@ export async function PublicEntityDetailPage({
               </div>
             </div>
             <div className="mt-5 grid gap-2">
-              <Button>{t("actions.primaryContact")}</Button>
+              {primaryContactHref ? (
+                <Button asChild>
+                  <a
+                    href={primaryContactHref}
+                    {...(!item.contact.email
+                      ? { target: "_blank", rel: "noreferrer" }
+                      : {})}
+                  >
+                    {t("actions.primaryContact")}
+                  </a>
+                </Button>
+              ) : null}
               {saveEntityType ? (
                 <SaveItemButton
                   entityType={saveEntityType}
@@ -461,7 +480,7 @@ export async function PublicEntityDetailPage({
               <PublicEntityCard
                 key={relatedItem.slug}
                 item={relatedItem}
-                href={`${moduleRouteMap[module]}/${relatedItem.slug}`}
+                href={`${moduleRouteMap[relatedItem.module]}/${relatedItem.slug}`}
                 actionLabel={t("actions.viewDetails")}
               />
             ))}
