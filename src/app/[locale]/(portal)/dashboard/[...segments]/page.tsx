@@ -154,12 +154,19 @@ export default async function PortalModuleRoute({
     redirect({ href: portalListPath("opportunities"), locale })
   }
 
-  const serviceProviderTenderDiscoveryOnly =
-    accountType === "SERVICE_PROVIDER" && !bootstrap?.activeWorkspace
+  const workspaceCanCreateTender = Boolean(
+    bootstrap?.activeWorkspace &&
+      bootstrap.entitlements.permissions.includes("tenders.create") &&
+      bootstrap.entitlements.capabilities.some((capability) =>
+        ["PROJECT_PUBLISHER", "GENERAL_CONTRACTOR"].includes(capability),
+      ),
+  )
+  const canCreateTender =
+    accountType === "PROJECT_OWNER" || workspaceCanCreateTender
   if (
     resolved.definition.segment === "tenders" &&
     resolved.action === "create" &&
-    serviceProviderTenderDiscoveryOnly
+    !canCreateTender
   ) {
     redirect({ href: portalListPath("tenders"), locale })
   }
@@ -279,7 +286,7 @@ export default async function PortalModuleRoute({
           })
         }
         const content = await TendersModulePage({ query })
-        if (serviceProviderTenderDiscoveryOnly) {
+        if (!canCreateTender) {
           return hideCreateAction(content, "tenders")
         }
         return content

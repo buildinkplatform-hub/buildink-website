@@ -163,7 +163,10 @@ function FiltersForm({
             {countryLabel}
           </label>
           <Select name="country" defaultValue={query.country ?? "__all__"}>
-            <SelectTrigger className="min-h-12 rounded-2xl">
+            <SelectTrigger
+              className="min-h-12 rounded-2xl"
+              aria-label={countryLabel}
+            >
               <SelectValue placeholder={allCountriesLabel} />
             </SelectTrigger>
             <SelectContent>
@@ -181,7 +184,10 @@ function FiltersForm({
             {regionLabel}
           </label>
           <Select name="region" defaultValue={query.region ?? "__all__"}>
-            <SelectTrigger className="min-h-12 rounded-2xl">
+            <SelectTrigger
+              className="min-h-12 rounded-2xl"
+              aria-label={regionLabel}
+            >
               <SelectValue placeholder={allRegionsLabel} />
             </SelectTrigger>
             <SelectContent>
@@ -199,7 +205,10 @@ function FiltersForm({
             {cityLabel}
           </label>
           <Select name="city" defaultValue={query.city ?? "__all__"}>
-            <SelectTrigger className="min-h-12 rounded-2xl">
+            <SelectTrigger
+              className="min-h-12 rounded-2xl"
+              aria-label={cityLabel}
+            >
               <SelectValue placeholder={allCitiesLabel} />
             </SelectTrigger>
             <SelectContent>
@@ -217,7 +226,10 @@ function FiltersForm({
             {categoryLabel}
           </label>
           <Select name="category" defaultValue={query.category ?? "__all__"}>
-            <SelectTrigger className="min-h-12 rounded-2xl">
+            <SelectTrigger
+              className="min-h-12 rounded-2xl"
+              aria-label={categoryLabel}
+            >
               <SelectValue placeholder={allCategoriesLabel} />
             </SelectTrigger>
             <SelectContent>
@@ -238,7 +250,10 @@ function FiltersForm({
             name="verification"
             defaultValue={query.verification ?? "__all__"}
           >
-            <SelectTrigger className="min-h-12 rounded-2xl">
+            <SelectTrigger
+              className="min-h-12 rounded-2xl"
+              aria-label={verificationLabel}
+            >
               <SelectValue placeholder={allStatusesLabel} />
             </SelectTrigger>
             <SelectContent>
@@ -263,7 +278,10 @@ function FiltersForm({
                   query[key as keyof DirectoryQuery] ?? "__all__",
                 )}
               >
-                <SelectTrigger className="min-h-12 rounded-2xl">
+                <SelectTrigger
+                  className="min-h-12 rounded-2xl"
+                  aria-label={additionalLabels[key] ?? key}
+                >
                   <SelectValue placeholder={allStatusesLabel} />
                 </SelectTrigger>
                 <SelectContent>

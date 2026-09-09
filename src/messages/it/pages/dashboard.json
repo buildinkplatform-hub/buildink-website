@@ -110,7 +110,10 @@
         "direction": "Direzione",
         "submitted": "Inviata",
         "notSubmitted": "Non inviata",
-        "inbox": { "submitted": "Inviata", "received": "Ricevuta" },
+        "inbox": {
+          "submitted": "Inviata",
+          "received": "Ricevuta"
+        },
         "totalRecords": "record totali",
         "rows": "righe"
       },
@@ -784,7 +787,9 @@
         "upload": "Carica o sostituisci i documenti mancanti.",
         "verified": "Controlla le scadenze e mantieni aggiornato il profilo.",
         "submit": "Invia i documenti selezionati per la revisione."
-      }
+      },
+      "policyChangedTitle": "I requisiti di verifica sono cambiati",
+      "policyChangedBody": "Il tuo account è approvato, ma la policy di verifica attiva ora richiede documenti mancanti. Caricali per mantenere aggiornata la verifica."
     },
     "fields": {
       "title": "Titolo",

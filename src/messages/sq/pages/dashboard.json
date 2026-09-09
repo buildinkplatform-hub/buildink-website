@@ -110,7 +110,10 @@
         "direction": "Drejtimi",
         "submitted": "Dërguar",
         "notSubmitted": "Nuk është dërguar",
-        "inbox": { "submitted": "Dërguar", "received": "Pranuar" },
+        "inbox": {
+          "submitted": "Dërguar",
+          "received": "Pranuar"
+        },
         "totalRecords": "regjistra gjithsej",
         "rows": "rreshta"
       },
@@ -784,7 +787,9 @@
         "upload": "Ngarko ose zëvendëso dokumentet që mungojnë.",
         "verified": "Monitoro skadimet dhe mbaje profilin të përditësuar.",
         "submit": "Dërgo dokumentet e zgjedhura për shqyrtim."
-      }
+      },
+      "policyChangedTitle": "Kërkesat e verifikimit kanë ndryshuar",
+      "policyChangedBody": "Llogaria jote është miratuar, por politika aktive e verifikimit tani kërkon dokumente që mungojnë. Ngarkoji për ta mbajtur verifikimin të përditësuar."
     },
     "fields": {
       "title": "Titulli",
