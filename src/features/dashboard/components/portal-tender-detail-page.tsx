@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { ArrowLeft, FileText } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -29,6 +29,19 @@ import {
   portalListPath,
 } from "@/features/dashboard/config/portal-routes"
 import { Link } from "@/i18n/navigation"
+
+function formatMinorCurrency(
+  value: string | number | null | undefined,
+  currency: string | null | undefined,
+  locale: string,
+) {
+  const amount = Number(value)
+  if (!currency || !Number.isFinite(amount)) return null
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+  }).format(amount / 100)
+}
 
 const tenderPermissions: readonly CompanyPermission[] = [
   "tenders.view",
@@ -68,7 +81,7 @@ export async function PortalTenderDetailPage({
   id: string
   page?: number
 }) {
-  const t = await getTranslations()
+  const [t, locale] = await Promise.all([getTranslations(), getLocale()])
   const bootstrap = await getPortalBootstrap()
   const detail = await getPortalTender(id, page).catch(() => null)
 
@@ -218,7 +231,10 @@ export async function PortalTenderDetailPage({
                     ) : null}
                   </div>
                   <p className="text-muted-foreground shrink-0 text-xs sm:text-end">
-                    {[lot.reference, lot.valueMinor, lot.currency]
+                    {[
+                      lot.reference,
+                      formatMinorCurrency(lot.valueMinor, lot.currency, locale),
+                    ]
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
