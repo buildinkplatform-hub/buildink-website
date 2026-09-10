@@ -6,6 +6,7 @@ import type {
   DirectoryResult,
   PublicDirectoryFacets,
   PublicEntityRecord,
+  PublicFacetOption,
   PublicHomeView,
   PublicModule,
   PublicReview,
@@ -148,6 +149,125 @@ const profileCopy: Record<
     worker: "Punëtor",
     summary: "Profil i publikuar në marketplace",
   },
+}
+
+const publicCategoryCopy = {
+  construction: {
+    en: "Construction",
+    it: "Costruzioni",
+    ar: "البناء",
+    ro: "Construcții",
+    sq: "Ndërtim",
+  },
+  "general-contracting": {
+    en: "General contracting",
+    it: "Appalti generali",
+    ar: "المقاولات العامة",
+    ro: "Contractare generală",
+    sq: "Kontraktim i përgjithshëm",
+  },
+  "masonry-concrete": {
+    en: "Masonry and concrete",
+    it: "Muratura e calcestruzzo",
+    ar: "أعمال المباني والخرسانة",
+    ro: "Zidărie și beton",
+    sq: "Muraturë dhe beton",
+  },
+  "roofing-facades": {
+    en: "Roofing and facades",
+    it: "Coperture e facciate",
+    ar: "الأسقف والواجهات",
+    ro: "Acoperișuri și fațade",
+    sq: "Çati dhe fasada",
+  },
+  "building-services": {
+    en: "Building services",
+    it: "Impianti edili",
+    ar: "خدمات المباني",
+    ro: "Instalații pentru clădiri",
+    sq: "Instalime ndërtimore",
+  },
+  electrical: {
+    en: "Electrical",
+    it: "Elettrico",
+    ar: "الأعمال الكهربائية",
+    ro: "Instalații electrice",
+    sq: "Instalime elektrike",
+  },
+  plumbing: {
+    en: "Plumbing",
+    it: "Idraulica",
+    ar: "أعمال السباكة",
+    ro: "Instalații sanitare",
+    sq: "Instalime hidraulike",
+  },
+  hvac: {
+    en: "HVAC",
+    it: "HVAC",
+    ar: "التدفئة والتهوية وتكييف الهواء",
+    ro: "HVAC",
+    sq: "HVAC",
+  },
+  "materials-supply": {
+    en: "Materials supply",
+    it: "Fornitura materiali",
+    ar: "توريد المواد",
+    ro: "Furnizare de materiale",
+    sq: "Furnizim materialesh",
+  },
+  "cement-aggregates": {
+    en: "Cement and aggregates",
+    it: "Cemento e inerti",
+    ar: "الأسمنت والركام",
+    ro: "Ciment și agregate",
+    sq: "Çimento dhe agregate",
+  },
+  "steel-metals": {
+    en: "Steel and metals",
+    it: "Acciaio e metalli",
+    ar: "الفولاذ والمعادن",
+    ro: "Oțel și metale",
+    sq: "Çelik dhe metale",
+  },
+  "finishes-fixtures": {
+    en: "Finishes and fixtures",
+    it: "Finiture e accessori",
+    ar: "التشطيبات والتجهيزات",
+    ro: "Finisaje și accesorii",
+    sq: "Finisazhe dhe pajisje",
+  },
+} satisfies Record<string, Record<Locale, string>>
+
+function normalizedFacetValue(value: string) {
+  return value.trim().toLocaleLowerCase()
+}
+
+function localizedCategoryFacets(
+  options: PublicFacetOption[],
+  locale: Locale,
+  selected = "",
+) {
+  const selectedValue = normalizedFacetValue(selected)
+  return options.map((option) => {
+    const optionValues = [option.value, option.label].map(normalizedFacetValue)
+    const match = Object.entries(publicCategoryCopy).find(([slug, labels]) =>
+      [slug, ...Object.values(labels)]
+        .map(normalizedFacetValue)
+        .some((value) => optionValues.includes(value)),
+    )
+    if (!match) return option
+
+    const [slug, labels] = match
+    const knownValues = [slug, ...Object.values(labels)].map(normalizedFacetValue)
+    return {
+      ...option,
+      value: slug,
+      label: labels[locale],
+      selected:
+        option.selected ||
+        (selectedValue.length > 0 && knownValues.includes(selectedValue)),
+    }
+  })
 }
 
 const FRESH_MARKETPLACE_REQUEST: RequestInit = { cache: "no-store" }
@@ -452,7 +572,16 @@ export async function fetchPublicFacets(
   return publicBackendApi<PublicDirectoryFacets>(
     `/api/v1/public/marketplace/${path}/facets?${params.toString()}`,
     FRESH_MARKETPLACE_REQUEST,
-  ).catch(() => null)
+  )
+    .then((facets) => ({
+      ...facets,
+      categories: localizedCategoryFacets(
+        facets.categories,
+        locale,
+        query.category,
+      ),
+    }))
+    .catch(() => null)
 }
 
 export async function fetchPublicEntity(
