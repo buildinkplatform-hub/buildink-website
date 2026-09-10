@@ -45,6 +45,14 @@ import type {
   PublicModule,
 } from "@/features/public/types/public.types"
 
+const allOptionsLabels: Record<Locale, string> = {
+  en: "All options",
+  it: "Tutte le opzioni",
+  ar: "جميع الخيارات",
+  ro: "Toate opțiunile",
+  sq: "Të gjitha opsionet",
+}
+
 const paginationLabels: Record<
   Locale,
   { previous: string; next: string; label: string }
@@ -102,6 +110,7 @@ function FiltersForm({
   allCategoriesLabel,
   verificationLabel,
   allStatusesLabel,
+  allOptionsLabel,
   clearLabel,
   applyLabel,
   routePrefix,
@@ -128,6 +137,7 @@ function FiltersForm({
   allCategoriesLabel: string
   verificationLabel: string
   allStatusesLabel: string
+  allOptionsLabel: string
   clearLabel: string
   applyLabel: string
   routePrefix: string
@@ -282,10 +292,10 @@ function FiltersForm({
                   className="min-h-12 rounded-2xl"
                   aria-label={additionalLabels[key] ?? key}
                 >
-                  <SelectValue placeholder={allStatusesLabel} />
+                  <SelectValue placeholder={allOptionsLabel} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__all__">{allStatusesLabel}</SelectItem>
+                  <SelectItem value="__all__">{allOptionsLabel}</SelectItem>
                   {options.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label} ({option.count})
@@ -386,6 +396,7 @@ export async function PublicDirectoryPage({
       allCategoriesLabel={t("filters.allCategories")}
       verificationLabel={t("filters.verification")}
       allStatusesLabel={t("filters.allStatuses")}
+      allOptionsLabel={allOptionsLabels[locale]}
       clearLabel={t("actions.clearFilters")}
       applyLabel={t("actions.applyFilters")}
       routePrefix={routePrefix}
