@@ -178,7 +178,7 @@ export const publicCopySq: Record<StaticContentType, PageCopy> = {
       {
         id: "channels",
         title: "Kanalet",
-        body: "Emaili i zakonshëm i mbështetjes dhe emaili i privatësisë duhet të konfirmohen përpara publikimit. Deri atëherë, përdor formularin e kontaktit për mbështetje të përgjithshme dhe kërkesa për të drejtat e të dhënave.",
+        body: "Për mbështetje të përgjithshme dhe kërkesa për privatësinë ose të drejtat mbi të dhënat, përdorni formularin e kontaktit më poshtë. Njoftimet ligjore zyrtare mund të dërgohen përmes adresës PEC të treguar këtu.",
         items: [
           "Njoftime ligjore formale përmes emailit të certifikuar (PEC): metwally.arm@pec.it",
           "Selia e regjistruar: METWALLY AMR, Via Galileo Galilei 1, 22078 Turate (CO), Itali",
