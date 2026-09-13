@@ -149,6 +149,50 @@
       "configuredRules": "{count, plural, =0 {No configured rules} =1 {1 configured rule} other {# configured rules}}",
       "acknowledge": "Acknowledge",
       "resolve": "Resolve"
+    },
+    "summary": {
+      "onSiteToday": "في الموقع اليوم",
+      "openShifts": "الورديات المفتوحة والمسجلة",
+      "activeTasks": "المهام النشطة",
+      "blockedTasks": "المهام المتوقفة: {count}",
+      "operationalRisks": "المخاطر التشغيلية",
+      "riskAlerts": "التنبيهات الحرجة والتحذيرية",
+      "payrollReview": "مراجعة الرواتب",
+      "openPeriods": "الفترات التشغيلية المفتوحة",
+      "commandCenter": "مركز التحكم التشغيلي",
+      "commandDescription": "انتقل من إثبات الحضور إلى ربحية المشروع دون سجلات منفصلة.",
+      "openAttendance": "فتح الحضور",
+      "labourHours": "ساعات العمل",
+      "projects": "المشاريع"
+    },
+    "worker": {
+      "title": "عمليات العمل الخاصة بي",
+      "description": "تابع الورديات النشطة والتكليفات وسجل الحضور والأجر التشغيلي.",
+      "currentShift": "الوردية الحالية",
+      "shiftInProgress": "الوردية جارية",
+      "readyToCheckIn": "جاهز لتسجيل الحضور",
+      "started": "بدأت {time}",
+      "checkInHint": "امسح رمز QR للموقع أو استخدم رقم PIN.",
+      "active": "نشطة",
+      "tokenRequired": "رمز الموقع مطلوب",
+      "gpsEvidence": "إثبات الموقع GPS",
+      "shiftActive": "الوردية نشطة",
+      "waiting": "في الانتظار",
+      "syncStatus": "حالة المزامنة",
+      "onlineRecords": "سجلات متصلة",
+      "exceptions": "الاستثناءات",
+      "myWork": "عملي",
+      "assignments": "التكليفات",
+      "recentShifts": "الورديات الأخيرة",
+      "payrollStatements": "كشوف الرواتب"
+    },
+    "payroll": {
+      "periodStart": "بداية الفترة",
+      "periodEnd": "نهاية الفترة",
+      "status": "الحالة",
+      "gross": "الإجمالي",
+      "operationalNet": "الصافي التشغيلي",
+      "actions": "الإجراءات"
     }
   }
 }

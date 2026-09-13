@@ -149,6 +149,50 @@
       "configuredRules": "{count, plural, =0 {No configured rules} =1 {1 configured rule} other {# configured rules}}",
       "acknowledge": "Acknowledge",
       "resolve": "Resolve"
+    },
+    "summary": {
+      "onSiteToday": "In cantiere oggi",
+      "openShifts": "Turni aperti e registrati",
+      "activeTasks": "Attività attive",
+      "blockedTasks": "{count} bloccate",
+      "operationalRisks": "Rischi operativi",
+      "riskAlerts": "Avvisi critici e di attenzione",
+      "payrollReview": "Revisione paghe",
+      "openPeriods": "Periodi operativi aperti",
+      "commandCenter": "Centro di controllo operativo",
+      "commandDescription": "Passa dalle presenze documentate alla redditività del progetto senza dati scollegati.",
+      "openAttendance": "Apri presenze",
+      "labourHours": "Ore di lavoro",
+      "projects": "Progetti"
+    },
+    "worker": {
+      "title": "Le mie operazioni di lavoro",
+      "description": "Controlla turni attivi, incarichi, storico presenze e paga operativa.",
+      "currentShift": "Turno corrente",
+      "shiftInProgress": "Turno in corso",
+      "readyToCheckIn": "Pronto per il check-in",
+      "started": "Iniziato {time}",
+      "checkInHint": "Scansiona il QR del cantiere o usa il PIN.",
+      "active": "Attivo",
+      "tokenRequired": "Token del cantiere richiesto",
+      "gpsEvidence": "Prova GPS",
+      "shiftActive": "Turno attivo",
+      "waiting": "In attesa",
+      "syncStatus": "Stato sincronizzazione",
+      "onlineRecords": "Registrazioni online",
+      "exceptions": "Anomalie",
+      "myWork": "Il mio lavoro",
+      "assignments": "Incarichi",
+      "recentShifts": "Turni recenti",
+      "payrollStatements": "Prospetti paga"
+    },
+    "payroll": {
+      "periodStart": "Inizio periodo",
+      "periodEnd": "Fine periodo",
+      "status": "Stato",
+      "gross": "Lordo",
+      "operationalNet": "Netto operativo",
+      "actions": "Azioni"
     }
   }
 }
