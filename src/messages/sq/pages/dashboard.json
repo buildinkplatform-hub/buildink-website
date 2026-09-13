@@ -731,6 +731,85 @@
         "verification": "Verifikimi",
         "technical": "Teknike",
         "other": "Tjetër"
+      },
+      "priority": "Prioriteti",
+      "status": "Statusi",
+      "sla": "SLA",
+      "supportOwner": "Përgjegjësi i mbështetjes",
+      "awaitingAssignment": "Në pritje të caktimit",
+      "unassigned": "I pacaktuar",
+      "metrics": {
+        "channel": "Kanali i mbështetjes",
+        "direct": "Direkt",
+        "channelDetail": "Një bisedë private mes teje dhe ekipit të mbështetjes Buildink.",
+        "activeRequest": "Kërkesa aktive",
+        "oneOpen": "1 e hapur",
+        "none": "Asnjë",
+        "activeDetail": "{reference} po trajtohet aktualisht.",
+        "noActiveDetail": "Mund të hapësh një kërkesë kur të duhet ndihmë.",
+        "updates": "Përditësimet",
+        "realtime": "Në kohë reale",
+        "updatesDetail": "Përgjigjet shfaqen pa rifreskuar faqen."
+      },
+      "active": {
+        "continue": "Vazhdo kërkesën aktive",
+        "openConversation": "Hap bisedën"
+      },
+      "history": {
+        "title": "Historiku i mbështetjes",
+        "description": "Rihap bisedat e mëparshme për kontekst. Kërkesat e zgjidhura mbeten vetëm për lexim.",
+        "updating": "Po përditësohet",
+        "updated": "Përditësuar {time}",
+        "emptyDescription": "Kur të duhet ndihmë, hap një kërkesë dhe vazhdo bisedën këtu.",
+        "pageSummary": "Faqja {page} · {total} kërkesa",
+        "previousPage": "Faqja e mëparshme",
+        "nextPage": "Faqja tjetër"
+      },
+      "composer": {
+        "description": "Përshkruaj qartë një problem. Vazhdo në të njëjtën kërkesë derisa të zgjidhet.",
+        "subjectPlaceholder": "Përmbledhje e shkurtër e problemit",
+        "messagePlaceholder": "Çfarë ndodhi, çfarë prisje dhe çfarë ke provuar?",
+        "activeLimit": "Një kërkesë aktive për llogari. Hap një tjetër pasi të zgjidhet ose mbyllet.",
+        "opening": "Po hapet kërkesa…"
+      },
+      "unavailable": {
+        "title": "Kërkesa nuk është e disponueshme",
+        "description": "Kërkesa nuk mund të ngarkohet ose nuk është e disponueshme për llogarinë tënde.",
+        "back": "Kthehu te mbështetja"
+      },
+      "conversation": {
+        "private": "Bisedë private mbështetjeje",
+        "title": "Biseda",
+        "description": "Mesazhet e tua dhe të ekipit Buildink shfaqen këtu në kohë reale.",
+        "buildinkSupport": "Mbështetja Buildink",
+        "you": "Ti",
+        "closedTitle": "Kjo kërkesë është {status}.",
+        "readOnly": "Biseda është vetëm për lexim. Hap një kërkesë të re nëse të duhet më shumë ndihmë.",
+        "replyPlaceholder": "Shkruaj një përgjigje për mbështetjen…",
+        "replyVisibility": "Përgjigjet shihen nga ekipi i caktuar i mbështetjes.",
+        "sending": "Po dërgohet…"
+      },
+      "details": {
+        "title": "Detajet e kërkesës",
+        "reference": "Referenca",
+        "category": "Kategoria",
+        "created": "Krijuar",
+        "lastUpdated": "Përditësuar së fundi",
+        "slaDue": "Afati SLA"
+      },
+      "statuses": {
+        "OPEN": "Hapur",
+        "IN_PROGRESS": "Në proces",
+        "WAITING": "Në pritje",
+        "RESOLVED": "Zgjidhur",
+        "CLOSED": "Mbyllur",
+        "LOW": "I ulët",
+        "MEDIUM": "Mesatar",
+        "HIGH": "I lartë",
+        "ON_TRACK": "Në kohë",
+        "AT_RISK": "Në rrezik",
+        "BREACHED": "I tejkaluar",
+        "MET": "I përmbushur"
       }
     },
     "verification": {

@@ -731,6 +731,85 @@
         "verification": "Verifica",
         "technical": "Tecnico",
         "other": "Altro"
+      },
+      "priority": "Priorità",
+      "status": "Stato",
+      "sla": "SLA",
+      "supportOwner": "Responsabile supporto",
+      "awaitingAssignment": "In attesa di assegnazione",
+      "unassigned": "Non assegnato",
+      "metrics": {
+        "channel": "Canale di supporto",
+        "direct": "Diretto",
+        "channelDetail": "Una conversazione privata tra te e il team di supporto Buildink.",
+        "activeRequest": "Richiesta attiva",
+        "oneOpen": "1 aperta",
+        "none": "Nessuna",
+        "activeDetail": "{reference} è attualmente in gestione.",
+        "noActiveDetail": "Puoi aprire un ticket quando hai bisogno di aiuto.",
+        "updates": "Aggiornamenti",
+        "realtime": "In tempo reale",
+        "updatesDetail": "Le risposte arrivano senza aggiornare la pagina."
+      },
+      "active": {
+        "continue": "Continua il ticket attivo",
+        "openConversation": "Apri conversazione"
+      },
+      "history": {
+        "title": "Cronologia assistenza",
+        "description": "Riapri le conversazioni precedenti per consultarle. I ticket risolti restano in sola lettura.",
+        "updating": "Aggiornamento",
+        "updated": "Aggiornato {time}",
+        "emptyDescription": "Quando ti serve aiuto, apri un ticket e continua qui la conversazione.",
+        "pageSummary": "Pagina {page} · {total} ticket",
+        "previousPage": "Pagina precedente",
+        "nextPage": "Pagina successiva"
+      },
+      "composer": {
+        "description": "Descrivi chiaramente un problema. Continua nella stessa conversazione fino alla risoluzione.",
+        "subjectPlaceholder": "Breve riepilogo del problema",
+        "messagePlaceholder": "Cosa è successo, cosa ti aspettavi e cosa hai già provato?",
+        "activeLimit": "Un ticket attivo per account. Aprine un altro dopo la risoluzione o chiusura.",
+        "opening": "Apertura ticket…"
+      },
+      "unavailable": {
+        "title": "Ticket non disponibile",
+        "description": "Il ticket non può essere caricato o non è disponibile per il tuo account.",
+        "back": "Torna al supporto"
+      },
+      "conversation": {
+        "private": "Conversazione privata con il supporto",
+        "title": "Conversazione",
+        "description": "I messaggi tuoi e del supporto Buildink appaiono qui in tempo reale.",
+        "buildinkSupport": "Supporto Buildink",
+        "you": "Tu",
+        "closedTitle": "Questo ticket è {status}.",
+        "readOnly": "La conversazione è in sola lettura. Apri un nuovo ticket se ti serve altro aiuto.",
+        "replyPlaceholder": "Scrivi una risposta al supporto…",
+        "replyVisibility": "Le risposte sono visibili al team assegnato.",
+        "sending": "Invio…"
+      },
+      "details": {
+        "title": "Dettagli ticket",
+        "reference": "Riferimento",
+        "category": "Categoria",
+        "created": "Creato",
+        "lastUpdated": "Ultimo aggiornamento",
+        "slaDue": "Scadenza SLA"
+      },
+      "statuses": {
+        "OPEN": "Aperto",
+        "IN_PROGRESS": "In lavorazione",
+        "WAITING": "In attesa",
+        "RESOLVED": "Risolto",
+        "CLOSED": "Chiuso",
+        "LOW": "Bassa",
+        "MEDIUM": "Media",
+        "HIGH": "Alta",
+        "ON_TRACK": "In linea",
+        "AT_RISK": "A rischio",
+        "BREACHED": "Superato",
+        "MET": "Rispettato"
       }
     },
     "verification": {

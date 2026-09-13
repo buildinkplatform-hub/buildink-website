@@ -731,6 +731,85 @@
         "verification": "التحقق",
         "technical": "تقني",
         "other": "أخرى"
+      },
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "sla": "اتفاقية الخدمة",
+      "supportOwner": "مسؤول الدعم",
+      "awaitingAssignment": "بانتظار التعيين",
+      "unassigned": "غير معيّن",
+      "metrics": {
+        "channel": "قناة الدعم",
+        "direct": "مباشرة",
+        "channelDetail": "محادثة خاصة بينك وبين فريق دعم Buildink.",
+        "activeRequest": "الطلب النشط",
+        "oneOpen": "تذكرة مفتوحة",
+        "none": "لا يوجد",
+        "activeDetail": "يتم حاليًا التعامل مع {reference}.",
+        "noActiveDetail": "يمكنك فتح تذكرة دعم عندما تحتاج إلى مساعدة.",
+        "updates": "التحديثات",
+        "realtime": "فورية",
+        "updatesDetail": "تظهر ردود الإدارة دون تحديث الصفحة."
+      },
+      "active": {
+        "continue": "متابعة التذكرة النشطة",
+        "openConversation": "فتح المحادثة"
+      },
+      "history": {
+        "title": "سجل الدعم",
+        "description": "افتح المحادثات السابقة للاطلاع عليها. تظل التذاكر المحلولة للقراءة فقط.",
+        "updating": "جارٍ التحديث",
+        "updated": "آخر تحديث {time}",
+        "emptyDescription": "عندما تحتاج للمساعدة افتح تذكرة وتابع المحادثة هنا.",
+        "pageSummary": "الصفحة {page} · {total} تذكرة",
+        "previousPage": "صفحة الدعم السابقة",
+        "nextPage": "صفحة الدعم التالية"
+      },
+      "composer": {
+        "description": "اشرح مشكلة واحدة بوضوح، وتابع المحادثة في نفس التذكرة حتى تُحل.",
+        "subjectPlaceholder": "ملخص قصير للمشكلة",
+        "messagePlaceholder": "ماذا حدث، وماذا توقعت، وما الذي جربته بالفعل؟",
+        "activeLimit": "تذكرة نشطة واحدة لكل حساب. افتح غيرها بعد حلها أو إغلاقها.",
+        "opening": "جارٍ فتح التذكرة…"
+      },
+      "unavailable": {
+        "title": "التذكرة غير متاحة",
+        "description": "تعذر تحميل التذكرة أو أنها غير متاحة لحسابك.",
+        "back": "العودة إلى الدعم"
+      },
+      "conversation": {
+        "private": "محادثة دعم خاصة",
+        "title": "المحادثة",
+        "description": "تظهر رسائلك ورسائل دعم Buildink هنا فورًا.",
+        "buildinkSupport": "دعم Buildink",
+        "you": "أنت",
+        "closedTitle": "حالة هذه التذكرة: {status}.",
+        "readOnly": "المحادثة للقراءة فقط. افتح تذكرة جديدة إذا احتجت إلى مساعدة إضافية.",
+        "replyPlaceholder": "اكتب ردًا إلى الدعم…",
+        "replyVisibility": "تظهر الردود لفريق الدعم المعيّن.",
+        "sending": "جارٍ الإرسال…"
+      },
+      "details": {
+        "title": "تفاصيل التذكرة",
+        "reference": "المرجع",
+        "category": "الفئة",
+        "created": "تاريخ الإنشاء",
+        "lastUpdated": "آخر تحديث",
+        "slaDue": "موعد اتفاقية الخدمة"
+      },
+      "statuses": {
+        "OPEN": "مفتوحة",
+        "IN_PROGRESS": "قيد المعالجة",
+        "WAITING": "في الانتظار",
+        "RESOLVED": "تم حلها",
+        "CLOSED": "مغلقة",
+        "LOW": "منخفضة",
+        "MEDIUM": "متوسطة",
+        "HIGH": "عالية",
+        "ON_TRACK": "ضمن الموعد",
+        "AT_RISK": "معرض للخطر",
+        "BREACHED": "متجاوز",
+        "MET": "مستوفى"
       }
     },
     "verification": {

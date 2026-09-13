@@ -949,6 +949,85 @@
         "verification": "Verification",
         "technical": "Technical",
         "other": "Other"
+      },
+      "priority": "Priority",
+      "status": "Status",
+      "sla": "SLA",
+      "supportOwner": "Support owner",
+      "awaitingAssignment": "Awaiting assignment",
+      "unassigned": "Unassigned",
+      "metrics": {
+        "channel": "Support channel",
+        "direct": "Direct",
+        "channelDetail": "A private conversation between you and the Buildink support team.",
+        "activeRequest": "Active request",
+        "oneOpen": "1 open",
+        "none": "None",
+        "activeDetail": "{reference} is currently being handled.",
+        "noActiveDetail": "You can open one support ticket whenever you need help.",
+        "updates": "Updates",
+        "realtime": "Realtime",
+        "updatesDetail": "Admin replies arrive without refreshing the page."
+      },
+      "active": {
+        "continue": "Continue your active ticket",
+        "openConversation": "Open conversation"
+      },
+      "history": {
+        "title": "Your support history",
+        "description": "Reopen previous conversations for context. Resolved tickets remain read-only.",
+        "updating": "Updating",
+        "updated": "Updated {time}",
+        "emptyDescription": "When you need help, open a ticket and continue the conversation here.",
+        "pageSummary": "Page {page} · {total} tickets",
+        "previousPage": "Previous support page",
+        "nextPage": "Next support page"
+      },
+      "composer": {
+        "description": "Describe one issue clearly. Keep chatting in the same ticket until it is resolved.",
+        "subjectPlaceholder": "Short summary of the issue",
+        "messagePlaceholder": "What happened, what did you expect, and what have you already tried?",
+        "activeLimit": "One active ticket per account. Open another after it is resolved or closed.",
+        "opening": "Opening ticket…"
+      },
+      "unavailable": {
+        "title": "Ticket unavailable",
+        "description": "This ticket could not be loaded or is not available to your account.",
+        "back": "Back to support"
+      },
+      "conversation": {
+        "private": "Private support conversation",
+        "title": "Conversation",
+        "description": "Messages from you and Buildink support appear here in realtime.",
+        "buildinkSupport": "Buildink Support",
+        "you": "You",
+        "closedTitle": "This ticket is {status}.",
+        "readOnly": "The conversation is read-only. Open a new ticket from Support if you need more help.",
+        "replyPlaceholder": "Write a reply to support…",
+        "replyVisibility": "Replies are visible to your assigned support team.",
+        "sending": "Sending…"
+      },
+      "details": {
+        "title": "Ticket details",
+        "reference": "Reference",
+        "category": "Category",
+        "created": "Created",
+        "lastUpdated": "Last updated",
+        "slaDue": "SLA due"
+      },
+      "statuses": {
+        "OPEN": "Open",
+        "IN_PROGRESS": "In progress",
+        "WAITING": "Waiting",
+        "RESOLVED": "Resolved",
+        "CLOSED": "Closed",
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High",
+        "ON_TRACK": "On track",
+        "AT_RISK": "At risk",
+        "BREACHED": "Breached",
+        "MET": "Met"
       }
     },
     "verification": {
