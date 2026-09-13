@@ -888,10 +888,6 @@ function patchTicketLists(
   )
 }
 
-function supportStatus(
-  value: string,
-  t: ReturnType<typeof useTranslations<"dashboard.support">>,
-) {
-  const key = `statuses.${value}`
-  return t.has(key) ? t(key) : value.replaceAll("_", " ")
+function supportStatus(value: string, t: (key: any) => string) {
+  return t(`statuses.${value}`)
 }
