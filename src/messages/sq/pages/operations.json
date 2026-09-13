@@ -284,7 +284,26 @@
       "SUBMITTED": "Dërguar",
       "VOIDED": "Anuluar",
       "WAIVED": "Përjashtuar",
-      "WARNING": "Paralajmërim"
+      "WARNING": "Paralajmërim",
+      "COMPLETED": "Përfunduar",
+      "READY": "Gati",
+      "BLOCKED": "Bllokuar",
+      "CANCELLED": "Anuluar",
+      "INTERVIEW": "Intervistë",
+      "OWNED": "Në pronësi",
+      "HIRED": "Me qira",
+      "LABOUR": "Punë",
+      "MATERIAL": "Material",
+      "EQUIPMENT": "Pajisje",
+      "SUBCONTRACT": "Nënkontraktim",
+      "DIRECT": "Direkte",
+      "REWORK": "Ripërpunim",
+      "WASTE": "Mbetje",
+      "RECEIPT": "Pranim",
+      "CONSUMPTION": "Konsum",
+      "RETURN": "Kthim",
+      "ADJUSTMENT_IN": "Rregullim hyrës",
+      "ADJUSTMENT_OUT": "Rregullim dalës"
     },
     "summary": {
       "activeTasks": "Detyra aktive",
@@ -394,6 +413,37 @@
       "title": "Operacionet e mia të punës",
       "tokenRequired": "Kërkohet tokeni i kantierit",
       "waiting": "Në pritje"
+    },
+    "approval": {
+      "updated": "Regjistrimi operativ u përditësua",
+      "failed": "Miratimi dështoi",
+      "transitionDescription": "Ky veprim ndryshon statusin e regjistrimit. Kalimi i plotë mbetet në historikun e miratimeve.",
+      "reason": "Arsyeja",
+      "reasonPlaceholder": "Shpjego pse po ndryshohet ky regjistrim…",
+      "submit": "Dërgo",
+      "operationallyApprove": "Mirato operacionalisht",
+      "approve": "Mirato",
+      "pmApprove": "Mirato si menaxher",
+      "postToLedger": "Regjistro në libër",
+      "financePost": "Regjistrim financiar",
+      "reject": "Refuzo",
+      "reopen": "Rihap"
+    },
+    "payrollApproval": {
+      "closeTitle": "Mbyll periudhën e pagave",
+      "approveTitle": "Mirato pagat",
+      "submitTitle": "Dërgo pagat për shqyrtim",
+      "description": "Pagat llogariten vetëm nga pjesëmarrja e miratuar dhe tarifat e ngrira.",
+      "closePeriod": "Mbyll periudhën",
+      "approve": "Mirato",
+      "submit": "Dërgo",
+      "closeReason": "Arsyeja e mbylljes",
+      "updated": "Statusi i pagave u përditësua",
+      "close": "Mbyll"
+    },
+    "ui": {
+      "emptyTitle": "Asnjë regjistrim operativ nuk përputhet me këtë pamje.",
+      "emptyDescription": "Rregullo filtrat aktualë ose krijo regjistrimin e parë për këtë rrjedhë pune."
     }
   }
 }
