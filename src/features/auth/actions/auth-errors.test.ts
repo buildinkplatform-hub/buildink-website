@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { mapRegistrationError } from "./auth-errors"
+import { isRestrictedAccountCode, mapRegistrationError } from "./auth-errors"
 
 describe("mapRegistrationError", () => {
   it("maps existing accounts without showing a login-password error", () => {
@@ -24,5 +24,18 @@ describe("mapRegistrationError", () => {
       "email_rate_limited",
     )
     expect(mapRegistrationError({ status: 429 })).toBe("rate_limited")
+  })
+})
+
+describe("isRestrictedAccountCode", () => {
+  it.each(["ACCOUNT_SUSPENDED", "ACCOUNT_BANNED", "ACCOUNT_DELETED"])(
+    "recognizes %s as restricted",
+    (code) => {
+      expect(isRestrictedAccountCode(code)).toBe(true)
+    },
+  )
+
+  it("does not treat ordinary permission failures as account restrictions", () => {
+    expect(isRestrictedAccountCode("PERMISSION_REQUIRED")).toBe(false)
   })
 })

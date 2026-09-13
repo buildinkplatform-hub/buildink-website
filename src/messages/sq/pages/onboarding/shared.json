@@ -31,6 +31,10 @@
     "errors": {
       "uploadFailed": "Ngarkimi dështoi. Provo sërish.",
       "previewFailed": "Parapamja e sigurt nuk u ngarkua. Provo sërish."
-    }
+    },
+    "restrictedTitle": "Llogari e kufizuar",
+    "restrictedBody": "Kjo llogari nuk mund të hyjë në Buildink. Kontakto mbështetjen nëse mendon se ky është një gabim.",
+    "rejectedTitle": "Aplikimi nuk u miratua",
+    "rejectedBody": "Rishiko vendimin e dërguar në llogarinë tënde. Nëse llogaria është ende aktive, zgjedhja e një lloji të ri profili nis një aplikim të ri."
   }
 }

@@ -34,6 +34,10 @@
     },
     "reviewFeedback": {
       "title": "Updates requested before resubmitting"
-    }
+    },
+    "restrictedTitle": "Account restricted",
+    "restrictedBody": "This account cannot access Buildink. Contact support if you believe this is a mistake.",
+    "rejectedTitle": "Application not approved",
+    "rejectedBody": "Review the decision sent to your account. If your account is still active, choosing a new profile type starts a fresh application."
   }
 }

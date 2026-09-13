@@ -31,6 +31,10 @@
     "errors": {
       "uploadFailed": "Încărcarea a eșuat. Încearcă din nou.",
       "previewFailed": "Previzualizarea protejată nu a putut fi încărcată. Încearcă din nou."
-    }
+    },
+    "restrictedTitle": "Cont restricționat",
+    "restrictedBody": "Acest cont nu poate accesa Buildink. Contactează asistența dacă crezi că este o eroare.",
+    "rejectedTitle": "Cererea nu a fost aprobată",
+    "rejectedBody": "Consultă decizia trimisă în contul tău. Dacă contul este încă activ, alegerea unui nou tip de profil va iniția o cerere nouă."
   }
 }

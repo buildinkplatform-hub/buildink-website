@@ -31,6 +31,10 @@
     "errors": {
       "uploadFailed": "Il caricamento non e riuscito. Riprova.",
       "previewFailed": "Impossibile caricare l'anteprima protetta. Riprova."
-    }
+    },
+    "restrictedTitle": "Account con restrizioni",
+    "restrictedBody": "Questo account non può accedere a Buildink. Contatta l'assistenza se ritieni che si tratti di un errore.",
+    "rejectedTitle": "Richiesta non approvata",
+    "rejectedBody": "Controlla la decisione inviata al tuo account. Se l'account è ancora attivo, scegliendo un nuovo tipo di profilo avvierai una nuova richiesta."
   }
 }
