@@ -731,6 +731,88 @@
         "verification": "Verificare",
         "technical": "Tehnic",
         "other": "Altele"
+      },
+      "eyebrow": "Suport",
+      "title": "Centru de suport",
+      "description": "Deschide și urmărește conversații private cu echipa de suport Buildink.",
+      "priority": "Prioritate",
+      "status": "Stare",
+      "sla": "SLA",
+      "supportOwner": "Responsabil suport",
+      "awaitingAssignment": "În așteptarea atribuirii",
+      "unassigned": "Neatribuit",
+      "metrics": {
+        "channel": "Canal de suport",
+        "direct": "Direct",
+        "channelDetail": "O conversație privată între tine și echipa de suport Buildink.",
+        "activeRequest": "Solicitare activă",
+        "oneOpen": "1 deschisă",
+        "none": "Niciuna",
+        "activeDetail": "{reference} este în curs de soluționare.",
+        "noActiveDetail": "Poți deschide un tichet când ai nevoie de ajutor.",
+        "updates": "Actualizări",
+        "realtime": "În timp real",
+        "updatesDetail": "Răspunsurile apar fără reîmprospătarea paginii."
+      },
+      "active": {
+        "continue": "Continuă tichetul activ",
+        "openConversation": "Deschide conversația"
+      },
+      "history": {
+        "title": "Istoricul suportului",
+        "description": "Redeschide conversațiile anterioare pentru context. Tichetele rezolvate rămân doar pentru citire.",
+        "updating": "Se actualizează",
+        "updated": "Actualizat {time}",
+        "emptyDescription": "Când ai nevoie de ajutor, deschide un tichet și continuă conversația aici.",
+        "pageSummary": "Pagina {page} · {total} tichete",
+        "previousPage": "Pagina anterioară",
+        "nextPage": "Pagina următoare"
+      },
+      "composer": {
+        "description": "Descrie clar o singură problemă. Continuă în același tichet până la rezolvare.",
+        "subjectPlaceholder": "Scurt rezumat al problemei",
+        "messagePlaceholder": "Ce s-a întâmplat, la ce te așteptai și ce ai încercat deja?",
+        "activeLimit": "Un tichet activ per cont. Deschide altul după rezolvare sau închidere.",
+        "opening": "Se deschide tichetul…"
+      },
+      "unavailable": {
+        "title": "Tichet indisponibil",
+        "description": "Tichetul nu a putut fi încărcat sau nu este disponibil contului tău.",
+        "back": "Înapoi la suport"
+      },
+      "conversation": {
+        "private": "Conversație privată de suport",
+        "title": "Conversație",
+        "description": "Mesajele tale și ale echipei Buildink apar aici în timp real.",
+        "buildinkSupport": "Suport Buildink",
+        "you": "Tu",
+        "closedTitle": "Acest tichet este {status}.",
+        "readOnly": "Conversația este doar pentru citire. Deschide un tichet nou dacă mai ai nevoie de ajutor.",
+        "replyPlaceholder": "Scrie un răspuns pentru suport…",
+        "replyVisibility": "Răspunsurile sunt vizibile echipei de suport atribuite.",
+        "sending": "Se trimite…"
+      },
+      "details": {
+        "title": "Detalii tichet",
+        "reference": "Referință",
+        "category": "Categorie",
+        "created": "Creat",
+        "lastUpdated": "Ultima actualizare",
+        "slaDue": "Termen SLA"
+      },
+      "statuses": {
+        "OPEN": "Deschis",
+        "IN_PROGRESS": "În lucru",
+        "WAITING": "În așteptare",
+        "RESOLVED": "Rezolvat",
+        "CLOSED": "Închis",
+        "LOW": "Scăzută",
+        "MEDIUM": "Medie",
+        "HIGH": "Ridicată",
+        "ON_TRACK": "În grafic",
+        "AT_RISK": "În risc",
+        "BREACHED": "Depășit",
+        "MET": "Îndeplinit"
       }
     },
     "verification": {
