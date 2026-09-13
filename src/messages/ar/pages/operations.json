@@ -193,6 +193,27 @@
       "gross": "الإجمالي",
       "operationalNet": "الصافي التشغيلي",
       "actions": "الإجراءات"
+    },
+    "projectMetrics": {
+      "actualCost": "التكلفة الفعلية",
+      "ofBudget": "{percentage}% من الميزانية",
+      "committed": "الملتزم",
+      "pendingApproval": "{amount} بانتظار الموافقة",
+      "remaining": "المتبقي",
+      "remainingDescription": "الميزانية بعد خصم الفعلي المعتمد والملتزم",
+      "forecastMargin": "الهامش المتوقع",
+      "noApprovedForecast": "لا توجد توقعات معتمدة",
+      "noActiveAlerts": "لا توجد تنبيهات نشطة للمشروع",
+      "actions": "الإجراءات",
+      "evidence": "الإثباتات",
+      "budgetConsumption": "استهلاك الميزانية",
+      "budgetDescription": "التكلفة الفعلية والملتزم بها مقارنة بخط الأساس",
+      "budget": "الميزانية",
+      "actual": "الفعلي",
+      "productivity": "الإنتاجية",
+      "acceptedPerHour": "الوحدات المقبولة لكل ساعة عمل",
+      "labourHours": "ساعات العمل",
+      "reworkQuantity": "كمية إعادة العمل"
     }
   }
 }
