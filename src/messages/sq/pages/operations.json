@@ -193,6 +193,27 @@
       "gross": "Bruto",
       "operationalNet": "Neto operative",
       "actions": "Veprimet"
+    },
+    "projectMetrics": {
+      "actualCost": "Kostoja faktike",
+      "ofBudget": "{percentage}% e buxhetit",
+      "committed": "E angazhuar",
+      "pendingApproval": "{amount} në pritje të miratimit",
+      "remaining": "E mbetur",
+      "remainingDescription": "Buxheti minus koston faktike të miratuar dhe të angazhuar",
+      "forecastMargin": "Marzhi i parashikuar",
+      "noApprovedForecast": "Nuk ka parashikim të miratuar",
+      "noActiveAlerts": "Nuk ka sinjalizime aktive për projektin",
+      "actions": "Veprimet",
+      "evidence": "Dëshmitë",
+      "budgetConsumption": "Konsumi i buxhetit",
+      "budgetDescription": "Kostoja faktike plus ajo e angazhuar kundrejt bazës",
+      "budget": "Buxheti",
+      "actual": "Faktike",
+      "productivity": "Produktiviteti",
+      "acceptedPerHour": "Njësi të pranuara / orë pune",
+      "labourHours": "Orët e punës",
+      "reworkQuantity": "Sasia e ripunimit"
     }
   }
 }
