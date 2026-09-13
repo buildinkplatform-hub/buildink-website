@@ -284,7 +284,26 @@
       "SUBMITTED": "Trimis",
       "VOIDED": "Anulat",
       "WAIVED": "Exceptat",
-      "WARNING": "Avertisment"
+      "WARNING": "Avertisment",
+      "COMPLETED": "Finalizat",
+      "READY": "Pregătit",
+      "BLOCKED": "Blocat",
+      "CANCELLED": "Anulat",
+      "INTERVIEW": "Interviu",
+      "OWNED": "Propriu",
+      "HIRED": "Închiriat",
+      "LABOUR": "Muncă",
+      "MATERIAL": "Material",
+      "EQUIPMENT": "Echipament",
+      "SUBCONTRACT": "Subcontractare",
+      "DIRECT": "Direct",
+      "REWORK": "Refacere",
+      "WASTE": "Deșeuri",
+      "RECEIPT": "Recepție",
+      "CONSUMPTION": "Consum",
+      "RETURN": "Retur",
+      "ADJUSTMENT_IN": "Ajustare intrare",
+      "ADJUSTMENT_OUT": "Ajustare ieșire"
     },
     "summary": {
       "activeTasks": "Sarcini active",
@@ -394,6 +413,37 @@
       "title": "Operațiunile mele de muncă",
       "tokenRequired": "Tokenul șantierului este necesar",
       "waiting": "În așteptare"
+    },
+    "approval": {
+      "updated": "Înregistrarea operațională a fost actualizată",
+      "failed": "Aprobarea a eșuat",
+      "transitionDescription": "Această acțiune modifică starea înregistrării. Tranziția completă rămâne în istoricul aprobărilor.",
+      "reason": "Motiv",
+      "reasonPlaceholder": "Explică de ce este modificată această înregistrare…",
+      "submit": "Trimite",
+      "operationallyApprove": "Aprobă operațional",
+      "approve": "Aprobă",
+      "pmApprove": "Aprobă ca manager",
+      "postToLedger": "Înregistrează în registru",
+      "financePost": "Înregistrare financiară",
+      "reject": "Respinge",
+      "reopen": "Redeschide"
+    },
+    "payrollApproval": {
+      "closeTitle": "Închide perioada de salarizare",
+      "approveTitle": "Aprobă salarizarea",
+      "submitTitle": "Trimite salarizarea la verificare",
+      "description": "Salarizarea este calculată numai din prezențele aprobate și instantaneele tarifare blocate.",
+      "closePeriod": "Închide perioada",
+      "approve": "Aprobă",
+      "submit": "Trimite",
+      "closeReason": "Motivul închiderii",
+      "updated": "Starea salarizării a fost actualizată",
+      "close": "Închide"
+    },
+    "ui": {
+      "emptyTitle": "Nicio înregistrare operațională nu corespunde acestei vizualizări.",
+      "emptyDescription": "Ajustează filtrele curente sau creează prima înregistrare pentru acest flux."
     }
   }
 }
