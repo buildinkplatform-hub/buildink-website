@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { useTranslations } from "next-intl"
 import { Plus, X } from "lucide-react"
 import { useRouter } from "@/i18n/navigation"
 
@@ -74,6 +75,7 @@ export function OperationsCreatePanel({
   const [pending, startTransition] = useTransition()
   const [message, setMessage] = useState<string>()
   const router = useRouter()
+  const t = useTranslations("operations.create")
 
   function submit(formData: FormData) {
     setMessage(undefined)
@@ -215,20 +217,20 @@ export function OperationsCreatePanel({
       <SheetTrigger asChild>
         <Button>
           <Plus className="size-4" />
-          Add {label(kind)}
+          {t("addRecord", { record: t(`kinds.${kind}`) })}
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full overflow-y-auto p-0 sm:max-w-xl">
         <div className="border-line sticky top-0 z-10 border-b bg-white px-6 py-5">
           <p className="text-primary mb-1 text-xs font-bold tracking-[0.12em] uppercase">
-            Project operations
+            {t("projectOperations")}
           </p>
-          <SheetHeader title={`Add ${label(kind)}`}>
+          <SheetHeader title={t("addRecord", { record: t(`kinds.${kind}`) })}>
             <Button
               type="button"
               size="icon"
               variant="secondary"
-              aria-label="Close"
+              aria-label={t("close")}
               onClick={() => setOpen(false)}
             >
               <X className="size-4" />
@@ -258,10 +260,10 @@ export function OperationsCreatePanel({
               variant="secondary"
               onClick={() => setOpen(false)}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button disabled={pending}>
-              {pending ? "Saving…" : "Save record"}
+              {pending ? t("saving") : t("saveRecord")}
             </Button>
           </div>
         </form>
@@ -287,39 +289,40 @@ function Fields({
   equipment: Array<{ id: string; name: string }>
   sites: Array<{ id: string; name: string }>
 }) {
+  const t = useTranslations("operations.create")
   if (kind === "sites")
     return (
       <>
-        <Field name="name" label="Site name" required />
-        <Field name="code" label="Site code" required />
-        <Field name="address" label="Address" />
+        <Field name="name" label={t("fields.siteName")} required />
+        <Field name="code" label={t("fields.siteCode")} required />
+        <Field name="address" label={t("fields.address")} />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field name="latitude" label="Latitude" type="number" step="any" />
-          <Field name="longitude" label="Longitude" type="number" step="any" />
+          <Field name="latitude" label={t("fields.latitude")} type="number" step="any" />
+          <Field name="longitude" label={t("fields.longitude")} type="number" step="any" />
           <Field
             name="geofenceRadiusMeters"
-            label="Geofence radius (m)"
+            label={t("fields.geofenceRadius")}
             type="number"
             defaultValue="150"
           />
-          <Field name="timezone" label="Timezone" defaultValue="Europe/Rome" />
+          <Field name="timezone" label={t("fields.timezone")} defaultValue="Europe/Rome" />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field name="attendancePin" label="Attendance PIN" type="password" />
-          <Field name="qrSecret" label="QR secret" type="password" />
+          <Field name="attendancePin" label={t("fields.attendancePin")} type="password" />
+          <Field name="qrSecret" label={t("fields.qrSecret")} type="password" />
         </div>
       </>
     )
   if (kind === "tasks")
     return (
       <>
-        <Field name="title" label="Task title" required />
-        <TextField name="description" label="Description" />
+        <Field name="title" label={t("fields.taskTitle")} required />
+        <TextField name="description" label={t("fields.description")} />
         <label className="grid gap-1.5 text-sm font-semibold">
-          Crew
+          {t("fields.crew")}
           <Select name="crewId">
             <SelectTrigger>
-              <SelectValue placeholder="No crew" />
+              <SelectValue placeholder={t("noCrew")} />
             </SelectTrigger>
             <SelectContent>
               {crews.map((crew) => (
@@ -332,31 +335,31 @@ function Fields({
         </label>
         <CommandMultiSelect
           name="workerIds"
-          label="Assigned workers"
+          label={t("fields.assignedWorkers")}
           options={workers.map((worker) => ({
             id: worker.id,
             label: worker.label,
             detail: label(worker.role),
           }))}
-          empty="No project-scoped workers are eligible."
+          empty={t("noEligibleWorkers")}
         />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field name="unit" label="Unit" />
+          <Field name="unit" label={t("fields.unit")} />
           <Field
             name="plannedQuantity"
-            label="Planned quantity"
+            label={t("fields.plannedQuantity")}
             type="number"
             step="0.001"
           />
-          <Field name="plannedMinutes" label="Planned minutes" type="number" />
+          <Field name="plannedMinutes" label={t("fields.plannedMinutes")} type="number" />
           <Field
             name="priority"
-            label="Priority (1–4)"
+            label={t("fields.priority")}
             type="number"
             defaultValue="2"
           />
-          <Field name="startsOn" label="Start date" type="date" />
-          <Field name="dueOn" label="Due date" type="date" />
+          <Field name="startsOn" label={t("fields.startDate")} type="date" />
+          <Field name="dueOn" label={t("fields.dueDate")} type="date" />
         </div>
       </>
     )
@@ -364,10 +367,10 @@ function Fields({
     return (
       <>
         <label className="grid gap-1.5 text-sm font-semibold">
-          Task
+          {t("fields.task")}
           <Select name="taskId" required>
             <SelectTrigger>
-              <SelectValue placeholder="Select a task" />
+              <SelectValue placeholder={t("selectTask")} />
             </SelectTrigger>
             <SelectContent>
               {tasks.map((task) => (
@@ -379,48 +382,48 @@ function Fields({
           </Select>
         </label>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field name="workDate" label="Work date" type="date" required />
+          <Field name="workDate" label={t("fields.workDate")} type="date" required />
           <Field
             name="completedQuantity"
-            label="Completed quantity"
+            label={t("fields.completedQuantity")}
             type="number"
             step="0.001"
             required
           />
           <Field
             name="acceptedQuantity"
-            label="Accepted quantity"
+            label={t("fields.acceptedQuantity")}
             type="number"
             step="0.001"
           />
           <Field
             name="rejectedQuantity"
-            label="Rejected quantity"
+            label={t("fields.rejectedQuantity")}
             type="number"
             step="0.001"
           />
-          <Field name="labourMinutes" label="Labour minutes" type="number" />
+          <Field name="labourMinutes" label={t("fields.labourMinutes")} type="number" />
           <Field
             name="reworkQuantity"
-            label="Rework quantity"
+            label={t("fields.reworkQuantity")}
             type="number"
             step="0.001"
           />
           <Field
             name="wasteQuantity"
-            label="Waste quantity"
+            label={t("fields.wasteQuantity")}
             type="number"
             step="0.001"
           />
         </div>
-        <TextField name="notes" label="Notes" />
+        <TextField name="notes" label={t("fields.notes")} />
       </>
     )
   if (kind === "costs")
     return (
       <>
         <label className="grid gap-1.5 text-sm font-semibold">
-          Category
+          {t("fields.category")}
           <Select name="category" defaultValue="LABOUR">
             <SelectTrigger>
               <SelectValue />
@@ -436,23 +439,23 @@ function Fields({
                 "WASTE",
               ].map((value) => (
                 <SelectItem key={value} value={value}>
-                  {label(value)}
+                  {t(`options.${value}`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </label>
-        <Field name="description" label="Description" required />
+        <Field name="description" label={t("fields.description")} required />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
             name="amount"
-            label="Amount"
+            label={t("fields.amount")}
             type="number"
             step="0.01"
             required
           />
-          <Field name="currency" label="Currency" defaultValue="EUR" />
-          <Field name="occurredOn" label="Occurred on" type="date" required />
+          <Field name="currency" label={t("fields.currency")} defaultValue="EUR" />
+          <Field name="occurredOn" label={t("fields.occurredOn")} type="date" required />
         </div>
         <label className="flex items-center gap-3 text-sm">
           <input
@@ -461,34 +464,34 @@ function Fields({
             value="true"
             className="size-4"
           />
-          Committed cost
+          {t("fields.committedCost")}
         </label>
       </>
     )
   if (kind === "materials")
     return (
       <>
-        <Field name="code" label="Material code" required />
-        <Field name="name" label="Material name" required />
+        <Field name="code" label={t("fields.materialCode")} required />
+        <Field name="name" label={t("fields.materialName")} required />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field name="unit" label="Unit" required />
+          <Field name="unit" label={t("fields.unit")} required />
           <Field
             name="standardCost"
-            label="Standard unit cost"
+            label={t("fields.standardUnitCost")}
             type="number"
             step="0.01"
           />
-          <Field name="currency" label="Currency" defaultValue="EUR" />
+          <Field name="currency" label={t("fields.currency")} defaultValue="EUR" />
         </div>
       </>
     )
   if (kind === "material-usage")
     return (
       <>
-        <OptionSelect name="materialId" label="Material" options={materials} />
-        <OptionSelect name="siteId" label="Site" options={sites} />
+        <OptionSelect name="materialId" label={t("fields.material")} options={materials} />
+        <OptionSelect name="siteId" label={t("fields.site")} options={sites} />
         <label className="grid gap-1.5 text-sm font-semibold">
-          Transaction type
+          {t("fields.transactionType")}
           <Select name="transactionType" defaultValue="CONSUMPTION">
             <SelectTrigger>
               <SelectValue />
@@ -503,7 +506,7 @@ function Fields({
                 "ADJUSTMENT_OUT",
               ].map((value) => (
                 <SelectItem key={value} value={value}>
-                  {label(value)}
+                  {t(`options.${value}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -512,130 +515,130 @@ function Fields({
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
             name="quantity"
-            label="Quantity"
+            label={t("fields.quantity")}
             type="number"
             step="0.001"
             required
           />
           <Field
             name="unitCost"
-            label="Unit cost (receipts)"
+            label={t("fields.unitCostReceipts")}
             type="number"
             step="0.01"
           />
-          <Field name="occurredOn" label="Date" type="date" required />
-          <Field name="currency" label="Currency" defaultValue="EUR" />
+          <Field name="occurredOn" label={t("fields.date")} type="date" required />
+          <Field name="currency" label={t("fields.currency")} defaultValue="EUR" />
         </div>
       </>
     )
   if (kind === "material-transfer")
     return (
       <>
-        <OptionSelect name="materialId" label="Material" options={materials} />
+        <OptionSelect name="materialId" label={t("fields.material")} options={materials} />
         <div className="grid gap-4 sm:grid-cols-2">
-          <OptionSelect name="fromSiteId" label="From site" options={sites} />
-          <OptionSelect name="toSiteId" label="To site" options={sites} />
+          <OptionSelect name="fromSiteId" label={t("fields.fromSite")} options={sites} />
+          <OptionSelect name="toSiteId" label={t("fields.toSite")} options={sites} />
           <Field
             name="quantity"
-            label="Quantity"
+            label={t("fields.quantity")}
             type="number"
             step="0.001"
             required
           />
-          <Field name="occurredOn" label="Date" type="date" required />
+          <Field name="occurredOn" label={t("fields.date")} type="date" required />
         </div>
       </>
     )
   if (kind === "equipment")
     return (
       <>
-        <Field name="name" label="Equipment name" required />
-        <OptionSelect name="siteId" label="Site" options={sites} optional />
+        <Field name="name" label={t("fields.equipmentName")} required />
+        <OptionSelect name="siteId" label={t("fields.site")} options={sites} optional />
         <div className="grid gap-4 sm:grid-cols-2">
           <OptionSelect
             name="ownership"
-            label="Ownership"
+            label={t("fields.ownership")}
             options={[
-              { id: "OWNED", name: "Owned" },
-              { id: "HIRED", name: "Hired" },
+              { id: "OWNED", name: t("options.OWNED") },
+              { id: "HIRED", name: t("options.HIRED") },
             ]}
           />
           <OptionSelect
             name="rateUnit"
-            label="Rate unit"
+            label={t("fields.rateUnit")}
             options={["HOUR", "DAY", "WEEK", "FIXED"].map((id) => ({
               id,
-              name: label(id),
+              name: t(`options.${id}`),
             }))}
           />
-          <Field name="rate" label="Rate" type="number" step="0.01" required />
-          <Field name="currency" label="Currency" defaultValue="EUR" />
+          <Field name="rate" label={t("fields.rate")} type="number" step="0.01" required />
+          <Field name="currency" label={t("fields.currency")} defaultValue="EUR" />
         </div>
       </>
     )
   if (kind === "equipment-usage")
     return (
       <>
-        <OptionSelect name="resourceId" label="Equipment" options={equipment} />
-        <OptionSelect name="siteId" label="Site" options={sites} optional />
+        <OptionSelect name="resourceId" label={t("fields.equipment")} options={equipment} />
+        <OptionSelect name="siteId" label={t("fields.site")} options={sites} optional />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
             name="usageMinutes"
-            label="Usage minutes"
+            label={t("fields.usageMinutes")}
             type="number"
             required
           />
           <Field
             name="downtimeMinutes"
-            label="Downtime minutes"
+            label={t("fields.downtimeMinutes")}
             type="number"
             defaultValue="0"
           />
           <Field
             name="fuelQuantity"
-            label="Fuel quantity"
+            label={t("fields.fuelQuantity")}
             type="number"
             step="0.001"
           />
-          <Field name="fuelUnit" label="Fuel unit" />
+          <Field name="fuelUnit" label={t("fields.fuelUnit")} />
           <Field
             name="mobilization"
-            label="Mobilization cost"
+            label={t("fields.mobilizationCost")}
             type="number"
             step="0.01"
           />
-          <Field name="occurredOn" label="Date" type="date" required />
+          <Field name="occurredOn" label={t("fields.date")} type="date" required />
         </div>
       </>
     )
   if (kind === "forecast")
     return (
       <>
-        <Field name="asOfDate" label="Forecast date" type="date" required />
+        <Field name="asOfDate" label={t("fields.forecastDate")} type="date" required />
         <Field
           name="estimateToComplete"
-          label="Estimate to complete"
+          label={t("fields.estimateToComplete")}
           type="number"
           step="0.01"
           required
         />
-        <TextField name="overrideReason" label="Override reason" />
+        <TextField name="overrideReason" label={t("fields.overrideReason")} />
       </>
     )
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field name="periodStart" label="Period start" type="date" required />
-        <Field name="periodEnd" label="Period end" type="date" required />
+        <Field name="periodStart" label={t("fields.periodStart")} type="date" required />
+        <Field name="periodEnd" label={t("fields.periodEnd")} type="date" required />
         <Field
           name="gross"
-          label="Gross progress value"
+          label={t("fields.grossProgressValue")}
           type="number"
           step="0.01"
           required
         />
-        <Field name="retention" label="Retention" type="number" step="0.01" />
-        <Field name="currency" label="Currency" defaultValue="EUR" />
+        <Field name="retention" label={t("fields.retention")} type="number" step="0.01" />
+        <Field name="currency" label={t("fields.currency")} defaultValue="EUR" />
       </div>
     </>
   )
@@ -674,12 +677,13 @@ function OptionSelect({
   options: Array<{ id: string; name: string }>
   optional?: boolean
 }) {
+  const t = useTranslations("operations.create")
   return (
     <label className="grid gap-1.5 text-sm font-semibold">
       {fieldLabel}
       <Select name={name} required={!optional}>
         <SelectTrigger>
-          <SelectValue placeholder={`Select ${fieldLabel.toLowerCase()}`} />
+          <SelectValue placeholder={t("selectPlaceholder", { field: fieldLabel.toLowerCase() })} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
