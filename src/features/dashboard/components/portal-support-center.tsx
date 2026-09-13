@@ -90,6 +90,7 @@ function PortalSupportTicketList({
   initialPage: number
 }) {
   const t = useTranslations("dashboard.support")
+  const format = useFormatter()
   const queryClient = useQueryClient()
   const pathname = usePathname()
   const router = useRouter()
@@ -136,25 +137,25 @@ function PortalSupportTicketList({
       <div className="grid gap-4 md:grid-cols-3">
         <SupportMetric
           icon={Headphones}
-          label="Support channel"
-          value="Direct"
-          detail="A private conversation between you and the Buildink support team."
+          label={t("metrics.channel")}
+          value={t("metrics.direct")}
+          detail={t("metrics.channelDetail")}
         />
         <SupportMetric
           icon={CalendarClock}
-          label="Active request"
-          value={activeTicket ? "1 open" : "None"}
+          label={t("metrics.activeRequest")}
+          value={activeTicket ? t("metrics.oneOpen") : t("metrics.none")}
           detail={
             activeTicket
-              ? `${activeTicket.reference} is currently being handled.`
-              : "You can open one support ticket whenever you need help."
+              ? t("metrics.activeDetail", { reference: activeTicket.reference })
+              : t("metrics.noActiveDetail")
           }
         />
         <SupportMetric
           icon={MessageCircleMore}
-          label="Updates"
-          value="Realtime"
-          detail="Admin replies arrive in the conversation without a page refresh."
+          label={t("metrics.updates")}
+          value={t("metrics.realtime")}
+          detail={t("metrics.updatesDetail")}
         />
       </div>
 
@@ -167,20 +168,20 @@ function PortalSupportTicketList({
               </span>
               <div className="min-w-0">
                 <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
-                  Continue your active ticket
+                  {t("active.continue")}
                 </p>
                 <h2 className="text-foreground mt-1 truncate text-lg font-semibold">
                   {activeTicket.subject}
                 </h2>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  {activeTicket.reference} · {formatStatus(activeTicket.status)}{" "}
-                  · {activeTicket.assigneeName ?? "Awaiting assignment"}
+                  {activeTicket.reference} · {supportStatus(activeTicket.status, t)}{" "}
+                  · {activeTicket.assigneeName ?? t("awaitingAssignment")}
                 </p>
               </div>
             </div>
             <Button asChild className="shrink-0">
               <Link href={`/dashboard/support/${activeTicket.id}`} prefetch>
-                Open conversation
+                {t("active.openConversation")}
               </Link>
             </Button>
           </div>
@@ -198,16 +199,15 @@ function PortalSupportTicketList({
         <div className="bg-muted/15 flex flex-col gap-2 border-b p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
             <h2 className="text-foreground text-lg font-semibold">
-              Your support history
+              {t("history.title")}
             </h2>
             <p className="text-muted-foreground mt-1 text-sm">
-              Reopen previous conversations for context. Resolved tickets remain
-              read-only.
+              {t("history.description")}
             </p>
           </div>
           {ticketsQuery.isFetching ? (
             <span className="text-muted-foreground inline-flex items-center gap-2 text-xs font-medium">
-              <Loader2 className="size-3.5 animate-spin" /> Updating
+              <Loader2 className="size-3.5 animate-spin" /> {t("history.updating")}
             </span>
           ) : null}
         </div>
@@ -249,13 +249,17 @@ function PortalSupportTicketList({
                   <SupportPill value={ticket.priority} tone="muted" />
                 </div>
                 <p className="text-muted-foreground mt-1 text-xs">
-                  {ticket.reference} · {ticket.category} · SLA{" "}
-                  {formatStatus(ticket.slaState)}
+                  {ticket.reference} · {t(`categories.${ticket.category}`)} · {t("sla")}{" "}
+                  {supportStatus(ticket.slaState, t)}
                 </p>
               </div>
               <div className="text-muted-foreground text-left text-xs sm:text-right">
-                <p>{ticket.assigneeName ?? "Unassigned"}</p>
-                <p className="mt-1">Updated {relativeDate(ticket.updatedAt)}</p>
+                <p>{ticket.assigneeName ?? t("unassigned")}</p>
+                <p className="mt-1">
+                  {t("history.updated", {
+                    time: format.relativeTime(new Date(ticket.updatedAt)),
+                  })}
+                </p>
               </div>
             </Link>
           ))}
@@ -265,11 +269,10 @@ function PortalSupportTicketList({
                 <Headphones className="size-5" />
               </span>
               <p className="text-foreground mt-4 font-semibold">
-                No support tickets yet
+                {t("empty")}
               </p>
               <p className="text-muted-foreground mt-1 max-w-sm text-sm">
-                When you need help, open a ticket above and continue the
-                conversation here.
+                {t("history.emptyDescription")}
               </p>
             </div>
           ) : null}
@@ -278,8 +281,10 @@ function PortalSupportTicketList({
         {data ? (
           <div className="bg-muted/10 flex items-center justify-between gap-3 border-t px-4 py-3 sm:px-5">
             <p className="text-muted-foreground text-xs">
-              Page {data.pageInfo.page} · {data.pageInfo.total} ticket
-              {data.pageInfo.total === 1 ? "" : "s"}
+              {t("history.pageSummary", {
+                page: data.pageInfo.page,
+                total: data.pageInfo.total,
+              })}
             </p>
             <div className="flex gap-2">
               <Button
@@ -288,7 +293,7 @@ function PortalSupportTicketList({
                 variant="outline"
                 disabled={page <= 1}
                 onClick={() => changePage(page - 1)}
-                aria-label="Previous support page"
+                aria-label={t("history.previousPage")}
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -298,7 +303,7 @@ function PortalSupportTicketList({
                 variant="outline"
                 disabled={!data.pageInfo.hasNextPage}
                 onClick={() => changePage(page + 1)}
-                aria-label="Next support page"
+                aria-label={t("history.nextPage")}
               >
                 <ChevronRight className="size-4" />
               </Button>
@@ -350,11 +355,10 @@ function SupportTicketComposer({
           </span>
           <div>
             <h2 className="text-foreground text-lg font-semibold">
-              Open a support ticket
+              {t("create")}
             </h2>
             <p className="text-muted-foreground mt-1 max-w-2xl text-sm leading-6">
-              Describe one issue clearly. You can keep chatting with support in
-              the same ticket until it is resolved.
+              {t("composer.description")}
             </p>
           </div>
         </div>
@@ -365,7 +369,7 @@ function SupportTicketComposer({
             id="support-subject"
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
-            placeholder="Short summary of the issue"
+            placeholder={t("composer.subjectPlaceholder")}
           />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -390,15 +394,15 @@ function SupportTicketComposer({
               </SelectContent>
             </Select>
           </Field>
-          <Field label="Priority" htmlFor="support-priority">
+          <Field label={t("priority")} htmlFor="support-priority">
             <Select value={priority} onValueChange={setPriority}>
               <SelectTrigger id="support-priority">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="LOW">Low</SelectItem>
-                <SelectItem value="MEDIUM">Medium</SelectItem>
-                <SelectItem value="HIGH">High</SelectItem>
+                <SelectItem value="LOW">{t("statuses.LOW")}</SelectItem>
+                <SelectItem value="MEDIUM">{t("statuses.MEDIUM")}</SelectItem>
+                <SelectItem value="HIGH">{t("statuses.HIGH")}</SelectItem>
               </SelectContent>
             </Select>
           </Field>
@@ -410,7 +414,7 @@ function SupportTicketComposer({
               value={body}
               onChange={(event) => setBody(event.target.value)}
               className="min-h-32 resize-y"
-              placeholder="What happened, what did you expect, and what have you already tried?"
+              placeholder={t("composer.messagePlaceholder")}
             />
           </Field>
         </div>
@@ -423,8 +427,7 @@ function SupportTicketComposer({
       </div>
       <div className="bg-muted/10 flex flex-col gap-3 border-t px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p className="text-muted-foreground text-xs">
-          One active ticket per account. Open another after the current ticket
-          is resolved or closed.
+          {t("composer.activeLimit")}
         </p>
         <Button
           type="button"
@@ -438,7 +441,7 @@ function SupportTicketComposer({
           ) : (
             <Headphones className="size-4" />
           )}
-          {pending ? "Opening ticket…" : t("submit")}
+          {pending ? t("composer.opening") : t("submit")}
         </Button>
       </div>
     </Card>
@@ -501,13 +504,13 @@ function PortalSupportTicketView({
     return (
       <div className="w-full space-y-6">
         <PortalPageHeader
-          eyebrow="Support"
-          title="Ticket unavailable"
-          description="This ticket could not be loaded or is not available to your account."
+          eyebrow={t("eyebrow")}
+          title={t("unavailable.title")}
+          description={t("unavailable.description")}
           actions={
             <Button asChild variant="outline">
               <Link href="/dashboard/support">
-                <ArrowLeft className="size-4" /> Back to support
+                <ArrowLeft className="size-4" /> {t("unavailable.back")}
               </Link>
             </Button>
           }
@@ -554,7 +557,7 @@ function PortalSupportTicketView({
       <PortalPageHeader
         eyebrow={`${ticket.reference} · ${ticket.category}`}
         title={ticket.subject}
-        description="Private support conversation"
+        description={t("conversation.private")}
         actions={
           <Button asChild variant="outline" size="sm">
             <Link href="/dashboard/support" prefetch>
@@ -566,23 +569,23 @@ function PortalSupportTicketView({
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <TicketInfo
-          label="Status"
-          value={formatStatus(ticket.status)}
+          label={t("status")}
+          value={supportStatus(ticket.status, t)}
           icon={MessageCircleMore}
         />
         <TicketInfo
-          label="Priority"
-          value={formatStatus(ticket.priority)}
+          label={t("priority")}
+          value={supportStatus(ticket.priority, t)}
           icon={CircleAlert}
         />
         <TicketInfo
-          label="SLA"
-          value={formatStatus(ticket.slaState)}
+          label={t("sla")}
+          value={supportStatus(ticket.slaState, t)}
           icon={CalendarClock}
         />
         <TicketInfo
-          label="Support owner"
-          value={ticket.assigneeName ?? "Awaiting assignment"}
+          label={t("supportOwner")}
+          value={ticket.assigneeName ?? t("awaitingAssignment")}
           icon={ShieldCheck}
         />
       </div>
@@ -594,9 +597,11 @@ function PortalSupportTicketView({
               <MessageCircleMore className="size-5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-foreground font-semibold">Conversation</p>
+              <p className="text-foreground font-semibold">
+                {t("conversation.title")}
+              </p>
               <p className="text-muted-foreground text-xs">
-                Messages from you and Buildink support appear here in realtime.
+                {t("conversation.description")}
               </p>
             </div>
             {ticketQuery.isFetching ? (
@@ -666,11 +671,13 @@ function PortalSupportTicketView({
                 <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <div>
                   <p className="text-foreground font-semibold">
-                    This ticket is {ticket.status.toLowerCase()}.
+                    {t("conversation.closedTitle", {
+                      status: supportStatus(ticket.status, t),
+                    })}
                   </p>
                   <p className="text-muted-foreground mt-1 text-sm">
                     {ticket.resolutionNote ??
-                      "The conversation is read-only. You can open a new ticket from Support if you need more help."}
+                      t("conversation.readOnly")}}
                   </p>
                 </div>
               </div>
@@ -681,7 +688,7 @@ function PortalSupportTicketView({
                 value={reply}
                 onChange={(event) => setReply(event.target.value)}
                 className="min-h-24 resize-y"
-                placeholder="Write a reply to support…"
+                placeholder={t("conversation.replyPlaceholder")}
                 disabled={pending}
               />
               {error ? (
@@ -689,7 +696,7 @@ function PortalSupportTicketView({
               ) : null}
               <div className="flex items-center justify-between gap-3">
                 <p className="text-muted-foreground text-xs">
-                  Replies are visible to your assigned support team.
+                  {t("conversation.replyVisibility")}
                 </p>
                 <Button
                   type="button"
@@ -701,7 +708,7 @@ function PortalSupportTicketView({
                   ) : (
                     <Send className="size-4" />
                   )}
-                  {pending ? "Sending…" : t("sendReply")}
+                  {pending ? t("conversation.sending") : t("sendReply")}
                 </Button>
               </div>
             </div>
@@ -710,27 +717,30 @@ function PortalSupportTicketView({
 
         <Card className="rounded-[24px] p-5 shadow-sm xl:sticky xl:top-24">
           <p className="text-muted-foreground text-xs font-semibold tracking-[0.14em] uppercase">
-            Ticket details
+            {t("details.title")}
           </p>
           <dl className="mt-4 space-y-4 text-sm">
-            <DetailRow label="Reference" value={ticket.reference} />
-            <DetailRow label="Category" value={ticket.category} />
+            <DetailRow label={t("details.reference")} value={ticket.reference} />
             <DetailRow
-              label="Created"
+              label={t("details.category")}
+              value={t(`categories.${ticket.category}`)}
+            />
+            <DetailRow
+              label={t("details.created")}
               value={format.dateTime(new Date(ticket.createdAt), {
                 dateStyle: "medium",
                 timeStyle: "short",
               })}
             />
             <DetailRow
-              label="Last updated"
+              label={t("details.lastUpdated")}
               value={format.dateTime(new Date(ticket.updatedAt), {
                 dateStyle: "medium",
                 timeStyle: "short",
               })}
             />
             <DetailRow
-              label="SLA due"
+              label={t("details.slaDue")}
               value={format.dateTime(new Date(ticket.dueAt), {
                 dateStyle: "medium",
                 timeStyle: "short",
@@ -811,6 +821,8 @@ function SupportPill({
   value: string
   tone?: "primary" | "muted"
 }) {
+  const t = useTranslations("dashboard.support")
+
   return (
     <span
       className={cn(
@@ -820,7 +832,7 @@ function SupportPill({
           : "border-border bg-muted/40 text-muted-foreground",
       )}
     >
-      {formatStatus(value)}
+      {supportStatus(value, t)}
     </span>
   )
 }
@@ -876,20 +888,10 @@ function patchTicketLists(
   )
 }
 
-function formatStatus(value: string) {
-  return value
-    .replaceAll("_", " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase())
-}
-
-function relativeDate(value: string) {
-  const diff = Date.now() - new Date(value).getTime()
-  const minutes = Math.max(0, Math.floor(diff / 60_000))
-  if (minutes < 1) return "just now"
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
+function supportStatus(
+  value: string,
+  t: ReturnType<typeof useTranslations<"dashboard.support">>,
+) {
+  const key = `statuses.${value}`
+  return t.has(key) ? t(key) : value.replaceAll("_", " ")
 }
