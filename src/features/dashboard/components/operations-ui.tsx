@@ -132,7 +132,7 @@ export function OperationsStatusBadge({ status }: { status: string }) {
 export function OperationsDataTable({
   columns,
   rows,
-  empty = "No operational records match this view.",
+  empty,
   companyId,
   resource,
 }: {
@@ -147,11 +147,12 @@ export function OperationsDataTable({
   companyId?: string
   resource?: string
 }) {
+  const t = useTranslations("operations.ui")
   if (!rows.length)
     return (
       <OperationsEmptyState
-        title={empty}
-        description="Try adjusting the current filters or create the first record for this workflow."
+        title={empty ?? t("emptyTitle")}
+        description={t("emptyDescription")}
       />
     )
 
