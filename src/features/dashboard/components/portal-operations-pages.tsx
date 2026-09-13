@@ -1054,13 +1054,15 @@ async function AttendanceTable({
     />
   )
 }
-function CompanyProjectLinks({
+async function CompanyProjectLinks({
   data,
   section,
 }: {
   data: WorkforceOperationsOverview
   section: string
 }) {
+  const t = await getTranslations("operations.projectLinks")
+  const sectionT = await getTranslations("operations.sections")
   const projectSection = section === "forecasts" ? "forecast" : section
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -1081,11 +1083,10 @@ function CompanyProjectLinks({
                     {project.title}
                   </h3>
                   <p className="text-muted mt-1 text-sm">
-                    Open project {labelize(section).toLowerCase()} records and
-                    approvals.
+                    {t("description", { section: sectionT(section) })}
                   </p>
                   <span className="text-primary mt-3 inline-block text-sm font-semibold">
-                    Track {labelize(section)} →
+                    {t("track", { section: sectionT(section) })} →
                   </span>
                 </div>
               </div>
@@ -1094,8 +1095,8 @@ function CompanyProjectLinks({
         ))
       ) : (
         <OperationsEmptyState
-          title="No operational projects"
-          description="Create a project before recording field operations."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
         />
       )}
     </div>
