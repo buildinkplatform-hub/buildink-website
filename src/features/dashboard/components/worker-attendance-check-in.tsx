@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react"
 import { BrowserQRCodeReader } from "@zxing/browser"
+import { useTranslations } from "next-intl"
 import {
   Camera,
   CheckCircle2,
@@ -55,6 +56,7 @@ export function WorkerAttendanceCheckIn({
   const videoRef = useRef<HTMLVideoElement>(null)
   const scannerRef = useRef<{ stop(): void } | null>(null)
   const deviceId = useDeviceId()
+  const t = useTranslations("operations.attendance")
 
   const refreshQueue = useCallback(
     async () => setPendingCount((await queueAll()).length),
@@ -98,7 +100,7 @@ export function WorkerAttendanceCheckIn({
       if (!shift) return null
       const position = await locate().catch(() => null)
       if (!position) {
-        setMessage("Location permission is required while a shift is active.")
+        setMessage(t("locationPermissionRequired"))
         return null
       }
       const body = {
@@ -137,7 +139,7 @@ export function WorkerAttendanceCheckIn({
       }
       return body
     },
-    [refreshQueue, shift],
+    [refreshQueue, shift, t],
   )
 
   useEffect(() => {
@@ -161,7 +163,7 @@ export function WorkerAttendanceCheckIn({
         setSiteId(claims.siteId)
       }
       scannerRef.current?.stop()
-      setMessage("QR captured. Confirm check-in when ready.")
+      setMessage(t("qrCaptured"))
     }
     try {
       const Detector = (
@@ -208,7 +210,7 @@ export function WorkerAttendanceCheckIn({
       }
     } catch {
       setMessage(
-        "Camera access failed. Use the site PIN or allow camera permission.",
+        t("cameraAccessFailed"),
       )
     }
   }
@@ -217,7 +219,7 @@ export function WorkerAttendanceCheckIn({
     startTransition(async () => {
       const position = await locate().catch(() => null)
       if (!projectId || !siteId || !token || !position) {
-        setMessage("Project, site, token, and GPS permission are required.")
+        setMessage(t("checkInRequirements"))
         return
       }
       const body = {
@@ -242,11 +244,11 @@ export function WorkerAttendanceCheckIn({
           createdAt: String(body.capturedAt),
         })
         await refreshQueue()
-        setMessage("Check-in saved offline and will sync automatically.")
+        setMessage(t("checkInSavedOffline"))
         return
       }
       const result = await workerCheckInAction(body)
-      setMessage(result.ok ? "Check-in recorded." : result.message)
+      setMessage(result.ok ? t("checkInRecorded") : result.message)
       if (result.ok) window.location.reload()
     })
   }
@@ -266,11 +268,11 @@ export function WorkerAttendanceCheckIn({
         })
         await refreshQueue()
         setShift(null)
-        setMessage("Check-out saved offline and will sync automatically.")
+        setMessage(t("checkOutSavedOffline"))
         return
       }
       const result = await workerCheckOutAction(shift.id, body)
-      setMessage(result.ok ? "Shift submitted for approval." : result.message)
+      setMessage(result.ok ? t("shiftSubmitted") : result.message)
       if (result.ok) setShift(null)
     })
   }
@@ -282,11 +284,10 @@ export function WorkerAttendanceCheckIn({
           <WifiOff className="mt-0.5 size-4 shrink-0" />
           <div>
             <p className="font-semibold">
-              {online ? "Sync in progress" : "Offline mode"}
+              {online ? t("syncInProgress") : t("offlineMode")}
             </p>
             <p>
-              {pendingCount} attendance event{pendingCount === 1 ? "" : "s"}{" "}
-              waiting to sync.
+              {t("pendingEvents", { count: pendingCount })}
             </p>
           </div>
         </Alert>
@@ -295,7 +296,7 @@ export function WorkerAttendanceCheckIn({
         <Alert className="flex gap-3">
           <ShieldAlert className="mt-0.5 size-4 shrink-0" />
           <div>
-            <p className="font-semibold">Attendance status</p>
+            <p className="font-semibold">{t("attendanceStatus")}</p>
             <p>{message}</p>
           </div>
         </Alert>
@@ -303,17 +304,17 @@ export function WorkerAttendanceCheckIn({
       <Card className="overflow-hidden rounded-[28px] shadow-sm">
         <div className="bg-brand-navy p-6 text-white">
           <p className="text-xs font-bold tracking-[.14em] text-white/60 uppercase">
-            Worker attendance
+            {t("workerAttendance")}
           </p>
           <h2 className="mt-2 text-2xl font-bold">
-            {shift ? "Shift in progress" : "Check in to your site"}
+            {shift ? t("shiftInProgress") : t("checkInToSite")}
           </h2>
           <p className="mt-1 text-sm text-white/70">
             {shift
               ? shift.checkedInAt
-                ? `Started ${new Date(shift.checkedInAt).toLocaleString()}`
-                : "Start time unavailable"
-              : "Your location is sampled every five minutes while this page remains active."}
+                ? t("started", { time: new Date(shift.checkedInAt).toLocaleString() })
+                : t("startTimeUnavailable")
+              : t("locationSamplingDescription")}
           </p>
         </div>
         <div className="space-y-5 p-6">
@@ -322,21 +323,21 @@ export function WorkerAttendanceCheckIn({
               <div className="grid gap-3 sm:grid-cols-3">
                 <Signal
                   icon={LocateFixed}
-                  label="GPS"
-                  value={gps ? `±${Math.round(gps.accuracy)} m` : "Sampling"}
+                  label={t("gps")}
+                  value={gps ? `±${Math.round(gps.accuracy)} m` : t("sampling")}
                 />
                 <Signal
                   icon={RefreshCw}
-                  label="Last sample"
+                  label={t("lastSample")}
                   value={
                     gps
                       ? new Date(gps.sampledAt).toLocaleTimeString()
-                      : "Waiting"
+                      : t("waiting")
                   }
                 />
                 <Signal
                   icon={CheckCircle2}
-                  label="Exceptions"
+                  label={t("exceptions")}
                   value={String(shift.exceptionCodes.length)}
                 />
               </div>
@@ -345,7 +346,7 @@ export function WorkerAttendanceCheckIn({
                 onClick={checkOut}
                 disabled={isPending}
               >
-                <LogOut className="size-4" /> Check out and submit
+                <LogOut className="size-4" /> {t("checkOutAndSubmit")}
               </Button>
             </>
           ) : (
@@ -355,13 +356,13 @@ export function WorkerAttendanceCheckIn({
                   variant={mode === "QR" ? "primary" : "secondary"}
                   onClick={() => setMode("QR")}
                 >
-                  <Camera className="size-4" /> Scan QR
+                  <Camera className="size-4" /> {t("scanQr")}
                 </Button>
                 <Button
                   variant={mode === "PIN" ? "primary" : "secondary"}
                   onClick={() => setMode("PIN")}
                 >
-                  Use site PIN
+                  {t("useSitePin")}
                 </Button>
               </div>
               {mode === "QR" ? (
@@ -378,7 +379,7 @@ export function WorkerAttendanceCheckIn({
                     className="w-full"
                     onClick={() => void scan()}
                   >
-                    <Camera className="size-4" /> Start camera scanner
+                    <Camera className="size-4" /> {t("startCameraScanner")}
                   </Button>
                 </>
               ) : (
@@ -387,7 +388,7 @@ export function WorkerAttendanceCheckIn({
                     className="text-sm font-semibold"
                     htmlFor="attendance-pin"
                   >
-                    Site PIN
+                    {t("sitePin")}
                   </label>
                   <Input
                     id="attendance-pin"
@@ -404,7 +405,7 @@ export function WorkerAttendanceCheckIn({
                     className="text-sm font-semibold"
                     htmlFor="attendance-project"
                   >
-                    Project ID
+                    {t("projectId")}
                   </label>
                   <Input
                     id="attendance-project"
@@ -417,7 +418,7 @@ export function WorkerAttendanceCheckIn({
                     className="text-sm font-semibold"
                     htmlFor="attendance-site"
                   >
-                    Site ID
+                    {t("siteId")}
                   </label>
                   <Input
                     id="attendance-site"
@@ -431,7 +432,7 @@ export function WorkerAttendanceCheckIn({
                 onClick={checkIn}
                 disabled={isPending || !deviceId}
               >
-                {isPending ? "Recording…" : "Confirm check-in"}
+                {isPending ? t("recording") : t("confirmCheckIn")}
               </Button>
             </>
           )}
