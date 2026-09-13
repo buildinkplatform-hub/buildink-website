@@ -916,7 +916,7 @@ async function OperationalUsageTable({
           },
           {
             key: section === "materials" ? "transactionType" : "usageMinutes",
-            label: section === "materials" ? "Type" : "Usage",
+            label: section === "materials" ? t("columns.type") : t("columns.usage"),
             render: (row) =>
               section === "materials" ? (
                 <OperationsStatusBadge status={String(row.transactionType)} />
