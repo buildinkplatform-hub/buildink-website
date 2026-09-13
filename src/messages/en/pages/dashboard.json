@@ -950,9 +950,6 @@
         "technical": "Technical",
         "other": "Other"
       },
-      "eyebrow": "Support",
-      "title": "Support center",
-      "description": "Open and follow private conversations with the Buildink support team.",
       "priority": "Priority",
       "status": "Status",
       "sla": "SLA",
