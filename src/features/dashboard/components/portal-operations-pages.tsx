@@ -119,8 +119,8 @@ export async function OperationsPage({
       <div className="space-y-6">
         <PortalPageHeader
           eyebrow={t("common.dashboard")}
-          title="My workforce operations"
-          description="Track active shifts, assignments, attendance history, and operational pay."
+          title={t("operations.worker.title")}
+          description={t("operations.worker.description")}
         />
         {section === "attendance/check-in" || section === "attendance" ? (
           <WorkerAttendanceCheckIn initialShift={workerData.activeShift} />
@@ -137,8 +137,8 @@ export async function OperationsPage({
   if (!companyId)
     return (
       <OperationsEmptyState
-        title="Select a company workspace"
-        description="Workforce operations are scoped to the active company."
+        title={t("operations.selectWorkspace")}
+        description={t("operations.selectWorkspaceDescription")}
       />
     )
   const tabs = operationsSections.map((value) => ({
@@ -172,34 +172,34 @@ export async function OperationsPage({
         columns={[
           {
             key: "startsOn",
-            label: "Period start",
+            label: t("operations.payroll.periodStart"),
             render: (row) => formatDate(row.startsOn),
           },
           {
             key: "endsOn",
-            label: "Period end",
+            label: t("operations.payroll.periodEnd"),
             render: (row) => formatDate(row.endsOn),
           },
           {
             key: "status",
-            label: "Status",
+            label: t("operations.payroll.status"),
             render: (row) => (
               <OperationsStatusBadge status={String(row.status)} />
             ),
           },
           {
             key: "grossMinor",
-            label: "Gross",
+            label: t("operations.payroll.gross"),
             render: (row) => formatMoney(row.grossMinor, row.currency),
           },
           {
             key: "netMinor",
-            label: "Operational net",
+            label: t("operations.payroll.operationalNet"),
             render: (row) => formatMoney(row.netMinor, row.currency),
           },
           {
             key: "actions",
-            label: "Actions",
+            label: t("operations.payroll.actions"),
             render: (row) => (
               <div className="flex flex-wrap gap-1">
                 <PayrollApprovalActions
@@ -501,7 +501,12 @@ export async function ProjectOperationsPage({
   )
 }
 
-function WorkforceSummary({ data }: { data: WorkforceOperationsOverview }) {
+async function WorkforceSummary({
+  data,
+}: {
+  data: WorkforceOperationsOverview
+}) {
+  const t = await getTranslations("operations")
   const present =
     count(data.attendance, "OPEN") +
     count(data.attendance, "SUBMITTED") +
@@ -516,30 +521,32 @@ function WorkforceSummary({ data }: { data: WorkforceOperationsOverview }) {
     <section className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <OperationsMetricCard
-          label="On site today"
+          label={t("summary.onSiteToday")}
           value={present}
-          detail="Open and recorded shifts"
+          detail={t("summary.openShifts")}
           icon={UsersRound}
           tone="blue"
         />
         <OperationsMetricCard
-          label="Active tasks"
+          label={t("summary.activeTasks")}
           value={activeTasks}
-          detail={`${count(data.tasks, "BLOCKED")} blocked`}
+          detail={t("summary.blockedTasks", {
+            count: count(data.tasks, "BLOCKED"),
+          })}
           icon={ListChecks}
           tone={count(data.tasks, "BLOCKED") ? "amber" : "navy"}
         />
         <OperationsMetricCard
-          label="Operational risks"
+          label={t("summary.operationalRisks")}
           value={exceptions}
-          detail="Critical and warning alerts"
+          detail={t("summary.riskAlerts")}
           icon={AlertTriangle}
           tone={exceptions ? "red" : "green"}
         />
         <OperationsMetricCard
-          label="Payroll review"
+          label={t("summary.payrollReview")}
           value={data.pendingPayroll}
-          detail="Open operational periods"
+          detail={t("summary.openPeriods")}
           icon={Banknote}
           tone="green"
         />
@@ -548,34 +555,37 @@ function WorkforceSummary({ data }: { data: WorkforceOperationsOverview }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-brand-navy font-semibold">
-              Operational command center
+              {t("summary.commandCenter")}
             </h2>
             <p className="text-muted text-sm">
-              Move from attendance evidence to project profitability without
-              disconnected records.
+              {t("summary.commandDescription")}
             </p>
           </div>
           <Link
             href="/dashboard/operations/attendance"
             className="text-primary text-sm font-semibold hover:underline"
           >
-            Open attendance
+            {t("summary.openAttendance")}
           </Link>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Attendance", value: present, icon: CalendarCheck },
+            { label: t("sections.attendance"), value: present, icon: CalendarCheck },
             {
-              label: "Production",
+              label: t("sections.production"),
               value: data.production._sum.acceptedQuantity ?? "0",
               icon: PackageCheck,
             },
             {
-              label: "Labour hours",
+              label: t("summary.labourHours"),
               value: Math.round((data.production._sum.labourMinutes ?? 0) / 60),
               icon: Clock3,
             },
-            { label: "Projects", value: data.projects.length, icon: Building2 },
+            {
+              label: t("summary.projects"),
+              value: data.projects.length,
+              icon: Building2,
+            },
           ].map((item) => (
             <div
               key={item.label}
@@ -596,62 +606,63 @@ function WorkforceSummary({ data }: { data: WorkforceOperationsOverview }) {
   )
 }
 
-function WorkerShiftSummary({ data }: { data: WorkerOperationsOverview }) {
+async function WorkerShiftSummary({ data }: { data: WorkerOperationsOverview }) {
+  const t = await getTranslations("operations.worker")
   const shift = data.activeShift
   return (
     <section className="grid gap-5 lg:grid-cols-[1.3fr_0.7fr]">
       <Card className="overflow-hidden rounded-[28px] shadow-sm">
         <div className="bg-brand-navy p-6 text-white">
           <p className="text-xs font-bold tracking-[0.14em] text-white/65 uppercase">
-            Current shift
+            {t("currentShift")}
           </p>
           <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold">
-                {shift ? "Shift in progress" : "Ready to check in"}
+                {shift ? t("shiftInProgress") : t("readyToCheckIn")}
               </h2>
               <p className="mt-1 text-sm text-white/70">
                 {shift?.checkedInAt
-                  ? `Started ${formatDateTime(shift.checkedInAt)}`
-                  : "Scan the site QR or use the site PIN."}
+                  ? t("started", { time: formatDateTime(shift.checkedInAt) })
+                  : t("checkInHint")}
               </p>
             </div>
             <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold">
-              {shift ? "Active" : "Site token required"}
+              {shift ? t("active") : t("tokenRequired")}
             </span>
           </div>
         </div>
         <div className="grid gap-4 p-6 sm:grid-cols-3">
           <ShiftSignal
-            label="GPS evidence"
-            value={shift ? "Shift active" : "Waiting"}
+            label={t("gpsEvidence")}
+            value={shift ? t("shiftActive") : t("waiting")}
             tone="neutral"
           />
           <ShiftSignal
-            label="Sync status"
-            value="Online records"
+            label={t("syncStatus")}
+            value={t("onlineRecords")}
             tone="neutral"
           />
           <ShiftSignal
-            label="Exceptions"
+            label={t("exceptions")}
             value={String(shift?.exceptionCodes.length ?? 0)}
             tone={shift?.exceptionCodes.length ? "risk" : "good"}
           />
         </div>
       </Card>
       <Card className="rounded-[28px] p-6 shadow-sm">
-        <h2 className="text-brand-navy font-semibold">My work</h2>
+        <h2 className="text-brand-navy font-semibold">{t("myWork")}</h2>
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-muted text-sm">Assignments</span>
+            <span className="text-muted text-sm">{t("assignments")}</span>
             <strong>{data.assignments.length}</strong>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted text-sm">Recent shifts</span>
+            <span className="text-muted text-sm">{t("recentShifts")}</span>
             <strong>{data.recentShifts.length}</strong>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted text-sm">Payroll statements</span>
+            <span className="text-muted text-sm">{t("payrollStatements")}</span>
             <strong>{data.payroll.length}</strong>
           </div>
         </div>
