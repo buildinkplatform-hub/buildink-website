@@ -149,6 +149,50 @@
       "configuredRules": "{count, plural, =0 {No configured rules} =1 {1 configured rule} other {# configured rules}}",
       "acknowledge": "Acknowledge",
       "resolve": "Resolve"
+    },
+    "summary": {
+      "onSiteToday": "Astăzi pe șantier",
+      "openShifts": "Ture deschise și înregistrate",
+      "activeTasks": "Sarcini active",
+      "blockedTasks": "{count} blocate",
+      "operationalRisks": "Riscuri operaționale",
+      "riskAlerts": "Alerte critice și avertismente",
+      "payrollReview": "Revizuire salarizare",
+      "openPeriods": "Perioade operaționale deschise",
+      "commandCenter": "Centru de comandă operațional",
+      "commandDescription": "Treci de la dovezile de prezență la profitabilitatea proiectului fără evidențe separate.",
+      "openAttendance": "Deschide prezența",
+      "labourHours": "Ore de muncă",
+      "projects": "Proiecte"
+    },
+    "worker": {
+      "title": "Operațiunile mele de muncă",
+      "description": "Urmărește turele active, sarcinile, istoricul prezenței și plata operațională.",
+      "currentShift": "Tura curentă",
+      "shiftInProgress": "Tură în desfășurare",
+      "readyToCheckIn": "Pregătit pentru pontaj",
+      "started": "Început {time}",
+      "checkInHint": "Scanează codul QR al șantierului sau folosește PIN-ul.",
+      "active": "Activă",
+      "tokenRequired": "Tokenul șantierului este necesar",
+      "gpsEvidence": "Dovadă GPS",
+      "shiftActive": "Tură activă",
+      "waiting": "În așteptare",
+      "syncStatus": "Starea sincronizării",
+      "onlineRecords": "Înregistrări online",
+      "exceptions": "Excepții",
+      "myWork": "Munca mea",
+      "assignments": "Sarcini",
+      "recentShifts": "Ture recente",
+      "payrollStatements": "Situații salariale"
+    },
+    "payroll": {
+      "periodStart": "Început perioadă",
+      "periodEnd": "Sfârșit perioadă",
+      "status": "Stare",
+      "gross": "Brut",
+      "operationalNet": "Net operațional",
+      "actions": "Acțiuni"
     }
   }
 }
