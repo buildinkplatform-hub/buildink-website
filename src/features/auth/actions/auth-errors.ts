@@ -41,3 +41,13 @@ export function mapRegistrationError(
     return "email_delivery"
   return "registration_failed"
 }
+
+const RESTRICTED_ACCOUNT_CODES = new Set([
+  "ACCOUNT_SUSPENDED",
+  "ACCOUNT_BANNED",
+  "ACCOUNT_DELETED",
+])
+
+export function isRestrictedAccountCode(code: string): boolean {
+  return RESTRICTED_ACCOUNT_CODES.has(code)
+}
