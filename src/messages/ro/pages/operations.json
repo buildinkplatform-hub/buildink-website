@@ -193,6 +193,27 @@
       "gross": "Brut",
       "operationalNet": "Net operațional",
       "actions": "Acțiuni"
+    },
+    "projectMetrics": {
+      "actualCost": "Cost efectiv",
+      "ofBudget": "{percentage}% din buget",
+      "committed": "Angajat",
+      "pendingApproval": "{amount} în așteptarea aprobării",
+      "remaining": "Rămas",
+      "remainingDescription": "Buget minus costul efectiv aprobat și angajat",
+      "forecastMargin": "Marjă estimată",
+      "noApprovedForecast": "Nu există prognoză aprobată",
+      "noActiveAlerts": "Nu există alerte active pentru proiect",
+      "actions": "Acțiuni",
+      "evidence": "Dovezi",
+      "budgetConsumption": "Consum bugetar",
+      "budgetDescription": "Cost efectiv plus angajat față de valoarea de bază",
+      "budget": "Buget",
+      "actual": "Efectiv",
+      "productivity": "Productivitate",
+      "acceptedPerHour": "Unități acceptate / oră de muncă",
+      "labourHours": "Ore de muncă",
+      "reworkQuantity": "Cantitate refăcută"
     }
   }
 }
