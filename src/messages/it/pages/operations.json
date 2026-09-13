@@ -193,6 +193,27 @@
       "gross": "Lordo",
       "operationalNet": "Netto operativo",
       "actions": "Azioni"
+    },
+    "projectMetrics": {
+      "actualCost": "Costo effettivo",
+      "ofBudget": "{percentage}% del budget",
+      "committed": "Impegnato",
+      "pendingApproval": "{amount} in attesa di approvazione",
+      "remaining": "Residuo",
+      "remainingDescription": "Budget meno costi effettivi approvati e impegnati",
+      "forecastMargin": "Margine previsto",
+      "noApprovedForecast": "Nessuna previsione approvata",
+      "noActiveAlerts": "Nessun avviso di progetto attivo",
+      "actions": "Azioni",
+      "evidence": "Evidenze",
+      "budgetConsumption": "Consumo del budget",
+      "budgetDescription": "Costo effettivo più impegnato rispetto alla base",
+      "budget": "Budget",
+      "actual": "Effettivo",
+      "productivity": "Produttività",
+      "acceptedPerHour": "Unità accettate / ora di lavoro",
+      "labourHours": "Ore di lavoro",
+      "reworkQuantity": "Quantità rilavorata"
     }
   }
 }
