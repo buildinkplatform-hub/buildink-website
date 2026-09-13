@@ -671,11 +671,12 @@ async function WorkerShiftSummary({ data }: { data: WorkerOperationsOverview }) 
   )
 }
 
-function ProjectControlMetrics({
+async function ProjectControlMetrics({
   overview,
 }: {
   overview: ProjectOperationsOverview
 }) {
+  const t = await getTranslations("operations.projectMetrics")
   const budget = BigInt(overview.project.budgetMinor ?? "0")
   const actual = BigInt(overview.metrics.actualMinor)
   const committed = BigInt(overview.metrics.committedMinor)
@@ -692,28 +693,32 @@ function ProjectControlMetrics({
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <OperationsMetricCard
-        label="Actual cost"
+        label={t("actualCost")}
         value={formatMoney(actual, overview.project.currency)}
-        detail={`${budget ? Number((actual * BigInt(100)) / budget) : 0}% of budget`}
+        detail={t("ofBudget", {
+          percentage: budget ? Number((actual * BigInt(100)) / budget) : 0,
+        })}
         icon={Coins}
         tone="blue"
       />
       <OperationsMetricCard
-        label="Committed"
+        label={t("committed")}
         value={formatMoney(committed, overview.project.currency)}
-        detail={`${formatMoney(pipeline, overview.project.currency)} pending approval`}
+        detail={t("pendingApproval", {
+          amount: formatMoney(pipeline, overview.project.currency),
+        })}
         icon={BriefcaseBusiness}
         tone="navy"
       />
       <OperationsMetricCard
-        label="Remaining"
+        label={t("remaining")}
         value={formatMoney(remaining, overview.project.currency)}
-        detail="Budget less approved actual and committed"
+        detail={t("remainingDescription")}
         icon={Calculator}
         tone={remaining < BigInt(0) ? "red" : "green"}
       />
       <OperationsMetricCard
-        label="Forecast margin"
+        label={t("forecastMargin")}
         value={`${((forecast?.marginBasisPoints ?? 0) / 100).toFixed(1)}%`}
         detail={
           forecast
@@ -721,7 +726,7 @@ function ProjectControlMetrics({
                 forecast.expectedProfitMinor ?? "0",
                 overview.project.currency,
               )
-            : "No approved forecast"
+            : t("noApprovedForecast")
         }
         icon={TrendingUp}
         tone={(forecast?.marginBasisPoints ?? 0) < 0 ? "red" : "green"}
@@ -730,7 +735,7 @@ function ProjectControlMetrics({
   )
 }
 
-function ProjectSection({
+async function ProjectSection({
   companyId,
   projectId,
   section,
@@ -745,6 +750,7 @@ function ProjectSection({
   rows: Array<Record<string, unknown>>
   canManageEvidence: boolean
 }) {
+  const t = await getTranslations("operations.projectMetrics")
   if (section === "profit-control" || section === "operations")
     return <ProfitControl overview={overview} />
   if (section === "alerts")
@@ -755,7 +761,7 @@ function ProjectSection({
             <OperationsAlertCard key={alert.id} {...alert} />
           ))
         ) : (
-          <OperationsEmptyState title="No active project alerts" />
+          <OperationsEmptyState title={t("noActiveAlerts")} />
         )}
       </div>
     )
@@ -773,7 +779,7 @@ function ProjectSection({
   if (approvalResource)
     columns.push({
       key: "actions",
-      label: "Actions",
+      label: t("actions"),
       render: (row) => (
         <OperationsApprovalActions
           companyId={companyId}
@@ -791,7 +797,7 @@ function ProjectSection({
   if (evidenceType && canManageEvidence)
     columns.push({
       key: "evidence",
-      label: "Evidence",
+      label: t("evidence"),
       render: (row) => (
         <OperationsEvidenceUploader
           companyId={companyId}
@@ -811,7 +817,12 @@ function ProjectSection({
   )
 }
 
-function ProfitControl({ overview }: { overview: ProjectOperationsOverview }) {
+async function ProfitControl({
+  overview,
+}: {
+  overview: ProjectOperationsOverview
+}) {
+  const t = await getTranslations("operations.projectMetrics")
   const budget = Number(overview.project.budgetMinor ?? 0)
   const actual = Number(overview.metrics.actualMinor)
   const committed = Number(overview.metrics.committedMinor)
@@ -822,10 +833,10 @@ function ProfitControl({ overview }: { overview: ProjectOperationsOverview }) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-brand-navy font-semibold">
-              Budget consumption
+              {t("budgetConsumption")}
             </h3>
             <p className="text-muted text-sm">
-              Actual plus committed cost against baseline
+              {t("budgetDescription")}
             </p>
           </div>
           <strong className="text-xl tabular-nums">{used.toFixed(1)}%</strong>
@@ -833,32 +844,32 @@ function ProfitControl({ overview }: { overview: ProjectOperationsOverview }) {
         <Progress value={used} className="mt-5 h-3" />
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <Value
-            label="Budget"
+            label={t("budget")}
             value={formatMoney(budget, overview.project.currency)}
           />
           <Value
-            label="Actual"
+            label={t("actual")}
             value={formatMoney(actual, overview.project.currency)}
           />
           <Value
-            label="Committed"
+            label={t("committed")}
             value={formatMoney(committed, overview.project.currency)}
           />
         </div>
       </Card>
       <Card className="rounded-[24px] p-6 shadow-sm">
-        <h3 className="text-brand-navy font-semibold">Productivity</h3>
+        <h3 className="text-brand-navy font-semibold">{t("productivity")}</h3>
         <div className="mt-5 grid gap-4">
           <Value
-            label="Accepted units / labour hour"
+            label={t("acceptedPerHour")}
             value={overview.metrics.productivityPerHour.toFixed(2)}
           />
           <Value
-            label="Labour hours"
+            label={t("labourHours")}
             value={overview.metrics.labourHours.toFixed(1)}
           />
           <Value
-            label="Rework quantity"
+            label={t("reworkQuantity")}
             value={overview.metrics.reworkQuantity}
           />
         </div>
