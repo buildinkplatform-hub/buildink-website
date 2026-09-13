@@ -284,7 +284,26 @@
       "SUBMITTED": "Inviato",
       "VOIDED": "Annullato",
       "WAIVED": "Deroga",
-      "WARNING": "Avviso"
+      "WARNING": "Avviso",
+      "COMPLETED": "Completato",
+      "READY": "Pronto",
+      "BLOCKED": "Bloccato",
+      "CANCELLED": "Annullato",
+      "INTERVIEW": "Colloquio",
+      "OWNED": "Di proprietà",
+      "HIRED": "Noleggiato",
+      "LABOUR": "Manodopera",
+      "MATERIAL": "Materiale",
+      "EQUIPMENT": "Attrezzatura",
+      "SUBCONTRACT": "Subappalto",
+      "DIRECT": "Diretto",
+      "REWORK": "Rilavorazione",
+      "WASTE": "Scarto",
+      "RECEIPT": "Ricezione",
+      "CONSUMPTION": "Consumo",
+      "RETURN": "Reso",
+      "ADJUSTMENT_IN": "Rettifica in entrata",
+      "ADJUSTMENT_OUT": "Rettifica in uscita"
     },
     "summary": {
       "activeTasks": "Attività attive",
@@ -394,6 +413,37 @@
       "title": "Le mie operazioni di lavoro",
       "tokenRequired": "Token del cantiere richiesto",
       "waiting": "In attesa"
+    },
+    "approval": {
+      "updated": "Record operativo aggiornato",
+      "failed": "Approvazione non riuscita",
+      "transitionDescription": "Questa azione modifica lo stato del record. La transizione completa resta nella cronologia delle approvazioni.",
+      "reason": "Motivo",
+      "reasonPlaceholder": "Spiega perché questo record viene modificato…",
+      "submit": "Invia",
+      "operationallyApprove": "Approva operativamente",
+      "approve": "Approva",
+      "pmApprove": "Approva come PM",
+      "postToLedger": "Registra nel libro contabile",
+      "financePost": "Registrazione Finance",
+      "reject": "Rifiuta",
+      "reopen": "Riapri"
+    },
+    "payrollApproval": {
+      "closeTitle": "Chiudi periodo paghe",
+      "approveTitle": "Approva paghe",
+      "submitTitle": "Invia paghe per revisione",
+      "description": "Le paghe derivano esclusivamente dalle presenze approvate e dalle istantanee tariffarie bloccate.",
+      "closePeriod": "Chiudi periodo",
+      "approve": "Approva",
+      "submit": "Invia",
+      "closeReason": "Motivo della chiusura",
+      "updated": "Stato paghe aggiornato",
+      "close": "Chiudi"
+    },
+    "ui": {
+      "emptyTitle": "Nessun record operativo corrisponde a questa vista.",
+      "emptyDescription": "Modifica i filtri correnti o crea il primo record per questo flusso di lavoro."
     }
   }
 }
