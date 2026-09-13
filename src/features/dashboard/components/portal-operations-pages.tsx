@@ -775,7 +775,7 @@ async function ProjectSection({
           : section === "sal"
             ? "sal"
             : null
-  const columns = columnsFor(section)
+  const columns = await columnsFor(section)
   if (approvalResource)
     columns.push({
       key: "actions",
@@ -878,7 +878,7 @@ async function ProfitControl({
   )
 }
 
-function OperationalUsageTable({
+async function OperationalUsageTable({
   companyId,
   projectId,
   section,
@@ -891,16 +891,17 @@ function OperationalUsageTable({
   rows: Array<Record<string, unknown>>
   canManageEvidence: boolean
 }) {
+  const t = await getTranslations("operations.tables")
   const resource =
     section === "materials" ? "materials/transactions" : "equipment-usage"
   return (
     <section className="space-y-3">
       <div>
         <h2 className="text-brand-navy text-lg font-semibold">
-          {section === "materials" ? "Inventory transactions" : "Usage records"}
+          {section === "materials" ? t("inventoryTransactions") : t("usageRecords")}
         </h2>
         <p className="text-muted text-sm">
-          Project Manager validation is followed by Finance ledger posting.
+          {t("validationFlow")}
         </p>
       </div>
       <OperationsDataTable
@@ -910,12 +911,12 @@ function OperationalUsageTable({
         columns={[
           {
             key: "occurredOn",
-            label: "Date",
+            label: t("columns.date"),
             render: (row) => formatDate(row.occurredOn),
           },
           {
             key: section === "materials" ? "transactionType" : "usageMinutes",
-            label: section === "materials" ? "Type" : "Usage",
+            label: section === "materials" ? t("columns.type") : t("columns.usage"),
             render: (row) =>
               section === "materials" ? (
                 <OperationsStatusBadge status={String(row.transactionType)} />
@@ -925,19 +926,19 @@ function OperationalUsageTable({
           },
           {
             key: "status",
-            label: "Status",
+            label: t("columns.status"),
             render: (row) => (
               <OperationsStatusBadge status={String(row.status)} />
             ),
           },
           {
             key: "amountMinor",
-            label: "Cost",
+            label: t("columns.cost"),
             render: (row) => formatMoney(row.amountMinor, row.currency),
           },
           {
             key: "actions",
-            label: "Actions",
+            label: t("columns.actions"),
             className: "sticky end-0 bg-white text-end",
             render: (row) => (
               <OperationsApprovalActions
@@ -956,7 +957,7 @@ function OperationalUsageTable({
             ? [
                 {
                   key: "evidence",
-                  label: "Evidence",
+                  label: t("columns.evidence"),
                   render: (row: Record<string, unknown>) => (
                     <OperationsEvidenceUploader
                       companyId={companyId}
@@ -978,7 +979,7 @@ function OperationalUsageTable({
   )
 }
 
-function AttendanceTable({
+async function AttendanceTable({
   companyId,
   shifts,
   canManageEvidence,
@@ -987,6 +988,7 @@ function AttendanceTable({
   shifts: OperationsShift[]
   canManageEvidence: boolean
 }) {
+  const t = await getTranslations("operations.tables")
   return (
     <OperationsDataTable
       rows={shifts as unknown as Array<Record<string, unknown>>}
@@ -995,49 +997,49 @@ function AttendanceTable({
       columns={[
         {
           key: "workerId",
-          label: "Worker",
+          label: t("columns.worker"),
           render: (row) => (
             <span className="font-mono text-xs">{shortId(row.workerId)}</span>
           ),
         },
         {
           key: "workDate",
-          label: "Work date",
+          label: t("columns.workDate"),
           render: (row) => formatDate(row.workDate),
         },
         {
           key: "status",
-          label: "Status",
+          label: t("columns.status"),
           render: (row) => (
             <OperationsStatusBadge status={String(row.status)} />
           ),
         },
         {
           key: "workedMinutes",
-          label: "Worked",
+          label: t("columns.worked"),
           render: (row) =>
             `${Math.round(Number(row.workedMinutes) / 6) / 10} h`,
         },
         {
           key: "overtimeMinutes",
-          label: "Overtime",
+          label: t("columns.overtime"),
           render: (row) => `${row.overtimeMinutes} min`,
         },
         {
           key: "exceptionCodes",
-          label: "Exceptions",
+          label: t("columns.exceptions"),
           render: (row) =>
             Array.isArray(row.exceptionCodes) && row.exceptionCodes.length ? (
               <OperationsStatusBadge status={String(row.exceptionCodes[0])} />
             ) : (
-              "None"
+              t("none")
             ),
         },
         ...(canManageEvidence
           ? [
               {
                 key: "evidence",
-                label: "Evidence",
+                label: t("columns.evidence"),
                 render: (row: Record<string, unknown>) => (
                   <OperationsEvidenceUploader
                     companyId={companyId}
@@ -1127,12 +1129,13 @@ function Value({ label, value }: { label: string; value: string | number }) {
   )
 }
 
-function columnsFor(section: string) {
+async function columnsFor(section: string) {
+  const t = await getTranslations("operations.tables")
   if (section === "sites")
     return [
       {
         key: "name",
-        label: "Site",
+        label: t("columns.site"),
         render: (row: Record<string, unknown>) => (
           <div>
             <p className="text-brand-navy font-semibold">{String(row.name)}</p>
@@ -1140,17 +1143,17 @@ function columnsFor(section: string) {
           </div>
         ),
       },
-      { key: "timezone", label: "Timezone" },
-      { key: "address", label: "Address" },
+      { key: "timezone", label: t("columns.timezone") },
+      { key: "address", label: t("columns.address") },
       {
         key: "geofenceRadiusMeters",
-        label: "Geofence",
+        label: t("columns.geofence"),
         render: (row: Record<string, unknown>) =>
           `${row.geofenceRadiusMeters} m`,
       },
       {
         key: "active",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={row.active ? "ACTIVE" : "INACTIVE"} />
         ),
@@ -1160,7 +1163,7 @@ function columnsFor(section: string) {
     return [
       {
         key: "title",
-        label: "Task",
+        label: t("columns.task"),
         render: (row: Record<string, unknown>) => (
           <span className="text-brand-navy font-semibold">
             {String(row.title)}
@@ -1169,16 +1172,16 @@ function columnsFor(section: string) {
       },
       {
         key: "status",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.status)} />
         ),
       },
-      { key: "priority", label: "Priority" },
-      { key: "plannedQuantity", label: "Planned quantity" },
+      { key: "priority", label: t("columns.priority") },
+      { key: "plannedQuantity", label: t("columns.plannedQuantity") },
       {
         key: "plannedMinutes",
-        label: "Planned hours",
+        label: t("columns.plannedHours"),
         render: (row: Record<string, unknown>) =>
           row.plannedMinutes
             ? `${(Number(row.plannedMinutes) / 60).toFixed(1)} h`
@@ -1186,7 +1189,7 @@ function columnsFor(section: string) {
       },
       {
         key: "dueOn",
-        label: "Due",
+        label: t("columns.due"),
         render: (row: Record<string, unknown>) => formatDate(row.dueOn),
       },
     ]
@@ -1194,63 +1197,63 @@ function columnsFor(section: string) {
     return [
       {
         key: "workDate",
-        label: "Date",
+        label: t("columns.date"),
         render: (row: Record<string, unknown>) => formatDate(row.workDate),
       },
       {
         key: "status",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.status)} />
         ),
       },
-      { key: "completedQuantity", label: "Completed" },
-      { key: "acceptedQuantity", label: "Accepted" },
+      { key: "completedQuantity", label: t("columns.completed") },
+      { key: "acceptedQuantity", label: t("columns.accepted") },
       {
         key: "labourMinutes",
-        label: "Labour",
+        label: t("columns.labour"),
         render: (row: Record<string, unknown>) =>
           `${(Number(row.labourMinutes) / 60).toFixed(1)} h`,
       },
-      { key: "reworkQuantity", label: "Rework" },
+      { key: "reworkQuantity", label: t("columns.rework") },
     ]
   if (section === "labour")
     return [
       {
         key: "workerId",
-        label: "Worker",
+        label: t("columns.worker"),
         render: (row: Record<string, unknown>) => shortId(row.workerId),
       },
       {
         key: "effectiveFrom",
-        label: "Effective",
+        label: t("columns.effective"),
         render: (row: Record<string, unknown>) => formatDate(row.effectiveFrom),
       },
       {
         key: "regularRateMinorPerHour",
-        label: "Regular rate",
+        label: t("columns.regularRate"),
         render: (row: Record<string, unknown>) =>
           row.masked
-            ? "Restricted"
+            ? t("restricted")
             : formatMoney(row.regularRateMinorPerHour, row.currency),
       },
       {
         key: "overtimeRateMinorPerHour",
-        label: "Overtime rate",
+        label: t("columns.overtimeRate"),
         render: (row: Record<string, unknown>) =>
           row.masked
-            ? "Restricted"
+            ? t("restricted")
             : formatMoney(row.overtimeRateMinorPerHour, row.currency),
       },
     ]
   if (section === "materials")
     return [
-      { key: "code", label: "Code" },
-      { key: "name", label: "Material" },
-      { key: "unit", label: "Unit" },
+      { key: "code", label: t("columns.code") },
+      { key: "name", label: t("columns.material") },
+      { key: "unit", label: t("columns.unit") },
       {
         key: "stock",
-        label: "On hand",
+        label: t("columns.onHand"),
         render: (row: Record<string, unknown>) =>
           Array.isArray(row.stock)
             ? row.stock
@@ -1268,7 +1271,7 @@ function columnsFor(section: string) {
       },
       {
         key: "active",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={row.active ? "ACTIVE" : "INACTIVE"} />
         ),
@@ -1276,23 +1279,23 @@ function columnsFor(section: string) {
     ]
   if (section === "equipment")
     return [
-      { key: "name", label: "Equipment" },
+      { key: "name", label: t("columns.equipment") },
       {
         key: "ownership",
-        label: "Ownership",
+        label: t("columns.ownership"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.ownership)} />
         ),
       },
       {
         key: "rateMinor",
-        label: "Rate",
+        label: t("columns.rate"),
         render: (row: Record<string, unknown>) =>
           `${formatMoney(row.rateMinor, row.currency)} / ${String(row.rateUnit).toLowerCase()}`,
       },
       {
         key: "active",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={row.active ? "ACTIVE" : "INACTIVE"} />
         ),
@@ -1302,48 +1305,48 @@ function columnsFor(section: string) {
     return [
       {
         key: "occurredOn",
-        label: "Date",
+        label: t("columns.date"),
         render: (row: Record<string, unknown>) => formatDate(row.occurredOn),
       },
       {
         key: "category",
-        label: "Category",
+        label: t("columns.category"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.category)} />
         ),
       },
-      { key: "description", label: "Description" },
+      { key: "description", label: t("columns.description") },
       {
         key: "status",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.status)} />
         ),
       },
       {
         key: "committed",
-        label: "Cost type",
+        label: t("columns.costType"),
         render: (row: Record<string, unknown>) =>
-          row.committed ? "Committed" : "Actual",
+          row.committed ? t("committed") : t("actual"),
       },
       {
         key: "amountMinor",
-        label: "Amount",
+        label: t("columns.amount"),
         render: (row: Record<string, unknown>) =>
           formatMoney(row.amountMinor, row.currency),
       },
     ]
   if (section === "forecast")
     return [
-      { key: "versionNo", label: "Version" },
+      { key: "versionNo", label: t("columns.version") },
       {
         key: "asOfDate",
-        label: "As of",
+        label: t("columns.asOf"),
         render: (row: Record<string, unknown>) => formatDate(row.asOfDate),
       },
       {
         key: "status",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.status)} />
         ),
@@ -1356,13 +1359,13 @@ function columnsFor(section: string) {
       },
       {
         key: "expectedProfitMinor",
-        label: "Profit",
+        label: t("columns.profit"),
         render: (row: Record<string, unknown>) =>
           formatMoney(row.expectedProfitMinor, row.currency),
       },
       {
         key: "marginBasisPoints",
-        label: "Margin",
+        label: t("columns.margin"),
         render: (row: Record<string, unknown>) =>
           `${(Number(row.marginBasisPoints) / 100).toFixed(1)}%`,
       },
@@ -1372,32 +1375,32 @@ function columnsFor(section: string) {
       { key: "sequence", label: "SAL" },
       {
         key: "periodStart",
-        label: "Period",
+        label: t("columns.period"),
         render: (row: Record<string, unknown>) =>
           `${formatDate(row.periodStart)} – ${formatDate(row.periodEnd)}`,
       },
       {
         key: "status",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.status)} />
         ),
       },
       {
         key: "grossMinor",
-        label: "Gross",
+        label: t("columns.gross"),
         render: (row: Record<string, unknown>) =>
           formatMoney(row.grossMinor, row.currency),
       },
       {
         key: "retentionMinor",
-        label: "Retention",
+        label: t("columns.retention"),
         render: (row: Record<string, unknown>) =>
           formatMoney(row.retentionMinor, row.currency),
       },
       {
         key: "approvedMinor",
-        label: "Approved",
+        label: t("columns.approved"),
         render: (row: Record<string, unknown>) =>
           formatMoney(row.approvedMinor, row.currency),
       },
@@ -1406,40 +1409,40 @@ function columnsFor(section: string) {
     return [
       {
         key: "reportDate",
-        label: "Date",
+        label: t("columns.date"),
         render: (row: Record<string, unknown>) => formatDate(row.reportDate),
       },
       {
         key: "status",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={String(row.status)} />
         ),
       },
-      { key: "summary", label: "Summary" },
+      { key: "summary", label: t("columns.summary") },
       {
         key: "updatedAt",
-        label: "Updated",
+        label: t("columns.updated"),
         render: (row: Record<string, unknown>) => formatDateTime(row.updatedAt),
       },
     ]
   if (section === "compliance")
     return [
-      { key: "title", label: "Requirement" },
-      { key: "credentialType", label: "Credential" },
+      { key: "title", label: t("columns.requirement") },
+      { key: "credentialType", label: t("columns.credential") },
       {
         key: "required",
-        label: "Required",
-        render: (row: Record<string, unknown>) => (row.required ? "Yes" : "No"),
+        label: t("columns.required"),
+        render: (row: Record<string, unknown>) => (row.required ? t("yes") : t("no")),
       },
       {
         key: "expiresOn",
-        label: "Expires",
+        label: t("columns.expires"),
         render: (row: Record<string, unknown>) => formatDate(row.expiresOn),
       },
       {
         key: "active",
-        label: "Status",
+        label: t("columns.status"),
         render: (row: Record<string, unknown>) => (
           <OperationsStatusBadge status={row.active ? "ACTIVE" : "INACTIVE"} />
         ),
@@ -1449,7 +1452,7 @@ function columnsFor(section: string) {
     { key: "title", label: labelize(section) },
     {
       key: "status",
-      label: "Status",
+      label: t("columns.status"),
       render: (row: Record<string, unknown>) =>
         row.status ? (
           <OperationsStatusBadge status={String(row.status)} />
