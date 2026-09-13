@@ -193,6 +193,27 @@
       "gross": "Gross",
       "operationalNet": "Operational net",
       "actions": "Actions"
+    },
+    "projectMetrics": {
+      "actualCost": "Actual cost",
+      "ofBudget": "{percentage}% of budget",
+      "committed": "Committed",
+      "pendingApproval": "{amount} pending approval",
+      "remaining": "Remaining",
+      "remainingDescription": "Budget less approved actual and committed",
+      "forecastMargin": "Forecast margin",
+      "noApprovedForecast": "No approved forecast",
+      "noActiveAlerts": "No active project alerts",
+      "actions": "Actions",
+      "evidence": "Evidence",
+      "budgetConsumption": "Budget consumption",
+      "budgetDescription": "Actual plus committed cost against baseline",
+      "budget": "Budget",
+      "actual": "Actual",
+      "productivity": "Productivity",
+      "acceptedPerHour": "Accepted units / labour hour",
+      "labourHours": "Labour hours",
+      "reworkQuantity": "Rework quantity"
     }
   }
 }
