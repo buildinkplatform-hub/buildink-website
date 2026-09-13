@@ -12,11 +12,13 @@ import {
   type ResetPasswordInput,
 } from "@/features/auth/schemas/auth.schemas"
 import {
+  isRestrictedAccountCode,
   mapRegistrationError,
   type RegistrationActionError,
 } from "@/features/auth/actions/auth-errors"
 import { sanitizeReturnTo } from "@/i18n/route-utils"
 import { getSignedInDestination } from "@/lib/auth/destination"
+import { backendApi, BackendApiError } from "@/lib/backend/api"
 import {
   AuthRateLimitExceededError,
   limitAuthAction,
@@ -101,13 +103,28 @@ export async function loginAction(
       destination: `/${locale}/verify-email?email=${encodeURIComponent(data.user?.email ?? parsed.data.email)}`,
     }
   }
-  return {
-    success: true,
-    destination: getSignedInDestination(
-      locale,
-      "enter_portal",
-      parsed.data.next,
-    ),
+  try {
+    const identity = await backendApi<{
+      account?: { nextAction?: string | null }
+    }>("/api/v1/auth/me")
+    return {
+      success: true,
+      destination: getSignedInDestination(
+        locale,
+        identity.account?.nextAction,
+        parsed.data.next,
+      ),
+    }
+  } catch (error) {
+    if (error instanceof BackendApiError && isRestrictedAccountCode(error.code)) {
+      return {
+        success: true,
+        destination: getSignedInDestination(locale, "account_restricted"),
+      }
+    }
+    await supabase.auth.signOut({ scope: "global" }).catch(() => undefined)
+    await clearSupabaseAuthCookies()
+    return { success: false, error: "backend" }
   }
 }
 
