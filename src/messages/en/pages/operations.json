@@ -149,6 +149,50 @@
       "fileTooLarge": "CSV files must be 2 MB or smaller.",
       "invalidRows": "Correct invalid rows before committing the import.",
       "oneColumnRequired": "At least one column must remain visible."
+    },
+    "summary": {
+      "onSiteToday": "On site today",
+      "openShifts": "Open and recorded shifts",
+      "activeTasks": "Active tasks",
+      "blockedTasks": "{count} blocked",
+      "operationalRisks": "Operational risks",
+      "riskAlerts": "Critical and warning alerts",
+      "payrollReview": "Payroll review",
+      "openPeriods": "Open operational periods",
+      "commandCenter": "Operational command center",
+      "commandDescription": "Move from attendance evidence to project profitability without disconnected records.",
+      "openAttendance": "Open attendance",
+      "labourHours": "Labour hours",
+      "projects": "Projects"
+    },
+    "worker": {
+      "title": "My workforce operations",
+      "description": "Track active shifts, assignments, attendance history, and operational pay.",
+      "currentShift": "Current shift",
+      "shiftInProgress": "Shift in progress",
+      "readyToCheckIn": "Ready to check in",
+      "started": "Started {time}",
+      "checkInHint": "Scan the site QR or use the site PIN.",
+      "active": "Active",
+      "tokenRequired": "Site token required",
+      "gpsEvidence": "GPS evidence",
+      "shiftActive": "Shift active",
+      "waiting": "Waiting",
+      "syncStatus": "Sync status",
+      "onlineRecords": "Online records",
+      "exceptions": "Exceptions",
+      "myWork": "My work",
+      "assignments": "Assignments",
+      "recentShifts": "Recent shifts",
+      "payrollStatements": "Payroll statements"
+    },
+    "payroll": {
+      "periodStart": "Period start",
+      "periodEnd": "Period end",
+      "status": "Status",
+      "gross": "Gross",
+      "operationalNet": "Operational net",
+      "actions": "Actions"
     }
   }
 }
