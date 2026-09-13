@@ -284,7 +284,26 @@
       "SUBMITTED": "مُرسل",
       "VOIDED": "ملغى",
       "WAIVED": "إعفاء",
-      "WARNING": "تحذير"
+      "WARNING": "تحذير",
+      "COMPLETED": "مكتمل",
+      "READY": "جاهز",
+      "BLOCKED": "محظور",
+      "CANCELLED": "ملغى",
+      "INTERVIEW": "مقابلة",
+      "OWNED": "مملوك",
+      "HIRED": "مستأجر",
+      "LABOUR": "عمالة",
+      "MATERIAL": "مواد",
+      "EQUIPMENT": "معدات",
+      "SUBCONTRACT": "مقاولة باطن",
+      "DIRECT": "مباشر",
+      "REWORK": "إعادة عمل",
+      "WASTE": "هدر",
+      "RECEIPT": "استلام",
+      "CONSUMPTION": "استهلاك",
+      "RETURN": "إرجاع",
+      "ADJUSTMENT_IN": "تسوية إضافة",
+      "ADJUSTMENT_OUT": "تسوية خصم"
     },
     "summary": {
       "activeTasks": "المهام النشطة",
@@ -394,6 +413,37 @@
       "title": "عمليات العمل الخاصة بي",
       "tokenRequired": "رمز الموقع مطلوب",
       "waiting": "في الانتظار"
+    },
+    "approval": {
+      "updated": "تم تحديث السجل التشغيلي",
+      "failed": "فشل الاعتماد",
+      "transitionDescription": "يغيّر هذا الإجراء حالة السجل، ويظل الانتقال الكامل محفوظًا في سجل الاعتمادات.",
+      "reason": "السبب",
+      "reasonPlaceholder": "وضّح سبب تغيير هذا السجل…",
+      "submit": "إرسال",
+      "operationallyApprove": "اعتماد تشغيلي",
+      "approve": "اعتماد",
+      "pmApprove": "اعتماد مدير المشروع",
+      "postToLedger": "ترحيل إلى دفتر الأستاذ",
+      "financePost": "ترحيل مالي",
+      "reject": "رفض",
+      "reopen": "إعادة فتح"
+    },
+    "payrollApproval": {
+      "closeTitle": "إغلاق فترة الرواتب",
+      "approveTitle": "اعتماد الرواتب",
+      "submitTitle": "إرسال الرواتب للمراجعة",
+      "description": "تُحتسب الرواتب فقط من سجلات الحضور المعتمدة ولقطات الأجور المثبتة.",
+      "closePeriod": "إغلاق الفترة",
+      "approve": "اعتماد",
+      "submit": "إرسال",
+      "closeReason": "سبب الإغلاق",
+      "updated": "تم تحديث حالة الرواتب",
+      "close": "إغلاق"
+    },
+    "ui": {
+      "emptyTitle": "لا توجد سجلات تشغيلية مطابقة لهذا العرض.",
+      "emptyDescription": "عدّل عوامل التصفية الحالية أو أنشئ أول سجل لمسار العمل هذا."
     }
   }
 }
