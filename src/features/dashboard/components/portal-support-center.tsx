@@ -677,7 +677,7 @@ function PortalSupportTicketView({
                   </p>
                   <p className="text-muted-foreground mt-1 text-sm">
                     {ticket.resolutionNote ??
-                      t("conversation.readOnly")}}
+                      t("conversation.readOnly")}
                   </p>
                 </div>
               </div>
