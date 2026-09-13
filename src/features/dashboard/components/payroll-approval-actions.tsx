@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import {
   ReasonConfirmationDialog,
   type ReasonedAction,
@@ -17,6 +18,7 @@ export function PayrollApprovalActions({
   row: { id: string; status: string; version: number }
 }) {
   const [action, setAction] = useState<ReasonedAction | null>(null)
+  const t = useTranslations("operations.payrollApproval")
   const next =
     row.status === "DRAFT"
       ? "REVIEW"
@@ -30,20 +32,20 @@ export function PayrollApprovalActions({
     setAction({
       title:
         next === "CLOSED"
-          ? "Close payroll period"
+          ? t("closeTitle")
           : next === "APPROVED"
-            ? "Approve payroll"
-            : "Submit payroll for review",
+            ? t("approveTitle")
+            : t("submitTitle"),
       description:
-        "Payroll is derived only from approved attendance and frozen rate snapshots.",
+        t("description"),
       confirmLabel:
         next === "CLOSED"
-          ? "Close period"
+          ? t("closePeriod")
           : next === "APPROVED"
-            ? "Approve"
-            : "Submit",
+            ? t("approve")
+            : t("submit"),
       requireReason: next === "CLOSED",
-      reasonLabel: "Close reason",
+      reasonLabel: t("closeReason"),
       onConfirm: async (reason) => {
         const result = await transitionPayrollAction(companyId, row.id, {
           status: next,
@@ -54,7 +56,7 @@ export function PayrollApprovalActions({
           toast.error(result.message)
           throw new Error(result.message)
         }
-        toast.success("Payroll status updated")
+        toast.success(t("updated"))
       },
     })
   }
@@ -63,10 +65,10 @@ export function PayrollApprovalActions({
       {next ? (
         <Button size="sm" onClick={open}>
           {next === "CLOSED"
-            ? "Close"
+            ? t("close")
             : next === "APPROVED"
-              ? "Approve"
-              : "Submit"}
+              ? t("approve")
+              : t("submit")}
         </Button>
       ) : null}
       <ReasonConfirmationDialog
