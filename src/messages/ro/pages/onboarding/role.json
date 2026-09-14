@@ -4,7 +4,7 @@
     "roleBody": "Selectează cum vei folosi marketplace-ul Buildink.",
     "errors": {
       "profileType": "Alege un tip de cont pentru a continua.",
-      "saveProfileType": "We couldn't save your account type. Please try again."
+      "saveProfileType": "Nu am putut salva tipul contului. Încearcă din nou."
     }
   },
   "roles": {

@@ -86,7 +86,7 @@
     },
     "companyTypes": {
       "GENERAL_CONTRACTOR": "Antreprenor general",
-      "SUBCONTRACTOR": "Subcontractor",
+      "SUBCONTRACTOR": "Subcontractant",
       "SUPPLIER": "Furnizor",
       "EQUIPMENT": "Companie de echipamente",
       "PROFESSIONAL": "Servicii profesionale"

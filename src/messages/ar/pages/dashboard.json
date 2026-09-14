@@ -322,18 +322,18 @@
         "ARCHIVED": "أرشفة المشروع"
       },
       "stats": {
-        "active": "Active",
-        "published": "Published",
-        "inProgress": "In progress",
-        "portfolioValue": "Portfolio value"
+        "active": "نشطة",
+        "published": "منشورة",
+        "inProgress": "قيد التنفيذ",
+        "portfolioValue": "قيمة المحفظة"
       },
       "toolbar": {
-        "clearAll": "Clear all",
-        "export": "Export"
+        "clearAll": "مسح الكل",
+        "export": "تصدير"
       },
       "table": {
-        "project": "Project",
-        "owner": "Owner",
+        "project": "المشروع",
+        "owner": "المالك",
         "totalRecords": "إجمالي السجلات: {count}",
         "actionsFor": "إجراءات {title}",
         "confirmTitle": "{action} المشروع؟",

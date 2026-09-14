@@ -4,7 +4,7 @@
     "roleBody": "Seleziona come utilizzerai il marketplace Buildink.",
     "errors": {
       "profileType": "Scegli un tipo di account per continuare.",
-      "saveProfileType": "We couldn't save your account type. Please try again."
+      "saveProfileType": "Non è stato possibile salvare il tipo di account. Riprova."
     }
   },
   "roles": {

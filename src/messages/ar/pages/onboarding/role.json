@@ -4,7 +4,7 @@
     "roleBody": "اختر كيف ستستخدم سوق Buildink.",
     "errors": {
       "profileType": "اختر نوع الحساب للمتابعة.",
-      "saveProfileType": "We couldn't save your account type. Please try again."
+      "saveProfileType": "تعذر حفظ نوع حسابك. حاول مرة أخرى."
     }
   },
   "roles": {
