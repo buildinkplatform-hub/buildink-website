@@ -47,6 +47,7 @@ function PhoneCountrySelect({
   ariaLabel: string
   onChange: (country: Country) => void
 }) {
+  const t = useTranslations("common")
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const selected = options.find((option) => option.code === value)
@@ -92,7 +93,7 @@ function PhoneCountrySelect({
           autoFocus
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search country..."
+          placeholder={t("searchCountry")}
           className="mb-2 h-9 min-h-0"
         />
         <div className="max-h-64 overflow-y-auto">
@@ -136,7 +137,7 @@ function PhoneCountrySelect({
           })}
           {!filtered.length ? (
             <p className="text-muted-foreground px-2 py-3 text-sm">
-              No countries match that search.
+              {t("noCountriesFound")}
             </p>
           ) : null}
         </div>
