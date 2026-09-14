@@ -553,6 +553,10 @@ export function DocumentsForm({ countries }: { countries: CountryOption[] }) {
           failed: t("onboarding.errors.previewFailed"),
           openNewTab: t("onboarding.openNewTab"),
           close: t("onboarding.closePreview"),
+          preparing: t("onboarding.previewPreparing"),
+          expired: t("onboarding.previewExpired"),
+          unavailable: t("onboarding.previewUnavailable"),
+          openExternally: t("onboarding.previewOpenExternally"),
         }}
       />
     </OnboardingFrame>
