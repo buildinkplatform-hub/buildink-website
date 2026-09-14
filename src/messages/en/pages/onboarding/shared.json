@@ -1,43 +1,49 @@
 {
   "onboarding": {
-    "step": "Step {current} of 4",
-    "stepAccountType": "Account type",
-    "stepProfile": "Profile essentials",
-    "stepDocuments": "Verification",
-    "stepReview": "Review & publish",
-    "whyWeAsk": "Why we ask",
-    "visibilityPublic": "Public",
-    "visibilityPrivate": "Private until you choose otherwise",
-    "why": {
-      "phone": "Used for account recovery and, if you allow it, marketplace contact.",
-      "country": "Region matching depends on where you operate.",
-      "region": "Opportunities are ranked by service radius and region.",
-      "contactPreference": "Controls whether your phone or email can appear publicly."
-    },
-    "noFiles": "No documents selected yet.",
-    "pushTitle": "Get notified about your review",
-    "pushBody": "We'll send you a browser notification the moment your profile is approved or needs changes — even with the site closed.",
-    "pushEnable": "Enable notifications",
-    "pushDenied": "Browser notifications are blocked. Enable them in your browser settings to receive review updates.",
-    "pushDone": "Notifications enabled — we'll alert you when the review is complete.",
-    "selectCategory": "Select category",
-    "selectSubcategory": "Select subcategory",
-    "searchCompany": "Search for an existing company",
-    "viewFull": "View full size",
-    "preview": "File preview",
-    "previewLoading": "Loading secure preview...",
-    "openNewTab": "Open full view",
     "closePreview": "Close preview",
     "errors": {
-      "uploadFailed": "The upload failed. Please try again.",
-      "previewFailed": "The secure preview could not be loaded. Please try again."
+      "previewFailed": "The secure preview could not be loaded. Please try again.",
+      "uploadFailed": "The upload failed. Please try again."
     },
-    "reviewFeedback": {
-      "title": "Updates requested before resubmitting"
-    },
-    "restrictedTitle": "Account restricted",
-    "restrictedBody": "This account cannot access Buildink. Contact support if you believe this is a mistake.",
+    "noFiles": "No documents selected yet.",
+    "openNewTab": "Open full view",
+    "preview": "File preview",
+    "previewLoading": "Loading secure preview...",
+    "pushBody": "We'll send you a browser notification the moment your profile is approved or needs changes — even with the site closed.",
+    "pushDenied": "Browser notifications are blocked. Enable them in your browser settings to receive review updates.",
+    "pushDone": "Notifications enabled — we'll alert you when the review is complete.",
+    "pushEnable": "Enable notifications",
+    "pushTitle": "Get notified about your review",
+    "rejectedBody": "Review the decision sent to your account. If your account is still active, choosing a new profile type starts a fresh application.",
     "rejectedTitle": "Application not approved",
-    "rejectedBody": "Review the decision sent to your account. If your account is still active, choosing a new profile type starts a fresh application."
+    "restrictedBody": "This account cannot access Buildink. Contact support if you believe this is a mistake.",
+    "restrictedTitle": "Account restricted",
+    "reviewFeedback": {
+      "title": "Updates requested before resubmitting",
+      "description": "Update your profile details and documents, then submit again for review.",
+      "updateDetails": "Update details"
+    },
+    "searchCompany": "Search for an existing company",
+    "selectCategory": "Select category",
+    "selectSubcategory": "Select subcategory",
+    "step": "Step {current} of 4",
+    "stepAccountType": "Account type",
+    "stepDocuments": "Verification",
+    "stepProfile": "Profile essentials",
+    "stepReview": "Review & publish",
+    "viewFull": "View full size",
+    "visibilityPrivate": "Private until you choose otherwise",
+    "visibilityPublic": "Public",
+    "why": {
+      "contactPreference": "Controls whether your phone or email can appear publicly.",
+      "country": "Region matching depends on where you operate.",
+      "phone": "Used for account recovery and, if you allow it, marketplace contact.",
+      "region": "Opportunities are ranked by service radius and region."
+    },
+    "whyWeAsk": "Why we ask",
+    "previewPreparing": "Preparing a secure preview of this file.",
+    "previewExpired": "The preview link may have expired. Close this viewer and try opening the file again.",
+    "previewUnavailable": "Preview is not available for this file type.",
+    "previewOpenExternally": "Open the document in a new tab to view it with the appropriate application."
   }
 }
