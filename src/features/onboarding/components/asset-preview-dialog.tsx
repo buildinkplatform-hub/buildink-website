@@ -35,6 +35,10 @@ export function AssetPreviewDialog({
     failed: string
     openNewTab: string
     close: string
+    preparing?: string
+    expired?: string
+    unavailable?: string
+    openExternally?: string
   }
   resolveUrl?: (assetId: string) => Promise<{ url: string; mimeType?: string }>
 }) {
@@ -147,7 +151,7 @@ export function AssetPreviewDialog({
                   {labels.loading}
                 </p>
                 <p className="text-muted-foreground mt-1 text-xs leading-5">
-                  Preparing a secure preview of this file.
+                  {labels.preparing ?? labels.loading}
                 </p>
               </div>
             ) : failed || !asset ? (
@@ -162,8 +166,7 @@ export function AssetPreviewDialog({
                   {labels.failed}
                 </p>
                 <p className="text-muted-foreground mt-1 text-xs leading-5">
-                  The preview link may have expired. Close this viewer and try
-                  opening the file again.
+                  {labels.expired ?? labels.failed}
                 </p>
               </div>
             ) : url && isImage ? (
@@ -189,11 +192,10 @@ export function AssetPreviewDialog({
                   <FileQuestion className="size-5" />
                 </span>
                 <p className="text-foreground mt-3 font-semibold">
-                  Preview is not available for this file type.
+                  {labels.unavailable ?? labels.failed}
                 </p>
                 <p className="text-muted-foreground mt-1 text-sm leading-6">
-                  Open the document in a new tab to view it with the appropriate
-                  application.
+                  {labels.openExternally ?? labels.openNewTab}
                 </p>
                 <Button asChild className="mt-4">
                   <a href={url} target="_blank" rel="noreferrer">

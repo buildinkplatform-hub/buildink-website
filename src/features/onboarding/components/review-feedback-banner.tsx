@@ -17,15 +17,14 @@ export function ReviewFeedbackBanner() {
         <div>
           <p className="font-semibold">{t("title")}</p>
           <p className="mt-1 text-amber-900">
-            Update your profile details and documents, then submit again for
-            review.
+            {t("description")}
           </p>
         </div>
         <Link
           href="/onboarding/profile"
           className="rounded-xl bg-amber-950 px-4 py-2 text-sm font-semibold text-white"
         >
-          Update details
+          {t("updateDetails")}
         </Link>
       </div>
       {feedback.closedReason ? (
