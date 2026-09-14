@@ -278,7 +278,7 @@ export async function ProjectOperationsPage({
   const companyId = getActiveCompanyId(bootstrap?.workspaces)
   const permissions = bootstrap?.entitlements.permissions ?? []
   if (!companyId)
-    return <OperationsEmptyState title="Select a company workspace" />
+    return <OperationsEmptyState title={t("operations.selectWorkspace")} />
   const overview = await getProjectOperationsOverview(companyId, projectId)
   const canManageEvidence = permissions.includes("workforce.evidence.manage")
   const canManageCompliance = permissions.includes(
@@ -290,6 +290,9 @@ export async function ProjectOperationsPage({
     href: `/dashboard/projects/${projectId}/${value}`,
     active: value === section,
   }))
+  const sectionLabel = t.has(`operations.sections.${section}`)
+    ? t(`operations.sections.${section}`)
+    : labelize(section)
   const resource = resourceFor(section)
   const result = resource
     ? await listProjectOperationsResource<Record<string, unknown>>(
@@ -364,16 +367,14 @@ export async function ProjectOperationsPage({
       <PortalPageHeader
         eyebrow={t("operations.projectControl")}
         title={overview.project.title}
-        description={`${labelize(section)} · ${overview.project.projectTimezone}`}
+        description={`${sectionLabel} · ${overview.project.projectTimezone}`}
       />
       <TabsNav items={tabs} />
       <ProjectControlMetrics overview={overview} />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-brand-navy text-lg font-semibold">
-            {t.has(`operations.sections.${section}`)
-              ? t(`operations.sections.${section}`)
-              : labelize(section)}
+            {sectionLabel}
           </h2>
           <p className="text-muted text-sm">
             {t("operations.approvedLedgerDescription")}
@@ -1132,6 +1133,7 @@ function Value({ label, value }: { label: string; value: string | number }) {
 
 async function columnsFor(section: string) {
   const t = await getTranslations("operations.tables")
+  const sectionT = await getTranslations("operations.sections")
   if (section === "sites")
     return [
       {
@@ -1450,7 +1452,7 @@ async function columnsFor(section: string) {
       },
     ]
   return [
-    { key: "title", label: labelize(section) },
+    { key: "title", label: sectionT.has(section) ? sectionT(section) : labelize(section) },
     {
       key: "status",
       label: t("columns.status"),
